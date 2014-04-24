@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<target xmlns="soc-library" document-type="soc-target-1.0" name="papilio-500k">
+	<description>
+		Papilio One Board with XC3S500E device
+	</description>
+	<device name="XC3S500E-VQ100-4" jtagid="1" />
+	<iopins name="USBUART">
+		<pin name="TX" fpgapin="P90" type="output"/>
+		<pin name="RX" fpgapin="P88" type="input"/>
+	</iopins>
+	<iopins name="CLK" type="input">
+		<pin name="32" fpgapin="P89" freq="32000000" />
+	</iopins>
+
+	<iopins name="JTAG">
+		<pin name="TMS" fpgapin="P75" />
+		<pin name="TCK" fpgapin="P77" />
+		<pin name="TDI" fpgapin="P100" />
+		<pin name="TDO" fpgapin="P76" />
+	</iopins>
+	<iopins name="Flash">
+		<pin name="CS" fpgapin="P24" />
+		<pin name="CK" fpgapin="P50" />
+		<pin name="SI" fpgapin="P27" />
+		<pin name="SO" fpgapin="P44" />
+	</iopins>
+	
+	<iopins name="PORTA">
+		<pin name="A15" fpgapin="P86"/>
+		<pin name="A14" fpgapin="P84"/>
+		<pin name="A13" fpgapin="P79"/>
+		<pin name="A12" fpgapin="P70"/>
+		<pin name="A11" fpgapin="P67"/>
+		<pin name="A10" fpgapin="P65"/>
+		<pin name="A09" fpgapin="P62"/>
+		<pin name="A08" fpgapin="P60"/>
+		<pin name="A07" fpgapin="P57"/>
+		<pin name="A06" fpgapin="P53"/>
+		<pin name="A05" fpgapin="P40"/>
+		<pin name="A04" fpgapin="P35"/>
+		<pin name="A03" fpgapin="P33"/>
+		<pin name="A02" fpgapin="P26"/>
+		<pin name="A01" fpgapin="P23"/>
+		<pin name="A00" fpgapin="P18"/>
+	</iopins>
+	<iopins name="PORTB">
+		<pin name="B15" fpgapin="P22"/>
+		<pin name="B14" fpgapin="P25"/>
+		<pin name="B13" fpgapin="P32"/>
+		<pin name="B12" fpgapin="P34"/>
+		<pin name="B11" fpgapin="P36"/>
+		<pin name="B10" fpgapin="P41"/>
+		<pin name="B09" fpgapin="P54"/>
+		<pin name="B08" fpgapin="P58"/>
+		<pin name="B07" fpgapin="P61"/>
+		<pin name="B06" fpgapin="P63"/>
+		<pin name="B05" fpgapin="P66"/>
+		<pin name="B04" fpgapin="P68"/>
+		<pin name="B03" fpgapin="P71"/>
+		<pin name="B02" fpgapin="P78"/>
+		<pin name="B01" fpgapin="P83"/>
+		<pin name="B00" fpgapin="P85"/>
+	</iopins>
+	<iopins name="PORTC">
+		<pin name="C15" fpgapin="P17"/>
+		<pin name="C14" fpgapin="P16"/>
+		<pin name="C13" fpgapin="P15"/>
+		<pin name="C12" fpgapin="P12"/>
+		<pin name="C11" fpgapin="P11"/>
+		<pin name="C10" fpgapin="P10"/>
+		<pin name="C09" fpgapin="P9"/>
+		<pin name="C08" fpgapin="P5"/>
+		<pin name="C07" fpgapin="P4"/>
+		<pin name="C06" fpgapin="P3"/>
+		<pin name="C05" fpgapin="P2"/>
+		<pin name="C04" fpgapin="P98"/>
+		<pin name="C03" fpgapin="P95"/>
+		<pin name="C02" fpgapin="P94"/>
+		<pin name="C01" fpgapin="P92"/>
+		<pin name="C00" fpgapin="P91"/>
+	</iopins>
+</target>
+ 

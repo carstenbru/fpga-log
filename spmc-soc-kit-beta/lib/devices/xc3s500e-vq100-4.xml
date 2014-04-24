@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="device.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<device xmlns="http://www.mr.inf.tu-dresden.de/spartanmc/device" name="XC3S500E-VQ100-4">
+  <toolchain name="xilinx">
+    <param name="SYNTHESIS" value="-p XC3S500E-VQ100-4 -ifmt mixed -ofmt NGC -opt_mode Speed -opt_level 1 -iuc NO -keep_hierarchy YES -glob_opt ALLClockNets -rtlview YES -read_cores YES -write_timing_constraints NO -cross_clock_analysis NO -hierarchy_separator _ -bus_delimiter [] -case maintain -slice_utilization_ratio 100 -fsm_extract YES -fsm_encoding Auto -fsm_style lut -ram_extract Yes -ram_style Auto -rom_extract Yes -rom_style Auto -shreg_extract YES -resource_sharing YES -mult_style auto -iobuf YES -max_fanout 500 -bufg 8 -register_duplication YES -equivalent_register_removal YES -register_balancing No -optimize_primitives No -iob auto -slice_utilization_ratio_maxmargin 5" />
+    <param name="TRANSLATE" value="-nt on -p XC3S500E-VQ100-4" />
+    <param name="MAP" value="-cm speed -timing -p XC3S500E-VQ100-4 -logic_opt on -pr b -register_duplication -xe n -ol high" />
+    <param name="PAR" value="-ol high -xe n" />
+    <param name="NETGEN" value="-s 4" />
+    <param name="BITGEN" value="-m" />
+    <param name="PROGRAM" value="" />
+  </toolchain>
+  <iostandard>
+    HSTL_I_18, HSTL_III_18,
+    LVCMOS12, LVCMOS15, LVCMOS18, LVCMOS25, LVCMOS33, LVTTL,
+    LVDS_33,
+    PCI33_3, PCI66_3,
+    SSTL18_I, SSTL2_I,
+    SSTL18_II
+  </iostandard>
+  <drive>
+    2, 4, 6, 8, 12, 16
+  </drive>
+</device>
