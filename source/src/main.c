@@ -2,6 +2,8 @@
 #include <system/peripherals.h>
 #include <uart.h>
 
+#include "data_port.h"
+
 void main() {
   char c = 'h';
   while (1) {
