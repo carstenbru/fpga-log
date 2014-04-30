@@ -11,7 +11,7 @@
 
 #include "data_port.h"
 
-#include "device/uart_raw.h"
+#include "device/device_uart_raw.h"
 
 /**
  * @brief main function

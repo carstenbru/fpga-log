@@ -5,7 +5,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "device/uart_raw.h"
+#include "device/device_uart_raw.h"
 
 device_uart_raw_t new_device_uart_raw(uart_light_regs_t* uart_light, int id) {
   device_uart_raw_t uart_raw;
