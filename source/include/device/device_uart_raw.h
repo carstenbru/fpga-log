@@ -1,5 +1,5 @@
 /**
- * @file uart_raw.h
+ * @file device_uart_raw.h
  * @brief simple raw uart logging device driver
  * 
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
@@ -26,13 +26,15 @@ typedef struct {
 } device_uart_raw_t;
 
 /**
- * @brief uart raw constructor
+ * @brief uart raw init function
  * 
+ * initializes the uart raw device, should be called before using the device
+ * 
+ * @param	uart_raw	pointer to the uart raw device
  * @param 	uart_light 	pointer to a uart_light peripheral
  * @param 	id		id of the new device (for log output, etc)
- * @return			the generated device
  */
-device_uart_raw_t new_device_uart_raw(uart_light_regs_t* uart_light, int id);
+void device_uart_raw_init(device_uart_raw_t* uart_raw, uart_light_regs_t* uart_light, int id);
 
 /**
  * @brief connects the data output port of a uart raw to a given destination

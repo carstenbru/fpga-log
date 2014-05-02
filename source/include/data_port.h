@@ -31,7 +31,14 @@ typedef struct {
  */
 typedef struct {
   void* parent;					/**< pointer to the parent struct, e.g. a datasink module */
-  void (*new_data)(void*, data_package_t*);	/**< pointer to the new-data-function of the destination, should be called with parent as parameter */
+  
+  /**
+   * @brief pointer to the new data function of the destination
+   * 
+   * @param	parent		the parent stored in this struct
+   * @param	package		the incoming data package
+   */
+  void (*new_data)(void* parent, data_package_t* package);
 } data_port_t;
 
 #endif

@@ -148,7 +148,7 @@
                 </parameter>
                 <parameter id="#PARAM.CLOCK_FREQUENCY">
                     <attribute id="name" xml:space="preserve">CLOCK_FREQUENCY</attribute>
-                    <attribute id="value" xml:space="preserve">32000000</attribute>
+                    <attribute id="value" xml:space="preserve">16000000</attribute>
                 </parameter>
                 <parameter id="#PARAM.FIFO_RX_DEPTH">
                     <attribute id="name" xml:space="preserve">FIFO_RX_DEPTH</attribute>
@@ -255,7 +255,7 @@
                 </parameter>
                 <parameter id="#PARAM.CLOCK_FREQUENCY">
                     <attribute id="name" xml:space="preserve">CLOCK_FREQUENCY</attribute>
-                    <attribute id="value" xml:space="preserve">32000000</attribute>
+                    <attribute id="value" xml:space="preserve">16000000</attribute>
                 </parameter>
                 <parameter id="#PARAM.FIFO_RX_DEPTH">
                     <attribute id="name" xml:space="preserve">FIFO_RX_DEPTH</attribute>
