@@ -11,8 +11,11 @@
 
 #include "device/device_uart_raw.h"
 #include "sink/sink_uart.h"
+#include "sink/formatter/formatter_simple.h"
 
 sink_uart_t sink_uart;
+formatter_simple_t formatter_simple;
+
 device_uart_raw_t uart_raw;
 
 /**
@@ -20,7 +23,9 @@ device_uart_raw_t uart_raw;
  */
 void main() {
   device_uart_raw_init(&uart_raw, UART_LIGHT_PC, 1);
-  sink_uart_init(&sink_uart, UART_LIGHT_PC);
+  
+  formatter_simple_init(&formatter_simple);
+  sink_uart_init(&sink_uart, (formatter_t*)&formatter_simple, UART_LIGHT_PC);
   
   device_uart_raw_set_data_out(&uart_raw, &sink_uart.data_in); //connect the data_out of uart_raw device to the uart sink
   

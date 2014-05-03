@@ -12,22 +12,21 @@
 #include "data_port.h"
 
 /** 
- * @brief struct defining a formatter with its state and fucntions
+ * @brief struct defining a formatter with its state and functions
  */
 typedef struct {
-  void* formatter_state;	/**< pointer to the formatter state struct (one implementation) */
   void* param;			/**< parameter which will be passed to write_byte function */
   
   /**
    * @brief pointer to the format function of one implementation
    * 
-   * @param	state		the state stored in this struct
+   * @param	formatter	the formatter struct
    * @param	package		the incoming data package
    */
   void (*format)(void* formatter, data_package_t* package);
   
   /**
-   * @brief pointer to the function which should be used to write bytes
+   * @brief pointer to the function which will be used to write bytes
    * 
    * @param	param		a (fixed) paramter which can be set with pointer "param", e.g. the peripheral
    * @param	byte		the byte to write
@@ -35,6 +34,15 @@ typedef struct {
   void (*write_byte)(void *param, unsigned char byte);
 } formatter_t;
 
-void formatter_test(void* formatter, data_package_t* package);
+/**
+ * @brief stets the write destination of the formatter
+ * 
+ * @param	write_byte	function which will be called to write bytes
+ * @param	param		parameter which will be passed to write_byte function
+ */
+void formatter_set_write_dest(
+    formatter_t* formatter,
+    void (*write_byte)(void *param, unsigned char byte),
+    void* param);
 
 #endif 

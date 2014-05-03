@@ -1,4 +1,4 @@
-/**
+ /**
  * @file formatter.c
  * @brief output log formatter
  * 
@@ -6,12 +6,12 @@
  */
 
 #include <stdio.h>
-#include "sink/formatter.h"
+#include "sink/formatter/formatter_simple.h"
 
-void formatter_test(void* formatter, data_package_t* package) {
-  formatter_t* f = (formatter_t*)formatter;
-  stdio_descr.base_adr = f->param;
-  stdio_descr.send_byte = f->write_byte;
-  
-  printf("test: %d\n\r", *((unsigned char*)package->data));
+void formatter_set_write_dest(
+    formatter_t* formatter,
+    void (*write_byte)(void *param, unsigned char byte),
+    void* param) {
+  formatter->write_byte = write_byte;
+  formatter->param = param;
 }

@@ -13,7 +13,7 @@
 
 #include "data_port.h"
 #include "control_port.h"
-#include "formatter.h"
+#include "sink/formatter/formatter.h"
 
 /** 
  * @brief struct describing a uart sink
@@ -21,7 +21,7 @@
 typedef struct {
   data_port_t data_in;			/**< data port, this can be set at a data output to direct the data stream to this device */
   control_port_t* control_out;		/**< control output port */
-  formatter_t formatter;		/**< output log formatter */
+  formatter_t* formatter;		/**< output log formatter */
   
   uart_light_regs_t* uart_light;	/**< pointer to UART hardware registers */
 } sink_uart_t;
@@ -32,9 +32,10 @@ typedef struct {
  * initializes the uart sink, should be called before using the sink
  * 
  * @param	sink_uart	pointer to the uart sink
+ * @param	formatter	pointer to a output log formatter
  * @param 	uart_light 	pointer to a uart_light peripheral
  */
-void sink_uart_init(sink_uart_t* sink_uart, uart_light_regs_t* uart_light);
+void sink_uart_init(sink_uart_t* sink_uart, formatter_t* formatter, uart_light_regs_t* uart_light);
 
 /**
  * @brief connects the control output port of a uart sink to a given destination
