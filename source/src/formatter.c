@@ -1,6 +1,6 @@
 /**
  * @file formatter.c
- * @brief 
+ * @brief output log formatter
  * 
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */

@@ -16,7 +16,7 @@
  */
 typedef struct {
   void* formatter_state;	/**< pointer to the formatter state struct (one implementation) */
-  void* param;			/**< parameter which will be passed to write_byte function
+  void* param;			/**< parameter which will be passed to write_byte function */
   
   /**
    * @brief pointer to the format function of one implementation
