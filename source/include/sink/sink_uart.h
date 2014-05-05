@@ -20,7 +20,7 @@
  */
 typedef struct {
   data_port_t data_in;			/**< data port, this can be set at a data output to direct the data stream to this device */
-  control_port_t* control_out;		/**< control output port */
+  const control_port_t* control_out;		/**< control output port */
   formatter_t* formatter;		/**< output log formatter */
   
   uart_light_regs_t* uart_light;	/**< pointer to UART hardware registers */

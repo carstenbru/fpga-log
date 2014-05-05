@@ -8,7 +8,10 @@
 #include "device/device_uart_raw.h"
 
 void device_uart_raw_init(device_uart_raw_t* uart_raw, uart_light_regs_t* uart_light, int id) {
+	uart_raw->data_out = &data_port_dummy;
+
   uart_raw->control_in.parent = (void*)uart_raw;
+  uart_raw->control_in.measure = control_port_measure_dummy;
   //TODO set function pointers of control_in here
   
   uart_raw->uart_light = uart_light;

@@ -18,7 +18,7 @@
  * @brief struct describing a uart raw device 
  */
 typedef struct {
-  data_port_t* data_out;		/**< data output destination */
+  const data_port_t* data_out;		/**< data output destination */
   control_port_t control_in;		/**< control port, this can be set at a control output to direct the control stream to this device */
   
   int id;				/**< id of the device */

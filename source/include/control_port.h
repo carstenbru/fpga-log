@@ -14,7 +14,28 @@
  */
 typedef struct {
   void* parent;		/**< pointer to the parent struct, e.g. a device module */
+
+  /**
+     * @brief pointer to the measure function of the destination
+     *
+     * the device driver should start a measurement when this function is invoked
+     *
+     * @param	parent		the parent stored in this struct
+     */
+  void (*measure)(void* parent);
   //TODO multiple function pointers for contol functions
 } control_port_t;
+
+/**
+ * @brief control_port measure dummy function
+ *
+ * @param parent	not used
+ */
+void control_port_measure_dummy(void* parent);
+
+/**
+ * @brief a control_port which can be set when no real control_port is assigned
+ */
+extern const control_port_t control_port_dummy;
 
 #endif
