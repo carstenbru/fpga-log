@@ -26,14 +26,10 @@ typedef struct {
 } control_port_t;
 
 /**
- * @brief control_port measure dummy function
+ * @brief a control_port dummy
  *
- * @param parent	not used
- */
-void control_port_measure_dummy(void* const parent);
-
-/**
- * @brief a control_port which can be set when no real control_port is assigned
+ * can be set when no real control_port is assigned
+ * or before real values are assigned so that no function pointer is null
  */
 extern const control_port_t control_port_dummy;
 

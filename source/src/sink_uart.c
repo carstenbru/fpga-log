@@ -11,6 +11,7 @@ void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter,
 		uart_light_regs_t* const uart_light) {
 	sink_uart->control_out = &control_port_dummy;
 
+	sink_uart->data_in = data_port_dummy;
 	sink_uart->data_in.parent = (void*) sink_uart;
 	sink_uart->data_in.new_data = sink_uart_new_data;
 

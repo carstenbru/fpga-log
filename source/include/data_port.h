@@ -41,16 +41,10 @@ typedef struct {
 } data_port_t;
 
 /**
- * @brief data_port new data dummy function
+ * @brief a data_port dummy
  *
- * @param	parent	not used
- * @param	package	not used
- */
-void data_port_new_data_dummy(void* const parent,
-		const data_package_t* const package);
-
-/**
- * @brief a data_port which can be set when no real data_port is assigned
+ * can be set when no real data_port is assigned
+ * or before real values are assigned so that no function pointer is null
  */
 extern const data_port_t data_port_dummy;
 
