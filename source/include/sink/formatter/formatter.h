@@ -15,8 +15,6 @@
  * @brief struct defining a formatter with its state and functions
  */
 typedef struct {
-  void* param;			/**< parameter which will be passed to write_byte function */
-  
   /**
    * @brief pointer to the format function of one implementation
    * 
@@ -32,6 +30,8 @@ typedef struct {
    * @param	byte		the byte to write
    */
   void (*write_byte)(void *param, unsigned char byte);
+
+  void* param;			/**< parameter which will be passed to write_byte function */
 } formatter_t;
 
 /**

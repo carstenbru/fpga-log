@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="device.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<device xmlns="http://www.mr.inf.tu-dresden.de/spartanmc/device" name="XC6SLX9-2TQG144">
+  <toolchain name="xilinx">
+    <param name="SYNTHESIS" value="-p XC6SLX9-2TQG144 -ifmt mixed -ofmt NGC -opt_mode Speed -opt_level 1 -iuc NO -keep_hierarchy YES -glob_opt ALLClockNets -rtlview YES -read_cores YES -write_timing_constraints NO -cross_clock_analysis NO -hierarchy_separator _ -bus_delimiter [] -case maintain -slice_utilization_ratio 100 -fsm_extract YES -fsm_encoding Auto -fsm_style lut -ram_extract Yes -ram_style Auto -rom_extract Yes -rom_style Auto -shreg_extract YES -resource_sharing YES -mult_style auto -iobuf YES -max_fanout 500 -bufg 8 -register_duplication YES -equivalent_register_removal YES -register_balancing No -optimize_primitives No -iob auto -slice_utilization_ratio_maxmargin 5" />
+    <param name="TRANSLATE" value="-nt on -p XC6SLX9-2TQG144" />
+    <param name="MAP" value="-timing -p XC6SLX9-2TQG144 -logic_opt on -pr b -register_duplication -xe n -ol high" />
+    <param name="PAR" value="-ol high -xe n" />
+    <param name="NETGEN" value="-s 3" />
+    <param name="BITGEN" value="-m" />
+    <param name="PROGRAM" value="" />
+  </toolchain>
+  <iostandard>
+    LVTTL, LVCMOS33, LVCMOS25, LVCMOS18, LVCMOS15,
+    LVCMOS12, PCI, I2C, SMBUS, SDIO,
+    HSTL_I, HSTL_III, HSTL_IV, HSTL_I_18, HSTL_III_18,
+    HSTL_IV_18, SSTL3_I, SSTL3_II, SSTL2_I, SSTL2_II,
+    SSTL18_I, SSTL18_II, DIFF_SSTL18_II, SSTL15_II, LVDS_25
+  </iostandard>
+  <drive>
+    2, 4, 6, 8, 12, 16, 24
+  </drive>
+</device>

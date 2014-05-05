@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<target xmlns="http://www.mr.inf.tu-dresden.de/spartanmc/target" name="papilio-pro">
+	<description>
+		Papilio Pro Board with XC6SLX9 device
+	</description>
+	<device name="XC6SLX9-2TQG144" jtagid="1" />
+	<iopins name="USBUART">
+		<pin name="TX" fpgapin="P101" type="output"/>
+		<pin name="RX" fpgapin="P105" type="input"/>
+	</iopins>
+	<iopins name="CLK" type="input">
+		<pin name="32" fpgapin="P94" freq="32000000" />
+	</iopins>
+
+	<iopins name="JTAG">
+		<pin name="TMS" fpgapin="P107" />
+		<pin name="TCK" fpgapin="P109" />
+		<pin name="TDI" fpgapin="P110" />
+		<pin name="TDO" fpgapin="P106" />
+	</iopins>
+	<iopins name="Flash">
+		<pin name="CS" fpgapin="P38" />
+		<pin name="CK" fpgapin="P70" />
+		<pin name="SI" fpgapin="P64" />
+		<pin name="SO" fpgapin="P65" />
+	</iopins>
+	
+	<iopins name="PORTA">
+		<pin name="A15" fpgapin="P100"/>
+		<pin name="A14" fpgapin="P98"/>
+		<pin name="A13" fpgapin="P93"/>
+		<pin name="A12" fpgapin="P88"/>
+		<pin name="A11" fpgapin="P85"/>
+		<pin name="A10" fpgapin="P83"/>
+		<pin name="A09" fpgapin="P81"/>
+		<pin name="A08" fpgapin="P79"/>
+		<pin name="A07" fpgapin="P75"/>
+		<pin name="A06" fpgapin="P67"/>
+		<pin name="A05" fpgapin="P66"/>
+		<pin name="A04" fpgapin="P61"/>
+		<pin name="A03" fpgapin="P58"/>
+		<pin name="A02" fpgapin="P56"/>
+		<pin name="A01" fpgapin="P51"/>
+		<pin name="A00" fpgapin="P48"/>
+	</iopins>
+	<iopins name="PORTB">
+		<pin name="B15" fpgapin="P47"/>
+		<pin name="B14" fpgapin="P50"/>
+		<pin name="B13" fpgapin="P55"/>
+		<pin name="B12" fpgapin="P57"/>
+		<pin name="B11" fpgapin="P59"/>
+		<pin name="B10" fpgapin="P62"/>
+		<pin name="B09" fpgapin="P95"/>
+		<pin name="B08" fpgapin="P74"/>
+		<pin name="B07" fpgapin="P78"/>
+		<pin name="B06" fpgapin="P80"/>
+		<pin name="B05" fpgapin="P82"/>
+		<pin name="B04" fpgapin="P84"/>
+		<pin name="B03" fpgapin="P87"/>
+		<pin name="B02" fpgapin="P92"/>
+		<pin name="B01" fpgapin="P97"/>
+		<pin name="B00" fpgapin="P99"/>
+	</iopins>
+	<iopins name="PORTC">
+		<pin name="C15" fpgapin="P134"/>
+		<pin name="C14" fpgapin="P133"/>
+		<pin name="C13" fpgapin="P132"/>
+		<pin name="C12" fpgapin="P131"/>
+		<pin name="C11" fpgapin="P127"/>
+		<pin name="C10" fpgapin="P126"/>
+		<pin name="C09" fpgapin="P124"/>
+		<pin name="C08" fpgapin="P123"/>
+		<pin name="C07" fpgapin="P121"/>
+		<pin name="C06" fpgapin="P120"/>
+		<pin name="C05" fpgapin="P119"/>
+		<pin name="C04" fpgapin="P118"/>
+		<pin name="C03" fpgapin="P117"/>
+		<pin name="C02" fpgapin="P116"/>
+		<pin name="C01" fpgapin="P115"/>
+		<pin name="C00" fpgapin="P114"/>
+	</iopins>
+	<iopins name="SDRAM">
+		<pin name="ADDR0" fpgapin="P140"/>
+		<pin name="ADDR1" fpgapin="P139"/>
+		<pin name="ADDR2" fpgapin="P138"/>
+		<pin name="ADDR3" fpgapin="P137"/>
+		<pin name="ADDR4" fpgapin="P46"/>
+		<pin name="ADDR5" fpgapin="P45"/>
+		<pin name="ADDR6" fpgapin="P44"/>
+		<pin name="ADDR7" fpgapin="P43"/>
+		<pin name="ADDR8" fpgapin="P41"/>
+		<pin name="ADDR9" fpgapin="P40"/>
+		<pin name="ADDR10" fpgapin="P141"/>
+		<pin name="ADDR11" fpgapin="P35"/>
+		<pin name="ADDR12" fpgapin="P34"/>
+		
+		<pin name="DATA0" fpgapin="P9"/>
+		<pin name="DATA1" fpgapin="P10"/>
+		<pin name="DATA2" fpgapin="P11"/>
+		<pin name="DATA3" fpgapin="P12"/>
+		<pin name="DATA4" fpgapin="P13"/>
+		<pin name="DATA5" fpgapin="P14"/>
+		<pin name="DATA6" fpgapin="P15"/>
+		<pin name="DATA7" fpgapin="P16"/>
+		<pin name="DATA8" fpgapin="P21"/>
+		<pin name="DATA9" fpgapin="P22"/>
+		<pin name="DATA10" fpgapin="P23"/>
+		<pin name="DATA11" fpgapin="P24"/>
+		<pin name="DATA12" fpgapin="P26"/>
+		<pin name="DATA13" fpgapin="P27"/>
+		<pin name="DATA14" fpgapin="P29"/>
+		<pin name="DATA15" fpgapin="P30"/>
+		
+		<pin name="DQML" fpgapin="P7"/>
+		<pin name="DWMH" fpgapin="P17"/>
+		<pin name="BA0" fpgapin="P143"/>
+		<pin name="BA1" fpgapin="P142"/>
+		<pin name="nWE" fpgapin="P6"/>
+		<pin name="nCAS" fpgapin="P5"/>
+		<pin name="nRAS" fpgapin="P2"/>
+		<pin name="CS" fpgapin="P1"/>
+		<pin name="CLK" fpgapin="P32"/>
+		<pin name="CKE" fpgapin="P33"/>
+	</iopins>
+	<iopins name="LED">
+		<pin name="LED1" fpgapin="P112"/>
+	</iopins>
+</target>
+ 
