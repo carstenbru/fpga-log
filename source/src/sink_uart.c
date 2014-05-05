@@ -34,7 +34,8 @@ void sink_uart_update(sink_uart_t* const sink_uart) {
 	//TODO multiple control_out's
 }
 
-void sink_uart_new_data(void* const sink_uart, const data_package_t* const package) {
+void sink_uart_new_data(void* const sink_uart,
+		const data_package_t* const package) {
 	sink_uart_t* sink = (sink_uart_t*) sink_uart;
 
 	sink->formatter->format((void*) (sink->formatter), package);

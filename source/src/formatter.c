@@ -1,4 +1,4 @@
- /**
+/**
  * @file formatter.c
  * @brief output log formatter
  * 
@@ -8,10 +8,9 @@
 #include <stdio.h>
 #include "sink/formatter/formatter_simple.h"
 
-void formatter_set_write_dest(
-    formatter_t* const formatter,
-    void (*write_byte)(void* const param, const unsigned char byte),
-    void* const param) {
-  formatter->write_byte = write_byte;
-  formatter->param = param;
+void formatter_set_write_dest(formatter_t* const formatter,
+		void (*write_byte)(void* const param, const unsigned char byte),
+		void* const param) {
+	formatter->write_byte = write_byte;
+	formatter->param = param;
 }

@@ -7,24 +7,26 @@
 
 #include "device/device_uart_raw.h"
 
-void device_uart_raw_init(device_uart_raw_t* const uart_raw, uart_light_regs_t* const uart_light, const int id) {
+void device_uart_raw_init(device_uart_raw_t* const uart_raw,
+		uart_light_regs_t* const uart_light, const int id) {
 	uart_raw->data_out = &data_port_dummy;
 
-  uart_raw->control_in.parent = (void*)uart_raw;
-  uart_raw->control_in.measure = control_port_measure_dummy;
-  //TODO set function pointers of control_in here
-  
-  uart_raw->uart_light = uart_light;
+	uart_raw->control_in.parent = (void*) uart_raw;
+	uart_raw->control_in.measure = control_port_measure_dummy;
+	//TODO set function pointers of control_in here
+
+	uart_raw->uart_light = uart_light;
 }
 
-void device_uart_raw_set_data_out(device_uart_raw_t* const uart_raw, const data_port_t* const data_in) {
-  uart_raw->data_out = data_in;
+void device_uart_raw_set_data_out(device_uart_raw_t* const uart_raw,
+		const data_port_t* const data_in) {
+	uart_raw->data_out = data_in;
 }
 
 void device_uart_raw_update(device_uart_raw_t* const uart_raw) {
-  unsigned char byte;
-  if (uart_light_receive_nb(uart_raw->uart_light, &byte) == UART_OK) {
-    data_package_t package = { uart_raw->id, DATA_TYPE_BYTE, &byte };
-    uart_raw->data_out->new_data(uart_raw->data_out->parent, &package);
-  }
+	unsigned char byte;
+	if (uart_light_receive_nb(uart_raw->uart_light, &byte) == UART_OK) {
+		data_package_t package = { uart_raw->id, DATA_TYPE_BYTE, &byte };
+		uart_raw->data_out->new_data(uart_raw->data_out->parent, &package);
+	}
 }
