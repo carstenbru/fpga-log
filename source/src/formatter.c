@@ -9,9 +9,9 @@
 #include "sink/formatter/formatter_simple.h"
 
 void formatter_set_write_dest(
-    formatter_t* formatter,
-    void (*write_byte)(void *param, unsigned char byte),
-    void* param) {
+    formatter_t* const formatter,
+    void (*write_byte)(void* const param, const unsigned char byte),
+    void* const param) {
   formatter->write_byte = write_byte;
   formatter->param = param;
 }

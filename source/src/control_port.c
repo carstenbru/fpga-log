@@ -7,6 +7,6 @@
 
 #include "control_port.h"
 
-void control_port_measure_dummy(void* parent) {};
+void control_port_measure_dummy(void* const parent) {};
 
 const control_port_t control_port_dummy = {0};

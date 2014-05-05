@@ -7,7 +7,7 @@
 
 #include "device/device_uart_raw.h"
 
-void device_uart_raw_init(device_uart_raw_t* uart_raw, uart_light_regs_t* uart_light, int id) {
+void device_uart_raw_init(device_uart_raw_t* const uart_raw, uart_light_regs_t* const uart_light, const int id) {
 	uart_raw->data_out = &data_port_dummy;
 
   uart_raw->control_in.parent = (void*)uart_raw;
@@ -17,11 +17,11 @@ void device_uart_raw_init(device_uart_raw_t* uart_raw, uart_light_regs_t* uart_l
   uart_raw->uart_light = uart_light;
 }
 
-void device_uart_raw_set_data_out(device_uart_raw_t* uart_raw, data_port_t* data_in) {
+void device_uart_raw_set_data_out(device_uart_raw_t* const uart_raw, const data_port_t* const data_in) {
   uart_raw->data_out = data_in;
 }
 
-void device_uart_raw_update(device_uart_raw_t* uart_raw) {
+void device_uart_raw_update(device_uart_raw_t* const uart_raw) {
   unsigned char byte;
   if (uart_light_receive_nb(uart_raw->uart_light, &byte) == UART_OK) {
     data_package_t package = { uart_raw->id, DATA_TYPE_BYTE, &byte };

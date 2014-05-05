@@ -22,7 +22,7 @@ typedef struct {
      *
      * @param	parent		the parent stored in this struct
      */
-  void (*measure)(void* parent);
+  void (*measure)(void* const parent);
   //TODO multiple function pointers for contol functions
 } control_port_t;
 
@@ -31,7 +31,7 @@ typedef struct {
  *
  * @param parent	not used
  */
-void control_port_measure_dummy(void* parent);
+void control_port_measure_dummy(void* const parent);
 
 /**
  * @brief a control_port which can be set when no real control_port is assigned

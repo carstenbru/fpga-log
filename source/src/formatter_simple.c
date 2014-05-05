@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "sink/formatter/formatter_simple.h"
 
-void formatter_simple_init(formatter_simple_t* formatter) {
+void formatter_simple_init(formatter_simple_t* const formatter) {
   formatter_t* f = (formatter_t*) formatter;
   
   /**
@@ -19,7 +19,7 @@ void formatter_simple_init(formatter_simple_t* formatter) {
   formatter->count = 0;
 }
 
-void formatter_simple_format(void* formatter, data_package_t* package) {
+void formatter_simple_format(void* const formatter, const data_package_t* const package) {
   formatter_t* f = (formatter_t*)formatter;
   stdio_descr.base_adr = f->param;
   stdio_descr.send_byte = f->write_byte;

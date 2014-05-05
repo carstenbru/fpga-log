@@ -35,7 +35,7 @@ typedef struct {
  * @param	formatter	pointer to a output log formatter
  * @param 	uart_light 	pointer to a uart_light peripheral
  */
-void sink_uart_init(sink_uart_t* sink_uart, formatter_t* formatter, uart_light_regs_t* uart_light);
+void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter, uart_light_regs_t* const uart_light);
 
 /**
  * @brief connects the control output port of a uart sink to a given destination
@@ -43,7 +43,7 @@ void sink_uart_init(sink_uart_t* sink_uart, formatter_t* formatter, uart_light_r
  * @param	sink_uart	pointer to the uart sink
  * @param	control_in	the new data destination
  */
-void sink_uart_set_control_out(sink_uart_t* sink_uart, control_port_t* control_in);
+void sink_uart_set_control_out(sink_uart_t* const sink_uart, const control_port_t* const control_in);
 
 /**
  * @brief uart sink update function
@@ -52,7 +52,7 @@ void sink_uart_set_control_out(sink_uart_t* sink_uart, control_port_t* control_i
  * 
  * @param	sink_uart	pointer to the uart sink
  */
-void sink_uart_update(sink_uart_t* sink_uart);
+void sink_uart_update(sink_uart_t* const sink_uart);
 
 /**
    * @brief incoming data function of the uart sink
@@ -60,6 +60,6 @@ void sink_uart_update(sink_uart_t* sink_uart);
    * @param	sink_uart	pointer to the uart sink
    * @param	package		the incoming data package
    */
-void sink_uart_new_data(void* sink_uart, data_package_t* package);
+void sink_uart_new_data(void* const sink_uart, const data_package_t* const package);
 
 #endif 

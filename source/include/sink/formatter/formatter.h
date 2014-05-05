@@ -21,7 +21,7 @@ typedef struct {
    * @param	formatter	the formatter struct
    * @param	package		the incoming data package
    */
-  void (*format)(void* formatter, data_package_t* package);
+  void (*format)(void* const formatter, const data_package_t* const package);
   
   /**
    * @brief pointer to the function which will be used to write bytes
@@ -29,7 +29,7 @@ typedef struct {
    * @param	param		a (fixed) paramter which can be set with pointer "param", e.g. the peripheral
    * @param	byte		the byte to write
    */
-  void (*write_byte)(void *param, unsigned char byte);
+  void (*write_byte)(void* const param, const unsigned char byte);
 
   void* param;			/**< parameter which will be passed to write_byte function */
 } formatter_t;
@@ -41,8 +41,8 @@ typedef struct {
  * @param	param		parameter which will be passed to write_byte function
  */
 void formatter_set_write_dest(
-    formatter_t* formatter,
-    void (*write_byte)(void *param, unsigned char byte),
-    void* param);
+    formatter_t* const formatter,
+    void (*write_byte)(void* const param, const unsigned char byte),
+    void* const param);
 
 #endif 
