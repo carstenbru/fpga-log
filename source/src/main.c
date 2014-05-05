@@ -13,6 +13,8 @@
 #include "sink/sink_uart.h"
 #include "sink/formatter/formatter_simple.h"
 
+#include "pc_native/pc_compatibility.h"
+
 sink_uart_t sink_uart;
 formatter_simple_t formatter_simple;
 
@@ -22,6 +24,8 @@ device_uart_raw_t uart_raw;
  * @brief main function
  */
 void main() {
+	pc_native_init();
+
 	device_uart_raw_init(&uart_raw, UART_LIGHT_PC, 1);
 
 	formatter_simple_init(&formatter_simple);
