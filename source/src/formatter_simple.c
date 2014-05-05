@@ -9,12 +9,10 @@
 #include "sink/formatter/formatter_simple.h"
 
 void formatter_simple_init(formatter_simple_t* const formatter) {
-	formatter_t* f = (formatter_t*) formatter;
-
-	/**
+	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
 	 */
-	f->format = formatter_simple_format;
+	formatter->super.format = formatter_simple_format;
 
 	formatter->count = 0;
 }

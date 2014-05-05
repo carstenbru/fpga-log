@@ -30,7 +30,6 @@ void main() {
 	device_uart_raw_set_data_out(&uart_raw, &sink_uart.data_in);  //connect the data_out of uart_raw device to the uart sink
 
 	while (1) {
-		device_uart_raw_update(&uart_raw);
-		sink_uart_update(&sink_uart);
+		datastreams_update();
 	}
 }

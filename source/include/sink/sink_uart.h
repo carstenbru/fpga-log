@@ -10,6 +10,7 @@
 
 #include <uart.h>
 
+#include "datastreams.h"
 #include "data_port.h"
 #include "control_port.h"
 #include "sink/formatter/formatter.h"
@@ -18,6 +19,8 @@
  * @brief struct describing a uart sink
  */
 typedef struct {
+	datastream_object_t super;					/**< super-"class": datastream_object_t*/
+
 	data_port_t data_in; 								/**< data port, this can be set at a data output to direct the data stream to this device */
 	const control_port_t* control_out; 	/**< control output port */
 	formatter_t* formatter;						  /**< output log formatter */
@@ -51,9 +54,9 @@ void sink_uart_set_control_out(sink_uart_t* const sink_uart,
  * 
  * everything that does not need to be done immediately in an interrupt is done here, e.g. sending control messages to the cotrol_out port
  * 
- * @param	sink_uart	pointer to the uart sink
+ * @param	_sink_uart	pointer to the uart sink
  */
-void sink_uart_update(sink_uart_t* const sink_uart);
+void sink_uart_update(void* const _sink_uart);
 
 /**
  * @brief incoming data function of the uart sink

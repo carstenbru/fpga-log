@@ -9,6 +9,12 @@
 
 void device_uart_raw_init(device_uart_raw_t* const uart_raw,
 		uart_light_regs_t* const uart_light, const int id) {
+	datastream_object_init(&uart_raw->super); //call parents init function
+	/*
+	 * set method pointer(s) of super-"class" to sub-class function(s)
+	 */
+	uart_raw->super.update = device_uart_raw_update;
+
 	uart_raw->data_out = &data_port_dummy;
 
 	uart_raw->control_in = control_port_dummy;
@@ -23,7 +29,9 @@ void device_uart_raw_set_data_out(device_uart_raw_t* const uart_raw,
 	uart_raw->data_out = data_in;
 }
 
-void device_uart_raw_update(device_uart_raw_t* const uart_raw) {
+void device_uart_raw_update(void* const _uart_raw) {
+	device_uart_raw_t* uart_raw = (device_uart_raw_t*) _uart_raw;
+
 	unsigned char byte;
 	if (uart_light_receive_nb(uart_raw->uart_light, &byte) == UART_OK) {
 		data_package_t package = { uart_raw->id, DATA_TYPE_BYTE, &byte };

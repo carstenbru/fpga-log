@@ -10,6 +10,7 @@
 
 #include <uart.h>
 
+#include "datastreams.h"
 #include "data_port.h"
 #include "control_port.h"
 
@@ -17,6 +18,8 @@
  * @brief struct describing a uart raw device 
  */
 typedef struct {
+	datastream_object_t super;			/**< super-"class": datastream_object_t*/
+
 	const data_port_t* data_out; 		/**< data output destination */
 	control_port_t control_in; 			/**< control port, this can be set at a control output to direct the control stream to this device */
 
@@ -50,8 +53,8 @@ void device_uart_raw_set_data_out(device_uart_raw_t* const uart_raw,
  * 
  * everything that does not need to be done immediately in an interrupt is done here, e.g. sending data to the data_out port
  * 
- * @param	uart_raw	pointer to the uart raw device
+ * @param	_uart_raw		pointer to the uart raw device
  */
-void device_uart_raw_update(device_uart_raw_t* const uart_raw);
+void device_uart_raw_update(void* const _uart_raw);
 
 #endif 
