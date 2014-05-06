@@ -5,17 +5,17 @@
     <node id="TARGET">
         <attribute id="hierarchy_prefix" xml:space="preserve"/>
         <attribute id="jtagid" xml:space="preserve">1</attribute>
-        <attribute id="preset" xml:space="preserve">papilio-500k</attribute>
+        <attribute id="preset" xml:space="preserve">papilio-pro</attribute>
         <node id="DEVICE_DESC">
             <attribute id="bitgen" xml:space="preserve">-m</attribute>
-            <attribute id="fpga_device" xml:space="preserve">XC3S500E-VQ100-4</attribute>
-            <attribute id="map" xml:space="preserve">-cm speed -timing -p XC3S500E-VQ100-4 -logic_opt on -pr b -register_duplication -xe n -ol high</attribute>
-            <attribute id="netgen" xml:space="preserve">-s 4</attribute>
+            <attribute id="fpga_device" xml:space="preserve">XC6SLX9-2TQG144</attribute>
+            <attribute id="map" xml:space="preserve">-timing -p XC6SLX9-2TQG144 -logic_opt on -pr b -register_duplication -xe n -ol high</attribute>
+            <attribute id="netgen" xml:space="preserve">-s 3</attribute>
             <attribute id="par" xml:space="preserve">-ol high -xe n</attribute>
             <attribute id="program" xml:space="preserve"/>
-            <attribute id="synthesis" xml:space="preserve">-p XC3S500E-VQ100-4 -ifmt mixed -ofmt NGC -opt_mode Speed -opt_level 1 -iuc NO -keep_hierarchy YES -glob_opt ALLClockNets -rtlview YES -read_cores YES -write_timing_constraints NO -cross_clock_analysis NO -hierarchy_separator _ -bus_delimiter [] -case maintain -slice_utilization_ratio 100 -fsm_extract YES -fsm_encoding Auto -fsm_style lut -ram_extract Yes -ram_style Auto -rom_extract Yes -rom_style Auto -shreg_extract YES -resource_sharing YES -mult_style auto -iobuf YES -max_fanout 500 -bufg 8 -register_duplication YES -equivalent_register_removal YES -register_balancing No -optimize_primitives No -iob auto -slice_utilization_ratio_maxmargin 5</attribute>
+            <attribute id="synthesis" xml:space="preserve">-p XC6SLX9-2TQG144 -ifmt mixed -ofmt NGC -opt_mode Speed -opt_level 1 -iuc NO -keep_hierarchy YES -glob_opt ALLClockNets -rtlview YES -read_cores YES -write_timing_constraints NO -cross_clock_analysis NO -hierarchy_separator _ -bus_delimiter [] -case maintain -slice_utilization_ratio 100 -fsm_extract YES -fsm_encoding Auto -fsm_style lut -ram_extract Yes -ram_style Auto -rom_extract Yes -rom_style Auto -shreg_extract YES -resource_sharing YES -mult_style auto -iobuf YES -max_fanout 500 -bufg 8 -register_duplication YES -equivalent_register_removal YES -register_balancing No -optimize_primitives No -iob auto -slice_utilization_ratio_maxmargin 5</attribute>
             <attribute id="toolchain" xml:space="preserve">xilinx</attribute>
-            <attribute id="translate" xml:space="preserve">-nt on -p XC3S500E-VQ100-4</attribute>
+            <attribute id="translate" xml:space="preserve">-nt on -p XC6SLX9-2TQG144</attribute>
         </node>
     </node>
     <top_module id="TOP_MODULE">
@@ -507,6 +507,10 @@
                 <port id="#PORT.leds_lowactiv">
                     <attribute id="name" xml:space="preserve">leds_lowactiv</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#3166">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P112</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
                 </port>
                 <port id="#PORT.locked">
                     <attribute id="name" xml:space="preserve">locked</attribute>
@@ -574,6 +578,23 @@
                 </node>
             </processor>
         </processor_module>
+        <fpga_pin id="#PIN.P112">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">LED</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P112</attribute>
+            <attribute id="name" xml:space="preserve">LED_LED1</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#3166">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9F94/#PORT.leds_lowactiv</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
         <fpga_pin id="#PIN.P18">
             <attribute id="clock_freq" xml:space="preserve">0</attribute>
             <attribute id="direction" xml:space="preserve">INPUT</attribute>
@@ -581,7 +602,7 @@
             <attribute id="group" xml:space="preserve">PORTA</attribute>
             <attribute id="inverted" xml:space="preserve">0</attribute>
             <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
-            <attribute id="loc" xml:space="preserve">P18</attribute>
+            <attribute id="loc" xml:space="preserve">P48</attribute>
             <attribute id="name" xml:space="preserve">PORTA_A00</attribute>
             <attribute id="slew_rate" xml:space="preserve">-</attribute>
             <attribute id="termination" xml:space="preserve">-</attribute>
@@ -593,12 +614,12 @@
         </fpga_pin>
         <fpga_pin id="#PIN.P23">
             <attribute id="clock_freq" xml:space="preserve">0</attribute>
-            <attribute id="direction" xml:space="preserve">INPUT</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
             <attribute id="drive_strength" xml:space="preserve">-</attribute>
             <attribute id="group" xml:space="preserve">PORTA</attribute>
             <attribute id="inverted" xml:space="preserve">0</attribute>
             <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
-            <attribute id="loc" xml:space="preserve">P23</attribute>
+            <attribute id="loc" xml:space="preserve">P51</attribute>
             <attribute id="name" xml:space="preserve">PORTA_A01</attribute>
             <attribute id="slew_rate" xml:space="preserve">-</attribute>
             <attribute id="termination" xml:space="preserve">-</attribute>
@@ -615,7 +636,7 @@
             <attribute id="group" xml:space="preserve">PORTA</attribute>
             <attribute id="inverted" xml:space="preserve">0</attribute>
             <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
-            <attribute id="loc" xml:space="preserve">P62</attribute>
+            <attribute id="loc" xml:space="preserve">P81</attribute>
             <attribute id="name" xml:space="preserve">PORTA_A09</attribute>
             <attribute id="slew_rate" xml:space="preserve">-</attribute>
             <attribute id="termination" xml:space="preserve">PULLUP</attribute>
@@ -632,7 +653,7 @@
             <attribute id="group" xml:space="preserve">USBUART</attribute>
             <attribute id="inverted" xml:space="preserve">0</attribute>
             <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
-            <attribute id="loc" xml:space="preserve">P88</attribute>
+            <attribute id="loc" xml:space="preserve">P101</attribute>
             <attribute id="name" xml:space="preserve">USBUART_RX</attribute>
             <attribute id="slew_rate" xml:space="preserve">-</attribute>
             <attribute id="termination" xml:space="preserve">-</attribute>
@@ -649,7 +670,7 @@
             <attribute id="group" xml:space="preserve">CLK</attribute>
             <attribute id="inverted" xml:space="preserve">0</attribute>
             <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
-            <attribute id="loc" xml:space="preserve">P89</attribute>
+            <attribute id="loc" xml:space="preserve">P94</attribute>
             <attribute id="name" xml:space="preserve">CLK_32</attribute>
             <attribute id="slew_rate" xml:space="preserve">-</attribute>
             <attribute id="termination" xml:space="preserve">-</attribute>
@@ -666,7 +687,7 @@
             <attribute id="group" xml:space="preserve">USBUART</attribute>
             <attribute id="inverted" xml:space="preserve">0</attribute>
             <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
-            <attribute id="loc" xml:space="preserve">P90</attribute>
+            <attribute id="loc" xml:space="preserve">P105</attribute>
             <attribute id="name" xml:space="preserve">USBUART_TX</attribute>
             <attribute id="slew_rate" xml:space="preserve">-</attribute>
             <attribute id="termination" xml:space="preserve">-</attribute>

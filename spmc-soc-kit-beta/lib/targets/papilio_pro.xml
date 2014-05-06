@@ -5,8 +5,8 @@
 	</description>
 	<device name="XC6SLX9-2TQG144" jtagid="1" />
 	<iopins name="USBUART">
-		<pin name="TX" fpgapin="P101" type="output"/>
-		<pin name="RX" fpgapin="P105" type="input"/>
+		<pin name="TX" fpgapin="P105" type="output"/>
+		<pin name="RX" fpgapin="P101" type="input"/>
 	</iopins>
 	<iopins name="CLK" type="input">
 		<pin name="32" fpgapin="P94" freq="32000000" />
