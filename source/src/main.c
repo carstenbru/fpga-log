@@ -13,6 +13,7 @@
 #include "sink/sink_uart.h"
 #include "sink/formatter/formatter_simple.h"
 #include "dm/dm_splitter_data.h"
+#include "dm/dm_splitter_control.h"
 
 #include "pc_native/pc_compatibility.h"
 

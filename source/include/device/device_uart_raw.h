@@ -57,4 +57,11 @@ void device_uart_raw_set_data_out(device_uart_raw_t* const uart_raw,
  */
 void device_uart_raw_update(void* const _uart_raw);
 
+/**
+ * @brief measure function of uart raw
+ *
+ * @param	parent		the uart_raw device
+ */
+void device_uart_raw_measure(void* const uart_raw);
+
 #endif 
