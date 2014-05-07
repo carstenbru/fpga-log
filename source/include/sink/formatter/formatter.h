@@ -12,6 +12,8 @@
 
 /** 
  * @brief struct defining a formatter with its state and functions
+ *
+ * This should be used as super-"class" for formatter implementations.
  */
 typedef struct {
 	/**

@@ -44,7 +44,7 @@ void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter,
  * @brief connects the control output port of a uart sink to a given destination
  * 
  * @param	sink_uart		pointer to the uart sink
- * @param	control_in	the new data destination
+ * @param	control_in	the new control destination
  */
 void sink_uart_set_control_out(sink_uart_t* const sink_uart,
 		const control_port_t* const control_in);

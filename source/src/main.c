@@ -12,6 +12,7 @@
 #include "device/device_uart_raw.h"
 #include "sink/sink_uart.h"
 #include "sink/formatter/formatter_simple.h"
+#include "dm/dm_splitter_data.h"
 
 #include "pc_native/pc_compatibility.h"
 
@@ -19,6 +20,8 @@ sink_uart_t sink_uart;
 formatter_simple_t formatter_simple;
 
 device_uart_raw_t uart_raw;
+
+dm_splitter_data_t splitter_data;
 
 /**
  * @brief main function
@@ -31,7 +34,13 @@ void main() {
 	formatter_simple_init(&formatter_simple);
 	sink_uart_init(&sink_uart, (formatter_t*) &formatter_simple, UART_LIGHT_PC);
 
-	device_uart_raw_set_data_out(&uart_raw, &sink_uart.data_in);  //connect the data_out of uart_raw device to the uart sink
+	dm_splitter_data_init(&splitter_data);
+
+	dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
+	dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
+	dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
+	dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
+	device_uart_raw_set_data_out(&uart_raw, &splitter_data.data_in);  //connect the data_out of uart_raw device to the uart sink
 
 	while (1) {
 		datastreams_update();

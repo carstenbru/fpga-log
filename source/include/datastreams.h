@@ -10,6 +10,12 @@
 
 #define MAX_DATASTREAM_OBJECTS 64
 
+/**
+ * @brief struct describing an object in the datastreams
+ *
+ * This is a super-"class" for objects in the datastream
+ * including sinks,devices and other data stream modules (short: dm).
+ */
 typedef struct {
 	/**
 	 * @brief update function of the datastream object
