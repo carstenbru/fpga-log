@@ -26,7 +26,7 @@ typedef struct {
 	 * @param package						pointer to the incoming package
 	 * @return									1 if the condition is true, otherwise 0
 	 */
-	int (*is_fullfilled)(void* const trigger_condition, const data_package_t* const package);
+	int (*is_fulfilled)(void* const trigger_condition, const data_package_t* const package);
 } datastream_condition_t;
 
 /**

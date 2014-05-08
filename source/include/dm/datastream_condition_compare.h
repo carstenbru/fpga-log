@@ -15,7 +15,7 @@
 #include "dm/datastream_condition.h"
 
 /**
- * @brief enumeration of the different data types which can be in a data package
+ * @brief enumeration of the different compare modes
  */
 typedef enum {
 	COMPARE_MODE_VALUE, 		/**< the measured value is compared with the reference value */

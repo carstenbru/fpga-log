@@ -44,10 +44,10 @@ void datastream_condition_compare_init(
 		int (*compare_func)(const int val, const int ref), const int mode,
 		const int value) {
 	if (mode == COMPARE_MODE_SOURCE_ID) {
-		cond->super.is_fullfilled =
+		cond->super.is_fulfilled =
 				datastream_condition_compare_is_fullfilled_source_id;
 	} else {
-		cond->super.is_fullfilled =
+		cond->super.is_fulfilled =
 				datastream_condition_compare_is_fullfilled_value;
 	}
 

@@ -35,7 +35,7 @@ void dm_trigger_new_data(void* const _trigger,
 	dm_trigger_t* trigger = (dm_trigger_t*) _trigger;
 
 	datastream_condition_t* const cond = trigger->condition;
-	if (cond->is_fullfilled(cond, package)) {
+	if (cond->is_fulfilled(cond, package)) {
 		const control_port_t* out = trigger->control_out;
 		out->measure(out->parent);
 	}

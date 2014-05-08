@@ -17,6 +17,7 @@
 #include "dm/dm_splitter_control.h"
 #include "dm/dm_trigger.h"
 #include "dm/datastream_condition_compare.h"
+#include "dm/dm_filter.h"
 
 #include "pc_native/pc_compatibility.h"
 
