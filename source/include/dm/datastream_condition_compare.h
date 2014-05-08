@@ -4,6 +4,7 @@
  *
  * This can be used for example as trigger or filter conditions.
  * The new value is compared with a reference value.
+ * The condition can also be set on the source id instead the measured value.
  *
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
@@ -12,6 +13,14 @@
 #define DATASTREAM_CONDITION_COMPARE_H_
 
 #include "dm/datastream_condition.h"
+
+/**
+ * @brief enumeration of the different data types which can be in a data package
+ */
+typedef enum {
+	COMPARE_MODE_VALUE, 		/**< the measured value is compared with the reference value */
+	COMPARE_MODE_SOURCE_ID 	/**< the source id is compared with the reference value */
+} datastream_condition_compare_mode;
 
 /**
  * @brief struct defining a compare condition
@@ -35,11 +44,13 @@ typedef struct {
  *
  * @param cond			pointer to the compare condition to initialize
  * @param comp_func	compare function which compares new value with the reference value
+ * @param mode			mode of the compare condition, should be a value of enumeration @ref datastream_condition_compare_mode
  * @param value			new compare value
  */
 void datastream_condition_compare_init(
 		datastream_condition_compare_t* const cond,
-		int (*compare_func)(const int val, const int ref), const int value);
+		int (*compare_func)(const int val, const int ref), const int mode,
+		const int value);
 
 /**
  * @brief sets a new compare value of the condition

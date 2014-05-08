@@ -9,19 +9,47 @@
  */
 
 #include "dm/datastream_condition_compare.h"
+#include "data_port.h"
 
-int datastream_condition_compare_is_fullfilled(void* const trigger_condition,
-		const data_package_t* const package) {
+int datastream_condition_compare_is_fullfilled_value(
+		void* const trigger_condition, const data_package_t* const package) {
 	datastream_condition_compare_t* cond =
 			(datastream_condition_compare_t*) trigger_condition;
 
-	return cond->compare_func(*((int*) package->data), cond->compare_value);
+	int val = 0;
+	switch (package->type) {
+	case DATA_TYPE_INT:
+		val = *((int*) package->data);
+		break;
+	case DATA_TYPE_BYTE:
+		val = *((unsigned char*) package->data);
+		break;
+	default:
+		break;  //TODO some error when unsupported data in stream
+	}
+
+	return cond->compare_func(val, cond->compare_value);
+}
+
+int datastream_condition_compare_is_fullfilled_source_id(
+		void* const trigger_condition, const data_package_t* const package) {
+	datastream_condition_compare_t* cond =
+			(datastream_condition_compare_t*) trigger_condition;
+
+	return cond->compare_func(package->source_id, cond->compare_value);
 }
 
 void datastream_condition_compare_init(
 		datastream_condition_compare_t* const cond,
-		int (*compare_func)(const int val, const int ref), const int value) {
-	cond->super.is_fullfilled = datastream_condition_compare_is_fullfilled;
+		int (*compare_func)(const int val, const int ref), const int mode,
+		const int value) {
+	if (mode == COMPARE_MODE_SOURCE_ID) {
+		cond->super.is_fullfilled =
+				datastream_condition_compare_is_fullfilled_source_id;
+	} else {
+		cond->super.is_fullfilled =
+				datastream_condition_compare_is_fullfilled_value;
+	}
 
 	cond->compare_func = compare_func;
 	cond->compare_value = value;

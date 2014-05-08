@@ -53,8 +53,8 @@ void main() {
 	dm_trigger_set_control_out(&trigger, &uart_raw.control_in);
 	dm_splitter_data_add_data_out(&splitter_data, &trigger.data_in);
 
-	datastream_condition_compare_init(&cond, equal, 66);
-	dm_trigger_set_condition(&trigger, (datastream_condition_t*)&cond);
+	datastream_condition_compare_init(&cond, equal, COMPARE_MODE_VALUE, 66);
+	dm_trigger_set_condition(&trigger, (datastream_condition_t*) &cond);
 
 	while (1) {
 		datastreams_update();
