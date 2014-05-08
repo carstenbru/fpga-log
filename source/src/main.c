@@ -16,6 +16,7 @@
 #include "dm/dm_splitter_data.h"
 #include "dm/dm_splitter_control.h"
 #include "dm/dm_trigger.h"
+#include "dm/datastream_condition_compare.h"
 
 #include "pc_native/pc_compatibility.h"
 
@@ -26,6 +27,8 @@ device_uart_raw_t uart_raw;
 
 dm_splitter_data_t splitter_data;
 dm_trigger_t trigger;
+
+datastream_condition_compare_t cond;
 
 /**
  * @brief main function
@@ -49,6 +52,9 @@ void main() {
 	dm_trigger_init(&trigger);
 	dm_trigger_set_control_out(&trigger, &uart_raw.control_in);
 	dm_splitter_data_add_data_out(&splitter_data, &trigger.data_in);
+
+	datastream_condition_compare_init(&cond, equal, 66);
+	dm_trigger_set_condition(&trigger, (datastream_condition_t*)&cond);
 
 	while (1) {
 		datastreams_update();

@@ -14,7 +14,7 @@
  * @brief struct defining a simple formatter which only outputs a message count and the value
  */
 typedef struct {
-	formatter_t super; 	/**< super-"class": formatter_t*/
+	formatter_t super; 	/**< super-"class": formatter_t */
 
 	int count; 					/**< message counter */
 } formatter_simple_t;

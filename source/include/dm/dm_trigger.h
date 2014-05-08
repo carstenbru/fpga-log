@@ -28,7 +28,9 @@ typedef struct {
 /**
  * @brief datastream trigger init function
  *
- * initializes the trigger, should be called before using the trigger
+ * Initializes the trigger, should be called before using the trigger.
+ * By default the trigger fires on every incoming package. This can be changed by setting
+ * a different condition with @ref dm_trigger_set_condition function.
  *
  * @param	trigger		pointer to the datastream trigger
  */
@@ -42,6 +44,15 @@ void dm_trigger_init(dm_trigger_t* const trigger);
  */
 void dm_trigger_set_control_out(dm_trigger_t* const trigger,
 		const control_port_t* const control_in);
+
+/**
+ * @brief sets a new trigger condition
+ *
+ * @param trigger		pointer to the trigger
+ * @param condition	the new trigger condition
+ */
+void dm_trigger_set_condition(dm_trigger_t* const trigger,
+		datastream_condition_t* const condition);
 
 /**
  * @brief incoming data function of the trigger

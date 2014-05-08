@@ -25,6 +25,11 @@ void dm_trigger_set_control_out(dm_trigger_t* const trigger,
 	trigger->control_out = control_in;
 }
 
+void dm_trigger_set_condition(dm_trigger_t* const trigger,
+		datastream_condition_t* const condition) {
+	trigger->condition = condition;
+}
+
 void dm_trigger_new_data(void* const _trigger,
 		const data_package_t* const package) {
 	dm_trigger_t* trigger = (dm_trigger_t*) _trigger;

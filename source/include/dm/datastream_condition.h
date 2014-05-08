@@ -1,6 +1,6 @@
 /**
  * @file datastream_condition.h
- * @brief datastream condition checks
+ * @brief datastream condition check
  *
  * This can be used for example as trigger or filter conditions.
  * Use this as super-"class" for more complex conditions.
