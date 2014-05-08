@@ -18,6 +18,7 @@
 #include "dm/dm_trigger.h"
 #include "dm/datastream_condition_compare.h"
 #include "dm/dm_filter.h"
+#include "dm/dm_timer.h"
 
 #include "pc_native/pc_compatibility.h"
 
@@ -30,6 +31,8 @@ dm_splitter_data_t splitter_data;
 dm_trigger_t trigger;
 
 datastream_condition_compare_t cond;
+
+dm_timer_t timer;
 
 /**
  * @brief main function
@@ -56,6 +59,9 @@ void main() {
 
 	datastream_condition_compare_init(&cond, equal, COMPARE_MODE_VALUE, 66);
 	dm_trigger_set_condition(&trigger, (datastream_condition_t*) &cond);
+
+	dm_timer_init(&timer, TIMER_0, COMPARE_0);
+	dm_timer_set_control_out(&timer, &uart_raw.control_in);
 
 	while (1) {
 		datastreams_update();
