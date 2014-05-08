@@ -9,11 +9,13 @@
 #include <system/peripherals.h>
 #include <uart.h>
 
+#include "datastream_object.h"
 #include "device/device_uart_raw.h"
 #include "sink/sink_uart.h"
 #include "sink/formatter/formatter_simple.h"
 #include "dm/dm_splitter_data.h"
 #include "dm/dm_splitter_control.h"
+#include "dm/dm_trigger.h"
 
 #include "pc_native/pc_compatibility.h"
 
@@ -23,6 +25,7 @@ formatter_simple_t formatter_simple;
 device_uart_raw_t uart_raw;
 
 dm_splitter_data_t splitter_data;
+dm_trigger_t trigger;
 
 /**
  * @brief main function
@@ -38,10 +41,14 @@ void main() {
 	dm_splitter_data_init(&splitter_data);
 
 	dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
-	dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
-	dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
-	dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
+	//dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
+	//dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
+	//dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
 	device_uart_raw_set_data_out(&uart_raw, &splitter_data.data_in);  //connect the data_out of uart_raw device to the uart sink
+
+	dm_trigger_init(&trigger);
+	dm_trigger_set_control_out(&trigger, &uart_raw.control_in);
+	dm_splitter_data_add_data_out(&splitter_data, &trigger.data_in);
 
 	while (1) {
 		datastreams_update();

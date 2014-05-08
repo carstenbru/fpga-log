@@ -1,11 +1,11 @@
 /**
- * @file datastreams.c
+ * @file datastream_object.c
  * @brief datastream_object as super-class for sinks/devices, update function to update all datastream_objects
  *
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "datastreams.h"
+#include "datastream_object.h"
 
 int datastream_object_count = 0;
 datastream_object_t* datastream_object_list[MAX_DATASTREAM_OBJECTS];

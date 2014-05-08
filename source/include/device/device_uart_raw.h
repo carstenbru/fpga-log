@@ -10,7 +10,7 @@
 
 #include <uart.h>
 
-#include "datastreams.h"
+#include "datastream_object.h"
 #include "data_port.h"
 #include "control_port.h"
 

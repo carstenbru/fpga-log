@@ -17,7 +17,6 @@
  */
 #define DM_SPILTTER_DATA_MAX_TARGETS 8
 
-#include "datastreams.h"
 #include "data_port.h"
 
 /**
