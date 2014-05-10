@@ -7,6 +7,22 @@
 
 #include "device/device_uart_raw.h"
 
+/**
+ * @brief uart raw update function
+ *
+ * everything that does not need to be done immediately in an interrupt is done here, e.g. sending data to the data_out port
+ *
+ * @param	_uart_raw		pointer to the uart raw device
+ */
+static void device_uart_raw_update(void* const _uart_raw);
+
+/**
+ * @brief measure function of uart raw
+ *
+ * @param	parent		the uart_raw device
+ */
+static void device_uart_raw_measure(void* const uart_raw);
+
 void device_uart_raw_init(device_uart_raw_t* const uart_raw,
 		uart_light_regs_t* const uart_light, const int id) {
 	datastream_object_init(&uart_raw->super);  //call parents init function
@@ -30,7 +46,7 @@ void device_uart_raw_set_data_out(device_uart_raw_t* const uart_raw,
 	uart_raw->data_out = data_in;
 }
 
-void device_uart_raw_update(void* const _uart_raw) {
+static void device_uart_raw_update(void* const _uart_raw) {
 	device_uart_raw_t* uart_raw = (device_uart_raw_t*) _uart_raw;
 
 	unsigned char byte;
@@ -40,6 +56,6 @@ void device_uart_raw_update(void* const _uart_raw) {
 	}
 }
 
-void device_uart_raw_measure(void* const uart_raw) {  //TODO remove
+static void device_uart_raw_measure(void* const uart_raw) {  //TODO remove
 	uart_light_send(((device_uart_raw_t*)uart_raw)->uart_light, 'm');
 }

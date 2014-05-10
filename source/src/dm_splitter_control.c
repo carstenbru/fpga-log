@@ -9,6 +9,13 @@
 
 #include "dm/dm_splitter_control.h"
 
+/**
+ * @brief measure function of the control-stream splitter
+ *
+ * @param	_splitter	pointer to the splitter
+ */
+static void dm_splitter_control_measure(void* const _splitter);
+
 void dm_splitter_control_init(dm_splitter_control_t* const splitter) {
 	int i;
 	for (i = 0; i < DM_SPILTTER_CONTROL_MAX_TARGETS; i++) {
@@ -31,7 +38,7 @@ int dm_splitter_control_add_control_out(dm_splitter_control_t* const splitter,
 		return 0;
 }
 
-void dm_splitter_control_measure(void* const _splitter) {
+static void dm_splitter_control_measure(void* const _splitter) {
 	dm_splitter_control_t* splitter = (dm_splitter_control_t*) _splitter;
 
 	int i;

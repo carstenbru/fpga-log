@@ -54,13 +54,5 @@ void dm_trigger_set_control_out(dm_trigger_t* const trigger,
 void dm_trigger_set_condition(dm_trigger_t* const trigger,
 		datastream_condition_t* const condition);
 
-/**
- * @brief incoming data function of the trigger
- *
- * @param	_trigger	pointer to the trigger
- * @param	package		the incoming data package
- */
-void dm_trigger_new_data(void* const _trigger,
-		const data_package_t* const package);
 
 #endif

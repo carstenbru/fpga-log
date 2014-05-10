@@ -16,11 +16,11 @@
 spmc_timer_t sim_timers[TIMER_COUNT];
 
 void timer_enable(timer_regs_t* const timer) {
-	gettimeofday(&(sim_timers[(int) timer].start), NULL);
+	gettimeofday(&(sim_timers[(int_ptr) timer].start), NULL);
 }
 
 void timer_set_interval(timer_regs_t* const timer, const unsigned int prescaler,
 		const unsigned int limit) {
-	sim_timers[(int) timer].prescaler = prescaler;
-	sim_timers[(int) timer].limit = limit;
+	sim_timers[(int_ptr) timer].prescaler = prescaler;
+	sim_timers[(int_ptr) timer].limit = limit;
 }

@@ -27,6 +27,7 @@
  */
 #define TIMER_COUNT 1
 #define COMPARE_COUNT 1
+
 /*
  * Timer and timer units numbers
  *

@@ -17,9 +17,7 @@ spmc_compare_t sim_compares[COMPARE_COUNT];
 
 void compare_init_mode_set(compare_regs_t* const compare,
 		const unsigned int comp_val) {
-	//compare->CMP_DAT = comp_val;
-	//compare->CMP_CTRL |= COMPARE_EN | (COMPARE_MODE * 1);
-	sim_compares[(int) compare].comp_val = comp_val;
+	sim_compares[(int_ptr) compare].comp_val = comp_val;
 }
 
 /**
@@ -34,8 +32,8 @@ long timediff_ms(struct timeval* a, struct timeval* b) {
 }
 
 int compare_check_and_reset_flag(compare_regs_t* const compare) {
-	spmc_compare_t* comp = &sim_compares[(int) compare];
-	spmc_timer_t* tim = &sim_timers[(int) compare];
+	spmc_compare_t* comp = &sim_compares[(int_ptr) compare];
+	spmc_timer_t* tim = &sim_timers[(int_ptr) compare];
 
 	struct timeval now;
 	gettimeofday(&now, NULL);

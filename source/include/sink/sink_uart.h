@@ -49,22 +49,5 @@ void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter,
 void sink_uart_set_control_out(sink_uart_t* const sink_uart,
 		const control_port_t* const control_in);
 
-/**
- * @brief uart sink update function
- * 
- * everything that does not need to be done immediately in an interrupt is done here, e.g. sending control messages to the cotrol_out port
- * 
- * @param	_sink_uart	pointer to the uart sink
- */
-void sink_uart_update(void* const _sink_uart);
-
-/**
- * @brief incoming data function of the uart sink
- *
- * @param	sink_uart	pointer to the uart sink
- * @param	package		the incoming data package
- */
-void sink_uart_new_data(void* const sink_uart,
-		const data_package_t* const package);
 
 #endif 

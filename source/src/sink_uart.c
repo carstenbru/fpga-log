@@ -7,9 +7,27 @@
 
 #include "sink/sink_uart.h"
 
+/**
+ * @brief uart sink update function
+ *
+ * everything that does not need to be done immediately in an interrupt is done here, e.g. sending control messages to the cotrol_out port
+ *
+ * @param	_sink_uart	pointer to the uart sink
+ */
+static void sink_uart_update(void* const _sink_uart);
+
+/**
+ * @brief incoming data function of the uart sink
+ *
+ * @param	sink_uart	pointer to the uart sink
+ * @param	package		the incoming data package
+ */
+static void sink_uart_new_data(void* const sink_uart,
+		const data_package_t* const package);
+
 void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter,
 		uart_light_regs_t* const uart_light) {
-	datastream_object_init(&sink_uart->super); //call parents init function
+	datastream_object_init(&sink_uart->super);  //call parents init function
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
 	 */
@@ -34,14 +52,14 @@ void sink_uart_set_control_out(sink_uart_t* const sink_uart,
 	sink_uart->control_out = control_in;
 }
 
-void sink_uart_update(void* const _sink_uart) {
+static void sink_uart_update(void* const _sink_uart) {
 	//nothing to do here for now
 
 	//TODO protocol for pc to invoke control functions of control_out
 	//TODO multiple control_out's
 }
 
-void sink_uart_new_data(void* const sink_uart,
+static void sink_uart_new_data(void* const sink_uart,
 		const data_package_t* const package) {
 	sink_uart_t* sink = (sink_uart_t*) sink_uart;
 

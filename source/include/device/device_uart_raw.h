@@ -48,20 +48,4 @@ void device_uart_raw_init(device_uart_raw_t* const uart_raw,
 void device_uart_raw_set_data_out(device_uart_raw_t* const uart_raw,
 		const data_port_t* const data_in);
 
-/**
- * @brief uart raw update function
- * 
- * everything that does not need to be done immediately in an interrupt is done here, e.g. sending data to the data_out port
- * 
- * @param	_uart_raw		pointer to the uart raw device
- */
-void device_uart_raw_update(void* const _uart_raw);
-
-/**
- * @brief measure function of uart raw
- *
- * @param	parent		the uart_raw device
- */
-void device_uart_raw_measure(void* const uart_raw);
-
 #endif 

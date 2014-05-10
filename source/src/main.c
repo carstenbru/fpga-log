@@ -39,7 +39,7 @@ dm_timer_t timer;
 /**
  * @brief main function
  */
-void main() {
+int main() {
 	sys_init();
 
 	device_uart_raw_init(&uart_raw, UART_LIGHT_PC, 1);
@@ -68,4 +68,6 @@ void main() {
 	while (1) {
 		datastreams_update();
 	}
+
+	return 0;
 }

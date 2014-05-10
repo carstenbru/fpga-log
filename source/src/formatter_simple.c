@@ -8,6 +8,15 @@
 #include <stdio.h>
 #include "sink/formatter/formatter_simple.h"
 
+/**
+ * @brief simple formatter output log format function
+ *
+ * @param	formatter	pointer to the formatter struct
+ * @param	package		the incoming package
+ */
+static void formatter_simple_format(void* const formatter,
+		const data_package_t* const package);
+
 void formatter_simple_init(formatter_simple_t* const formatter) {
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
@@ -17,7 +26,7 @@ void formatter_simple_init(formatter_simple_t* const formatter) {
 	formatter->count = 0;
 }
 
-void formatter_simple_format(void* const formatter,
+static void formatter_simple_format(void* const formatter,
 		const data_package_t* const package) {
 	formatter_t* f = (formatter_t*) formatter;
 	stdio_descr.base_adr = f->param;
@@ -25,5 +34,5 @@ void formatter_simple_format(void* const formatter,
 
 	formatter_simple_t* fs = (formatter_simple_t*) formatter;
 
-	printf("%d: %d\n\r", fs->count++, *((unsigned char*) package->data));
+	printf("%d: %d\n\r", fs->count++, (int)*((unsigned char*) package->data));
 }

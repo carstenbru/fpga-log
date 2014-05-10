@@ -49,13 +49,5 @@ void dm_splitter_data_init(dm_splitter_data_t* const splitter);
 int dm_splitter_data_add_data_out(dm_splitter_data_t* const splitter,
 		const data_port_t* const data_in);
 
-/**
- * @brief incoming data function of the datastream splitter
- *
- * @param	_splitter	pointer to the splitter
- * @param	package		the incoming data package
- */
-void dm_splitter_data_new_data(void* const _splitter,
-		const data_package_t* const package);
 
 #endif

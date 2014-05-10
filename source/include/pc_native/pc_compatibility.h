@@ -17,6 +17,8 @@
 
 #include "pc_native/peripherals.h"
 
+typedef long int_ptr;
+
 /**
  * @brief struct describing in- and out-pipes
  */
@@ -25,26 +27,38 @@ typedef struct {
 	int out; /**< out pipe */
 } file_pipe_t;
 
+/**
+ * @brief struct describing a simulated timer
+ */
 typedef struct {
-	struct timeval start;
+	struct timeval start; /**< start time of the timer */
 
-	int prescaler;
-	int limit;
+	int prescaler; /**< prescaler value */
+	int limit; /**< limit value */
 } spmc_timer_t;
 
+/**
+ * @brief struct describing a simulated compare unit
+ */
 typedef struct {
-	struct timeval last;
+	struct timeval last; /**< time of last compare check*/
 
-	int comp_val;
+	int comp_val; /**< compare value */
 } spmc_compare_t;
 
-extern compare_regs_t* TIMER_2000HZ_COMPARE;
 /**
  * @brief array of the pipes simulating SpartanMC peripherals
  */
 extern file_pipe_t pipes[PIPE_COUNT];
 
+/**
+ * @brief array of simulated timers
+ */
 extern spmc_timer_t sim_timers[TIMER_COUNT];
+
+/**
+ * @brief array of simulated compare units
+ */
 extern spmc_compare_t sim_compares[COMPARE_COUNT];
 
 #endif

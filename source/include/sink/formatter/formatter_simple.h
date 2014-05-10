@@ -26,13 +26,4 @@ typedef struct {
  */
 void formatter_simple_init(formatter_simple_t* const formatter);
 
-/**
- * @brief simple formatter output log format function
- * 
- * @param	formatter	pointer to the formatter struct
- * @param	package		the incoming package
- */
-void formatter_simple_format(void* const formatter,
-		const data_package_t* const package);
-
 #endif 

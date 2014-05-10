@@ -10,6 +10,15 @@
 
 #include "dm/dm_trigger.h"
 
+/**
+ * @brief incoming data function of the trigger
+ *
+ * @param	_trigger	pointer to the trigger
+ * @param	package		the incoming data package
+ */
+static void dm_trigger_new_data(void* const _trigger,
+		const data_package_t* const package);
+
 void dm_trigger_init(dm_trigger_t* const trigger) {
 	trigger->control_out = &control_port_dummy;
 
@@ -30,7 +39,7 @@ void dm_trigger_set_condition(dm_trigger_t* const trigger,
 	trigger->condition = condition;
 }
 
-void dm_trigger_new_data(void* const _trigger,
+static void dm_trigger_new_data(void* const _trigger,
 		const data_package_t* const package) {
 	dm_trigger_t* trigger = (dm_trigger_t*) _trigger;
 

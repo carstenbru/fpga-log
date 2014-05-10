@@ -49,11 +49,4 @@ void dm_splitter_control_init(dm_splitter_control_t* const splitter);
 int dm_splitter_control_add_control_out(dm_splitter_control_t* const splitter,
 		const control_port_t* const control_in);
 
-/**
- * @brief measure function of the control-stream splitter
- *
- * @param	_splitter	pointer to the splitter
- */
-void dm_splitter_control_measure(void* const _splitter);
-
 #endif

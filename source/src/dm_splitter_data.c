@@ -9,6 +9,15 @@
 
 #include "dm/dm_splitter_data.h"
 
+/**
+ * @brief incoming data function of the datastream splitter
+ *
+ * @param	_splitter	pointer to the splitter
+ * @param	package		the incoming data package
+ */
+static void dm_splitter_data_new_data(void* const _splitter,
+		const data_package_t* const package);
+
 void dm_splitter_data_init(dm_splitter_data_t* const splitter) {
 	int i;
 	for (i = 0; i < DM_SPILTTER_DATA_MAX_TARGETS; i++) {
@@ -31,7 +40,7 @@ int dm_splitter_data_add_data_out(dm_splitter_data_t* const splitter,
 		return 0;
 }
 
-void dm_splitter_data_new_data(void* const _splitter,
+static void dm_splitter_data_new_data(void* const _splitter,
 		const data_package_t* const package) {
 	dm_splitter_data_t* splitter = (dm_splitter_data_t*) _splitter;
 
