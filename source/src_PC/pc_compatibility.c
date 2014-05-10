@@ -5,6 +5,8 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
+#include <peripherals/compare.h>
+
 #include "pc_native/pc_compatibility.h"
 
 #include <uart.h>
@@ -13,12 +15,12 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-/**
- * @brief array of the pipes simulating SpartanMC peripherals
- */
-file_pipe pipes[PIPE_COUNT];
+file_pipe_t pipes[PIPE_COUNT];
 
 io_descr_t stdio_descr = { };
+
+compare_regs_t comp_timer_2000hz;
+compare_regs_t* TIMER_2000HZ_COMPARE = &comp_timer_2000hz;
 
 /**
  * @brief uart light recive function on PC (using pipes)
@@ -28,9 +30,9 @@ io_descr_t stdio_descr = { };
  * @return				UART_LIGHT_OK if new data was read, otherwise UART_LIGHT_NO_DATA
  */
 int uart_light_receive_nb(uart_light_regs_t *uart, unsigned char *value) {
-	return
-			read((&pipes[(int) uart])->in, value, 1) > 0 ?
-					UART_LIGHT_OK : UART_LIGHT_NO_DATA;
+	return read((&pipes[(int) uart])->in, value, 1) > 0 ?
+	UART_LIGHT_OK :
+																												UART_LIGHT_NO_DATA;
 }
 
 /**
@@ -43,7 +45,10 @@ void uart_light_send(uart_light_regs_t *uart, unsigned char value) {
 	write((&pipes[(int) uart])->out, &value, 1);
 }
 
-void pc_native_init(void) {
+/**
+ * @brief initializes the pipe peripheral simulation
+ */
+void pipes_init(void) {
 	char buffer[1024];
 
 	int i;
@@ -58,4 +63,8 @@ void pc_native_init(void) {
 		mkfifo(buffer, S_IRWXU | S_IRWXG);
 		pipes[i].out = open(buffer, O_RDWR);
 	}
+}
+
+void sys_init(void) {
+	pipes_init();
 }

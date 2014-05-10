@@ -10,27 +10,42 @@
 
 #ifdef PC_NATIVE
 
-#include "peripheral_pipes.h"
+#include <sys/time.h>
+
+#include <peripherals/compare.h>
+#include <peripherals/timer.h>
+
+#include "pc_native/peripherals.h"
 
 /**
  * @brief struct describing in- and out-pipes
  */
 typedef struct {
-	int in;		/**< in pipe */
-	int out;	/**< out pipe */
-} file_pipe;
+	int in; /**< in pipe */
+	int out; /**< out pipe */
+} file_pipe_t;
 
+typedef struct {
+	struct timeval start;
+
+	int prescaler;
+	int limit;
+} spmc_timer_t;
+
+typedef struct {
+	struct timeval last;
+
+	int comp_val;
+} spmc_compare_t;
+
+extern compare_regs_t* TIMER_2000HZ_COMPARE;
 /**
- * @brief initialization function for native PC compatibility code
+ * @brief array of the pipes simulating SpartanMC peripherals
  */
-void pc_native_init(void);
+extern file_pipe_t pipes[PIPE_COUNT];
 
-#else
-
-/**
- * @brief initialization function for native PC compatibility code
- */
-void pc_native_init(void) {}
+extern spmc_timer_t sim_timers[TIMER_COUNT];
+extern spmc_compare_t sim_compares[COMPARE_COUNT];
 
 #endif
 

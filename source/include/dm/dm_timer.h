@@ -12,6 +12,7 @@
 
 #include <peripherals/timer.h>
 #include <peripherals/compare.h>
+#include <stdint.h>
 #include "control_port.h"
 #include "datastream_object.h"
 
@@ -33,11 +34,20 @@ typedef struct {
  * initializes the timer, should be called before using the module
  *
  * @param	timer					pointer to the timer
+ * @param	interval			the interval of the timer in ms (max 25bit)
  * @param timer_regs 		pointer to a timer peripheral
  * @param compare_regs	pointer to a compare peripheral
  */
-void dm_timer_init(dm_timer_t* const timer, timer_regs_t* const timer_regs,
-		compare_regs_t* const compare_regs);
+void dm_timer_init(dm_timer_t* const timer, const uint36_t interval,
+		timer_regs_t* const timer_regs, compare_regs_t* const compare_regs);
+
+/**
+ * @brief sets the timer interval
+ *
+ * @param timer			pointer to the timer
+ * @param interval	the new interval of the timer in ms (max 25bit)
+ */
+void dm_timer_set_interval(dm_timer_t* const timer, uint36_t interval);
 
 /**
  * @brief connects the control output port of a timer to a given destination

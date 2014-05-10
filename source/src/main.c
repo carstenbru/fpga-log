@@ -9,6 +9,8 @@
 #include <system/peripherals.h>
 #include <uart.h>
 
+#include "sys_init.h"
+
 #include "datastream_object.h"
 #include "device/device_uart_raw.h"
 #include "sink/sink_uart.h"
@@ -38,7 +40,7 @@ dm_timer_t timer;
  * @brief main function
  */
 void main() {
-	pc_native_init();
+	sys_init();
 
 	device_uart_raw_init(&uart_raw, UART_LIGHT_PC, 1);
 
@@ -57,10 +59,10 @@ void main() {
 	dm_trigger_set_control_out(&trigger, &uart_raw.control_in);
 	dm_splitter_data_add_data_out(&splitter_data, &trigger.data_in);
 
-	datastream_condition_compare_init(&cond, equal, COMPARE_MODE_VALUE, 66);
+	datastream_condition_compare_init(&cond, equal, COMPARE_MODE_VALUE, 'B');
 	dm_trigger_set_condition(&trigger, (datastream_condition_t*) &cond);
 
-	dm_timer_init(&timer, TIMER_0, COMPARE_0);
+	dm_timer_init(&timer, 1000, TIMER_0, COMPARE_0);
 	dm_timer_set_control_out(&timer, &uart_raw.control_in);
 
 	while (1) {

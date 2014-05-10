@@ -9,6 +9,9 @@
 
 #include "dm/dm_timer.h"
 
+#include "peripherals/timer_funcs.h"
+#include "peripherals/compare_funcs.h"
+
 /**
  * @brief timer update function
  *
@@ -16,8 +19,8 @@
  */
 static void dm_timer_update(void* const _timer);
 
-void dm_timer_init(dm_timer_t* const timer, timer_regs_t* const timer_regs,
-		compare_regs_t* const compare_regs) {
+void dm_timer_init(dm_timer_t* const timer, const uint36_t interval,
+		timer_regs_t* const timer_regs, compare_regs_t* const compare_regs) {
 	datastream_object_init(&timer->super);  //call parents init function
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
@@ -29,11 +32,20 @@ void dm_timer_init(dm_timer_t* const timer, timer_regs_t* const timer_regs,
 	timer->timer = timer_regs;
 	timer->compare = compare_regs;
 
-	timer_regs->limit = 62500;
-	timer_regs->control |= TIMER_PRE_256 | TIMER_PRE_EN | TIMER_EN;
+	timer_enable(timer_regs);
+	dm_timer_set_interval(timer, interval);
 
-	compare_regs->CMP_DAT = 0;
-	compare_regs->CMP_CTRL |= COMPARE_EN | (COMPARE_MODE*1);
+	compare_init_mode_set(compare_regs, 0);
+}
+
+void dm_timer_set_interval(dm_timer_t* const timer, uint36_t interval) {
+	int prescale = 0;
+	while ((interval > 262144) && (prescale < 8)) {
+		prescale++;
+		interval >>= 1;
+	}
+
+	timer_set_interval(timer->timer, prescale, interval);
 }
 
 void dm_timer_set_control_out(dm_timer_t* const timer,
@@ -44,17 +56,8 @@ void dm_timer_set_control_out(dm_timer_t* const timer,
 static void dm_timer_update(void* const _timer) {
 	dm_timer_t* timer = (dm_timer_t*) _timer;
 
-	if (timer->compare->CMP_CTRL &  COMPARE_VAL_OUT) {
-		timer->compare->CMP_CTRL &=  ~COMPARE_VAL_OUT; //reset val_out bit
-
+	if (compare_check_and_reset_flag(timer->compare)) {
 		const control_port_t* out = timer->control_out;
 		out->measure(out->parent);
 	}
 }
-
-/*
- * TODO
- * -configurable interval
- * -replace timer with timer_rti? (perhaps set only flag in interrupt then)
- * -PC support
- */
