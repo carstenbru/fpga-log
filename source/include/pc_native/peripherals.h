@@ -21,6 +21,8 @@
 #define UART_LIGHT_PC 0
 #define UART_LIGHT_1  1
 
+#define SD_CARD_0	"/dev/sdd"
+
 
 /*
  * number of timer and compare peripherals
@@ -36,5 +38,9 @@
  */
 #define TIMER_0 	0
 #define COMPARE_0 0
+
+//TODO simulation model for PWM?
+#include "peripherals/pwm.h"
+extern pwm_regs_t *const PWM_0;
 
 #endif

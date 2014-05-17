@@ -9,6 +9,8 @@
 #include <system/peripherals.h>
 #include <uart.h>
 
+#include "peripheral_funcs/pwm.h"
+
 #include "sys_init.h"
 
 #include "datastream_object.h"
@@ -24,8 +26,11 @@
 
 #include "pc_native/pc_compatibility.h"
 
+#include "FatFs/ff.h"
+#include "sink/sink_sd_card.h"
+
 sink_uart_t sink_uart;
-formatter_simple_t formatter_simple;
+formatter_simple_t formatter_simple, formatter_simple2;
 
 device_uart_raw_t uart_raw;
 
@@ -36,10 +41,15 @@ datastream_condition_compare_t cond;
 
 dm_timer_t timer;
 
+//sink_sd_card_t sink_sd;
+
 /**
  * @brief main function
  */
 int main() {
+	pwm_config_channels(PWM_0, 3, 867, 17, 0);
+	pwm_config_channels(PWM_0, 2, 15, 65, 0);
+
 	sys_init();
 
 	device_uart_raw_init(&uart_raw, UART_LIGHT_PC, 1);
@@ -47,10 +57,13 @@ int main() {
 	formatter_simple_init(&formatter_simple);
 	sink_uart_init(&sink_uart, (formatter_t*) &formatter_simple, UART_LIGHT_PC);
 
+	formatter_simple_init(&formatter_simple2);
+	//sink_sd_card_init(&sink_sd, &formatter_simple2, SD_CARD_0);
+
 	dm_splitter_data_init(&splitter_data);
 
 	dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
-	//dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
+	//dm_splitter_data_add_data_out(&splitter_data, &sink_sd.data_in);
 	//dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
 	//dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
 	device_uart_raw_set_data_out(&uart_raw, &splitter_data.data_in);  //connect the data_out of uart_raw device to the uart sink

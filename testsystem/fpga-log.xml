@@ -474,7 +474,7 @@
                     <attribute id="name" xml:space="preserve">rx</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
                     <connection id="#AF7F">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P18</attribute>
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P114</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
                 </port>
@@ -482,7 +482,7 @@
                     <attribute id="name" xml:space="preserve">tx</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
                     <connection id="#BA6C">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P23</attribute>
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P115</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
                 </port>
@@ -519,7 +519,7 @@
                 </parameter>
                 <parameter id="#PARAM.PERIPHERIE_REGS">
                     <attribute id="name" xml:space="preserve">PERIPHERIE_REGS</attribute>
-                    <attribute id="value" xml:space="preserve">5</attribute>
+                    <attribute id="value" xml:space="preserve">6</attribute>
                 </parameter>
                 <parameter id="#PARAM.RAMBLOCKS">
                     <attribute id="name" xml:space="preserve">RAMBLOCKS</attribute>
@@ -564,6 +564,10 @@
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#83BC/#PORT.access_peri</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
+                    <connection id="#4CFB">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.access_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
                     <connection id="#A5CD">
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#3BC3/#PORT.access_peri</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
@@ -594,6 +598,10 @@
                     </connection>
                     <connection id="#D7C2">
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#3BC3/#PORT.addr_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                    <connection id="#EDA0">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.addr_peri</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
                     <connection id="#F103">
@@ -632,6 +640,10 @@
                 <port id="#PORT.clk_peri">
                     <attribute id="name" xml:space="preserve">clk_peri</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#3154">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.clk_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
                     <connection id="#434E">
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9C14/#PORT.clk_peri</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
@@ -660,6 +672,10 @@
                 <port id="#PORT.di_peri">
                     <attribute id="name" xml:space="preserve">di_peri</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#29C3">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.di_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">90</attribute>
+                    </connection>
                     <connection id="#8006">
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#83BC/#PORT.di_peri</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
@@ -684,6 +700,10 @@
                 <port id="#PORT.do_peri">
                     <attribute id="name" xml:space="preserve">do_peri</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#60E7">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.do_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
                     <connection id="#6198">
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#3BC3/#PORT.do_peri</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
@@ -768,6 +788,10 @@
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#3BC3/#PORT.reset</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
+                    <connection id="#D24D">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.reset</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
                     <connection id="#EA6F">
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#A8B8/#PORT.reset</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
@@ -798,6 +822,10 @@
                     </connection>
                     <connection id="#DE19">
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#A8B8/#PORT.wr_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                    <connection id="#EC61">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.wr_peri</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
                 </port>
@@ -988,6 +1016,89 @@
                     <attribute id="value" xml:space="preserve">0x1A020</attribute>
                 </node>
             </peripheral>
+            <peripheral id="#E4E3">
+                <attribute id="module_type" xml:space="preserve">pwm</attribute>
+                <attribute id="name" xml:space="preserve">pwm_0</attribute>
+                <attribute id="signature" xml:space="preserve">33EAB32DB8A0590F501819210B15D895</attribute>
+                <parameter id="#PARAM.CHANNELS">
+                    <attribute id="name" xml:space="preserve">CHANNELS</attribute>
+                    <attribute id="value" xml:space="preserve">2</attribute>
+                </parameter>
+                <port id="#PORT.access_peri">
+                    <attribute id="name" xml:space="preserve">access_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#4CFB">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9F94/#PORT.access_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.addr_peri">
+                    <attribute id="name" xml:space="preserve">addr_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#EDA0">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9F94/#PORT.addr_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.clk_peri">
+                    <attribute id="name" xml:space="preserve">clk_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#3154">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9F94/#PORT.clk_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.di_peri">
+                    <attribute id="name" xml:space="preserve">di_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#29C3">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9F94/#PORT.di_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.do_peri">
+                    <attribute id="name" xml:space="preserve">do_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#60E7">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9F94/#PORT.do_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.pwm">
+                    <attribute id="name" xml:space="preserve">pwm</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#48B2">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P48</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                    <connection id="#DEAD">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P51</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">1</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.reset">
+                    <attribute id="name" xml:space="preserve">reset</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#D24D">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9F94/#PORT.reset</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.wr_peri">
+                    <attribute id="name" xml:space="preserve">wr_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#EC61">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9F94/#PORT.wr_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <node id="BASE_ADR">
+                    <attribute id="mem_auto" xml:space="preserve">TRUE</attribute>
+                    <attribute id="mem_size" xml:space="preserve">0x4</attribute>
+                    <attribute id="mem_start" xml:space="preserve">0x28</attribute>
+                    <attribute id="value" xml:space="preserve">0x1A028</attribute>
+                </node>
+            </peripheral>
         </processor_module>
         <fpga_pin id="#PIN.P112">
             <attribute id="clock_freq" xml:space="preserve">0</attribute>
@@ -1006,9 +1117,43 @@
                 <attribute id="lsb_index" xml:space="preserve">0</attribute>
             </connection>
         </fpga_pin>
-        <fpga_pin id="#PIN.P18">
+        <fpga_pin id="#PIN.P114">
             <attribute id="clock_freq" xml:space="preserve">0</attribute>
             <attribute id="direction" xml:space="preserve">INPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTC</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P114</attribute>
+            <attribute id="name" xml:space="preserve">PORTC_C00</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#AF7F">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9C14/#PORT.rx</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P115">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTC</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P115</attribute>
+            <attribute id="name" xml:space="preserve">PORTC_C01</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#BA6C">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9C14/#PORT.tx</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P48">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
             <attribute id="drive_strength" xml:space="preserve">-</attribute>
             <attribute id="group" xml:space="preserve">PORTA</attribute>
             <attribute id="inverted" xml:space="preserve">0</attribute>
@@ -1018,12 +1163,12 @@
             <attribute id="slew_rate" xml:space="preserve">-</attribute>
             <attribute id="termination" xml:space="preserve">-</attribute>
             <attribute id="user_constraints" xml:space="preserve"/>
-            <connection id="#AF7F">
-                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9C14/#PORT.rx</attribute>
+            <connection id="#48B2">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
                 <attribute id="lsb_index" xml:space="preserve">0</attribute>
             </connection>
         </fpga_pin>
-        <fpga_pin id="#PIN.P23">
+        <fpga_pin id="#PIN.P51">
             <attribute id="clock_freq" xml:space="preserve">0</attribute>
             <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
             <attribute id="drive_strength" xml:space="preserve">-</attribute>
@@ -1035,8 +1180,8 @@
             <attribute id="slew_rate" xml:space="preserve">-</attribute>
             <attribute id="termination" xml:space="preserve">-</attribute>
             <attribute id="user_constraints" xml:space="preserve"/>
-            <connection id="#BA6C">
-                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9C14/#PORT.tx</attribute>
+            <connection id="#DEAD">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
                 <attribute id="lsb_index" xml:space="preserve">0</attribute>
             </connection>
         </fpga_pin>

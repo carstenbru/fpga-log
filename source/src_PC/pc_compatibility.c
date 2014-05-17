@@ -18,6 +18,10 @@ file_pipe_t pipes[PIPE_COUNT];
 
 io_descr_t stdio_descr = { };
 
+//TODO PWM simulation?
+pwm_regs_t pwm;
+pwm_regs_t *const PWM_0 = &pwm;
+
 /**
  * @brief initializes the pipe peripheral simulation
  */
