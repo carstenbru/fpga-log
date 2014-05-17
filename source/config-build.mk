@@ -66,7 +66,7 @@ LIB_AS_FILES:=
 CFLAGS:=-O2 -fomit-frame-pointer -fno-inline
 
 # list of defines
-DEFINES:=
+DEFINES:=PERI_CLOCK=16000000
 
 # linker script, leave empty for default
 LINKER_SCRIPT:=
