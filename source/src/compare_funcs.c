@@ -5,7 +5,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "peripherals/compare_funcs.h"
+#include "peripheral_funcs/compare_funcs.h"
 
 void compare_init_mode_set(compare_regs_t* const compare,
 		const unsigned int comp_val) {

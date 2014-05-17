@@ -9,8 +9,8 @@
 
 #include "dm/dm_timer.h"
 
-#include "peripherals/timer_funcs.h"
-#include "peripherals/compare_funcs.h"
+#include "peripheral_funcs/timer_funcs.h"
+#include "peripheral_funcs/compare_funcs.h"
 
 /**
  * @brief timer update function

@@ -5,7 +5,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "peripherals/timer_funcs.h"
+#include "peripheral_funcs/timer_funcs.h"
 
 #include <stdlib.h>
 #include <sys/time.h>

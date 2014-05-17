@@ -5,7 +5,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "peripherals/timer_funcs.h"
+#include "peripheral_funcs/timer_funcs.h"
 
 void timer_enable(timer_regs_t* const timer) {
 	timer->control |= TIMER_PRE_EN | TIMER_EN;

@@ -5,7 +5,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "peripherals/compare_funcs.h"
+#include "peripheral_funcs/compare_funcs.h"
 
 #include <sys/time.h>
 #include <stdlib.h>
