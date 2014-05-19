@@ -13,13 +13,14 @@
 /*
  * number of pipes (one per peripheral)
  */
-#define PIPE_COUNT 2
+#define PIPE_COUNT 3
 
 /*
  * pipe numbers of the different peripherals in the system
  */
 #define UART_LIGHT_PC 0
 #define UART_LIGHT_1  1
+#define PWM_0 2
 
 #define SD_CARD_0	"/dev/sdd"
 
@@ -38,9 +39,5 @@
  */
 #define TIMER_0 	0
 #define COMPARE_0 0
-
-//TODO simulation model for PWM?
-#include "peripherals/pwm.h"
-extern pwm_regs_t *const PWM_0;
 
 #endif

@@ -151,7 +151,7 @@
                 <attribute id="name" xml:space="preserve">reset</attribute>
                 <attribute id="route_external" xml:space="preserve">0</attribute>
                 <connection id="#F79C">
-                    <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P62</attribute>
+                    <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P124</attribute>
                     <attribute id="lsb_index" xml:space="preserve">0</attribute>
                 </connection>
             </port>
@@ -1022,7 +1022,7 @@
                 <attribute id="signature" xml:space="preserve">33EAB32DB8A0590F501819210B15D895</attribute>
                 <parameter id="#PARAM.CHANNELS">
                     <attribute id="name" xml:space="preserve">CHANNELS</attribute>
-                    <attribute id="value" xml:space="preserve">2</attribute>
+                    <attribute id="value" xml:space="preserve">20</attribute>
                 </parameter>
                 <port id="#PORT.access_peri">
                     <attribute id="name" xml:space="preserve">access_peri</attribute>
@@ -1067,13 +1067,85 @@
                 <port id="#PORT.pwm">
                     <attribute id="name" xml:space="preserve">pwm</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#3C2B">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P58</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">3</attribute>
+                    </connection>
                     <connection id="#48B2">
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P48</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
+                    <connection id="#48D7">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P66</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">5</attribute>
+                    </connection>
+                    <connection id="#5C43">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P55</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">18</attribute>
+                    </connection>
+                    <connection id="#5DB8">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P47</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">16</attribute>
+                    </connection>
+                    <connection id="#63DF">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P98</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">14</attribute>
+                    </connection>
+                    <connection id="#660C">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P56</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">2</attribute>
+                    </connection>
+                    <connection id="#7850">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P83</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">10</attribute>
+                    </connection>
+                    <connection id="#8A77">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.PORTA_A12</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">12</attribute>
+                    </connection>
+                    <connection id="#93C9">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P61</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">4</attribute>
+                    </connection>
+                    <connection id="#9663">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P79</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">8</attribute>
+                    </connection>
+                    <connection id="#AD18">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P57</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">19</attribute>
+                    </connection>
+                    <connection id="#AF5D">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P100</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">15</attribute>
+                    </connection>
+                    <connection id="#B4AE">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P93</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">13</attribute>
+                    </connection>
+                    <connection id="#BA50">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P75</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">7</attribute>
+                    </connection>
+                    <connection id="#CAB9">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P67</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">6</attribute>
+                    </connection>
+                    <connection id="#D477">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P85</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">11</attribute>
+                    </connection>
                     <connection id="#DEAD">
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P51</attribute>
                         <attribute id="lsb_index" xml:space="preserve">1</attribute>
+                    </connection>
+                    <connection id="#FAA7">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P62</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">9</attribute>
+                    </connection>
+                    <connection id="#FD36">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.P50</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">17</attribute>
                     </connection>
                 </port>
                 <port id="#PORT.reset">
@@ -1100,6 +1172,23 @@
                 </node>
             </peripheral>
         </processor_module>
+        <fpga_pin id="#PIN.P100">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTA</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P100</attribute>
+            <attribute id="name" xml:space="preserve">PORTA_A15</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#AF5D">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
         <fpga_pin id="#PIN.P112">
             <attribute id="clock_freq" xml:space="preserve">0</attribute>
             <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
@@ -1151,6 +1240,40 @@
                 <attribute id="lsb_index" xml:space="preserve">0</attribute>
             </connection>
         </fpga_pin>
+        <fpga_pin id="#PIN.P124">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">INPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTC</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P124</attribute>
+            <attribute id="name" xml:space="preserve">PORTC_C09</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">PULLUP</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#F79C">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#37A9/#PORT.reset</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P47">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTB</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P47</attribute>
+            <attribute id="name" xml:space="preserve">PORTB_B15</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#5DB8">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
         <fpga_pin id="#PIN.P48">
             <attribute id="clock_freq" xml:space="preserve">0</attribute>
             <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
@@ -1164,6 +1287,23 @@
             <attribute id="termination" xml:space="preserve">-</attribute>
             <attribute id="user_constraints" xml:space="preserve"/>
             <connection id="#48B2">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P50">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTB</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P50</attribute>
+            <attribute id="name" xml:space="preserve">PORTB_B14</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#FD36">
                 <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
                 <attribute id="lsb_index" xml:space="preserve">0</attribute>
             </connection>
@@ -1185,9 +1325,94 @@
                 <attribute id="lsb_index" xml:space="preserve">0</attribute>
             </connection>
         </fpga_pin>
+        <fpga_pin id="#PIN.P55">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTB</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P55</attribute>
+            <attribute id="name" xml:space="preserve">PORTB_B13</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#5C43">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P56">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTA</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P56</attribute>
+            <attribute id="name" xml:space="preserve">PORTA_A02</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#660C">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P57">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTB</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P57</attribute>
+            <attribute id="name" xml:space="preserve">PORTB_B12</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#AD18">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P58">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTA</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P58</attribute>
+            <attribute id="name" xml:space="preserve">PORTA_A03</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#3C2B">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P61">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTA</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P61</attribute>
+            <attribute id="name" xml:space="preserve">PORTA_A04</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#93C9">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
         <fpga_pin id="#PIN.P62">
             <attribute id="clock_freq" xml:space="preserve">0</attribute>
-            <attribute id="direction" xml:space="preserve">INPUT</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
             <attribute id="drive_strength" xml:space="preserve">-</attribute>
             <attribute id="group" xml:space="preserve">PORTA</attribute>
             <attribute id="inverted" xml:space="preserve">0</attribute>
@@ -1195,10 +1420,112 @@
             <attribute id="loc" xml:space="preserve">P81</attribute>
             <attribute id="name" xml:space="preserve">PORTA_A09</attribute>
             <attribute id="slew_rate" xml:space="preserve">-</attribute>
-            <attribute id="termination" xml:space="preserve">PULLUP</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
             <attribute id="user_constraints" xml:space="preserve"/>
-            <connection id="#F79C">
-                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#37A9/#PORT.reset</attribute>
+            <connection id="#FAA7">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P66">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTA</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P66</attribute>
+            <attribute id="name" xml:space="preserve">PORTA_A05</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#48D7">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P67">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTA</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P67</attribute>
+            <attribute id="name" xml:space="preserve">PORTA_A06</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#CAB9">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P75">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTA</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P75</attribute>
+            <attribute id="name" xml:space="preserve">PORTA_A07</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#BA50">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P79">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTA</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P79</attribute>
+            <attribute id="name" xml:space="preserve">PORTA_A08</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#9663">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P83">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTA</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P83</attribute>
+            <attribute id="name" xml:space="preserve">PORTA_A10</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#7850">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P85">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTA</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P85</attribute>
+            <attribute id="name" xml:space="preserve">PORTA_A11</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#D477">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
                 <attribute id="lsb_index" xml:space="preserve">0</attribute>
             </connection>
         </fpga_pin>
@@ -1250,6 +1577,70 @@
             <attribute id="user_constraints" xml:space="preserve"/>
             <connection id="#D9BF">
                 <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#83BC/#PORT.tx</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P93">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTA</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P93</attribute>
+            <attribute id="name" xml:space="preserve">PORTA_A13</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#B4AE">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P98">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTA</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P98</attribute>
+            <attribute id="name" xml:space="preserve">PORTA_A14</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#63DF">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
+                <attribute id="lsb_index" xml:space="preserve">0</attribute>
+            </connection>
+        </fpga_pin>
+        <fpga_pin id="#PIN.P99">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">INPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTB</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P99</attribute>
+            <attribute id="name" xml:space="preserve">PORTB_B00</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+        </fpga_pin>
+        <fpga_pin id="#PIN.PORTA_A12">
+            <attribute id="clock_freq" xml:space="preserve">0</attribute>
+            <attribute id="direction" xml:space="preserve">OUTPUT</attribute>
+            <attribute id="drive_strength" xml:space="preserve">-</attribute>
+            <attribute id="group" xml:space="preserve">PORTA</attribute>
+            <attribute id="inverted" xml:space="preserve">0</attribute>
+            <attribute id="io_standard" xml:space="preserve">LVCMOS33</attribute>
+            <attribute id="loc" xml:space="preserve">P88</attribute>
+            <attribute id="name" xml:space="preserve">PORTA_A12</attribute>
+            <attribute id="slew_rate" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="user_constraints" xml:space="preserve"/>
+            <connection id="#8A77">
+                <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#E4E3/#PORT.pwm</attribute>
                 <attribute id="lsb_index" xml:space="preserve">0</attribute>
             </connection>
         </fpga_pin>

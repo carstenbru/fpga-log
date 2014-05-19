@@ -47,10 +47,19 @@ dm_timer_t timer;
  * @brief main function
  */
 int main() {
-	pwm_config_channels(PWM_0, 3, 867, 17, 0);
-	pwm_config_channels(PWM_0, 2, 15, 65, 0);
-
 	sys_init();
+
+	pwm_config_channels(PWM_0, 0, 1, 100, 25, 0);
+	int i;
+	for (i = 1; i < 18; i++) {
+		pwm_config_channels(PWM_0, 0, (1 << i), 100, 10, i * 25);
+	}
+
+	pwm_config_channels(PWM_0, 1, 1, 100, 25, 90);
+	pwm_config_channels(PWM_0, 1, 2, 100, 25, 180);
+
+	pwm_config_single_channel(PWM_0, 18, 100, 35, 0);
+	pwm_config_single_channel(PWM_0, 1, 100, 75, 0);
 
 	device_uart_raw_init(&uart_raw, UART_LIGHT_PC, 1);
 
