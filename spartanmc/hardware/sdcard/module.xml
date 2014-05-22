@@ -1,0 +1,27 @@
+<!--
+
+XML module description
+
+-->
+
+<module xmlns="http://www.mr.inf.tu-dresden.de/spartanmc/module" name="sdcard" text="SD-Card controller" type="peripheral" category="MassStorage">
+  
+	<description>
+		The SD-Card controller can be used to interface sd cards. 
+		It supports card initialization and block read/write on hardware.
+	</description>
+	
+	<interface toplevel="spmc_sd_card" registers="36" />
+	
+	<parameters>
+		<!--<parameter name="BASE_ADR" type="hex" value="0x10" />-->
+		<parameter name="CLOCK_FREQUENCY" type="int" value="16000000" />
+	</parameters>
+	
+	<ports group="SD card">
+          <port name="sd_miso" direction="input"/>
+	  <port name="sd_mosi" direction="output"/>
+	  <port name="sd_clk" direction="output"/>
+	  <port name="sd_cs" direction="output"/>
+        </ports>
+</module>
