@@ -1,5 +1,5 @@
 /**
- * @file dm_trigger.h
+ * @file dm_trigger.c
  * @brief trigger module for datastreams
  *
  * This module can be used to trigger a measurement (on the control-port)

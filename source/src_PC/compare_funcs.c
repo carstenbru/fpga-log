@@ -1,5 +1,5 @@
 /**
- * @file compare_funcs.c
+ * @file src_PC/compare_funcs.c
  * @brief native PC functions to simulate SpartanMC's compare peripheral
  *
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)

@@ -1,5 +1,5 @@
 /**
- * @file pwm.c
+ * @file src/pwm.c
  * @brief pwm peripheral functions
  *
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)

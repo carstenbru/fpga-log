@@ -1,5 +1,5 @@
 /**
- * @file pwm.c
+ * @file src_PC/pwm.c
  * @brief native PC functions to simulate pwm peripheral
  *
  * The simulation prints the configuration calls to a pipe.

@@ -1,5 +1,5 @@
 /**
- * @file compare_funcs.c
+ * @file src/compare_funcs.c
  * @brief functions to control SpartanMC's compare peripheral
  *
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
