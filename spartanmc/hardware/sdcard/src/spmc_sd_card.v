@@ -1,6 +1,3 @@
-`define SDCARD_CLOCK 1
-`include "spiMaster_defines.v"
-
 module spmc_sd_card(
         //*** Connections to SpartanMC Core (do not change) ***
         input wire              clk_peri,       //System-Clock
