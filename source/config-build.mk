@@ -63,7 +63,7 @@ LIB_OBJ_FILES:=startup peri
 LIB_AS_FILES:=
 
 # compiler flags
-CFLAGS:=-O2 -fomit-frame-pointer -fno-inline
+CFLAGS:=-fomit-frame-pointer -fno-inline
 
 # list of defines
 DEFINES:=PERI_CLOCK=16000000

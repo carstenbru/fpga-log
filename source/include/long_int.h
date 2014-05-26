@@ -12,7 +12,8 @@
  * @brief casts a unsigned int to a unsigned long int
  *
  * This function is only needed because of a compiler bug.
- * Without explicitly using this function subreg optimization will fail.
+ * Without explicitly using this function subreg optimization will fail
+ * and calculation results could be wrong.
  *
  * Problem occured on GNU C (GCC) version 4.4.5 (spartanmc).
  * Verify if still necessary on newer versions.

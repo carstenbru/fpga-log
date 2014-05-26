@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../source/src/FatFs.c \
 ../source/src/control_port.c \
 ../source/src/data_port.c \
 ../source/src/datastream_condition.c \
@@ -24,6 +25,7 @@ C_SRCS += \
 ../source/src/udivsi3.c 
 
 OBJS += \
+./source/src/FatFs.o \
 ./source/src/control_port.o \
 ./source/src/data_port.o \
 ./source/src/datastream_condition.o \
@@ -44,6 +46,7 @@ OBJS += \
 ./source/src/udivsi3.o 
 
 C_DEPS += \
+./source/src/FatFs.d \
 ./source/src/control_port.d \
 ./source/src/data_port.d \
 ./source/src/datastream_condition.d \

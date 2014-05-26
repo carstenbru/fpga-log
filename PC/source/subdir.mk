@@ -4,13 +4,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../source/FatFs.c 
+../source/fatFS_sdcard.c \
+../source/sink_sd_card.c 
 
 OBJS += \
-./source/FatFs.o 
+./source/fatFS_sdcard.o \
+./source/sink_sd_card.o 
 
 C_DEPS += \
-./source/FatFs.d 
+./source/fatFS_sdcard.d \
+./source/sink_sd_card.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

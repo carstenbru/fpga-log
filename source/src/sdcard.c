@@ -7,6 +7,9 @@
 
 #include "peripheral_funcs/sdcard.h"
 
+#include <system/peripherals.h>
+#include <peripherals/uart_light.h>
+
 /**
  * waits for the sdcard peripheral to be ready
  *
@@ -41,7 +44,7 @@ static void sdcard_set_address(sdcard_regs_t* const sdcard,
 }
 
 write_code sdcard_block_write(sdcard_regs_t* const sdcard,
-		unsigned long address, unsigned char* block) {
+		unsigned long address, const unsigned char* block) {
 	int i;
 	for (i = 0; i < SD_BLOCK_SIZE; i++) {  //write data to peripheral fifo
 		sdcard->tx_fifo_data = *block++;
@@ -66,7 +69,7 @@ read_code sdcard_block_read(sdcard_regs_t* const sdcard, unsigned long address,
 
 	/*
 	 * dummy read:
-	 * Since sdcard peripheral was originally designed for a wishbone bus with supports delays by the peripheral
+	 * Since sdcard peripheral was originally designed for a wishbone bus which supports delays by the peripheral
 	 * (and SpartanMCs bus does not), the fifo has a delay of one clock cycle.
 	 * So the read data is always the last value and not the real one.
 	 */
@@ -75,7 +78,7 @@ read_code sdcard_block_read(sdcard_regs_t* const sdcard, unsigned long address,
 	for (i = 0; i < SD_BLOCK_SIZE; i++) {  //read data from peripheral fifo
 		*block++ = sdcard->rx_fifo_data;
 	}
-	sdcard->rx_fifo_control = FIFO_FORCE_EMPTY; //clear last pending read in peripheral, refers to the dummy read
+	sdcard->rx_fifo_control = FIFO_FORCE_EMPTY;  //clear last pending read in peripheral, refers to the dummy read
 
 	return READ_NO_ERROR;
 }

@@ -58,9 +58,9 @@ void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
 	formatter_set_write_dest(formatter, sink_sd_write_byte, sink_sd_card);
 
 	char dev_path[3] = { sink_sd_card->pdrv + '0', ':', 0 };
-	//f_mount(&sink_sd_card->fatFs, dev_path, 0);
+	f_mount(&sink_sd_card->fatFs, dev_path, 0);
 	//TODO variable file name, perhaps multiple files?
-	//f_open(&sink_sd_card->file, "fpga-log.txt", FA_WRITE | FA_CREATE_ALWAYS);
+	f_open(&sink_sd_card->file, "fpga-log.txt", FA_WRITE | FA_CREATE_ALWAYS);
 
 	//TODO when close file/sync so that no data gets lost?
 }
@@ -69,13 +69,13 @@ static void sink_sd_write_byte(void *param, unsigned char byte) {
 	sink_sd_card_t* sink = (sink_sd_card_t*) param;
 
 	UINT bw;
-	//f_write(&sink->file, &byte, 1, &bw);
+	f_write(&sink->file, &byte, 1, &bw);
 }
 
 static void sink_sd_card_update(void* const _sink_sd_card) {
 	sink_sd_card_t* sink = (sink_sd_card_t*) _sink_sd_card;
 
-//	f_sync(&sink->file); //TODO flush not on every update, perhaps use 2000hz timer?
+	f_sync(&sink->file); //TODO flush not on every update, perhaps use 2000hz timer?
 }
 
 static void sink_sd_card_new_data(void* const sink_sd_card,

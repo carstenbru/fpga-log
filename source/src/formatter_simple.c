@@ -34,5 +34,5 @@ static void formatter_simple_format(void* const formatter,
 
 	formatter_simple_t* fs = (formatter_simple_t*) formatter;
 
-	printf("%d: %d\n\r", fs->count++, (int)*((unsigned char*) package->data));
+	printf("%d: %d\n", fs->count++, (int)*((unsigned char*) package->data));
 }

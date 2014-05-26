@@ -41,7 +41,7 @@ datastream_condition_compare_t cond;
 
 dm_timer_t timer;
 
-//sink_sd_card_t sink_sd;
+sink_sd_card_t sink_sd;
 
 /**
  * @brief main function
@@ -67,12 +67,12 @@ int main() {
 	sink_uart_init(&sink_uart, (formatter_t*) &formatter_simple, UART_LIGHT_PC);
 
 	formatter_simple_init(&formatter_simple2);
-	//sink_sd_card_init(&sink_sd, &formatter_simple2, SD_CARD_0);
+	sink_sd_card_init(&sink_sd, (formatter_t*) &formatter_simple2, SDCARD_0);
 
 	dm_splitter_data_init(&splitter_data);
 
 	dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
-	//dm_splitter_data_add_data_out(&splitter_data, &sink_sd.data_in);
+	dm_splitter_data_add_data_out(&splitter_data, &sink_sd.data_in);
 	//dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
 	//dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
 	device_uart_raw_set_data_out(&uart_raw, &splitter_data.data_in);  //connect the data_out of uart_raw device to the uart sink

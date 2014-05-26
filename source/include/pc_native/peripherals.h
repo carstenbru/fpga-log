@@ -22,7 +22,7 @@
 #define UART_LIGHT_1  1
 #define PWM_0 2
 
-#define SD_CARD_0	"/dev/sdd"
+#define SDCARD_0	"/dev/sde"
 
 
 /*
