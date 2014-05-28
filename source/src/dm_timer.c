@@ -28,6 +28,7 @@ void dm_timer_init(dm_timer_t* const timer, const uint36_t interval,
 	timer->super.update = dm_timer_update;
 
 	timer->control_out = &control_port_dummy;
+	timer->control_action = &control_action_measure;
 
 	timer->timer = timer_regs;
 	timer->compare = compare_regs;
@@ -57,8 +58,11 @@ static void dm_timer_update(void* const _timer) {
 	dm_timer_t* timer = (dm_timer_t*) _timer;
 
 	if (compare_check_and_reset_flag(timer->compare)) {
-		const control_port_t* out = timer->control_out;
-		control_parameter_t p = { 'm', 0 };
-		out->new_control_message(out->parent, 1, &p);  //TODO
+		timer->control_action->execute(timer->control_action, timer->control_out);
 	}
+}
+
+void dm_timer_set_control_action(dm_timer_t* const timer,
+		control_action_t* const control_action) {
+	timer->control_action = control_action;
 }

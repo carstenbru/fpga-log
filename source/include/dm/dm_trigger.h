@@ -14,6 +14,7 @@
 #include "data_port.h"
 #include "control_port.h"
 #include "dm/datastream_condition.h"
+#include "dm/control_action.h"
 
 /**
  * @brief struct describing a datastream trigger
@@ -21,6 +22,7 @@
 typedef struct {
 	data_port_t data_in; /**< data port, this can be set at a data output to direct the data stream to this trigger */
 	const control_port_t* control_out; /**< control output port */
+	control_action_t* control_action; /**< executed control action */
 
 	datastream_condition_t* condition; /**< trigger condition defining when the trigger fires*/
 } dm_trigger_t;
@@ -31,6 +33,9 @@ typedef struct {
  * Initializes the trigger, should be called before using the trigger.
  * By default the trigger fires on every incoming package. This can be changed by setting
  * a different condition with @ref dm_trigger_set_condition function.
+ *
+ * By default the trigger sends a measure command to its control output. This can be changed by setting
+ * a different control action with @ref dm_trigger_set_control_action function.
  *
  * @param	trigger		pointer to the datastream trigger
  */
@@ -54,5 +59,13 @@ void dm_trigger_set_control_out(dm_trigger_t* const trigger,
 void dm_trigger_set_condition(dm_trigger_t* const trigger,
 		datastream_condition_t* const condition);
 
+/**
+ * @brief sets the control action to execute by a trigger
+ *
+ * @param trigger					pointer to the trigger
+ * @param control_action	the new control action
+ */
+void dm_trigger_set_control_action(dm_trigger_t* const trigger,
+		control_action_t* const control_action);
 
 #endif

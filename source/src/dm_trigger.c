@@ -21,6 +21,7 @@ static void dm_trigger_new_data(void* const _trigger,
 
 void dm_trigger_init(dm_trigger_t* const trigger) {
 	trigger->control_out = &control_port_dummy;
+	trigger->control_action = &control_action_measure;
 
 	trigger->data_in = data_port_dummy;
 	trigger->data_in.parent = (void*) trigger;
@@ -45,8 +46,12 @@ static void dm_trigger_new_data(void* const _trigger,
 
 	datastream_condition_t* const cond = trigger->condition;
 	if (cond->is_fulfilled(cond, package)) {
-		const control_port_t* out = trigger->control_out;
-		control_parameter_t p = {'t',0};
-		out->new_control_message(out->parent, 1, &p); //TODO
+		trigger->control_action->execute(trigger->control_action,
+				trigger->control_out);
 	}
+}
+
+void dm_trigger_set_control_action(dm_trigger_t* const _trigger,
+		control_action_t* const control_action) {
+	_trigger->control_action = control_action;
 }
