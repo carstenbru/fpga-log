@@ -7,7 +7,7 @@
 
 #include "sink/sink_sd_card.h"
 
-static sink_sd_card_t* pdrev_resolve[_VOLUMES];
+static sink_sd_card_t* pdrv_resolve[_VOLUMES];
 static int used_volumes = 0;
 
 /**
@@ -50,7 +50,7 @@ void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
 
 	sink_sd_card->pdrv = used_volumes;
 	sink_sd_card->status = STA_NOINIT;
-	pdrev_resolve[used_volumes++] = sink_sd_card;
+	pdrv_resolve[used_volumes++] = sink_sd_card;
 
 	sink_sd_card->sd_card_regs = sd_card;
 
@@ -87,7 +87,7 @@ static void sink_sd_card_new_data(void* const sink_sd_card,
 
 sink_sd_card_t* sink_sd_card_from_pdrv(BYTE pdrv) {
 	if (pdrv < used_volumes)
-		return pdrev_resolve[pdrv];
+		return pdrv_resolve[pdrv];
 	else
 		return 0;
 }
