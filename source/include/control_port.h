@@ -12,8 +12,8 @@
  * @brief struct holding incoming data
  */
 typedef struct {
-	const int type;					/**< the type of the control parameter */
-	const void* const value; /**< pointer to the parameter value */
+	int type;					/**< the type of the control parameter */
+	void* value; /**< pointer to the parameter value */
 } control_parameter_t;
 
 /**

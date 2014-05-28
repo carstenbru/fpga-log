@@ -14,6 +14,7 @@
 #include "data_port.h"
 #include "control_port.h"
 #include "sink/formatter/formatter.h"
+#include "sink/control_protocol.h"
 
 /**
  * @brief number of maximal control outs for a uart sink
@@ -26,14 +27,16 @@
  * @brief struct describing a uart sink
  */
 typedef struct {
-	datastream_object_t super;					/**< super-"class": datastream_object_t*/
+	datastream_object_t super; /**< super-"class": datastream_object_t*/
 
-	data_port_t data_in; 								/**< data port, this can be set at a data output to direct the data stream to this device */
-	const control_port_t* control_out[SINK_UART_MAX_CONTROL_OUTS]; 	/**< control output ports */
+	data_port_t data_in; /**< data port, this can be set at a data output to direct the data stream to this device */
+	const control_port_t* control_out[SINK_UART_MAX_CONTROL_OUTS]; /**< control output ports */
 	int control_out_count; /**< currently assigned control outs */
 
-	formatter_t* formatter;						  /**< output log formatter */
-	uart_light_regs_t* uart_light;		  /**< pointer to UART hardware registers */
+	formatter_t* formatter; /**< output log formatter */
+	control_protocol_t* protocol; /**< control protocol */
+
+	uart_light_regs_t* uart_light; /**< pointer to UART hardware registers */
 } sink_uart_t;
 
 /**
@@ -43,10 +46,11 @@ typedef struct {
  * 
  * @param	sink_uart		pointer to the uart sink
  * @param	formatter		pointer to a output log formatter
+ * @param protocol		pointer to a control protocol
  * @param uart_light 	pointer to a uart_light peripheral
  */
 void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter,
-		uart_light_regs_t* const uart_light);
+		control_protocol_t* protocol, uart_light_regs_t* const uart_light);
 
 /**
  * @brief connects the next control output port of a uart sink to a given destination
@@ -58,6 +62,5 @@ void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter,
  */
 int sink_uart_add_control_out(sink_uart_t* const sink_uart,
 		const control_port_t* const control_in);
-
 
 #endif 

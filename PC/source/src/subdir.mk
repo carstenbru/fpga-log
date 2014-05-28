@@ -7,6 +7,8 @@ C_SRCS += \
 ../source/src/FatFs.c \
 ../source/src/control_action.c \
 ../source/src/control_port.c \
+../source/src/control_protocol.c \
+../source/src/control_protocol_ascii.c \
 ../source/src/data_port.c \
 ../source/src/datastream_condition.c \
 ../source/src/datastream_condition_compare.c \
@@ -29,6 +31,8 @@ OBJS += \
 ./source/src/FatFs.o \
 ./source/src/control_action.o \
 ./source/src/control_port.o \
+./source/src/control_protocol.o \
+./source/src/control_protocol_ascii.o \
 ./source/src/data_port.o \
 ./source/src/datastream_condition.o \
 ./source/src/datastream_condition_compare.o \
@@ -51,6 +55,8 @@ C_DEPS += \
 ./source/src/FatFs.d \
 ./source/src/control_action.d \
 ./source/src/control_port.d \
+./source/src/control_protocol.d \
+./source/src/control_protocol_ascii.d \
 ./source/src/data_port.d \
 ./source/src/datastream_condition.d \
 ./source/src/datastream_condition_compare.d \

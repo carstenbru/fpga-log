@@ -17,6 +17,7 @@
 #include "device/device_uart_raw.h"
 #include "sink/sink_uart.h"
 #include "sink/formatter/formatter_simple.h"
+#include "sink/control_protocol_ascii.h"
 #include "dm/dm_splitter_data.h"
 #include "dm/dm_splitter_control.h"
 #include "dm/dm_trigger.h"
@@ -31,6 +32,7 @@
 
 sink_uart_t sink_uart;
 formatter_simple_t formatter_simple, formatter_simple2;
+control_protocol_ascii_t control_protocol_ascii;
 
 device_uart_raw_t uart_raw;
 
@@ -61,10 +63,12 @@ int main() {
 	pwm_config_single_channel(PWM_0, 18, 100, 35, 0);
 	pwm_config_single_channel(PWM_0, 1, 100, 75, 0);
 
-	device_uart_raw_init(&uart_raw, UART_LIGHT_PC, 1);
+	device_uart_raw_init(&uart_raw, UART_LIGHT_1, 1);
 
 	formatter_simple_init(&formatter_simple);
-	sink_uart_init(&sink_uart, (formatter_t*) &formatter_simple, UART_LIGHT_PC);
+	control_protocol_ascii_init(&control_protocol_ascii);
+	sink_uart_init(&sink_uart, (formatter_t*) &formatter_simple,
+			(control_protocol_t*) &control_protocol_ascii, UART_LIGHT_PC);
 
 	formatter_simple_init(&formatter_simple2);
 	sink_sd_card_init(&sink_sd, (formatter_t*) &formatter_simple2, SDCARD_0);
@@ -73,8 +77,7 @@ int main() {
 
 	dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
 	dm_splitter_data_add_data_out(&splitter_data, &sink_sd.data_in);
-	//dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
-	//dm_splitter_data_add_data_out(&splitter_data, &sink_uart.data_in);
+
 	device_uart_raw_set_data_out(&uart_raw, &splitter_data.data_in);  //connect the data_out of uart_raw device to the uart sink
 
 	dm_trigger_init(&trigger);
@@ -86,6 +89,8 @@ int main() {
 
 	dm_timer_init(&timer, 1000, TIMER_0, COMPARE_0);
 	dm_timer_set_control_out(&timer, &uart_raw.control_in);
+
+	sink_uart_add_control_out(&sink_uart, &uart_raw.control_in);
 
 	while (1) {
 		datastreams_update();

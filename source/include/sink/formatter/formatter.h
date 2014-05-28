@@ -1,7 +1,9 @@
 /**
  * @file formatter.h
- * @brief output log formatter
+ * @brief abstract super-"class" for output log formatters
  * 
+ * This should be used as super-"class" for formatter implementations.
+ *
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
