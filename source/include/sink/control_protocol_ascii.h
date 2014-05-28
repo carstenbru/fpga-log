@@ -15,6 +15,7 @@
 #define PROTOCOL_ASCII_DEFAULT_START_CHAR ':'
 #define PROTOCOL_ASCII_DEFAULT_SEPARATOR ','
 #define PROTOCOL_ASCII_DEFAULT_END_CHAR ';'
+#define PROTOCOL_ASCII_DEFAULT_OUT_SELECT_CHAR 'o'
 
 /**
  * @brief struct describing the ascii control protocol
@@ -25,7 +26,9 @@ typedef struct {
 	unsigned char start_char; /**< command start char */
 	unsigned char separator; /**< parameter separator char */
 	unsigned char end_char; /**< command end char */
+	unsigned char out_select_char; /**< control output select char */
 
+	unsigned int output;
 	int state;
 	unsigned int cur_value;
 
@@ -51,9 +54,11 @@ void control_protocol_ascii_init(
  * @param start_char							command start char
  * @param separator								parameter separator char
  * @param end_char								command end char
+ * @param out_sel_char						control output selection parameter character
  */
 void control_protocol_ascii_set_special_chars(
 		control_protocol_ascii_t* const control_protocol_ascii,
-		unsigned char start_char, unsigned char separator, unsigned char end_char);
+		unsigned char start_char, unsigned char separator, unsigned char end_char,
+		unsigned char out_sel_char);
 
 #endif
