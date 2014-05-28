@@ -46,6 +46,7 @@ static void dm_trigger_new_data(void* const _trigger,
 	datastream_condition_t* const cond = trigger->condition;
 	if (cond->is_fulfilled(cond, package)) {
 		const control_port_t* out = trigger->control_out;
-		out->measure(out->parent);
+		control_parameter_t p = {'t',0};
+		out->new_control_message(out->parent, 1, &p); //TODO
 	}
 }

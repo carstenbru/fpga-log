@@ -12,9 +12,12 @@
 /**
  * @brief measure function of the control-stream splitter
  *
- * @param	_splitter	pointer to the splitter
+ * @param	_splitter		pointer to the splitter
+ * @param count				amount of passed parameter structs
+ * @param parameters	pointer to paramter structures, see @ref control_parameter_t
  */
-static void dm_splitter_control_measure(void* const _splitter);
+static void dm_splitter_control_new_control_message(void* const _splitter,
+		const unsigned int count, const control_parameter_t* parameters);
 
 void dm_splitter_control_init(dm_splitter_control_t* const splitter) {
 	int i;
@@ -24,7 +27,8 @@ void dm_splitter_control_init(dm_splitter_control_t* const splitter) {
 
 	splitter->control_in = control_port_dummy;
 	splitter->control_in.parent = (void*) splitter;
-	splitter->control_in.measure = dm_splitter_control_measure;
+	splitter->control_in.new_control_message =
+			dm_splitter_control_new_control_message;
 
 	splitter->target_count = 0;
 }
@@ -38,13 +42,14 @@ int dm_splitter_control_add_control_out(dm_splitter_control_t* const splitter,
 		return 0;
 }
 
-static void dm_splitter_control_measure(void* const _splitter) {
+static void dm_splitter_control_new_control_message(void* const _splitter,
+		unsigned int count, const control_parameter_t* parameters) {
 	dm_splitter_control_t* splitter = (dm_splitter_control_t*) _splitter;
 
 	int i;
 	const control_port_t* out;
 	for (i = 0; i < splitter->target_count; i++) {
 		out = splitter->control_out[i];
-		out->measure(out->parent);
+		out->new_control_message(out->parent, count, parameters);
 	}
 }

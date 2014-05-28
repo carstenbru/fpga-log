@@ -9,20 +9,27 @@
 #define CONTROL_PORT_H_
 
 /**
+ * @brief struct holding incoming data
+ */
+typedef struct {
+	const int type;					/**< the type of the control parameter */
+	const void* const value; /**< pointer to the parameter value */
+} control_parameter_t;
+
+/**
  * @brief struct defining a control destination
  */
 typedef struct {
 	void* parent; /**< pointer to the parent struct, e.g. a device module */
 
 	/**
-	 * @brief pointer to the measure function of the destination
+	 * @brief pointer to the control message function of the destination
 	 *
-	 * the device driver should start a measurement when this function is invoked
-	 *
-	 * @param	parent		the parent stored in this struct
+	 * @param count				amount of passed parameter structs
+	 * @param parameters	pointer to paramter structures, see @ref control_parameter_t
 	 */
-	void (*measure)(void* const parent);
-//TODO multiple function pointers for contol functions
+	void (*new_control_message)(void* const parent, unsigned int count,
+			const control_parameter_t* parameters);
 } control_port_t;
 
 /**

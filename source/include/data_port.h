@@ -21,7 +21,7 @@ typedef enum {
  */
 typedef struct {
 	const int source_id; 		/**< the id of the data source, e.g. to show in logs */
-	const int type;					/**< the type of the data value, should be a value of enumeration @ref data_type */
+	const data_type type;					/**< the type of the data value, should be a value of enumeration @ref data_type */
 	const void* const data; /**< pointer to the actual data */
 } data_package_t;
 

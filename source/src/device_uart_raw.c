@@ -17,11 +17,14 @@
 static void device_uart_raw_update(void* const _uart_raw);
 
 /**
- * @brief measure function of uart raw
+ * @brief control message function of uart raw
  *
- * @param	parent		the uart_raw device
+ * @param	parent			the uart_raw device
+ * @param count				amount of passed parameter structs
+ * @param parameters	pointer to paramter structures, see @ref control_parameter_t
  */
-static void device_uart_raw_measure(void* const uart_raw);
+static void device_uart_new_control_message(void* const uart_raw,
+		const unsigned int count, const control_parameter_t* parameters);
 
 void device_uart_raw_init(device_uart_raw_t* const uart_raw,
 		uart_light_regs_t* const uart_light, const int id) {
@@ -35,8 +38,7 @@ void device_uart_raw_init(device_uart_raw_t* const uart_raw,
 
 	uart_raw->control_in = control_port_dummy;
 	uart_raw->control_in.parent = (void*) uart_raw;
-	uart_raw->control_in.measure = device_uart_raw_measure;
-	//TODO set function pointers of control_in here
+	uart_raw->control_in.new_control_message = device_uart_new_control_message;
 
 	uart_raw->uart_light = uart_light;
 }
@@ -56,6 +58,8 @@ static void device_uart_raw_update(void* const _uart_raw) {
 	}
 }
 
-static void device_uart_raw_measure(void* const uart_raw) {  //TODO remove
-	uart_light_send(((device_uart_raw_t*)uart_raw)->uart_light, 'm');
+static void device_uart_new_control_message(void* const uart_raw,
+		unsigned int count, const control_parameter_t* parameters) {  //TODO remove
+	while (count--)
+		uart_light_send(((device_uart_raw_t*) uart_raw)->uart_light, (parameters++)->type);
 }

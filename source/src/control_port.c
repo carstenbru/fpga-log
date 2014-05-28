@@ -12,6 +12,9 @@
  *
  * @param parent	not used
  */
-static void control_port_measure_dummy(void* const parent) {};
+static void control_port_new_control_message_dummy(void* const parent,
+		unsigned int count, const control_parameter_t* parameters) {
+}
 
-const control_port_t control_port_dummy = {0, control_port_measure_dummy};
+const control_port_t control_port_dummy = { 0,
+		control_port_new_control_message_dummy };

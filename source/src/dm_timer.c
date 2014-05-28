@@ -58,6 +58,7 @@ static void dm_timer_update(void* const _timer) {
 
 	if (compare_check_and_reset_flag(timer->compare)) {
 		const control_port_t* out = timer->control_out;
-		out->measure(out->parent);
+		control_parameter_t p = { 'm', 0 };
+		out->new_control_message(out->parent, 1, &p);  //TODO
 	}
 }

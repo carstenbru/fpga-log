@@ -16,7 +16,7 @@ datastream_object_t* datastream_object_list[MAX_DATASTREAM_OBJECTS];
  * @param new_object	the object to add
  * @return	1 on success, 0 if something went wrong (e.g. list was full)
  */
-int datastream_list_add(datastream_object_t* const new_object) {
+static int datastream_list_add(datastream_object_t* const new_object) {
 	if (datastream_object_count < MAX_DATASTREAM_OBJECTS) {
 		datastream_object_list[datastream_object_count++] = new_object;
 		return 1;

@@ -15,6 +15,13 @@
 #include "control_port.h"
 #include "sink/formatter/formatter.h"
 
+/**
+ * @brief number of maximal control outs for a uart sink
+ *
+ * Since we have no heap (malloc) on SpartanMC we need to allocate a fixed amount of memory with the struct.
+ */
+#define SINK_UART_MAX_CONTROL_OUTS 8
+
 /** 
  * @brief struct describing a uart sink
  */
@@ -22,7 +29,8 @@ typedef struct {
 	datastream_object_t super;					/**< super-"class": datastream_object_t*/
 
 	data_port_t data_in; 								/**< data port, this can be set at a data output to direct the data stream to this device */
-	const control_port_t* control_out; 	/**< control output port */
+	const control_port_t* control_out[SINK_UART_MAX_CONTROL_OUTS]; 	/**< control output ports */
+	int control_out_count; /**< currently assigned control outs */
 
 	formatter_t* formatter;						  /**< output log formatter */
 	uart_light_regs_t* uart_light;		  /**< pointer to UART hardware registers */
@@ -41,12 +49,14 @@ void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter,
 		uart_light_regs_t* const uart_light);
 
 /**
- * @brief connects the control output port of a uart sink to a given destination
+ * @brief connects the next control output port of a uart sink to a given destination
  * 
  * @param	sink_uart		pointer to the uart sink
  * @param	control_in	the new control destination
+ *
+ * @return 1 on success, otherwise 0 (e.g. max destinations already reached)
  */
-void sink_uart_set_control_out(sink_uart_t* const sink_uart,
+int sink_uart_add_control_out(sink_uart_t* const sink_uart,
 		const control_port_t* const control_in);
 
 

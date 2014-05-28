@@ -33,7 +33,10 @@ void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter,
 	 */
 	sink_uart->super.update = sink_uart_update;
 
-	sink_uart->control_out = &control_port_dummy;
+	int i;
+	for (i = 0; i < SINK_UART_MAX_CONTROL_OUTS; i++) {
+		sink_uart->control_out[i] = &control_port_dummy;
+	}
 
 	sink_uart->data_in = data_port_dummy;
 	sink_uart->data_in.parent = (void*) sink_uart;
@@ -47,16 +50,19 @@ void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter,
 			sink_uart->uart_light);
 }
 
-void sink_uart_set_control_out(sink_uart_t* const sink_uart,
+int sink_uart_add_control_out(sink_uart_t* const sink_uart,
 		const control_port_t* const control_in) {
-	sink_uart->control_out = control_in;
+	if (sink_uart->control_out_count < SINK_UART_MAX_CONTROL_OUTS) {
+		sink_uart->control_out[sink_uart->control_out_count++] = control_in;
+		return 1;
+	} else
+		return 0;
 }
 
 static void sink_uart_update(void* const _sink_uart) {
 	//nothing to do here for now
 
 	//TODO protocol for pc to invoke control functions of control_out
-	//TODO multiple control_out's
 }
 
 static void sink_uart_new_data(void* const sink_uart,
