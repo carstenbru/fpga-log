@@ -13,6 +13,7 @@ C_SRCS += \
 ../source/src/datastream_condition.c \
 ../source/src/datastream_condition_compare.c \
 ../source/src/datastream_object.c \
+../source/src/device_pwm.c \
 ../source/src/device_uart_raw.c \
 ../source/src/dm_filter.c \
 ../source/src/dm_splitter_control.c \
@@ -37,6 +38,7 @@ OBJS += \
 ./source/src/datastream_condition.o \
 ./source/src/datastream_condition_compare.o \
 ./source/src/datastream_object.o \
+./source/src/device_pwm.o \
 ./source/src/device_uart_raw.o \
 ./source/src/dm_filter.o \
 ./source/src/dm_splitter_control.o \
@@ -61,6 +63,7 @@ C_DEPS += \
 ./source/src/datastream_condition.d \
 ./source/src/datastream_condition_compare.d \
 ./source/src/datastream_object.d \
+./source/src/device_pwm.d \
 ./source/src/device_uart_raw.d \
 ./source/src/dm_filter.d \
 ./source/src/dm_splitter_control.d \

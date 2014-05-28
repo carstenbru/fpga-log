@@ -14,7 +14,7 @@
 
 #define PROTOCOL_ASCII_DEFAULT_START_CHAR ':'
 #define PROTOCOL_ASCII_DEFAULT_SEPARATOR ','
-#define PROTOCOL_ASCII_DEFAULT_END_CHAR '\n'
+#define PROTOCOL_ASCII_DEFAULT_END_CHAR ';'
 
 /**
  * @brief struct describing the ascii control protocol

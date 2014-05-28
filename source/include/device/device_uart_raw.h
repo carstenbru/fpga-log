@@ -30,7 +30,7 @@ typedef struct {
 /**
  * @brief uart raw init function
  * 
- * initializes the uart raw device, should be called before using the device
+ * Initializes the uart raw device, should be called before using the device.
  * 
  * @param	uart_raw	pointer to the uart raw device
  * @param uart_light 	pointer to a uart_light peripheral

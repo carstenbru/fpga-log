@@ -15,6 +15,7 @@
 
 #include "datastream_object.h"
 #include "device/device_uart_raw.h"
+#include "device/device_pwm.h"
 #include "sink/sink_uart.h"
 #include "sink/formatter/formatter_simple.h"
 #include "sink/control_protocol_ascii.h"
@@ -45,23 +46,15 @@ dm_timer_t timer;
 
 sink_sd_card_t sink_sd;
 
+device_pwm_t pwm_dev;
+
 /**
  * @brief main function
  */
 int main() {
 	sys_init();
 
-	pwm_config_channels(PWM_0, 0, 1, 100, 25, 0);
-	int i;
-	for (i = 1; i < 18; i++) {
-		pwm_config_channels(PWM_0, 0, (1 << i), 100, 10, i * 25);
-	}
-
-	pwm_config_channels(PWM_0, 1, 1, 100, 25, 90);
-	pwm_config_channels(PWM_0, 1, 2, 100, 25, 180);
-
-	pwm_config_single_channel(PWM_0, 18, 100, 35, 0);
-	pwm_config_single_channel(PWM_0, 1, 100, 75, 0);
+	device_pwm_init(&pwm_dev, PWM_0);
 
 	device_uart_raw_init(&uart_raw, UART_LIGHT_1, 1);
 
@@ -90,7 +83,7 @@ int main() {
 	dm_timer_init(&timer, 1000, TIMER_0, COMPARE_0);
 	dm_timer_set_control_out(&timer, &uart_raw.control_in);
 
-	sink_uart_add_control_out(&sink_uart, &uart_raw.control_in);
+	sink_uart_add_control_out(&sink_uart, &pwm_dev.control_in);
 
 	while (1) {
 		datastreams_update();

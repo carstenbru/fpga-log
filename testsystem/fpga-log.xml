@@ -1347,7 +1347,7 @@
             <attribute id="loc" xml:space="preserve">P114</attribute>
             <attribute id="name" xml:space="preserve">PORTC_C00</attribute>
             <attribute id="slew_rate" xml:space="preserve">-</attribute>
-            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">PULLUP</attribute>
             <attribute id="user_constraints" xml:space="preserve"/>
             <connection id="#AF7F">
                 <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9C14/#PORT.rx</attribute>
@@ -1738,7 +1738,7 @@
             <attribute id="loc" xml:space="preserve">P101</attribute>
             <attribute id="name" xml:space="preserve">USBUART_RX</attribute>
             <attribute id="slew_rate" xml:space="preserve">-</attribute>
-            <attribute id="termination" xml:space="preserve">-</attribute>
+            <attribute id="termination" xml:space="preserve">PULLUP</attribute>
             <attribute id="user_constraints" xml:space="preserve"/>
             <connection id="#71C5">
                 <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#83BC/#PORT.rx</attribute>
