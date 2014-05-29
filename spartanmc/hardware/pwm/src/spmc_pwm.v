@@ -1,4 +1,6 @@
-module spmc_pwm(
+module spmc_pwm #(
+            parameter CHANNELS = 2,        //number of PWM channels, 1 - 1.179.648
+            parameter BASE_ADR = 10'h0) ( 
         //*** Connections to SpartanMC Core (do not change) ***
         input wire              clk_peri,       //System-Clock
         input wire      [17:0]  do_peri,        //Data Bus  from MC
@@ -13,9 +15,6 @@ module spmc_pwm(
         //*** io interface ***
         output wire [CHANNELS-1:0] pwm
 );
-
-  parameter BASE_ADR = 10'h0;
-  parameter CHANNELS = 2;  //number of PWM channels, 1 - 1.179.648
   parameter PWM_REG_WIDTH = 32; //width of internal registers and counter, determines min frequency, 18-36 bit
   
   //register addresses of the module
