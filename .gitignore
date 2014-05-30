@@ -1,0 +1,11 @@
+.directory
+/.settings
+/doc
+
+jconfig.log
+/testsystem/build
+/testsystem/system
+
+*.o
+*.d
+/PC/fpga-log
