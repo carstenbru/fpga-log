@@ -12,6 +12,8 @@
 //               Problem was exacerbated by the fact that the design prevents the 
 //               final SPI interface Flipflops being pushed into the IO blocks.
 
+`default_nettype wire
+
 `define SPI_MASTER_VERSION_NUM 8'h12
 //`define SPI_SYS_CLK_48MHZ
 //`define SPI_SYS_CLK_30MHZ

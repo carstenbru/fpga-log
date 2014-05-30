@@ -20,8 +20,6 @@ module spmc_sd_card(
   parameter BASE_ADR = 10'h0;
   parameter CLOCK_FREQUENCY = 16000000;
 
-`default_nettype wire
-
   wire select;
   // Address decoder generates the select sinal out of the upper part of the peripheral address.
   pselect iCSL (
