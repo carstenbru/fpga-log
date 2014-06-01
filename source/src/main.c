@@ -14,6 +14,7 @@
 #include "sys_init.h"
 
 #include "datastream_object.h"
+#include "datastream_source.h"
 #include "device/device_uart_raw.h"
 #include "device/device_pwm.h"
 #include "sink/sink_uart.h"
@@ -86,7 +87,8 @@ int main() {
 	sink_uart_add_control_out(&sink_uart, &pwm_dev.control_in);
 
 	while (1) {
-		datastreams_update();
+		datastream_sources_send_data();
+		datastream_objects_update();
 	}
 
 	return 0;

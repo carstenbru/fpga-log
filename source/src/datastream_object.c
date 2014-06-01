@@ -26,7 +26,7 @@ static int datastream_list_add(datastream_object_t* const new_object) {
 	}
 }
 
-void datastreams_update(void) {
+void datastream_objects_update(void) {
 	int i;
 	for (i = 0; i < datastream_object_count; i++) {
 		datastream_object_t* obj = datastream_object_list[i];

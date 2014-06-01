@@ -10,11 +10,21 @@
 /**
  * @brief uart raw update function
  *
- * everything that does not need to be done immediately in an interrupt is done here, e.g. sending data to the data_out port
- *
  * @param	_uart_raw		pointer to the uart raw device
  */
 static void device_uart_raw_update(void* const _uart_raw);
+
+/**
+ * @brief uart raw send data function
+ *
+ * This function sends the data packages to the devices output port.
+ *
+ * @param	_uart_raw		pointer to the uart raw device
+ * @param id					the source id of the pending data
+ * @param timestamp		pointer to the timestamp of the pending data
+ */
+static void device_uart_raw_send_data(void* const _uart_raw, const unsigned int id,
+		const timestamp_t* const timestamp);
 
 /**
  * @brief control message function of uart raw
@@ -28,11 +38,12 @@ static void device_uart_new_control_message(void* const uart_raw,
 
 void device_uart_raw_init(device_uart_raw_t* const uart_raw,
 		uart_light_regs_t* const uart_light, const int id) {
-	datastream_object_init(&uart_raw->super);  //call parents init function
+	datastream_source_init(&uart_raw->super, id);  //call parents init function
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
 	 */
-	uart_raw->super.update = device_uart_raw_update;
+	uart_raw->super.super.update = device_uart_raw_update;
+	uart_raw->super.send_data = device_uart_raw_send_data;
 
 	uart_raw->data_out = &data_port_dummy;
 
@@ -41,6 +52,8 @@ void device_uart_raw_init(device_uart_raw_t* const uart_raw,
 	uart_raw->control_in.new_control_message = device_uart_new_control_message;
 
 	uart_raw->uart_light = uart_light;
+
+	uart_light->status = UART_LIGHT_RXIE;
 }
 
 void device_uart_raw_set_data_out(device_uart_raw_t* const uart_raw,
@@ -49,11 +62,16 @@ void device_uart_raw_set_data_out(device_uart_raw_t* const uart_raw,
 }
 
 static void device_uart_raw_update(void* const _uart_raw) {
+}
+
+static void device_uart_raw_send_data(void* const _uart_raw, const unsigned int id,
+		const timestamp_t* const timestamp) {
 	device_uart_raw_t* uart_raw = (device_uart_raw_t*) _uart_raw;
 
 	unsigned char byte;
 	if (uart_light_receive_nb(uart_raw->uart_light, &byte) == UART_OK) {
-		data_package_t package = { uart_raw->id, DATA_TYPE_BYTE, &byte };
+		data_package_t package = { id, DATA_TYPE_BYTE, &byte,
+				timestamp };
 		uart_raw->data_out->new_data(uart_raw->data_out->parent, &package);
 	}
 }
@@ -61,5 +79,6 @@ static void device_uart_raw_update(void* const _uart_raw) {
 static void device_uart_new_control_message(void* const uart_raw,
 		unsigned int count, const control_parameter_t* parameters) {  //TODO remove
 	while (count--)
-		uart_light_send(((device_uart_raw_t*) uart_raw)->uart_light, (parameters++)->type);
+		uart_light_send(((device_uart_raw_t*) uart_raw)->uart_light,
+				(parameters++)->type);
 }

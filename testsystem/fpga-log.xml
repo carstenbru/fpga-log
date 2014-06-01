@@ -248,7 +248,7 @@
             </peripheral>
             <peripheral id="#44DA">
                 <attribute id="module_type" xml:space="preserve">timestamp_gen</attribute>
-                <attribute id="name" xml:space="preserve">timestamp_gen_0</attribute>
+                <attribute id="name" xml:space="preserve">timestamp_gen</attribute>
                 <attribute id="signature" xml:space="preserve">C5B3D862FAD1FE3C251B3A6A79A25AC4</attribute>
                 <parameter id="#PARAM.CLOCK_FREQUENCY">
                     <attribute id="name" xml:space="preserve">CLOCK_FREQUENCY</attribute>

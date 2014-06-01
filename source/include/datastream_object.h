@@ -8,7 +8,7 @@
 #ifndef DATASTREAMS_OBJECT_H_
 #define DATASTREAMS_OBJECT_H_
 
-#define MAX_DATASTREAM_OBJECTS 64
+#define MAX_DATASTREAM_OBJECTS 128
 
 /**
  * @brief struct describing an object in the datastreams
@@ -20,7 +20,8 @@ typedef struct {
 	/**
 	 * @brief update function of the datastream object
 	 *
-	 * everything that does not need to be done immediately in an interrupt is done here, e.g. sending data to a data_out port
+	 * Everything that does not need to be done immediately in an interrupt is done here.
+	 * If the device is a source and uses software timestamps you can generate them in this function.
 	 *
 	 * @param	datastream_object		pointer to the datastream_object struct
 	 */
@@ -37,6 +38,6 @@ void datastream_object_init(datastream_object_t* const object);
 /**
  * @brief	updates all datastream_object_t's
  */
-void datastreams_update(void);
+void datastream_objects_update(void);
 
 #endif
