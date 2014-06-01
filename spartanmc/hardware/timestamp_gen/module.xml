@@ -1,0 +1,31 @@
+<!--
+
+XML module description
+
+-->
+
+<module xmlns="http://www.mr.inf.tu-dresden.de/spartanmc/module" name="timestamp_gen" text="Timestamp generator" type="peripheral" category="Timer/Counter">
+  
+	<description>
+		The timestamp Generator is a SpartanMC peripheral for generating precise timestamps. 
+		Therefore it has two 36bit time values: one representing the current time in seconds and one with the exact clock cycle within this second. To get exact values it has a configurable amount of input lines and on a rising edge on this lines the
+		current timer value is stored into a fifo queue.
+		For non interrupt peripherals it is also possible to read the current timer value.
+	</description>
+	
+	<interface toplevel="spmc_timestamp_gen" registers="7" />
+	
+	<parameters>
+		<!--<parameter name="BASE_ADR" type="hex" value="0x10" />-->
+		<parameter name="SOURCES" type="int" value="2" >
+		  <range min="1" max="262144"/>
+		</parameter>
+		<parameter name="CLOCK_FREQUENCY" type="int" value="16000000" >
+		  <range min="1" max="68719476736"/>
+		</parameter>
+	</parameters>
+	
+	<ports group="Timestamp capture sources" direction="input">
+          <port name="source" width="${SOURCES}"/>
+        </ports>
+</module>
