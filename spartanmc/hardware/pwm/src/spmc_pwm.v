@@ -95,7 +95,7 @@ module spmc_pwm #(
       pwm_sel <=  {(PWM_SEL_WIDTH){1'b0}};
     end else begin
       if (select & wr_peri) begin
-        case (addr_peri[2:0])
+        case (addr_peri[1:0])
           CONFIG_ADR:    begin
 			   pwm_adr <= do_peri[1:0];
 			   pwm_bank[PWM_BANK_WIDTH-1:0] <= do_peri[PWM_BANK_WIDTH+1:2];
