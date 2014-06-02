@@ -8,12 +8,13 @@
 #include "datastream_source.h"
 #include <peripherals/timestamp_gen.h>
 #include <system/peripherals.h>
+#include "pc_native/pc_compatibility.h"
 
 datastream_source_t* datastream_source_list[MAX_DATASTREAM_SOURCES];
 
 void datastream_sources_send_data(void) {
 	datastream_source_t* source;
-	while (TIMESTAMP_GEN->status) {
+	while (TIMESTAMP_GEN_NOT_EMPTY(TIMESTAMP_GEN)) {
 		if (TIMESTAMP_GEN->tsr < MAX_DATASTREAM_SOURCES) {
 			source = datastream_source_list[TIMESTAMP_GEN->tsr];
 			if (source != 0) {

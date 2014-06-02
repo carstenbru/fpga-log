@@ -6,6 +6,7 @@
  */
 
 #include "device/device_uart_raw.h"
+#include "peripheral_funcs/uart_light_funcs.h"
 
 /**
  * @brief uart raw update function
@@ -53,7 +54,7 @@ void device_uart_raw_init(device_uart_raw_t* const uart_raw,
 
 	uart_raw->uart_light = uart_light;
 
-	uart_light->status = UART_LIGHT_RXIE;
+	uart_light_enable_rxint(uart_light);
 }
 
 void device_uart_raw_set_data_out(device_uart_raw_t* const uart_raw,

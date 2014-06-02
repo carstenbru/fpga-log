@@ -14,8 +14,13 @@
 
 #include <peripherals/compare.h>
 #include <peripherals/timer.h>
+#include <peripherals/timestamp_gen.h>
 
 #include "pc_native/peripherals.h"
+
+unsigned int timestamp_gen_not_empty(timestamp_gen_regs_t* timestamp_gen);
+
+#define TIMESTAMP_GEN_NOT_EMPTY(tsgen) (timestamp_gen_not_empty(tsgen))
 
 typedef long int_ptr;
 
@@ -47,6 +52,11 @@ typedef struct {
 } spmc_compare_t;
 
 /**
+ * @brief timestamp peripheral simulation
+ */
+extern timestamp_gen_regs_t* TIMESTAMP_GEN;
+
+/**
  * @brief array of the pipes simulating SpartanMC peripherals
  */
 extern file_pipe_t pipes[PIPE_COUNT];
@@ -61,6 +71,26 @@ extern spmc_timer_t sim_timers[TIMER_COUNT];
  */
 extern spmc_compare_t sim_compares[COMPARE_COUNT];
 
+/**
+ * @brief fifo/pipe read function
+ *
+ * @param fifo 	number of the fifo to read
+ * @param data	pointer to char where data should be stored
+ * @return 1 on success, 0 on eof and -1 on error
+ */
+int fifo_read(unsigned int fifo, unsigned char* data);
+
+/**
+ * @brief fifo/pipe write function
+ *
+ * @param fifo	number of the fifo to write
+ * @param data	data to write
+ * @return	1 on success
+ */
+int fifo_write(unsigned int fifo, unsigned char data);
+
+#else
+#define TIMESTAMP_GEN_NOT_EMPTY(tsgen) (tsgen->status)
 #endif
 
 #endif

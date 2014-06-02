@@ -7,8 +7,8 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#ifndef PERIPHERAL_PIPES_H_
-#define PERIPHERAL_PIPES_H_
+#ifndef PERIPHERALS_SIM_H_
+#define PERIPHERALS_SIM_H_
 
 /*
  * number of pipes (one per peripheral)
@@ -39,5 +39,8 @@
  */
 #define TIMER_0 	0
 #define COMPARE_0 0
+
+#define TIMESTAMP_CAPTURE_SIGNALS_COUNT 2
+#define TIMESTAMP_CAPTURE_SIGNALS {UART_LIGHT_PC, UART_LIGHT_1}
 
 #endif

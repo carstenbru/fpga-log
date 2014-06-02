@@ -18,8 +18,7 @@
  */
 int uart_light_receive_nb(uart_light_regs_t *uart, unsigned char *value) {
 	return
-			read((&pipes[(int_ptr) uart])->in, value, 1) > 0 ?
-					UART_LIGHT_OK : UART_LIGHT_NO_DATA;
+			fifo_read((int_ptr) uart, value) > 0 ? UART_LIGHT_OK : UART_LIGHT_NO_DATA;
 }
 
 /**
@@ -29,5 +28,8 @@ int uart_light_receive_nb(uart_light_regs_t *uart, unsigned char *value) {
  * @param value		the value to send
  */
 void uart_light_send(uart_light_regs_t *uart, unsigned char value) {
-	write((&pipes[(int_ptr) uart])->out, &value, 1);
+	fifo_write((int_ptr) uart, value);
+}
+
+void uart_light_enable_rxint(uart_light_regs_t* uart) {
 }

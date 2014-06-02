@@ -143,6 +143,7 @@
 									<listOptionValue builtIn="false" value="PC_NATIVE"/>
 									<listOptionValue builtIn="false" value="PERI_CLOCK=16000000"/>
 								</option>
+								<option id="gnu.c.compiler.option.optimization.level.1637759707" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" value="gnu.c.optimization.level.more" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.2082582868" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.1848279633" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base">
@@ -181,7 +182,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="sink_sd_card.c|fatFS_sdcard.c|src/fatFS_sdcard.c|src/sdcard.c|src/pwm.c|src/cast_to_ulong.s|FatFs.c|src/mul34_17.c|src/sys_init.c|src/timer_funcs.c|src/compare_funcs.c" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="source"/>
+						<entry excluding="src/uart_light_funcs.c|sink_sd_card.c|fatFS_sdcard.c|src/fatFS_sdcard.c|src/sdcard.c|src/pwm.c|src/cast_to_ulong.s|FatFs.c|src/mul34_17.c|src/sys_init.c|src/timer_funcs.c|src/compare_funcs.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="source"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -224,4 +225,5 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 </cproject>
