@@ -21,7 +21,7 @@
  * @param channels 	mask with channels to configure (every bit represents one channel)
  * @param frequency	frequency of the pwm signal in Hz
  * @param	duty			duty cycle of the pwm signal in %
- * @param	phase			phase of the pwm signal to the (internal) reference signal in degree (normally 0-360°, also negative values possible)
+ * @param	phase			phase of the pwm signal to the (internal) reference signal in degree (normally 0-360 degree, also negative values possible)
  */
 void pwm_config_channels(pwm_regs_t* const pwm, unsigned int bank,
 		unsigned int channels, unsigned int frequency, unsigned char duty,
@@ -34,7 +34,7 @@ void pwm_config_channels(pwm_regs_t* const pwm, unsigned int bank,
  * @param channel		number of the channel to configure
  * @param frequency frequency of the pwm signal in Hz
  * @param duty			duty cycle of the pwm signal in %
- * @param phase			phase of the pwm signal to the (internal) reference signal in degree (normally 0-360°, also negative values possible)
+ * @param phase			phase of the pwm signal to the (internal) reference signal in degree (normally 0-360 degree, also negative values possible)
  */
 void pwm_config_single_channel(pwm_regs_t* const pwm, unsigned int channel,
 		unsigned int frequency, unsigned char duty, int phase);

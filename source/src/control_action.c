@@ -1,5 +1,5 @@
 /**
- * @file control_action.h
+ * @file control_action.c
  * @brief control actions
  *
  * This can be used for example as an action performed on a trigger or timer event.

@@ -1,5 +1,5 @@
 /**
- * @file datastream_source.h
+ * @file datastream_source.c
  * @brief datastream_source as super-class for data sources (devices), send_data function for all datastream_sources
  *
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
