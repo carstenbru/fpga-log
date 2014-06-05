@@ -18,6 +18,16 @@
 #include "sink/formatter/formatter.h"
 
 /**
+ * defines the maximal usable file name length of the log file
+ */
+#define SDCARD_MAX_FILE_NAME_LENGTH 16
+
+/**
+ * defines the name of the log file, %d can be used as number of log file
+ */
+#define SDCARED_FILE_NAME "log_%d.txt"
+
+/**
  * @brief struct describing a sd card sink
  */
 typedef struct {

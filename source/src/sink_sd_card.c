@@ -6,6 +6,7 @@
  */
 
 #include "sink/sink_sd_card.h"
+#include <stdio.h>
 
 static sink_sd_card_t* pdrv_resolve[_VOLUMES];
 static int used_volumes = 0;
@@ -36,6 +37,14 @@ static void sink_sd_card_update(void* const _sink_sd_card);
 static void sink_sd_card_new_data(void* const sink_sd_card,
 		const data_package_t* const package);
 
+/**
+ * @brief puts a char into the buffer, needed to use printf as sprintf
+ *
+ * @param buf		the write desination (pointer to an array)
+ * @param byte	the byte to write
+ */
+static void put_buf(void* const param, const char byte);
+
 void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
 		formatter_t* const formatter, sdcard_regs_t* const sd_card) {
 	datastream_object_init(&sink_sd_card->super);  //call parents init function
@@ -59,8 +68,22 @@ void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
 
 	char dev_path[3] = { sink_sd_card->pdrv + '0', ':', 0 };
 	f_mount(&sink_sd_card->fatFs, dev_path, 0);
-	//TODO variable file name, perhaps multiple files?
-	f_open(&sink_sd_card->file, "fpga-log.txt", FA_WRITE | FA_CREATE_ALWAYS);
+
+	io_descr_t old_stdio = stdio_descr;
+	char buf[SDCARD_MAX_FILE_NAME_LENGTH + 1];
+	unsigned int i;
+	for (i = 0; i < SDCARD_MAX_FILE_NAME_LENGTH + 1; i++)
+		buf[i] = 0;
+	i = 0;
+	stdio_descr.send_byte = put_buf;
+	do {
+		char* p = buf;
+		stdio_descr.base_adr = &p;
+		printf(SDCARED_FILE_NAME, i);
+		i++;
+	} while (f_open(&sink_sd_card->file, buf, FA_WRITE | FA_CREATE_NEW)
+			== FR_EXIST);
+	stdio_descr = old_stdio;
 
 	//TODO when close file/sync so that no data gets lost?
 }
@@ -75,7 +98,7 @@ static void sink_sd_write_byte(void *param, unsigned char byte) {
 static void sink_sd_card_update(void* const _sink_sd_card) {
 	sink_sd_card_t* sink = (sink_sd_card_t*) _sink_sd_card;
 
-	f_sync(&sink->file); //TODO flush not on every update, perhaps use 2000hz timer?
+	f_sync(&sink->file);  //TODO flush not on every update, perhaps use 2000hz timer?
 }
 
 static void sink_sd_card_new_data(void* const sink_sd_card,
@@ -83,6 +106,10 @@ static void sink_sd_card_new_data(void* const sink_sd_card,
 	sink_sd_card_t* sink = (sink_sd_card_t*) sink_sd_card;
 
 	sink->formatter->format((void*) (sink->formatter), package);
+}
+
+static void put_buf(void* const param, const char byte) {
+	*(*(char**) param)++ = byte;
 }
 
 sink_sd_card_t* sink_sd_card_from_pdrv(BYTE pdrv) {
