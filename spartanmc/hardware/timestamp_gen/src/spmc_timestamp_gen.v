@@ -56,6 +56,7 @@ module spmc_timestamp_gen #(
   reg [1:0] capture_state;
   reg [17:0] tsr_capture;
   reg [35:0] hpt_capture;  
+  wire capture_ready;
   
   //counter registers
   reg [35:0] lpt_counter;
@@ -68,6 +69,8 @@ module spmc_timestamp_gen #(
   
   assign source_change = (!source_last & source);
   assign fifo_n_empty = (fifo_ts_read != fifo_ts_write);
+  
+  assign capture_ready = capture_state == 2'b11;
   
   //SpartanMC peripheral interface write logic
   always @(posedge clk_peri) begin
@@ -84,7 +87,8 @@ module spmc_timestamp_gen #(
 	
 	sw_source_change <= do_peri[15:0];
       end else
-        sw_source_change <= 16'd0;
+        if (capture_ready)
+          sw_source_change <= 16'd0;
     end
   end
   
@@ -107,7 +111,8 @@ module spmc_timestamp_gen #(
     if (reset) begin
       source_last <= {(SOURCES){1'b1}};
     end else begin
-      source_last <= source;
+      if (capture_ready)
+        source_last <= source;
     end
   end
   
@@ -158,6 +163,7 @@ module spmc_timestamp_gen #(
     endcase
   end
   
+  //fifo top read logic (to register)
   always @(posedge clk_peri) begin
     case (fifo_top_read_state)
     2'b00: begin
@@ -192,7 +198,7 @@ RAMB16_S36_S36 TIMESTAMP_FIFO	(
 		.DIB(		fifo_in_dat[31:0]				),
 		.DIPB(		fifo_in_dat[35:32]				),
 		.ADDRB(		{fifo_ts_write[6:0], capture_state[1:0]}	),
-		.ENB(		(capture_state != 2'b11)			),
+		.ENB(		!capture_ready					),
 		.WEB(		1'b1						),
 		.SSRB(		1'b1						),
 		.CLKB(		clk_peri					)
