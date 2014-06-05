@@ -42,8 +42,11 @@ module spmc_timestamp_gen #(
   reg [6:0] fifo_ts_read;
   reg [6:0] fifo_ts_write;
   reg [35:0] fifo_in_dat;
-  wire [17:0] fifo_out_dat;
+  wire [35:0] fifo_out_dat;
   wire fifo_empty;
+  
+  reg [17:0] fifo_top [0:7];
+  reg [1:0] fifo_top_read_state;
   
   //timestamp capture line registers
   reg [SOURCES-1:0] source_last;
@@ -60,7 +63,7 @@ module spmc_timestamp_gen #(
   
   wire [17:0] dat_out;
   //SpartanMC peripheral interface read logic
-  assign dat_out = (addr_peri[2:0] == STATUS_ADR) ? {17'd0, fifo_n_empty} : fifo_out_dat;
+  assign dat_out = (addr_peri[2:0] == STATUS_ADR) ? {17'd0, fifo_n_empty} : fifo_top[addr_peri[2:0]];
   assign di_peri = (select & !wr_peri) ? dat_out : 18'b0;
   
   assign source_change = (!source_last & source);
@@ -155,22 +158,44 @@ module spmc_timestamp_gen #(
     endcase
   end
   
-RAMB16_S18_S36 TIMESTAMP_FIFO	(
-		.ADDRA(		{fifo_ts_read[6:0], addr_peri[2:0]}	),
-		.ENA(		1'b1					),
-		.WEA(		1'b0					),
-		.SSRA(		1'b0					),
-		.CLKA(		select					),
-		.DOA(		fifo_out_dat[15:0]			),
-		.DOPA(		fifo_out_dat[17:16]			),
+  always @(posedge clk_peri) begin
+    case (fifo_top_read_state)
+    2'b00: begin
+	     fifo_top[6] <= fifo_out_dat[17:0];
+	     fifo_top[7] <= fifo_out_dat[35:18];
+	   end
+    2'b01: begin
+	     fifo_top[0] <= fifo_out_dat[17:0];
+	     fifo_top[1] <= fifo_out_dat[35:18];
+	   end
+    2'b10: begin
+	     fifo_top[2] <= fifo_out_dat[17:0];
+	     fifo_top[3] <= fifo_out_dat[35:18];
+	   end
+    2'b11: begin
+	     fifo_top[4] <= fifo_out_dat[17:0];
+	     fifo_top[5] <= fifo_out_dat[35:18];
+	   end
+    endcase
+    fifo_top_read_state <= fifo_top_read_state + 1;
+  end
+  
+RAMB16_S36_S36 TIMESTAMP_FIFO	(
+		.ADDRA(		{fifo_ts_read[6:0], fifo_top_read_state[1:0]}	),
+		.ENA(		1'b1						),
+		.WEA(		1'b0						),
+		.SSRA(		1'b0						),
+		.CLKA(		clk_peri					),
+		.DOA(		fifo_out_dat[31:0]				),
+		.DOPA(		fifo_out_dat[35:32]				),
 		
-		.DIB(		{fifo_in_dat[33:18],fifo_in_dat[15:0]}	),
-		.DIPB(		{fifo_in_dat[35:34],fifo_in_dat[17:16]}	),
-		.ADDRB(		{fifo_ts_write[6:0], capture_state[1:0]}),
-		.ENB(		(capture_state != 2'b11)		),
-		.WEB(		1'b1					),
-		.SSRB(		1'b1					),
-		.CLKB(		clk_peri				)
+		.DIB(		fifo_in_dat[31:0]				),
+		.DIPB(		fifo_in_dat[35:32]				),
+		.ADDRB(		{fifo_ts_write[6:0], capture_state[1:0]}	),
+		.ENB(		(capture_state != 2'b11)			),
+		.WEB(		1'b1						),
+		.SSRB(		1'b1						),
+		.CLKB(		clk_peri					)
 		);
   
 endmodule
