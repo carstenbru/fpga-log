@@ -24,8 +24,8 @@ static void device_uart_raw_update(void* const _uart_raw);
  * @param id					the source id of the pending data
  * @param timestamp		pointer to the timestamp of the pending data
  */
-static void device_uart_raw_send_data(void* const _uart_raw, const unsigned int id,
-		const timestamp_t* const timestamp);
+static void device_uart_raw_send_data(void* const _uart_raw,
+		const unsigned int id, const timestamp_t* const timestamp);
 
 /**
  * @brief control message function of uart raw
@@ -65,14 +65,13 @@ void device_uart_raw_set_data_out(device_uart_raw_t* const uart_raw,
 static void device_uart_raw_update(void* const _uart_raw) {
 }
 
-static void device_uart_raw_send_data(void* const _uart_raw, const unsigned int id,
-		const timestamp_t* const timestamp) {
+static void device_uart_raw_send_data(void* const _uart_raw,
+		const unsigned int id, const timestamp_t* const timestamp) {
 	device_uart_raw_t* uart_raw = (device_uart_raw_t*) _uart_raw;
 
 	unsigned char byte;
 	if (uart_light_receive_nb(uart_raw->uart_light, &byte) == UART_OK) {
-		data_package_t package = { id, DATA_TYPE_BYTE, &byte,
-				timestamp };
+		data_package_t package = { id, 0, DATA_TYPE_BYTE, &byte, timestamp };
 		uart_raw->data_out->new_data(uart_raw->data_out->parent, &package);
 	}
 }

@@ -43,7 +43,7 @@ static void sink_sd_card_new_data(void* const sink_sd_card,
  * @param buf		the write desination (pointer to an array)
  * @param byte	the byte to write
  */
-static void put_buf(void* const param, const char byte);
+static void put_buf(void* const param, const unsigned char byte);
 
 void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
 		formatter_t* const formatter, sdcard_regs_t* const sd_card) {
@@ -70,18 +70,18 @@ void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
 	f_mount(&sink_sd_card->fatFs, dev_path, 0);
 
 	io_descr_t old_stdio = stdio_descr;
-	char buf[SDCARD_MAX_FILE_NAME_LENGTH + 1];
+	unsigned char buf[SDCARD_MAX_FILE_NAME_LENGTH + 1];
 	unsigned int i;
 	for (i = 0; i < SDCARD_MAX_FILE_NAME_LENGTH + 1; i++)
 		buf[i] = 0;
 	i = 0;
 	stdio_descr.send_byte = put_buf;
 	do {
-		char* p = buf;
+		unsigned char* p = buf;
 		stdio_descr.base_adr = &p;
 		printf(SDCARED_FILE_NAME, i);
 		i++;
-	} while (f_open(&sink_sd_card->file, buf, FA_WRITE | FA_CREATE_NEW)
+	} while (f_open(&sink_sd_card->file, (char*) buf, FA_WRITE | FA_CREATE_NEW)
 			== FR_EXIST);
 	stdio_descr = old_stdio;
 
@@ -108,8 +108,8 @@ static void sink_sd_card_new_data(void* const sink_sd_card,
 	sink->formatter->format((void*) (sink->formatter), package);
 }
 
-static void put_buf(void* const param, const char byte) {
-	*(*(char**) param)++ = byte;
+static void put_buf(void* const param, const unsigned char byte) {
+	*(*(unsigned char**) param)++ = byte;
 }
 
 sink_sd_card_t* sink_sd_card_from_pdrv(BYTE pdrv) {
