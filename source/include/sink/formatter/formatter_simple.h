@@ -10,6 +10,11 @@
 
 #include "sink/formatter/formatter.h"
 
+/**
+ * @brief high prescision timestamp digits in log
+ */
+#define FORMATTER_SIMPLE_HPT_LENGTH 9
+
 /** 
  * @brief struct defining a simple formatter which only outputs a message count and the value
  */

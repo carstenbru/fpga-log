@@ -7,7 +7,6 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-
 /**
  * @brief casts a unsigned int to a unsigned long int
  *
@@ -34,3 +33,13 @@ unsigned long int cast_to_ulong(unsigned int i);
  * @return	multiplication result, truncated to 34-bit
  */
 unsigned long int mul34_17(unsigned long int a_34, unsigned int b_17);
+
+/**
+ * @brief prints a (unsigned) long integer to stdio
+ *
+ * @param val				the value to print
+ * @param minwidth	the minimum number of digits in output
+ * @param maxwidth	the maximum number of digits in output
+ */
+void print_long(unsigned long int val, unsigned int minwidth,
+		unsigned int maxwidth);

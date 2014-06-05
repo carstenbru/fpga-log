@@ -69,13 +69,14 @@ unsigned int timestamp_gen_not_empty(timestamp_gen_regs_t* timestamp_gen) {
 			fifo_first[i] = b;
 
 			time_t t = time(0);
-			timestamp_gen->timestamp.lpt_low = t & 262143;
-			timestamp_gen->timestamp.lpt_high = t >> 18;
+			timestamp_gen->timestamp.lpt_low = t;
+			timestamp_gen->timestamp.lpt_high = t >> (sizeof(unsigned int) * 8);
 
 			struct timeval now;
 			gettimeofday(&now, NULL);
-			timestamp_gen->timestamp.hpt_low = now.tv_usec & 262143;
-			timestamp_gen->timestamp.hpt_high = now.tv_usec >> 18;
+			timestamp_gen->timestamp.hpt_low = now.tv_usec;
+			timestamp_gen->timestamp.hpt_high = now.tv_usec
+					>> (sizeof(unsigned int) * 8);
 
 			timestamp_gen->tsr = i;
 			return 1;
