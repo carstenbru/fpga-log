@@ -23,7 +23,6 @@ typedef struct {
 	const data_port_t* data_out; 		/**< data output destination */
 	control_port_t control_in; 			/**< control port, this can be set at a control output to direct the control stream to this device */
 
-	int id; 												/**< id of the device */
 	uart_light_regs_t* uart_light; 	/**< pointer to UART hardware registers */
 } device_uart_raw_t;
 
