@@ -19,7 +19,8 @@
  */
 typedef enum {
 	COMPARE_MODE_VALUE, 		/**< the measured value is compared with the reference value */
-	COMPARE_MODE_SOURCE_ID 	/**< the source id is compared with the reference value */
+	COMPARE_MODE_SOURCE_ID, 	/**< the source id is compared with the reference value */
+	COMPARE_MODE_VALUE_ID 	/**< the value id is compared with the reference value */
 } datastream_condition_compare_mode;
 
 /**

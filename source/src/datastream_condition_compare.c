@@ -11,7 +11,7 @@
 #include "dm/datastream_condition_compare.h"
 #include "data_port.h"
 
-int datastream_condition_compare_is_fullfilled_value(
+static int datastream_condition_compare_is_fullfilled_value(
 		void* const trigger_condition, const data_package_t* const package) {
 	datastream_condition_compare_t* cond =
 			(datastream_condition_compare_t*) trigger_condition;
@@ -31,12 +31,20 @@ int datastream_condition_compare_is_fullfilled_value(
 	return cond->compare_func(val, cond->compare_value);
 }
 
-int datastream_condition_compare_is_fullfilled_source_id(
+static int datastream_condition_compare_is_fullfilled_source_id(
 		void* const trigger_condition, const data_package_t* const package) {
 	datastream_condition_compare_t* cond =
 			(datastream_condition_compare_t*) trigger_condition;
 
 	return cond->compare_func(package->source_id, cond->compare_value);
+}
+
+static int datastream_condition_compare_is_fullfilled_value_id(
+		void* const trigger_condition, const data_package_t* const package) {
+	datastream_condition_compare_t* cond =
+			(datastream_condition_compare_t*) trigger_condition;
+
+	return cond->compare_func(package->val_id, cond->compare_value);
 }
 
 void datastream_condition_compare_init(
@@ -46,9 +54,11 @@ void datastream_condition_compare_init(
 	if (mode == COMPARE_MODE_SOURCE_ID) {
 		cond->super.is_fulfilled =
 				datastream_condition_compare_is_fullfilled_source_id;
+	} else if (mode == COMPARE_MODE_VALUE) {
+		cond->super.is_fulfilled = datastream_condition_compare_is_fullfilled_value;
 	} else {
 		cond->super.is_fulfilled =
-				datastream_condition_compare_is_fullfilled_value;
+				datastream_condition_compare_is_fullfilled_value_id;
 	}
 
 	cond->compare_func = compare_func;
