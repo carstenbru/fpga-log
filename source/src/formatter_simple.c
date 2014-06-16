@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "sink/formatter/formatter_simple.h"
 #include "long_int.h"
+#include "simple_float.h"
 
 /**
  * @brief simple formatter output log format function
@@ -38,6 +39,29 @@ static void formatter_simple_format(void* const formatter,
 	print_long(package->timestamp->lpt, 1, 12);
 	stdio_descr.send_byte(stdio_descr.base_adr, '.');
 	print_long(package->timestamp->hpt, FORMATTER_SIMPLE_HPT_LENGTH,
-			FORMATTER_SIMPLE_HPT_LENGTH);
-	printf("\t%d: %d\n", fs->count++, (int ) *((unsigned char* ) package->data));
+	FORMATTER_SIMPLE_HPT_LENGTH);
+	printf("\tcount %d: %s\tvalue ", fs->count++, package->val_name);
+	switch (package->type) {
+	case (DATA_TYPE_INT): {
+		printf("%d", *((unsigned int* ) package->data));
+		break;
+	}
+	case (DATA_TYPE_BYTE): {
+		printf("%d", (int ) *((unsigned char* ) package->data));
+		break;
+	}
+	case (DATA_TYPE_LONG): {
+		print_long(*((unsigned long int*) package->data), 1, 12);
+		break;
+	}
+	case (DATA_TYPE_SIMPLE_FLOAT): {
+		simple_float_b10_t* f = (simple_float_b10_t*) package->data;
+		printf("  %d.%d", f->coefficient / 10000, f->coefficient % 10000);
+		printf("E%d", f->exponent);
+		break;
+	}
+	default:
+		printf("unsupported data type in stream!");
+	}
+	putchar('\n');
 }
