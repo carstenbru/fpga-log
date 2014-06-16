@@ -67,7 +67,7 @@ module spmc_timestamp_gen #(
   assign dat_out = (addr_peri[2:0] == STATUS_ADR) ? {17'd0, fifo_n_empty} : fifo_top[addr_peri[2:0]];
   assign di_peri = (select & !wr_peri) ? dat_out : 18'b0;
   
-  assign source_change = (!source_last & source);
+  assign source_change = (~source_last & source);
   assign fifo_n_empty = (fifo_ts_read != fifo_ts_write);
   
   assign capture_ready = capture_state == 2'b11;
