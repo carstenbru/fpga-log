@@ -12,7 +12,7 @@
 
 static void control_action_measure_func(void* const control_action,
 		const control_port_t* port) {
-	control_parameter_t p = { 'm', 0 };
+	control_parameter_t p = { CONTROL_COMMAND_MEASURE, 0 };
 	port->new_control_message(port->parent, 1, &p);
 }
 

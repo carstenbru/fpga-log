@@ -9,6 +9,13 @@
 #define CONTROL_PORT_H_
 
 /**
+ * @brief measurement command which should be supported by most devices
+ *
+ * This command needs no more parameters.
+ */
+#define CONTROL_COMMAND_MEASURE 'm'
+
+/**
  * @brief struct holding incoming data
  */
 typedef struct {

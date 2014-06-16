@@ -34,6 +34,16 @@ void datastream_objects_update(void) {
 	}
 }
 
+/**
+ * @brief	dummy update function
+ *
+ * @param	object		pointer to the datastream_object
+ */
+static void datastream_object_update_summy(void* const object) {
+}
+
 void datastream_object_init(datastream_object_t* const object) {
+	object->update = datastream_object_update_summy;
+
 	datastream_list_add(object);
 }
