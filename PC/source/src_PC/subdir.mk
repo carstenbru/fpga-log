@@ -35,7 +35,7 @@ C_DEPS += \
 source/src_PC/%.o: ../source/src_PC/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C Compiler'
-	gcc -DPC_NATIVE -DPERI_CLOCK=16000000 -I"${SPARTANMC_ROOT}/spartanmc/include" -I../testsystem -I../source/include -O2 -g -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	gcc -DPC_NATIVE -DPERI_CLOCK=16000000 -I"${SPARTANMC_ROOT}/spartanmc/include" -I../testsystem -I../source/include -O0 -g -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

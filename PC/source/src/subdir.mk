@@ -14,6 +14,7 @@ C_SRCS += \
 ../source/src/datastream_condition_compare.c \
 ../source/src/datastream_object.c \
 ../source/src/datastream_source.c \
+../source/src/device_hct99.c \
 ../source/src/device_pwm.c \
 ../source/src/device_uart_raw.c \
 ../source/src/dm_filter.c \
@@ -41,6 +42,7 @@ OBJS += \
 ./source/src/datastream_condition_compare.o \
 ./source/src/datastream_object.o \
 ./source/src/datastream_source.o \
+./source/src/device_hct99.o \
 ./source/src/device_pwm.o \
 ./source/src/device_uart_raw.o \
 ./source/src/dm_filter.o \
@@ -68,6 +70,7 @@ C_DEPS += \
 ./source/src/datastream_condition_compare.d \
 ./source/src/datastream_object.d \
 ./source/src/datastream_source.d \
+./source/src/device_hct99.d \
 ./source/src/device_pwm.d \
 ./source/src/device_uart_raw.d \
 ./source/src/dm_filter.d \
@@ -89,7 +92,7 @@ C_DEPS += \
 source/src/%.o: ../source/src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C Compiler'
-	gcc -DPC_NATIVE -DPERI_CLOCK=16000000 -I"${SPARTANMC_ROOT}/spartanmc/include" -I../testsystem -I../source/include -O2 -g -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	gcc -DPC_NATIVE -DPERI_CLOCK=16000000 -I"${SPARTANMC_ROOT}/spartanmc/include" -I../testsystem -I../source/include -O0 -g -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
