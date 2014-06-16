@@ -18,7 +18,8 @@ void datastream_sources_send_data(void) {
 		if (TIMESTAMP_GEN->tsr < MAX_DATASTREAM_SOURCES) {
 			source = datastream_source_list[TIMESTAMP_GEN->tsr];
 			if (source != 0) {
-				source->send_data(source, TIMESTAMP_GEN->tsr, &TIMESTAMP_GEN->timestamp);
+				source->send_data(source, TIMESTAMP_GEN->tsr,
+						&TIMESTAMP_GEN->timestamp);
 			}
 		}
 		TIMESTAMP_GEN->control = TIMESTAMP_GEN_NEXT_VAL;
@@ -31,7 +32,13 @@ int datastream_source_init(datastream_source_t* const source,
 
 	if (id < MAX_DATASTREAM_SOURCES) {
 		datastream_source_list[id] = source;
+		source->id = id;
 		return 1;
 	} else
 		return 0;
+}
+
+void datastream_source_generate_software_timestamp(
+		datastream_source_t* const source) {
+	TIMESTAMP_GEN_GENERATE_SOFTWARE_TIMESTAMP(TIMESTAMP_GEN, source->id);
 }

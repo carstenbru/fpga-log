@@ -44,7 +44,7 @@ static int datastream_condition_compare_is_fullfilled_value_id(
 	datastream_condition_compare_t* cond =
 			(datastream_condition_compare_t*) trigger_condition;
 
-	return cond->compare_func(package->val_id, cond->compare_value);
+	return cond->compare_func(package->val_name, cond->compare_value);
 }
 
 void datastream_condition_compare_init(

@@ -19,8 +19,13 @@
 #include "pc_native/peripherals.h"
 
 unsigned int timestamp_gen_not_empty(timestamp_gen_regs_t* timestamp_gen);
+void timestamp_gen_generate_software_timestamp(
+		timestamp_gen_regs_t* timestamp_gen, unsigned int id);
 
 #define TIMESTAMP_GEN_NOT_EMPTY(tsgen) (timestamp_gen_not_empty(tsgen))
+#define TIMESTAMP_GEN_GENERATE_SOFTWARE_TIMESTAMP(tsgen, id) (timestamp_gen_generate_software_timestamp(tsgen, id))
+
+#define MAX_SOFTWARE_TIMESTAMPS 64
 
 typedef long int_ptr;
 
@@ -91,6 +96,7 @@ int fifo_write(unsigned int fifo, unsigned char data);
 
 #else
 #define TIMESTAMP_GEN_NOT_EMPTY(tsgen) (tsgen->status)
+#define TIMESTAMP_GEN_GENERATE_SOFTWARE_TIMESTAMP(tsgen, id) (tsgen->control = id)
 #endif
 
 #endif

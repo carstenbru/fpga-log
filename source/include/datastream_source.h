@@ -20,6 +20,7 @@
  */
 typedef struct {
 	datastream_object_t super; /**< super-"class": datastream_object_t*/
+	unsigned int id; /**< source id */
 
 	/**
 	 * @brief send data function of the datastream source
@@ -44,6 +45,16 @@ typedef struct {
  */
 int datastream_source_init(datastream_source_t* const source,
 		const unsigned int id);
+
+/**
+ * @brief generates a software triggered timestamp in the timestamp generator
+ *
+ * When this function is called a timestamp is gerated and
+ * later on the send_data function of the device is invoked with this timestamp.
+ *
+ * @param source
+ */
+void datastream_source_generate_software_timestamp(datastream_source_t* const source);
 
 /**
  * @brief	calls the send_data functions of all datastream sources with pending data
