@@ -56,7 +56,10 @@ static void formatter_simple_format(void* const formatter,
 	}
 	case (DATA_TYPE_SIMPLE_FLOAT): {
 		simple_float_b10_t* f = (simple_float_b10_t*) package->data;
-		printf("  %d.%d", f->coefficient / 10000, f->coefficient % 10000);
+		int i = f->coefficient;
+		if (i < 0)
+			i = -i;
+		printf("  %d.%d", f->coefficient / 10000, i % 10000);
 		printf("E%d", f->exponent);
 		break;
 	}
