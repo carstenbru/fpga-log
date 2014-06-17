@@ -18,9 +18,9 @@
  * @brief enumeration of the different compare modes
  */
 typedef enum {
-	COMPARE_MODE_VALUE, 		/**< the measured value is compared with the reference value */
-	COMPARE_MODE_SOURCE_ID, 	/**< the source id is compared with the reference value */
-	COMPARE_MODE_VALUE_ID 	/**< the value id is compared with the reference value */
+	COMPARE_MODE_VALUE, /**< the measured value is compared with the reference value */
+	COMPARE_MODE_SOURCE_ID, /**< the source id is compared with the reference value */
+	COMPARE_MODE_VALUE_ID /**< the value id is compared with the reference value */
 } datastream_condition_compare_mode;
 
 /**
@@ -50,8 +50,8 @@ typedef struct {
  */
 void datastream_condition_compare_init(
 		datastream_condition_compare_t* const cond,
-		int (*compare_func)(const int val, const int ref), const int mode,
-		const int value);
+		int (*compare_func)(const int val, const int ref),
+		const datastream_condition_compare_mode mode, const int value);
 
 /**
  * @brief sets a new compare value of the condition

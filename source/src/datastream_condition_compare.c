@@ -16,19 +16,15 @@ static int datastream_condition_compare_is_fullfilled_value(
 	datastream_condition_compare_t* cond =
 			(datastream_condition_compare_t*) trigger_condition;
 
-	int val = 0;
 	switch (package->type) {
 	case DATA_TYPE_INT:
-		val = *((int*) package->data);
-		break;
+		return cond->compare_func(*((int*) package->data), cond->compare_value);
 	case DATA_TYPE_BYTE:
-		val = *((unsigned char*) package->data);
-		break;
+		return cond->compare_func(*((unsigned char*) package->data),
+				cond->compare_value);
 	default:
-		break;  //TODO some error when unsupported data in stream
+		return 0;  //TODO some error when unsupported data in stream
 	}
-
-	return cond->compare_func(val, cond->compare_value);
 }
 
 static int datastream_condition_compare_is_fullfilled_source_id(
@@ -44,13 +40,13 @@ static int datastream_condition_compare_is_fullfilled_value_id(
 	datastream_condition_compare_t* cond =
 			(datastream_condition_compare_t*) trigger_condition;
 
-	return cond->compare_func(package->val_name, cond->compare_value);
+	return cond->compare_func((int) package->val_name, cond->compare_value);
 }
 
 void datastream_condition_compare_init(
 		datastream_condition_compare_t* const cond,
-		int (*compare_func)(const int val, const int ref), const int mode,
-		const int value) {
+		int (*compare_func)(const int val, const int ref),
+		const datastream_condition_compare_mode mode, const int value) {
 	if (mode == COMPARE_MODE_SOURCE_ID) {
 		cond->super.is_fulfilled =
 				datastream_condition_compare_is_fullfilled_source_id;
