@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg height="1092" version="1.1" width="1733" xmlns="http://www.w3.org/2000/svg">
+<svg height="1092" version="1.1" width="1906" xmlns="http://www.w3.org/2000/svg">
 <rect fill="#ffffff" height="104" stroke="#ffffff" stroke-width="1" width="202" x="710" y="142"/>
 <rect fill="none" height="104" stroke="#000000" stroke-width="1" width="202" x="710" y="142"/>
 <text font-family="Dialog" font-size="12" x="770" y="155">
@@ -413,44 +413,44 @@ datastream_condition_t</text>
 <rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="171" x="1518" y="763"/>
 <text font-family="Dialog" font-size="12" font-style="italic" x="1522" y="777">
 is_fullfilled() : int</text>
-<rect fill="#ffffff" height="120" stroke="#ffffff" stroke-width="1" width="233" x="1486" y="830"/>
-<rect fill="none" height="120" stroke="#000000" stroke-width="1" width="233" x="1486" y="830"/>
-<text font-family="Dialog" font-size="12" x="1498" y="843">
+<rect fill="#ffffff" height="120" stroke="#ffffff" stroke-width="1" width="233" x="1358" y="830"/>
+<rect fill="none" height="120" stroke="#000000" stroke-width="1" width="233" x="1358" y="830"/>
+<text font-family="Dialog" font-size="12" x="1370" y="843">
 datastream_condition_compare_t</text>
-<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="233" x="1486" y="853"/>
-<text font-family="Dialog" font-size="12" x="1490" y="867">
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="233" x="1358" y="853"/>
+<text font-family="Dialog" font-size="12" x="1362" y="867">
 compare_value : int</text>
-<text font-family="Dialog" font-size="12" x="1490" y="883">
+<text font-family="Dialog" font-size="12" x="1362" y="883">
 *compare_func : int</text>
-<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="233" x="1486" y="893"/>
-<text font-family="Dialog" font-size="12" x="1490" y="907">
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="233" x="1358" y="893"/>
+<text font-family="Dialog" font-size="12" x="1362" y="907">
 is_fullfilled() : int</text>
-<text font-family="Dialog" font-size="12" x="1490" y="923">
+<text font-family="Dialog" font-size="12" x="1362" y="923">
 init() : void</text>
-<text font-family="Dialog" font-size="12" x="1490" y="939">
+<text font-family="Dialog" font-size="12" x="1362" y="939">
 set_compare_value() : void</text>
-<polyline fill="none" points="1590,830 1590,789" stroke="#000000" stroke-width="1"/>
-<polygon fill="#ffffff" points="1590,789 1597,801 1583,801" stroke="#ffffff" stroke-width="1"/>
-<polygon fill="none" points="1590,789 1597,801 1583,801" stroke="#000000" stroke-width="1"/>
-<rect fill="#ffffff" height="69" stroke="#ffffff" stroke-width="1" width="133" x="1206" y="718"/>
-<rect fill="none" height="69" stroke="#000000" stroke-width="1" width="133" x="1206" y="718"/>
-<text font-family="Dialog" font-size="12" font-style="italic" x="1222" y="731">
+<polyline fill="none" points="1550,830 1550,789" stroke="#000000" stroke-width="1"/>
+<polygon fill="#ffffff" points="1550,789 1557,801 1543,801" stroke="#ffffff" stroke-width="1"/>
+<polygon fill="none" points="1550,789 1557,801 1543,801" stroke="#000000" stroke-width="1"/>
+<rect fill="#ffffff" height="69" stroke="#ffffff" stroke-width="1" width="133" x="1198" y="718"/>
+<rect fill="none" height="69" stroke="#000000" stroke-width="1" width="133" x="1198" y="718"/>
+<text font-family="Dialog" font-size="12" font-style="italic" x="1214" y="731">
 control_action_t</text>
-<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="133" x="1206" y="741"/>
-<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="133" x="1206" y="762"/>
-<text font-family="Dialog" font-size="12" font-style="italic" x="1210" y="776">
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="133" x="1198" y="741"/>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="133" x="1198" y="762"/>
+<text font-family="Dialog" font-size="12" font-style="italic" x="1202" y="776">
 execute() : void</text>
-<rect fill="#ffffff" height="69" stroke="#ffffff" stroke-width="1" width="174" x="1190" y="830"/>
-<rect fill="none" height="69" stroke="#000000" stroke-width="1" width="174" x="1190" y="830"/>
-<text font-family="Dialog" font-size="12" x="1202" y="843">
+<rect fill="#ffffff" height="69" stroke="#ffffff" stroke-width="1" width="174" x="1166" y="830"/>
+<rect fill="none" height="69" stroke="#000000" stroke-width="1" width="174" x="1166" y="830"/>
+<text font-family="Dialog" font-size="12" x="1178" y="843">
 control_action_measure</text>
-<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="174" x="1190" y="853"/>
-<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="174" x="1190" y="874"/>
-<text font-family="Dialog" font-size="12" x="1194" y="888">
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="174" x="1166" y="853"/>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="174" x="1166" y="874"/>
+<text font-family="Dialog" font-size="12" x="1170" y="888">
 execute() : void</text>
-<polyline fill="none" points="1270,830 1270,786" stroke="#000000" stroke-width="1"/>
-<polygon fill="#ffffff" points="1270,786 1277,798 1263,798" stroke="#ffffff" stroke-width="1"/>
-<polygon fill="none" points="1270,786 1277,798 1263,798" stroke="#000000" stroke-width="1"/>
+<polyline fill="none" points="1262,830 1262,786" stroke="#000000" stroke-width="1"/>
+<polygon fill="#ffffff" points="1262,786 1269,798 1255,798" stroke="#ffffff" stroke-width="1"/>
+<polygon fill="none" points="1262,786 1269,798 1255,798" stroke="#000000" stroke-width="1"/>
 <polyline fill="none" points="1646,718 1646,618" stroke="#000000" stroke-width="1"/>
 <polygon fill="#ffffff" points="1646,618 1651,628 1646,638 1641,628" stroke="#ffffff" stroke-width="1"/>
 <polygon fill="none" points="1646,618 1651,628 1646,638 1641,628" stroke="#000000" stroke-width="1"/>
@@ -535,4 +535,23 @@ set_special_chars() : void</text>
 0..1</text>
 <text font-family="Dialog" font-size="12" x="1217" y="712">
 1</text>
+<rect fill="#ffffff" height="120" stroke="#ffffff" stroke-width="1" width="286" x="1606" y="830"/>
+<rect fill="none" height="120" stroke="#000000" stroke-width="1" width="286" x="1606" y="830"/>
+<text font-family="Dialog" font-size="12" x="1611" y="843">
+datastream_condition_compare_long_float_t</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="286" x="1606" y="853"/>
+<text font-family="Dialog" font-size="12" x="1610" y="867">
+compare_value : long</text>
+<text font-family="Dialog" font-size="12" x="1610" y="883">
+*compare_func : int</text>
+<rect fill="#000000" height="1" stroke="#000000" stroke-width="1" width="286" x="1606" y="893"/>
+<text font-family="Dialog" font-size="12" x="1610" y="907">
+is_fullfilled() : int</text>
+<text font-family="Dialog" font-size="12" x="1610" y="923">
+init() : void</text>
+<text font-family="Dialog" font-size="12" x="1610" y="939">
+set_compare_value() : void</text>
+<polyline fill="none" points="1654,830 1654,789" stroke="#000000" stroke-width="1"/>
+<polygon fill="#ffffff" points="1654,789 1661,801 1647,801" stroke="#ffffff" stroke-width="1"/>
+<polygon fill="none" points="1654,789 1661,801 1647,801" stroke="#000000" stroke-width="1"/>
 </svg>
