@@ -100,6 +100,7 @@ typedef struct {
 
 	hct99_expect_value expected_byte; /**< next expected data from HCT-99 device */
 	simple_float_b10_t value; /**< currently parsed value */
+	unsigned char val_neg; /**< indicates weather the currently parsed value is negative */
 	unsigned char err_code; /**< currently parsed error code */
 	const char* val_name; /**< current value name */
 	const char* err_name; /**< current error name */

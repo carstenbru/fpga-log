@@ -598,7 +598,7 @@
                 <attribute id="signature" xml:space="preserve">992FAF90C0A78A77A4A6B3EFE746FEB5</attribute>
                 <parameter id="#PARAM.BAUDRATE">
                     <attribute id="name" xml:space="preserve">BAUDRATE</attribute>
-                    <attribute id="value" xml:space="preserve">115200</attribute>
+                    <attribute id="value" xml:space="preserve">19200</attribute>
                 </parameter>
                 <parameter id="#PARAM.CLOCK_FREQUENCY">
                     <attribute id="name" xml:space="preserve">CLOCK_FREQUENCY</attribute>

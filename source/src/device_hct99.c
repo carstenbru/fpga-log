@@ -117,8 +117,14 @@ static void device_hct99_send_data(void* const _hct99, const unsigned int id,
 			if (IS_DIGIT(byte)) {
 				hct99->value.coefficient *= 10;
 				hct99->value.coefficient += byte - '0';
+			} else if (byte == '-') {
+				hct99->val_neg = 1;
 			} else if (byte == 'E') {
 				hct99->expected_byte = HCT99_EXPECT_EXPONENT_1;
+				if (hct99->val_neg) {
+					hct99->value.coefficient = -hct99->value.coefficient;
+					hct99->val_neg = 0;
+				}
 			}
 			break;
 		}
@@ -126,12 +132,17 @@ static void device_hct99_send_data(void* const _hct99, const unsigned int id,
 			if (IS_DIGIT(byte)) {
 				hct99->value.exponent = (byte - '0') * 10;
 				hct99->expected_byte = HCT99_EXPECT_EXPONENT_2;
+			} else if (byte == '-') {
+				hct99->val_neg = 1;
 			}
 			break;
 		}
 		case (HCT99_EXPECT_EXPONENT_2): {
 			hct99->value.exponent += (byte - '0');
 			hct99->expected_byte = HCT99_EXPECT_ERR_CODE;
+			if (hct99->val_neg) {
+				hct99->value.exponent = -hct99->value.exponent;
+			}
 			break;
 		}
 		case (HCT99_EXPECT_ERR_CODE): {
@@ -147,8 +158,10 @@ static void device_hct99_send_data(void* const _hct99, const unsigned int id,
 				}
 				hct99->expected_byte = HCT99_EXPECT_NOTHING;
 			} else {
-				hct99->err_code *= 10;
-				hct99->err_code += (byte - '0');
+				if (IS_DIGIT(byte)) {
+					hct99->err_code *= 10;
+					hct99->err_code += (byte - '0');
+				}
 			}
 			break;
 		}
@@ -160,8 +173,10 @@ static void device_hct99_send_data(void* const _hct99, const unsigned int id,
 
 				hct99->expected_byte = HCT99_EXPECT_NOTHING;
 			} else {
-				hct99->value.coefficient *= 10;
-				hct99->value.coefficient += (byte - '0');
+				if (IS_DIGIT(byte)) {
+					hct99->value.coefficient *= 10;
+					hct99->value.coefficient += (byte - '0');
+				}
 			}
 			break;
 		}
@@ -269,6 +284,7 @@ static void device_hct99_send_command(device_hct99_t* const hct99,
 	hct99->value.exponent = 0;
 	hct99->err_code = HCT99_ERROR_CODE_OK;
 	hct99->val_name = "";
+	hct99->val_neg = 0;
 
 	unsigned int params[3] = { x, y, z };
 	switch (command) {
