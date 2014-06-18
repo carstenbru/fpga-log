@@ -5,6 +5,9 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
+#ifndef SIMPLE_FLOAT_H_
+#define SIMPLE_FLOAT_H_
+
 /**
  * @brief simple floating point data structure (base 10)
  */
@@ -14,3 +17,5 @@ typedef union {
 		int exponent; /**< exponent of the floating point number to base 10 */
 	};
 } simple_float_b10_t;
+
+#endif
