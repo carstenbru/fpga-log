@@ -14,6 +14,7 @@ C_SRCS += \
 ../source/src/datastream_condition_compare_float.c \
 ../source/src/datastream_condition_compare_int.c \
 ../source/src/datastream_condition_compare_long.c \
+../source/src/datastream_condition_compare_val_name.c \
 ../source/src/datastream_object.c \
 ../source/src/datastream_source.c \
 ../source/src/device_hct99.c \
@@ -44,6 +45,7 @@ OBJS += \
 ./source/src/datastream_condition_compare_float.o \
 ./source/src/datastream_condition_compare_int.o \
 ./source/src/datastream_condition_compare_long.o \
+./source/src/datastream_condition_compare_val_name.o \
 ./source/src/datastream_object.o \
 ./source/src/datastream_source.o \
 ./source/src/device_hct99.o \
@@ -74,6 +76,7 @@ C_DEPS += \
 ./source/src/datastream_condition_compare_float.d \
 ./source/src/datastream_condition_compare_int.d \
 ./source/src/datastream_condition_compare_long.d \
+./source/src/datastream_condition_compare_val_name.d \
 ./source/src/datastream_object.d \
 ./source/src/datastream_source.d \
 ./source/src/device_hct99.d \
