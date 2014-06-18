@@ -1,6 +1,6 @@
 /**
- * @file datastream_condition_compare.h
- * @brief datastream compare conditions (equal, smaller, greater,..)
+ * @file datastream_condition_compare_int.h
+ * @brief datastream compare conditions for integer and char (equal, smaller, greater,..)
  *
  * This can be used for example as trigger or filter conditions.
  * The new value is compared with a reference value.
@@ -9,8 +9,8 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#ifndef DATASTREAM_CONDITION_COMPARE_H_
-#define DATASTREAM_CONDITION_COMPARE_H_
+#ifndef DATASTREAM_CONDITION_COMPARE_INT_H_
+#define DATASTREAM_CONDITION_COMPARE_INT_H_
 
 #include "dm/datastream_condition.h"
 
@@ -21,7 +21,7 @@ typedef enum {
 	COMPARE_MODE_VALUE, /**< the measured value is compared with the reference value */
 	COMPARE_MODE_SOURCE_ID, /**< the source id is compared with the reference value */
 	COMPARE_MODE_VALUE_ID /**< the value id is compared with the reference value */
-} datastream_condition_compare_mode;
+} datastream_condition_compare_int_mode;
 
 /**
  * @brief struct defining a compare condition
@@ -38,7 +38,7 @@ typedef struct {
 	 */
 	int (*compare_func)(const int val, const int ref);
 	int compare_value; /**< value which is used for the comparison */
-} datastream_condition_compare_t;
+} datastream_condition_compare_int_t;
 
 /**
  * @brief initializes the compare condition
@@ -48,10 +48,10 @@ typedef struct {
  * @param mode			mode of the compare condition, should be a value of enumeration @ref datastream_condition_compare_mode
  * @param value			new compare value
  */
-void datastream_condition_compare_init(
-		datastream_condition_compare_t* const cond,
+void datastream_condition_compare_int_init(
+		datastream_condition_compare_int_t* const cond,
 		int (*compare_func)(const int val, const int ref),
-		const datastream_condition_compare_mode mode, const int value);
+		const datastream_condition_compare_int_mode mode, const int value);
 
 /**
  * @brief sets a new compare value of the condition
@@ -59,8 +59,8 @@ void datastream_condition_compare_init(
  * @param cond	the condition to modify
  * @param value	the new value
  */
-void datastream_condition_compare_set_compare_value(
-		datastream_condition_compare_t* const cond, const int value);
+void datastream_condition_compare_int_set_compare_value(
+		datastream_condition_compare_int_t* const cond, const int value);
 
 /*
  * different compare functions

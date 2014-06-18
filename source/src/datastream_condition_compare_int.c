@@ -1,6 +1,6 @@
 /**
- * @file datastream_condition_compare.c
- * @brief datastream compare conditions (equal, smaller, greater,..)
+ * @file datastream_condition_compare_int.c
+ * @brief datastream compare conditions for integer and char (equal, smaller, greater,..)
  *
  * This can be used for example as trigger or filter conditions.
  * The new value is compared with a reference value.
@@ -8,13 +8,13 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "dm/datastream_condition_compare.h"
+#include "dm/datastream_condition_compare_int.h"
 #include "data_port.h"
 
-static int datastream_condition_compare_is_fullfilled_value(
+static int datastream_condition_compare_int_is_fullfilled_value(
 		void* const trigger_condition, const data_package_t* const package) {
-	datastream_condition_compare_t* cond =
-			(datastream_condition_compare_t*) trigger_condition;
+	datastream_condition_compare_int_t* cond =
+			(datastream_condition_compare_int_t*) trigger_condition;
 
 	switch (package->type) {
 	case DATA_TYPE_INT:
@@ -27,42 +27,43 @@ static int datastream_condition_compare_is_fullfilled_value(
 	}
 }
 
-static int datastream_condition_compare_is_fullfilled_source_id(
+static int datastream_condition_compare_int_is_fullfilled_source_id(
 		void* const trigger_condition, const data_package_t* const package) {
-	datastream_condition_compare_t* cond =
-			(datastream_condition_compare_t*) trigger_condition;
+	datastream_condition_compare_int_t* cond =
+			(datastream_condition_compare_int_t*) trigger_condition;
 
 	return cond->compare_func(package->source_id, cond->compare_value);
 }
 
-static int datastream_condition_compare_is_fullfilled_value_id(
+static int datastream_condition_compare_int_is_fullfilled_value_id(
 		void* const trigger_condition, const data_package_t* const package) {
-	datastream_condition_compare_t* cond =
-			(datastream_condition_compare_t*) trigger_condition;
+	datastream_condition_compare_int_t* cond =
+			(datastream_condition_compare_int_t*) trigger_condition;
 
 	return cond->compare_func((int) package->val_name, cond->compare_value);
 }
 
-void datastream_condition_compare_init(
-		datastream_condition_compare_t* const cond,
+void datastream_condition_compare_int_init(
+		datastream_condition_compare_int_t* const cond,
 		int (*compare_func)(const int val, const int ref),
-		const datastream_condition_compare_mode mode, const int value) {
+		const datastream_condition_compare_int_mode mode, const int value) {
 	if (mode == COMPARE_MODE_SOURCE_ID) {
 		cond->super.is_fulfilled =
-				datastream_condition_compare_is_fullfilled_source_id;
+				datastream_condition_compare_int_is_fullfilled_source_id;
 	} else if (mode == COMPARE_MODE_VALUE) {
-		cond->super.is_fulfilled = datastream_condition_compare_is_fullfilled_value;
+		cond->super.is_fulfilled =
+				datastream_condition_compare_int_is_fullfilled_value;
 	} else {
 		cond->super.is_fulfilled =
-				datastream_condition_compare_is_fullfilled_value_id;
+				datastream_condition_compare_int_is_fullfilled_value_id;
 	}
 
 	cond->compare_func = compare_func;
 	cond->compare_value = value;
 }
 
-void datastream_condition_compare_set_compare_value(
-		datastream_condition_compare_t* const cond, const int value) {
+void datastream_condition_compare_int_set_compare_value(
+		datastream_condition_compare_int_t* const cond, const int value) {
 	cond->compare_value = value;
 }
 
