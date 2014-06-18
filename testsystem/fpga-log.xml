@@ -495,7 +495,7 @@
                 </parameter>
                 <parameter id="#PARAM.FIFO_RX_DEPTH">
                     <attribute id="name" xml:space="preserve">FIFO_RX_DEPTH</attribute>
-                    <attribute id="value" xml:space="preserve">8</attribute>
+                    <attribute id="value" xml:space="preserve">64</attribute>
                 </parameter>
                 <parameter id="#PARAM.FIFO_TX_DEPTH">
                     <attribute id="name" xml:space="preserve">FIFO_TX_DEPTH</attribute>
