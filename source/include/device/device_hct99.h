@@ -72,6 +72,9 @@ typedef enum {
 #define HCT99_ERROR_UNEXPECTED_DATA_RECEIVED "unexpected data"
 #define HCT99_ERROR_PARAM_OUT_OF_RANGE "parameter out of range"
 #define HCT99_ERROR_MISSING_COMMAND_CODE "missing command code"
+#define HCT99_ERROR_COMMAND_FIFO_FULL "command fifo full"
+
+#define HCT99_COMMAND_FIFO_SIZE 16
 
 /**
  * @brief enumeration of next expected data from HCT-99 device
@@ -82,8 +85,19 @@ typedef enum {
 	HCT99_EXPECT_EXPONENT_2, /**< expecting second digit of exponent */
 	HCT99_EXPECT_ERR_CODE, /**< expecting error code */
 	HCT99_EXPECT_NUMBER, /**< expecting a simple number (e.g. firmware version) */
+	HCT99_EXPECT_LF, /**< expecting line feed */
 	HCT99_EXPECT_NOTHING /**< expecting no data */
 } hct99_expect_value;
+
+/**
+ * @brief struct describing a HCT-99 command
+ */
+typedef struct {
+	hct99_command command_code; /**< hct-99 command code */
+	unsigned int x; /**< x-parameter */
+	unsigned int y; /**< x-parameter */
+	unsigned int z; /**< x-parameter */
+} hct99_command_t;
 
 /**
  * @brief struct describing a HCT-99 device
@@ -105,6 +119,10 @@ typedef struct {
 	const char* val_name; /**< current value name */
 	const char* err_name; /**< current error name */
 	unsigned char color_alternative; /**< current color mode of HCT-99 */
+
+	hct99_command_t command_fifo[HCT99_COMMAND_FIFO_SIZE]; /**< command fifo to cache incoming commands till HCT99 is ready */
+	unsigned int command_fifo_elements; /**< number of elements in fifo */
+	unsigned int command_fifo_top; /**< number of top element in fifo */
 } device_hct99_t;
 
 /**
@@ -150,5 +168,16 @@ void device_hct99_set_error_out(device_hct99_t* const hct99,
  */
 void device_hct99_set_misc_out(device_hct99_t* const hct99,
 		const data_port_t* const data_in);
+
+/**
+ * @brief executes (sends) a command on a HCT-99 device
+ *
+ * The device will be stored in a queue until the device is ready to execute it.
+ *
+ * @param hct99			pointer to the HCT-99 device
+ * @param command		the command to execute
+ */
+void device_hct99_execute_command(device_hct99_t* const hct99,
+		hct99_command_t command);
 
 #endif

@@ -34,17 +34,11 @@ static void device_hct99_send_data(void* const _hct99, const unsigned int id,
 		const timestamp_t* const timestamp);
 
 /**
- * @brief sends a command to the HCT-99 device
+ * @brief sends the next command in the fifo queue to the HCT-99 device
  *
  * @param hct99		pointer to the HCT-99 device
- * @param command	the command to send, see enumeration @ref hct99_command
- * @param x				x-parameter of the command
- * @param y				y-parameter of the command
- * @param z				z-parameter of the command
  */
-static void device_hct99_send_command(device_hct99_t* const hct99,
-		const hct99_command command, const unsigned int x, const unsigned int y,
-		const unsigned int z);
+static void device_hct99_send_command(device_hct99_t* const hct99);
 
 /**
  * @brief control message function of the HCT-99 device
@@ -68,12 +62,20 @@ static void device_hct99_send_paramters(device_hct99_t* const hct99,
 		unsigned int count, const unsigned int* params,
 		unsigned char last_param_three_digits);
 
+/**
+ * @brief update function of the HCT-99 device
+ *
+ * @param _hct99	pointer to the HCT-99 device
+ */
+static void device_hct99_update(void* const _hct99);
+
 void device_hct99_init(device_hct99_t* const hct99,
 		uart_light_regs_t* const uart_light, const int id) {
 	datastream_source_init(&hct99->super, id);  //call parents init function
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
 	 */
+	hct99->super.super.update = device_hct99_update;
 	hct99->super.send_data = device_hct99_send_data;
 
 	hct99->data_out = &data_port_dummy;
@@ -89,6 +91,7 @@ void device_hct99_init(device_hct99_t* const hct99,
 	uart_light_enable_rxint(uart_light);
 
 	hct99->expected_byte = HCT99_EXPECT_NOTHING;
+	hct99->command_fifo_elements = 0;
 }
 
 void device_hct99_set_data_out(device_hct99_t* const hct99,
@@ -113,6 +116,12 @@ static void device_hct99_send_data(void* const _hct99, const unsigned int id,
 	unsigned char byte = 0;
 	if (uart_light_receive_nb(hct99->uart_light, &byte) == UART_OK) {
 		switch (hct99->expected_byte) {
+		case (HCT99_EXPECT_LF): {
+			if (byte == '\n') {
+				hct99->expected_byte = HCT99_EXPECT_NOTHING;
+			}
+			break;
+		}
 		case (HCT99_EXPECT_COEFFICIENT): {
 			if (IS_DIGIT(byte)) {
 				hct99->value.coefficient *= 10;
@@ -239,9 +248,10 @@ static void device_hct99_new_control_message(void* const _hct99,
 		x = val;
 	}
 
-	if (command)  //check if a command was set
-		device_hct99_send_command(hct99, command, x, y, z);
-	else {
+	if (command) {  //check if a command was set
+		hct99_command_t c = { command, x, y, z };
+		device_hct99_execute_command(hct99, c);
+	} else {
 		hct99->err_name = HCT99_ERROR_MISSING_COMMAND_CODE;
 		datastream_source_generate_software_timestamp((datastream_source_t*) hct99);
 	}
@@ -274,38 +284,52 @@ static void device_hct99_send_paramters(device_hct99_t* const hct99,
 	}
 }
 
-static void device_hct99_send_command(device_hct99_t* const hct99,
-		const hct99_command command, const unsigned int x, const unsigned int y,
-		const unsigned int z) {
-	uart_light_send(hct99->uart_light, command);
+void device_hct99_execute_command(device_hct99_t* const hct99,
+		hct99_command_t command) {
+	if (hct99->command_fifo_elements < HCT99_COMMAND_FIFO_SIZE) {
+		int i = hct99->command_fifo_top + hct99->command_fifo_elements++;
+		i %= HCT99_COMMAND_FIFO_SIZE;
+		hct99->command_fifo[i] = command;
+	} else {
+		hct99->err_name = HCT99_ERROR_COMMAND_FIFO_FULL;
+		datastream_source_generate_software_timestamp((datastream_source_t*) hct99);
+	}
+}  //TODO really execute the command!
 
-	hct99->expected_byte = HCT99_EXPECT_NOTHING;
+static void device_hct99_send_command(device_hct99_t* const hct99) {
+	hct99_command_t* command = &hct99->command_fifo[hct99->command_fifo_top++];
+	hct99->command_fifo_top %= HCT99_COMMAND_FIFO_SIZE;
+	hct99->command_fifo_elements--;
+
+	uart_light_send(hct99->uart_light, command->command_code);
+
+	hct99->expected_byte = HCT99_EXPECT_LF;
 	hct99->value.coefficient = 0;
 	hct99->value.exponent = 0;
 	hct99->err_code = HCT99_ERROR_CODE_OK;
 	hct99->val_name = "";
 	hct99->val_neg = 0;
 
-	unsigned int params[3] = { x, y, z };
-	switch (command) {
+	const unsigned int* params = &command->x;
+	switch (command->command_code) {
 	case HCT99_COMMAND_MEASURE_SINGLE_CHANNEL:
 		device_hct99_send_paramters(hct99, 1, params, 0);
-		hct99->val_name = hct99_names_channel[x];
+		hct99->val_name = hct99_names_channel[command->x];
 		hct99->expected_byte = HCT99_EXPECT_COEFFICIENT;
 		break;
 	case HCT99_COMMAND_MEASURE_COLOR_VALUE:
 		device_hct99_send_paramters(hct99, 2, params, 0);
 		hct99->expected_byte = HCT99_EXPECT_COEFFICIENT;
-		if (x < 2) {
-			if (y) {
-				hct99->val_name = hct99_names_color_1[y - 1];
+		if (command->x < 2) {
+			if (command->y) {
+				hct99->val_name = hct99_names_color_1[command->y - 1];
 			} else {
 				hct99->expected_byte = HCT99_EXPECT_NOTHING;
 			}
-		} else if (x == 2) {
-			hct99->val_name = hct99_names_color_2[y];
+		} else if (command->x == 2) {
+			hct99->val_name = hct99_names_color_2[command->y];
 
-			switch (y) {
+			switch (command->y) {
 			case (3):
 				hct99->color_alternative = 0;
 				break;
@@ -316,24 +340,24 @@ static void device_hct99_send_command(device_hct99_t* const hct99,
 			case (6):
 			case (8):
 				if (hct99->color_alternative) {
-					hct99->val_name = hct99_names_color_2_alt[y - 5];
+					hct99->val_name = hct99_names_color_2_alt[command->y - 5];
 				}
 				break;
 			case (9):
-				device_hct99_send_paramters(hct99, 1, &z, 1);
+				device_hct99_send_paramters(hct99, 1, &command->z, 1);
 				hct99->expected_byte = HCT99_EXPECT_NOTHING;
 				break;
 			default:
 				break;
 			}
 		} else {
-			hct99->val_name = hct99_names_color_3[y];
+			hct99->val_name = hct99_names_color_3[command->y];
 		}
 		break;
 	case HCT99_COMMAND_MEASURE_TRANSMISSION_REFLECTION:
 		device_hct99_send_paramters(hct99, 2, params, 0);
-		if (y) {
-			hct99->val_name = hct99_names_transmission_reflection[y - 1];
+		if (command->y) {
+			hct99->val_name = hct99_names_transmission_reflection[command->y - 1];
 			hct99->expected_byte = HCT99_EXPECT_COEFFICIENT;
 		}
 		break;
@@ -349,7 +373,7 @@ static void device_hct99_send_command(device_hct99_t* const hct99,
 		device_hct99_send_paramters(hct99, 2, params, 0);
 		break;
 	case HCT99_COMMAND_MEASUREMENT_TIME:
-		device_hct99_send_paramters(hct99, 2, params, x < 2);
+		device_hct99_send_paramters(hct99, 2, params, command->x < 2);
 		break;
 	case HCT99_COMMAND_OFFSET:
 		device_hct99_send_paramters(hct99, 1, params, 0);
@@ -383,4 +407,12 @@ static void device_hct99_send_command(device_hct99_t* const hct99,
 		break;
 	}
 	uart_light_send(hct99->uart_light, '\n');
+}
+
+static void device_hct99_update(void* const _hct99) {
+	device_hct99_t* hct99 = (device_hct99_t*) _hct99;
+	if (hct99->command_fifo_elements
+			&& (hct99->expected_byte == HCT99_EXPECT_NOTHING)) {
+		device_hct99_send_command(hct99);
+	}
 }
