@@ -20,7 +20,8 @@
 static void dm_timer_update(void* const _timer);
 
 void dm_timer_init(dm_timer_t* const timer, const uint36_t interval,
-		timer_regs_t* const timer_regs, compare_regs_t* const compare_regs) {
+		control_action_t* const control_action, timer_regs_t* const timer_regs,
+		compare_regs_t* const compare_regs) {
 	datastream_object_init(&timer->super);  //call parents init function
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
@@ -28,7 +29,7 @@ void dm_timer_init(dm_timer_t* const timer, const uint36_t interval,
 	timer->super.update = dm_timer_update;
 
 	timer->control_out = &control_port_dummy;
-	timer->control_action = &control_action_measure;
+	timer->control_action = control_action;
 
 	timer->timer = timer_regs;
 	timer->compare = compare_regs;

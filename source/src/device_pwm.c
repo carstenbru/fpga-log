@@ -41,20 +41,20 @@ static void device_pwm_control_message(void* const _pwm_device,
 	while (count--) {
 		switch (parameters->type) {
 		case 'c':
-			channel = *((unsigned int*) parameters->value);
+			channel = parameters->value;
 			break;
 		case 'b':
-			bank = *((unsigned int*) parameters->value);
+			bank = parameters->value;
 			break;
 		case 'f':
-			frequency = *((unsigned int*) parameters->value);
+			frequency = parameters->value;
 			pwm_device->last_freq = frequency;
 			break;
 		case 'd':
-			duty = *((unsigned int*) parameters->value);
+			duty = parameters->value;
 			break;
 		case 'p':
-			phase = *((unsigned int*) parameters->value);
+			phase = parameters->value;
 			break;
 		}
 		parameters++;

@@ -34,12 +34,11 @@ typedef struct {
  * By default the trigger fires on every incoming package. This can be changed by setting
  * a different condition with @ref dm_trigger_set_condition function.
  *
- * By default the trigger sends a measure command to its control output. This can be changed by setting
- * a different control action with @ref dm_trigger_set_control_action function.
- *
- * @param	trigger		pointer to the datastream trigger
+ * @param	trigger					pointer to the datastream trigger
+ * @param control_action	the control_action which is executed by the trigger
  */
-void dm_trigger_init(dm_trigger_t* const trigger);
+void dm_trigger_init(dm_trigger_t* const trigger,
+		control_action_t* const control_action);
 
 /**
  * @brief connects the control output port of a trigger to a given destination

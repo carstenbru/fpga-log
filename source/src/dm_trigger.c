@@ -19,9 +19,10 @@
 static void dm_trigger_new_data(void* const _trigger,
 		const data_package_t* const package);
 
-void dm_trigger_init(dm_trigger_t* const trigger) {
+void dm_trigger_init(dm_trigger_t* const trigger,
+		control_action_t* const control_action) {
 	trigger->control_out = &control_port_dummy;
-	trigger->control_action = &control_action_measure;
+	trigger->control_action = control_action;
 
 	trigger->data_in = data_port_dummy;
 	trigger->data_in.parent = (void*) trigger;

@@ -38,13 +38,15 @@ typedef struct {
  * By default the timer sends a measure command to its control output. This can be changed by setting
  * a different control action with @ref dm_timer_set_control_action function.
  *
- * @param	timer					pointer to the timer
- * @param	interval			the interval of the timer in ms (max 25bit)
- * @param timer_regs 		pointer to a timer peripheral
- * @param compare_regs	pointer to a compare peripheral
+ * @param	timer						pointer to the timer
+ * @param	interval				the interval of the timer in ms (max 25bit)
+ * @param control_action	the control_action which is executed by the timer
+ * @param timer_regs 			pointer to a timer peripheral
+ * @param compare_regs		pointer to a compare peripheral
  */
 void dm_timer_init(dm_timer_t* const timer, const uint36_t interval,
-		timer_regs_t* const timer_regs, compare_regs_t* const compare_regs);
+		control_action_t* const control_action, timer_regs_t* const timer_regs,
+		compare_regs_t* const compare_regs);
 
 /**
  * @brief sets the timer interval

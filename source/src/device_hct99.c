@@ -216,17 +216,17 @@ static void device_hct99_new_control_message(void* const _hct99,
 	while (count--) {
 		switch (parameters->type) {
 		case 'x':
-			x = *((unsigned int*) parameters->value);
+			x = parameters->value;
 			break;
 		case 'y':
-			y = *((unsigned int*) parameters->value);
+			y = parameters->value;
 			break;
 		case 'z':
-			z = *((unsigned int*) parameters->value);
+			z = parameters->value;
 			break;
 		default:
 			command = parameters->type;
-			val = *((unsigned int*) parameters->value);
+			val = parameters->value;
 			break;
 		}
 		parameters++;

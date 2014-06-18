@@ -16,7 +16,7 @@
 /**
  * @brief struct defining a control action
  *
- * Use this as super-"class" for more complex conditions.
+ * Use this as super-"class" for more complex actions.
  */
 typedef struct {
 	/**
@@ -27,12 +27,5 @@ typedef struct {
 	 */
 	void (*execute)(void* const control_action, const control_port_t* port);
 } control_action_t;
-
-/**
- * @brief measure control action
- *
- * This action can be used to start a measurement.
- */
-extern control_action_t control_action_measure;
 
 #endif

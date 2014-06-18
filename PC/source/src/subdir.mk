@@ -5,7 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../source/src/FatFs.c \
-../source/src/control_action.c \
+../source/src/control_action_simple.c \
 ../source/src/control_port.c \
 ../source/src/control_protocol.c \
 ../source/src/control_protocol_ascii.c \
@@ -35,7 +35,7 @@ C_SRCS += \
 
 OBJS += \
 ./source/src/FatFs.o \
-./source/src/control_action.o \
+./source/src/control_action_simple.o \
 ./source/src/control_port.o \
 ./source/src/control_protocol.o \
 ./source/src/control_protocol_ascii.o \
@@ -65,7 +65,7 @@ OBJS += \
 
 C_DEPS += \
 ./source/src/FatFs.d \
-./source/src/control_action.d \
+./source/src/control_action_simple.d \
 ./source/src/control_port.d \
 ./source/src/control_protocol.d \
 ./source/src/control_protocol_ascii.d \
