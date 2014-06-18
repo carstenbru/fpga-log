@@ -39,7 +39,7 @@ typedef struct {
  * @param comp_func	compare function which compares new value with the reference value
  * @param value			new compare value
  */
-void datastream_condition_compare_compare_float_init(
+void datastream_condition_compare_float_init(
 		datastream_condition_compare_float_t* const cond,
 		int (*compare_func)(const simple_float_b10_t val,
 				const simple_float_b10_t ref), const simple_float_b10_t value);
@@ -50,7 +50,7 @@ void datastream_condition_compare_compare_float_init(
  * @param cond	the condition to modify
  * @param value	the new value
  */
-void datastream_condition_compare_compare_float_set_compare_value(
+void datastream_condition_compare_float_set_compare_value(
 		datastream_condition_compare_float_t* const cond,
 		const simple_float_b10_t value);
 
