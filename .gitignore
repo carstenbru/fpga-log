@@ -9,3 +9,6 @@ jconfig.log
 *.o
 *.d
 /PC/fpga-log
+
+*.user
+/build-*
