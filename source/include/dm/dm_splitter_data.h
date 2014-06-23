@@ -39,6 +39,14 @@ typedef struct {
 void dm_splitter_data_init(dm_splitter_data_t* const splitter);
 
 /**
+ * @brief returns the datastream splitter data input
+ *
+ * @param splitter		 pointer to the datastream splitter
+ * @return the data input port
+ */
+data_port_t dm_splitter_get_data_in(dm_splitter_data_t* const splitter);
+
+/**
  * @brief adds a new data destination to the splitter
  *
  * @param	splitter		pointer to the datastream splitter

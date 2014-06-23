@@ -34,4 +34,12 @@ typedef struct {
  */
 void device_pwm_init(device_pwm_t* const _pwm_device, pwm_regs_t* const pwm_regs);
 
+/**
+ * @brief returns the PWM device control input
+ *
+ * @param pwm		 pointer to the PWM device
+ * @return the control input port
+ */
+control_port_t device_pwm_get_control_in(device_pwm_t* const pwm);
+
 #endif

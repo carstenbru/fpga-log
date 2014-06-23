@@ -138,6 +138,14 @@ void device_hct99_init(device_hct99_t* const hct99,
 		uart_light_regs_t* const uart_light, const int id);
 
 /**
+ * @brief returns the HCT-99 device control input
+ *
+ * @param hct99 pointer to the hct99 device
+ * @return the control input port
+ */
+control_port_t device_hct99_get_control_in(device_hct99_t* const hct99);
+
+/**
  * @brief connects the data output port of a HCT-99 device to a given destination
  *
  * @param	hct99			pointer to the HCT-99 device

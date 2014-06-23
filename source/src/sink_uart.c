@@ -65,6 +65,10 @@ void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter,
 			sink_uart);
 }
 
+data_port_t sink_uart_get_data_in(sink_uart_t* const sink_uart) {
+	return sink_uart->data_in;
+}
+
 int sink_uart_add_control_out(sink_uart_t* const sink_uart,
 		const control_port_t* const control_in) {
 	if (sink_uart->control_out_count < SINK_UART_MAX_CONTROL_OUTS) {

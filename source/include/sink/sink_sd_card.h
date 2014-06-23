@@ -58,6 +58,14 @@ void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
 		formatter_t* const formatter, sdcard_regs_t* const sd_card);
 
 /**
+ * @brief returns the sd card sink data input
+ *
+ * @param sink_sd_card	pointer to the sd card sink
+ * @return the data input port
+ */
+data_port_t sink_sd_card_get_data_in(sink_sd_card_t* const sink_sd_card);
+
+/**
  * gets the sd card sink struct from FatFs pdrev id
  *
  * @param pdrv	id used by FatFs

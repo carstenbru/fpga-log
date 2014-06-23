@@ -31,6 +31,10 @@ void dm_splitter_data_init(dm_splitter_data_t* const splitter) {
 	splitter->target_count = 0;
 }
 
+data_port_t dm_splitter_get_data_in(dm_splitter_data_t* const splitter) {
+	return splitter->data_in;
+}
+
 int dm_splitter_data_add_data_out(dm_splitter_data_t* const splitter,
 		const data_port_t* const data_in) {
 	if (splitter->target_count < DM_SPILTTER_DATA_MAX_TARGETS) {

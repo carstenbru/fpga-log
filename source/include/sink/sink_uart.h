@@ -53,6 +53,14 @@ void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter,
 		control_protocol_t* protocol, uart_light_regs_t* const uart_light);
 
 /**
+ * @brief returns the uart sink data input
+ *
+ * @param sink_uart		pointer to the uart sink
+ * @return the data input port
+ */
+data_port_t sink_uart_get_data_in(sink_uart_t* const sink_uart);
+
+/**
  * @brief connects the next control output port of a uart sink to a given destination
  * 
  * @param	sink_uart		pointer to the uart sink

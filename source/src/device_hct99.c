@@ -94,6 +94,10 @@ void device_hct99_init(device_hct99_t* const hct99,
 	hct99->command_fifo_elements = 0;
 }
 
+control_port_t device_hct99_get_control_in(device_hct99_t* const hct99) {
+	return hct99->control_in;
+}
+
 void device_hct99_set_data_out(device_hct99_t* const hct99,
 		const data_port_t* const data_in) {
 	hct99->data_out = data_in;

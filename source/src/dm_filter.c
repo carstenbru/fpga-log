@@ -44,6 +44,10 @@ void dm_filter_init(dm_filter_t* const filter, int mode,
 	filter->condition = condition;
 }
 
+data_port_t dm_filter_get_data_in(dm_filter_t* const filter) {
+	return filter->data_in;
+}
+
 void dm_filter_set_data_out(dm_filter_t* const filter,
 		const data_port_t* const data_in) {
 	filter->data_out = data_in;

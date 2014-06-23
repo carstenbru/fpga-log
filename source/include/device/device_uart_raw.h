@@ -39,6 +39,14 @@ void device_uart_raw_init(device_uart_raw_t* const uart_raw,
 		uart_light_regs_t* const uart_light, const int id);
 
 /**
+ * @brief returns the uart raw device control input
+ *
+ * @param uart_raw		 pointer to the uart raw device
+ * @return the control input port
+ */
+control_port_t device_uart_raw_get_control_in(device_uart_raw_t* const uart_raw);
+
+/**
  * @brief connects the data output port of a uart raw to a given destination
  * 
  * @param	uart_raw	pointer to the uart raw device

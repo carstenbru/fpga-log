@@ -28,6 +28,10 @@ void device_pwm_init(device_pwm_t* const pwm_device, pwm_regs_t* const pwm_regs)
 	pwm_device->last_freq = DEVICE_PWM_START_FREQUENCY;
 }
 
+control_port_t device_pwm_get_control_in(device_pwm_t* const pwm) {
+	return pwm->control_in;
+}
+
 static void device_pwm_control_message(void* const _pwm_device,
 		unsigned int count, const control_parameter_t* parameters) {
 	device_pwm_t* pwm_device = (device_pwm_t*) _pwm_device;
