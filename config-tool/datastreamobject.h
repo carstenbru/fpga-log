@@ -1,19 +1,19 @@
 #ifndef DATASTREAMOBJECT_H
 #define DATASTREAMOBJECT_H
 
-#include <QObject>
 #include <string>
 #include <QPoint>
 #include <list>
+#include "cobject.h"
 #include "port.h"
 #include "datatype.h"
 
-class DatastreamObject : public QObject
+class DatastreamObject : public CObject
 {
     Q_OBJECT
 
 public:
-    DatastreamObject(DataType* type);
+    DatastreamObject(std::string name, DataType* type);
     ~DatastreamObject();
 
     std::list<ControlPortIn*> getControlInPorts() { return controlInPorts; }
@@ -32,8 +32,6 @@ private:
     void addPort(ControlPortOut* port);
     void addPort(DataPortIn* port);
     void addPort(DataPortOut* port);
-
-    DataType* type;
 
     std::list<ControlPortIn*> controlInPorts;
     std::list<ControlPortOut*> controlOutPorts;

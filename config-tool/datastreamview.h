@@ -34,6 +34,10 @@ public slots:
     void redrawModules();
     void redrawStreams();
     void moveDatastreamModules();
+private slots:
+    void configClickedModule();
+signals:
+    void requestConfigDialog(CObject& object);
 };
 
 #endif // DATASTREAMVIEW_H

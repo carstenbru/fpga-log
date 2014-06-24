@@ -29,8 +29,6 @@ public:
     virtual int getPortSide() = 0;
     QPoint getModuleMiddle();
 protected:
-    //QPushButton button;
-
     Port* port;
 
     DatastreamObject* dso;

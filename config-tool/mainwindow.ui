@@ -11,14 +11,14 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>fpga-log</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>20</y>
+      <x>10</x>
+      <y>10</y>
       <width>691</width>
       <height>421</height>
      </rect>
@@ -27,10 +27,20 @@
    <widget class="QTextBrowser" name="textBrowser">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>461</y>
-      <width>241</width>
-      <height>111</height>
+      <x>10</x>
+      <y>450</y>
+      <width>1001</width>
+      <height>141</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListView" name="listView">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>10</y>
+      <width>291</width>
+      <height>421</height>
      </rect>
     </property>
    </widget>
@@ -65,15 +75,6 @@
    <addaction name="menuFile"/>
    <addaction name="menuObjects"/>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionClose">
    <property name="icon">
     <iconset theme="application-exit">

@@ -9,15 +9,17 @@ class MoveableButton : public QPushButton
     Q_OBJECT
 public:
     explicit MoveableButton(QWidget *parent = 0);
+    virtual ~MoveableButton() {}
 private:
-    void mouseMoveEvent(QMouseEvent *e);
-    void mousePressEvent(QMouseEvent *e);
+    virtual void mouseMoveEvent(QMouseEvent *e);
+    virtual void mousePressEvent(QMouseEvent *e);
+    virtual void mouseReleaseEvent(QMouseEvent *e);
 
     QPoint clickPos;
+    bool isClick;
 signals:
     void moved();
-public slots:
-
+    void clicked();
 };
 
 #endif // MOVEABLEBUTTON_H

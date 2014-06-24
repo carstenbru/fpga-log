@@ -3,8 +3,8 @@
 
 using namespace std;
 
-DatastreamObject::DatastreamObject(DataType *type) :
-    type(type),
+DatastreamObject::DatastreamObject(string name, DataType *type) :
+    CObject(name, type),
     position(QPoint(0,0))
 {
     findPorts();

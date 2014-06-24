@@ -24,7 +24,9 @@ SOURCES += main.cpp\
     headerparser.cpp \
     datatype.cpp \
     newobjectdialog.cpp \
-    cmethod.cpp
+    cmethod.cpp \
+    cobject.cpp \
+    dataloggerothermodel.cpp
 
 HEADERS  += mainwindow.h \
     datastreamobject.h \
@@ -36,7 +38,10 @@ HEADERS  += mainwindow.h \
     headerparser.h \
     datatype.h \
     newobjectdialog.h \
-    cmethod.h
+    cmethod.h \
+    cobject.h \
+    dataloggerothermodel.h \
+    Q_DebugStream.h
 
 FORMS    += mainwindow.ui \
     newobjectdialog.ui

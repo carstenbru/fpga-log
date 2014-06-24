@@ -3,8 +3,11 @@
 
 #include <QMainWindow>
 #include <map>
+#include <QModelIndex>
+#include "cobject.h"
 #include "datastreamview.h"
 #include "datatype.h"
+#include "dataloggerothermodel.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,8 +28,12 @@ private:
     DatastreamView* datastreamView;
 
     DataLogger dataLogger;
+    DataLoggerOtherModel otherModel;
 public slots:
     void newObject();
+    void showConfigDialog(CObject& object);
+private slots:
+    void otherObjectConfig(QModelIndex index);
 };
 
 #endif // MAINWINDOW_H

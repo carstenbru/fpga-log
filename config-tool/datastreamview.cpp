@@ -2,6 +2,8 @@
 #include "moveablebutton.h"
 #include <QScrollBar>
 
+using namespace std;
+
 DatastreamView::DatastreamView(QGraphicsView* view, DataLogger* dataLogger) :
     view(view),
     dataLogger(dataLogger)
@@ -11,7 +13,7 @@ DatastreamView::DatastreamView(QGraphicsView* view, DataLogger* dataLogger) :
     connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(moveDatastreamModules()));
     connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(moveDatastreamModules()));
 
-    connect(dataLogger, SIGNAL(modulesChanged()), this, SLOT(redrawModules()));
+    connect(dataLogger, SIGNAL(datastreamModulesChanged()), this, SLOT(redrawModules()));
     connect(dataLogger, SIGNAL(connectionsChanged()), this, SLOT(redrawStreams()));
 
     redrawModules();
@@ -44,11 +46,12 @@ void DatastreamView::generateModuleGui(DatastreamObject* datastreamObject) {
     btn->setParent(view);
     btn->setText(QString::fromStdString(datastreamObject->getDisplayName()));
     btn->setStyleSheet("background-color: #00689d ;\nfont: 10pt \"Arial\";\ncolor:white;"); //TODO remove
-    btn->setFixedSize(MODULE_SIZE_X,10);
+    btn->setFixedSize(MODULE_SIZE_X, 10);
     moduleGuiElements[btn] = datastreamObject;
 
     connect(btn, SIGNAL(moved()), this, SLOT(setModulePositions()));
     connect(btn, SIGNAL(moved()), this, SLOT(redrawStreams()));
+    connect(btn, SIGNAL(clicked()), this, SLOT(configClickedModule()));
 
     int port_number_left = 0;
     std::list<DataPortOut*> l1 = datastreamObject->getDataOutPorts();
@@ -96,7 +99,7 @@ void DatastreamView::setModulePositions() {
 void DatastreamView::redrawModules() {
     deleteAllModuleGuis();
 
-    std::list<DatastreamObject*> modules = dataLogger->getModules();
+    std::list<DatastreamObject*> modules = dataLogger->getDatastreamModules();
 
     std::list<DatastreamObject*>::iterator i;
     for (i = modules.begin(); i != modules.end(); i++) {
@@ -160,5 +163,17 @@ void DatastreamView::moveDatastreamModules() {
         DatastreamObject* dso = i->second;
 
         i->first->move(dso->getPosition() - p);
+    }
+}
+
+void DatastreamView::configClickedModule() {
+    QObject* sender = QObject::sender();
+    if (sender != NULL) {
+        try {
+            QWidget* widget = dynamic_cast<QWidget*>(sender);
+            DatastreamObject* object = moduleGuiElements.at(widget);
+            emit requestConfigDialog(*object);
+        } catch (exception) {
+        }
     }
 }
