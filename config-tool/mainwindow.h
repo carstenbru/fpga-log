@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <map>
 #include "datastreamview.h"
+#include "datatype.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,8 +23,10 @@ private:
     Ui::MainWindow *ui;
 
     DatastreamView* datastreamView;
+
+    DataLogger dataLogger;
 public slots:
-    void test();
+    void newObject();
 };
 
 #endif // MAINWINDOW_H

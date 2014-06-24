@@ -6,13 +6,14 @@
 #include <QPoint>
 #include <list>
 #include "port.h"
+#include "datatype.h"
 
 class DatastreamObject : public QObject
 {
     Q_OBJECT
 
 public:
-    DatastreamObject(std::string type);
+    DatastreamObject(DataType* type);
     ~DatastreamObject();
 
     std::list<ControlPortIn*> getControlInPorts() { return controlInPorts; }
@@ -20,17 +21,19 @@ public:
     std::list<DataPortIn*> getDataInPorts() { return dataInPorts; }
     std::list<DataPortOut*> getDataOutPorts() { return dataOutPorts; }
     std::list<PortOut*> getOutPorts(port_type type);
-    std::string getType();
+    std::string getDisplayName();
 
     void setPosition(QPoint pos);
     QPoint getPosition();
 private:
+    void findPorts();
+
     void addPort(ControlPortIn* port);
     void addPort(ControlPortOut* port);
     void addPort(DataPortIn* port);
     void addPort(DataPortOut* port);
 
-    std::string type;
+    DataType* type;
 
     std::list<ControlPortIn*> controlInPorts;
     std::list<ControlPortOut*> controlOutPorts;

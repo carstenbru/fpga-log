@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <list>
+#include "datatype.h"
 #include "datastreamobject.h"
 
 class DataLogger : public QObject
@@ -13,7 +14,7 @@ public:
     DataLogger();
     ~DataLogger();
 
-    void newDatastreamObject(std::string type);
+    void newDatastreamObject(DataType* type);
     std::list<DatastreamObject*> getModules();
 private:
     std::list<DatastreamObject*> datastreamObjects;

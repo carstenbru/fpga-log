@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = config-tool
 TEMPLATE = app
 
+QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -19,7 +20,11 @@ SOURCES += main.cpp\
     datalogger.cpp \
     datastreamview.cpp \
     moveablebutton.cpp \
-    portbutton.cpp
+    portbutton.cpp \
+    headerparser.cpp \
+    datatype.cpp \
+    newobjectdialog.cpp \
+    cmethod.cpp
 
 HEADERS  += mainwindow.h \
     datastreamobject.h \
@@ -27,9 +32,14 @@ HEADERS  += mainwindow.h \
     datalogger.h \
     datastreamview.h \
     moveablebutton.h \
-    portbutton.h
+    portbutton.h \
+    headerparser.h \
+    datatype.h \
+    newobjectdialog.h \
+    cmethod.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    newobjectdialog.ui
 
 RESOURCES += \
     icons.qrc

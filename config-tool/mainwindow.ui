@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1029</width>
-    <height>635</height>
+    <width>1025</width>
+    <height>631</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,27 +19,19 @@
      <rect>
       <x>30</x>
       <y>20</y>
-      <width>951</width>
-      <height>451</height>
+      <width>691</width>
+      <height>421</height>
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QTextBrowser" name="textBrowser">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>500</y>
-      <width>181</width>
-      <height>71</height>
+      <x>40</x>
+      <y>461</y>
+      <width>241</width>
+      <height>111</height>
      </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: #00689d ;
-font: 18pt &quot;Arial&quot;;
-color:white;</string>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
     </property>
    </widget>
   </widget>
@@ -48,10 +40,30 @@ color:white;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1029</width>
+     <width>1025</width>
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>Datei</string>
+    </property>
+    <addaction name="actionClose"/>
+   </widget>
+   <widget class="QMenu" name="menuObjects">
+    <property name="tearOffEnabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Objekte</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>false</bool>
+    </property>
+    <addaction name="actionNewObject"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuObjects"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -62,8 +74,45 @@ color:white;</string>
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionClose">
+   <property name="icon">
+    <iconset theme="application-exit">
+     <normaloff/>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Beenden</string>
+   </property>
+  </action>
+  <action name="actionNewObject">
+   <property name="icon">
+    <iconset theme="list-add">
+     <normaloff/>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Neues Objekt</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionClose</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>513</x>
+     <y>316</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

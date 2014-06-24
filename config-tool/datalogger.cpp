@@ -15,7 +15,7 @@ std::list<DatastreamObject*> DataLogger::getModules() {
     return datastreamObjects;
 }
 
-void DataLogger::newDatastreamObject(std::string type) {
+void DataLogger::newDatastreamObject(DataType *type) {
     DatastreamObject* dso = new DatastreamObject(type);
     datastreamObjects.push_back(dso);
     connect(dso, SIGNAL(connectionsChanged()), this, SLOT(moduleConnectionsChanged()));

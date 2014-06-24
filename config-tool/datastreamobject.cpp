@@ -1,14 +1,13 @@
 #include "datastreamobject.h"
+#include <list>
 
-DatastreamObject::DatastreamObject(std::string type) :
+using namespace std;
+
+DatastreamObject::DatastreamObject(DataType *type) :
     type(type),
     position(QPoint(0,0))
 {
-
-    addPort(new DataPortOut("dout1")); //TODO remove
-    addPort(new ControlPortIn("cin1"));
-    addPort(new DataPortIn("din1"));
-    addPort(new ControlPortOut("cout1"));
+    findPorts();
 }
 
 DatastreamObject::~DatastreamObject() {
@@ -26,8 +25,8 @@ DatastreamObject::~DatastreamObject() {
     }
 }
 
-std::string DatastreamObject::getType() {
-    return type;
+std::string DatastreamObject::getDisplayName() {
+    return type->getDisplayName();
 }
 
 std::list<PortOut*> DatastreamObject::getOutPorts(port_type type) {
@@ -37,6 +36,42 @@ std::list<PortOut*> DatastreamObject::getOutPorts(port_type type) {
     else
         res.insert(res.end(), dataOutPorts.begin(), dataOutPorts.end());
     return res;
+}
+
+void DatastreamObject::findPorts() {
+    DataType* controlPortType = DataType::getType("control_port_t");
+    DataType* dataPortType = DataType::getType("data_port_t");
+    DataType* voidType = DataType::getType("void");
+
+    CMethod CInSig("cin_sig_dummy", new CMethodParameter("return", controlPortType, false));
+    CInSig.addParameter(new CMethodParameter("this", type, true));
+    CMethod DInSig("din_sig_dummy", new CMethodParameter("return", dataPortType, false));
+    DInSig.addParameter(new CMethodParameter("this", type, true));
+    CMethod COutSig("cout_sig_dummy", new CMethodParameter("return", voidType, false));
+    COutSig.addParameter(new CMethodParameter("this", type, true));
+    COutSig.addParameter(new CMethodParameter("port", controlPortType, true));
+    CMethod DOutSig("cout_sig_dummy", new CMethodParameter("return", voidType, false));
+    DOutSig.addParameter(new CMethodParameter("this", type, true));
+    DOutSig.addParameter(new CMethodParameter("port", dataPortType, true));
+
+    list<CMethod*> methods = type->getMethods();
+    for (list<CMethod*>::iterator i = methods.begin(); i != methods.end(); i++) {
+        CMethod* m = *i;
+        string port_name = m->getName();
+        port_name.erase(0, 4);
+        if (m->sameSignature(DInSig)) {
+            addPort(new DataPortIn(port_name));
+        } else
+        if (m->sameSignature(CInSig)) {
+            addPort(new ControlPortIn(port_name));
+        } else
+        if (m->sameSignature(DOutSig)) {
+            addPort(new DataPortOut(port_name));
+        } else
+        if (m->sameSignature(COutSig)) {
+            addPort(new ControlPortOut(port_name));
+        }
+    }
 }
 
 void DatastreamObject::addPort(ControlPortIn* port) {
