@@ -12,7 +12,7 @@
 #define PWM_ON_TIME 1
 #define PWM_PHASE 2
 
-typedef volatile struct {
+typedef struct {
     volatile unsigned int config;
     volatile unsigned int data_low;
     volatile unsigned int data_high;

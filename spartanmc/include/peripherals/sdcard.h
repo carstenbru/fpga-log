@@ -52,7 +52,7 @@ typedef enum {
 	WRITE_BUSY_ERROR = 3
 } write_code;
 
-typedef volatile struct {
+typedef struct {
     volatile unsigned int version;
     volatile unsigned int control;
     volatile unsigned int trans_type;

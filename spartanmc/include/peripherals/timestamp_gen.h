@@ -11,7 +11,7 @@
 #define TIMESTAMP_GEN_NEXT_VAL		(1 << 16)
 #define TIMESTAMP_GEN_FIFO_CLEAR	(1 << 17)
 
-typedef volatile struct {
+typedef struct {
 	volatile union {
 		unsigned long int lpt; /**< low precision timestamp as long */
 		struct {
@@ -31,7 +31,7 @@ typedef volatile struct {
 /**
  * @brief timestamp peripheral registers
  */
-typedef volatile struct {
+typedef struct {
 	volatile timestamp_t timestamp; /**< timestamp values, see struct @ref timestamp_t */
 	volatile unsigned int tsr; /**< timestamp source register */
 
