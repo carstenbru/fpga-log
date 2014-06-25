@@ -21,11 +21,14 @@ ConsoleRedirector::ConsoleRedirector(std::ostream &stream, QTextEdit* textEdit, 
 ConsoleRedirector::int_type ConsoleRedirector::overflow(int_type v) {
     if (v == '\n') {
         logWindow->append("");
+        oldBuf->sputc('\n');
     }
     return v;
 }
 
 std::streamsize ConsoleRedirector::xsputn(const char *p, std::streamsize n) {
+    oldBuf->sputn(p, n); //send data to original stream
+
     stringstream ss;
     ss << "<font color=\"" << htmlColor << "\">" << p << "</font>";
     logWindow->insertHtml(QString(ss.str().c_str()));
