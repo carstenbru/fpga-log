@@ -13,6 +13,7 @@ public:
     CObject(std::string name, DataType* dataType);
 
     std::string getName() { return name; }
+    void setName(std::string name) { this->name = name; }
     DataType* getType() { return type; }
 protected:
     std::string name;

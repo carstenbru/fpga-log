@@ -26,10 +26,6 @@ DatastreamObject::~DatastreamObject() {
     }
 }
 
-std::string DatastreamObject::getDisplayName() {
-    return type->getDisplayName();
-}
-
 std::list<PortOut*> DatastreamObject::getOutPorts(port_type type) {
     std::list<PortOut*> res;
     if (type == PORT_TYPE_CONTROL_OUT)

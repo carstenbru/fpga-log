@@ -19,6 +19,7 @@ public:
     void newObject(DataType* type);
     std::list<DatastreamObject*> getDatastreamModules() {return datastreamObjects; }
     std::vector<CObject*> getOtherObjects() { return otherObjects; }
+    bool changeObjectName(CObject* object, std::string newName);
 private:
     template <typename T>
     bool containsObjectName(T searchList, std::string name);

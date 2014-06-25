@@ -21,7 +21,6 @@ public:
     std::list<DataPortIn*> getDataInPorts() { return dataInPorts; }
     std::list<DataPortOut*> getDataOutPorts() { return dataOutPorts; }
     std::list<PortOut*> getOutPorts(port_type type);
-    std::string getDisplayName();
 
     void setPosition(QPoint pos);
     QPoint getPosition();

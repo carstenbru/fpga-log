@@ -44,7 +44,7 @@ void DatastreamView::deleteAllModuleGuis() {
 void DatastreamView::generateModuleGui(DatastreamObject* datastreamObject) {
     MoveableButton* btn = new MoveableButton();
     btn->setParent(view);
-    btn->setText(QString::fromStdString(datastreamObject->getDisplayName()));
+    btn->setText(QString::fromStdString(datastreamObject->getName()));
     btn->setStyleSheet("background-color: #00689d ;\nfont: 10pt \"Arial\";\ncolor:white;"); //TODO remove
     btn->setFixedSize(MODULE_SIZE_X, 10);
     moduleGuiElements[btn] = datastreamObject;

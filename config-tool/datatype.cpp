@@ -6,7 +6,7 @@ std::map<std::string, DataType*> DataType::types;
 
 DataType::DataType(std::string name, bool systemType) :
     name(name),
-    systemType(systemType),
+    systemType(false),
     super(NULL)
 {
     types[name] = this;

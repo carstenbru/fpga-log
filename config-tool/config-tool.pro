@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     cmethod.cpp \
     cobject.cpp \
     dataloggerothermodel.cpp \
-    consoleredirector.cpp
+    consoleredirector.cpp \
+    configobjectdialog.cpp
 
 HEADERS  += mainwindow.h \
     datastreamobject.h \
@@ -42,10 +43,12 @@ HEADERS  += mainwindow.h \
     cmethod.h \
     cobject.h \
     dataloggerothermodel.h \
-    consoleredirector.h
+    consoleredirector.h \
+    configobjectdialog.h
 
 FORMS    += mainwindow.ui \
-    newobjectdialog.ui
+    newobjectdialog.ui \
+    configobjectdialog.ui
 
 RESOURCES += \
     icons.qrc

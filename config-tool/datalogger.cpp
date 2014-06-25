@@ -1,5 +1,6 @@
 #include "datalogger.h"
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 
@@ -54,4 +55,19 @@ std::string DataLogger::findObjectName(T searchList, DataType* dataType) {
     } while (containsObjectName(searchList, ss.str()));
 
     return ss.str();
+}
+
+bool DataLogger::changeObjectName(CObject* object, std::string newName) {
+    if (newName.empty()) {
+        cerr << "leerer Modulname ist nicht erlaubt" << endl;
+        return false;
+    }
+    if (containsObjectName(datastreamObjects, newName) || containsObjectName(otherObjects, newName)) {
+        cerr << "Modulname bereits vergeben" << endl;
+        return false;
+    }
+    //emit datastreamModulesChanged(); //TODO seg fault with this signal in mouse move event of MoveableButton
+    emit otherModulesChanged();
+    object->setName(newName);
+    return true;
 }

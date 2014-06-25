@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "headerparser.h"
 #include "newobjectdialog.h"
+#include "configobjectdialog.h"
 #include <iostream>
 #include <QProcessEnvironment>
 #include "consoleredirector.h"
@@ -72,6 +73,6 @@ void MainWindow::otherObjectConfig(QModelIndex index) {
 }
 
 void MainWindow::showConfigDialog(CObject& object) {
-    cerr << "config called with object: " << object.getName() << endl;
-    //TODO
+    ConfigObjectDialog dialog(this, &object, &dataLogger);
+    dialog.exec();
 }
