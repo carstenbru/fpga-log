@@ -17,7 +17,7 @@ public:
     DataType* getSuperType() { return super; }
     std::list<DataType*> getChilds() { return childs; }
     bool hasPrefix(std::string prefix) { return (name.find(prefix) == 0); }
-    bool isAbstract() { return 0; } //TODO
+    bool isAbstract();
     bool isSystemType() { return systemType; }
     std::list<CMethod*> getMethods() { return methods; }
 

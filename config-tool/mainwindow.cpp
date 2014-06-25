@@ -37,6 +37,10 @@ void MainWindow::show() {
     hp.addFolder("../source/include/dm", true, false);
     hp.addFolder("../source/include/sink", true, false);
     hp.parseFiles();
+
+    dataLogger.newObject(DataType::getType("device_hct99_t")); //TODO remove
+    dataLogger.newObject(DataType::getType("sink_sd_card_t"));
+    dataLogger.newObject(DataType::getType("dm_splitter_data_t"));
 }
 
 MainWindow::~MainWindow()

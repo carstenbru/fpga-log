@@ -42,5 +42,5 @@ int DataPortOut::connectPort(Port *port) {
 
 void PortOut::disconnectPort() {
     destination = NULL;
-    emit disconnected();
+    emit disconnected(this);
 }

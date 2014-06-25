@@ -11,6 +11,7 @@ public:
     CMethodParameter(std::string name, DataType* dataType, bool pointer);
 
     bool sameSignature(CMethodParameter& compare);
+    std::string getName() { return name; }
 private:
     std::string name;
 

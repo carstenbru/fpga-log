@@ -26,7 +26,7 @@ private:
     std::string name;
 signals:
     void connected();
-    void disconnected();
+    void disconnected(Port* port);
 };
 
 class ControlPortIn : public Port
@@ -55,6 +55,7 @@ public:
     Port* getDestination() { return destination; }
     virtual void disconnectPort();
 
+    bool isConnected() { return destination != NULL; }
 protected:
     Port* destination;
 };

@@ -8,6 +8,8 @@
 using namespace std;
 using namespace boost;
 
+std::map<std::string, std::string> HeaderParser::defines;
+
 HeaderParser::HeaderParser()
 {
 }
@@ -75,6 +77,9 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                     if (hasSuper)
                         inheritanceMap[d] = superType;
                 }
+            } else if ((*i).compare("#define") == 0) {
+                string name = *(++i);
+                defines[name] = *(++i);
             }
         }
     }
@@ -97,8 +102,14 @@ void HeaderParser::parseFileForMethods(string filename) {
                 string method_name = s;
                 method_name.erase(op, s.length());
 
-                string type = s;
-                type.erase(0, op + 1);
+                string type;
+                if (op < s.length() - 1) {
+                    type = s;
+                    type.erase(0, op + 1);
+                }
+                else {
+                    type = *(++i);
+                }
                 if (type.back() == '*') {
                     type.erase(type.length() - 1, 1);
                     try {
@@ -179,5 +190,23 @@ void HeaderParser::parseMethodParameters(CMethod* method, std::string parameters
     tokenizer<char_separator<char> > tokens(parameters, s);
     for (tokenizer<char_separator<char> >::iterator i = tokens.begin(); i != tokens.end(); i++) {
         parseMethodParameter(method, *i);
+    }
+}
+
+std::string HeaderParser::getDefinedString(std::string name) {
+    try {
+        return defines.at(name);
+    } catch (exception) {
+        cerr << "symbol " << name << " is not defined" << endl;
+        return "";
+    }
+}
+
+int HeaderParser::getDefinedInteger(std::string name) {
+    try {
+        return atoi(getDefinedString(name).c_str());
+    } catch (exception) {
+        cerr << "symbol " << name << " is not a number" << endl;
+        return 0;
     }
 }

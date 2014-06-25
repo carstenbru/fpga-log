@@ -1,5 +1,7 @@
 #include "datatype.h"
 
+using namespace std;
+
 std::map<std::string, DataType*> DataType::types;
 
 DataType::DataType(std::string name, bool systemType) :
@@ -16,4 +18,12 @@ std::string DataType::getCleanedName() {
     if (i < s.length())
         s.erase(i, s.length());
     return s;
+}
+
+bool DataType::isAbstract() {
+    for (list<CMethod*>::iterator i = methods.begin(); i != methods.end(); i++) {
+        if ((*i)->getName().compare("init") == 0)
+            return false;
+    }
+    return true;
 }

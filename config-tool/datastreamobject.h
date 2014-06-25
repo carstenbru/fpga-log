@@ -27,6 +27,8 @@ public:
     QPoint getPosition();
 private:
     void findPorts();
+    template <typename T>
+    bool reorderUnconnectedPort(std::list<T*>& ports, Port* port);
 
     void addPort(ControlPortIn* port);
     void addPort(ControlPortOut* port);
@@ -40,7 +42,8 @@ private:
 
     QPoint position;
 private slots:
-    void portConnectionChanged();
+    void portConnected();
+    void portDisconnected(Port *port);
 signals:
     void connectionsChanged();
 };

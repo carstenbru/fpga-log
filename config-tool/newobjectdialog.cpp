@@ -17,17 +17,26 @@ NewObjectDialog::~NewObjectDialog()
     delete ui;
 }
 
-void NewObjectDialog::generateItem(QStandardItem* parent, DataType* dataType, bool recursive) {
+bool NewObjectDialog::generateItem(QStandardItem* parent, DataType* dataType, bool recursive) {
     QStandardItem* item = new QStandardItem(QString(dataType->getDisplayName().c_str()));
     item->setEditable(false);
     item->setSelectable(!dataType->isAbstract());
     item->setData(QVariant(dataType->getName().c_str()));
-    parent->appendRow(item);
     if (recursive) {
         list<DataType*> childs = dataType->getChilds();
+        bool hasNotAbstractClass = !dataType->isAbstract();
         for (list<DataType*>::iterator i = childs.begin(); i != childs.end(); i++) {
-            generateItem(item, *i, true);
+            hasNotAbstractClass |= generateItem(item, *i, true);
         }
+        if (hasNotAbstractClass) {
+            parent->appendRow(item);
+        } else {
+            delete item;
+        }
+        return hasNotAbstractClass;
+    } else {
+        parent->appendRow(item);
+        return true;
     }
 }
 

@@ -14,7 +14,7 @@ DatastreamView::DatastreamView(QGraphicsView* view, DataLogger* dataLogger) :
     connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(moveDatastreamModules()));
 
     connect(dataLogger, SIGNAL(datastreamModulesChanged()), this, SLOT(redrawModules()));
-    connect(dataLogger, SIGNAL(connectionsChanged()), this, SLOT(redrawStreams()));
+    connect(dataLogger, SIGNAL(connectionsChanged()), this, SLOT(redrawModules()));
 
     redrawModules();
 }
@@ -29,14 +29,14 @@ QPoint DatastreamObject::getPosition() {
 
 void DatastreamView::deleteAllModuleGuis() {
     for (std::map<Port*, PortButton*>::iterator p = ports.begin(); p != ports.end(); p++) {
-        delete p->second;
+        p->second->deleteLater();
     }
     ports.clear();
     portOuts.clear();
 
     std::map<QWidget*, DatastreamObject*>::iterator i;
     for (i = moduleGuiElements.begin(); i != moduleGuiElements.end(); i++) {
-        delete i->first;
+        i->first->deleteLater();
     }
     moduleGuiElements.clear();
 }
@@ -54,11 +54,20 @@ void DatastreamView::generateModuleGui(DatastreamObject* datastreamObject) {
     connect(btn, SIGNAL(clicked()), this, SLOT(configClickedModule()));
 
     int port_number_left = 0;
+    string lastName;
+    bool lastConnected = true;
     std::list<DataPortOut*> l1 = datastreamObject->getDataOutPorts();
     for (std::list<DataPortOut*>::iterator it = l1.begin(); it != l1.end(); it++) {
-        DataPortOutButton* d = new DataPortOutButton(btn, *it, datastreamObject, port_number_left++);
-        ports[*it] = d;
-        portOuts.push_back(d);
+        string portName = (*it)->getName();
+
+        if (lastConnected || (portName.compare(lastName) != 0)) {
+            DataPortOutButton* c = new DataPortOutButton(btn, *it, datastreamObject, port_number_left++);
+            ports[*it] = (c);
+            portOuts.push_back(c);
+            lastName = portName;
+        }
+
+        lastConnected = (*it)->isConnected();
     }
     std::list<ControlPortIn*> l2 = datastreamObject->getControlInPorts();
     for (std::list<ControlPortIn*>::iterator it = l2.begin(); it != l2.end(); it++) {
@@ -72,9 +81,16 @@ void DatastreamView::generateModuleGui(DatastreamObject* datastreamObject) {
     }
     std::list<ControlPortOut*> l4 = datastreamObject->getControlOutPorts();
     for (std::list<ControlPortOut*>::iterator it = l4.begin(); it != l4.end(); it++) {
-        ControlPortOutButton* c = new ControlPortOutButton(btn, *it, datastreamObject, port_number_right++);
-        ports[*it] = (c);
-        portOuts.push_back(c);
+        string portName = (*it)->getName();
+
+        if (lastConnected || (portName.compare(lastName) != 0)) {
+            ControlPortOutButton* c = new ControlPortOutButton(btn, *it, datastreamObject, port_number_right++);
+            ports[*it] = (c);
+            portOuts.push_back(c);
+            lastName = portName;
+        }
+
+        lastConnected = (*it)->isConnected();
     }
 
     int maxPorts = std::max(port_number_left, port_number_right);

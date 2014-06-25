@@ -13,6 +13,9 @@ public:
 
     void addFolder(std::string path, bool includeSubdirs, bool systemDir);
     void parseFiles();
+
+    static std::string getDefinedString(std::string name);
+    static int getDefinedInteger(std::string name);
 private:
     void parseFileForDataTypes(std::string filename, std::map<DataType *, std::string> &inheritanceList, bool systemFile);
     void parseFileForMethods(std::string filename);
@@ -22,6 +25,8 @@ private:
 
     std::list<std::string> files;
     std::list<bool> filesIsSystem;
+
+    static std::map<std::string, std::string> defines;
 };
 
 #endif // HEADERPARSER_H

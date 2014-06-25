@@ -21,7 +21,7 @@ public:
     DataType* getSelectedDataType();
 private:
     void genrateTypeView();
-    void generateItem(QStandardItem *parent, DataType* dataType, bool recursive);
+    bool generateItem(QStandardItem *parent, DataType* dataType, bool recursive);
 
     Ui::NewObjectDialog *ui;
 };
