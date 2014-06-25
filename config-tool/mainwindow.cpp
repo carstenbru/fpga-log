@@ -4,7 +4,7 @@
 #include "newobjectdialog.h"
 #include <iostream>
 #include <QProcessEnvironment>
-#include "Q_DebugStream.h"
+#include "consoleredirector.h"
 
 using namespace std;
 
@@ -14,8 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
     otherModel(&dataLogger)
 {
     ui->setupUi(this);
-    new Q_DebugStream(cout, ui->textBrowser);
-    new Q_DebugStream(cerr, ui->textBrowser);
+    new ConsoleRedirector(cout, ui->textBrowser, "Black");
+    new ConsoleRedirector(cerr, ui->textBrowser, "Red");
 
     connect(ui->actionNewObject, SIGNAL(triggered()), this, SLOT(newObject()));
 

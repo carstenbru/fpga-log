@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     newobjectdialog.cpp \
     cmethod.cpp \
     cobject.cpp \
-    dataloggerothermodel.cpp
+    dataloggerothermodel.cpp \
+    consoleredirector.cpp
 
 HEADERS  += mainwindow.h \
     datastreamobject.h \
@@ -41,7 +42,7 @@ HEADERS  += mainwindow.h \
     cmethod.h \
     cobject.h \
     dataloggerothermodel.h \
-    Q_DebugStream.h
+    consoleredirector.h
 
 FORMS    += mainwindow.ui \
     newobjectdialog.ui

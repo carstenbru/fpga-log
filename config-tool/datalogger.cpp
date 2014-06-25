@@ -1,4 +1,5 @@
 #include "datalogger.h"
+#include <sstream>
 
 using namespace std;
 
@@ -29,4 +30,28 @@ void DataLogger::newObject(DataType *type) {
 
 void DataLogger::moduleConnectionsChanged() {
     emit connectionsChanged();
+}
+
+template <typename T>
+bool DataLogger::containsObjectName(T searchList, std::string name) {
+    for (typename T::iterator i = searchList.begin(); i != searchList.end(); i++) {
+        if ((*i)->getName().compare(name) == 0)
+            return true;
+    }
+    return false;
+}
+
+template <typename T>
+std::string DataLogger::findObjectName(T searchList, DataType* dataType) {
+    int i = 0;
+    stringstream ss;
+    do {
+        ss.str(string());
+        ss << dataType->getDisplayName();
+        ss << "_";
+        ss << i;
+        i++;
+    } while (containsObjectName(searchList, ss.str()));
+
+    return ss.str();
 }

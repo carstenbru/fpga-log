@@ -4,7 +4,6 @@
 #include <QObject>
 #include <list>
 #include <vector>
-#include <sstream>
 #include "datatype.h"
 #include "cobject.h"
 #include "datastreamobject.h"
@@ -35,29 +34,5 @@ signals:
     void otherModulesChanged();
     void connectionsChanged();
 };
-
-template <typename T>
-bool DataLogger::containsObjectName(T searchList, std::string name) {
-    for (typename T::iterator i = searchList.begin(); i != searchList.end(); i++) {
-        if ((*i)->getName().compare(name) == 0)
-            return true;
-    }
-    return false;
-}
-
-template <typename T>
-std::string DataLogger::findObjectName(T searchList, DataType* dataType) {
-    int i = 0;
-    std::stringstream ss;
-    do {
-        ss.str(std::string());
-        ss << dataType->getDisplayName();
-        ss << "_";
-        ss << i;
-        i++;
-    } while (containsObjectName(searchList, ss.str()));
-
-    return ss.str();
-}
 
 #endif // DATALOGGER_H
