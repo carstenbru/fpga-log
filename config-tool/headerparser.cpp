@@ -14,7 +14,7 @@ HeaderParser::HeaderParser()
 {
 }
 
-void HeaderParser::addFolder(std::string path, bool includeSubdirs, bool systemDir) {
+void HeaderParser::addFolder(std::string path, bool includeSubdirs) {
     QDirIterator::IteratorFlags iteratorFlags = includeSubdirs ? QDirIterator::Subdirectories : QDirIterator::NoIteratorFlags;
     QDirIterator dirIter(QString(path.c_str()), iteratorFlags);
     while (dirIter.hasNext()) {
@@ -22,7 +22,6 @@ void HeaderParser::addFolder(std::string path, bool includeSubdirs, bool systemD
         if (QFileInfo(dirIter.filePath()).isFile()) {
             if (QFileInfo(dirIter.filePath()).suffix() == "h") {
                 files.push_back(dirIter.filePath().toStdString());
-                filesIsSystem.push_back(systemDir);
             }
         }
     }
@@ -30,9 +29,8 @@ void HeaderParser::addFolder(std::string path, bool includeSubdirs, bool systemD
 
 void HeaderParser::parseFiles() {
     map<DataType*, string> inheritanceMap;
-    list<bool>::iterator filesIsSystemIt = filesIsSystem.begin();
     for (list<string>::iterator i = files.begin(); i != files.end(); i++) {
-        parseFileForDataTypes(*i, inheritanceMap, *filesIsSystemIt++);
+        parseFileForDataTypes(*i, inheritanceMap);
     }
 
     for (map<DataType*, string>::iterator i = inheritanceMap.begin(); i != inheritanceMap.end(); i++) {
@@ -46,7 +44,7 @@ void HeaderParser::parseFiles() {
     }
 }
 
-void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType*, std::string>& inheritanceMap, bool systemFile) {
+void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType*, std::string>& inheritanceMap) {
     ifstream header(filename.c_str());
 
     if (header.is_open()) {
@@ -73,7 +71,7 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                     }
                     string name = *++i;
                     name.erase(name.find(';'), name.length());
-                    DataType* d = new DataType(name, systemFile);
+                    DataType* d = new DataType(name);
                     if (hasSuper)
                         inheritanceMap[d] = superType;
                 }

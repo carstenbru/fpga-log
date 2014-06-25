@@ -4,9 +4,8 @@ using namespace std;
 
 std::map<std::string, DataType*> DataType::types;
 
-DataType::DataType(std::string name, bool systemType) :
+DataType::DataType(std::string name) :
     name(name),
-    systemType(false),
     super(NULL)
 {
     types[name] = this;

@@ -9,7 +9,7 @@
 class DataType
 {
 public:
-    DataType(std::string name, bool systemType);
+    DataType(std::string name);
 
     std::string getName() { return name; }
     std::string getCleanedName();
@@ -18,7 +18,6 @@ public:
     std::list<DataType*> getChilds() { return childs; }
     bool hasPrefix(std::string prefix) { return (name.find(prefix) == 0); }
     bool isAbstract();
-    bool isSystemType() { return systemType; }
     std::list<CMethod*> getMethods() { return methods; }
 
     void setSuperType(DataType* super) { this->super = super; }
@@ -29,13 +28,16 @@ public:
     static std::map<std::string, DataType*> getTypes() { return types; }
 private:
     std::string name;
-    bool systemType;
     DataType* super;
 
     std::list<DataType*> childs;
     std::list<CMethod*> methods;
 
     static std::map<std::string, DataType*> types;
+};
+
+class DataTypeObject : public DataType {
+
 };
 
 #endif // DATATYPE_H

@@ -32,11 +32,11 @@ void MainWindow::show() {
 
     HeaderParser hp = HeaderParser(); //TODO move to main?
     string spmc_root = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();
-    hp.addFolder(spmc_root + "/spartanmc/include/peripherals", false, true);
-    hp.addFolder("../source/include", false, false);
-    hp.addFolder("../source/include/device", true, false);
-    hp.addFolder("../source/include/dm", true, false);
-    hp.addFolder("../source/include/sink", true, false);
+    hp.addFolder(spmc_root + "/spartanmc/include/peripherals", false);
+    hp.addFolder("../source/include", false);
+    hp.addFolder("../source/include/device", true);
+    hp.addFolder("../source/include/dm", true);
+    hp.addFolder("../source/include/sink", true);
     hp.parseFiles();
 
     dataLogger.newObject(DataType::getType("device_hct99_t")); //TODO remove

@@ -64,18 +64,16 @@ void NewObjectDialog::genrateTypeView() {
     std::map<std::string, DataType*> types = DataType::getTypes();
     for (map<string, DataType*>::iterator i = types.begin(); i != types.end(); i++) {
         DataType* dt = i->second;
-        if (!dt->isSystemType()) {
-            if (dt->hasPrefix("device_")) {
-                generateItem(device, i->second, false);
-            } else if (dt->hasPrefix("dm_")) {
-                generateItem(dm, i->second, false);
-            } else if (dt->hasPrefix("sink_")) {
-                generateItem(sink, i->second, false);
-            } else {
-                if (dt->getSuperType() == NULL) {
-                    if (dt->getName().compare("datastream_object_t") != 0) //filter out datastream_object_t since these types are covered by the other fields
-                        generateItem(other, i->second, true);
-                }
+        if (dt->hasPrefix("device_")) {
+            generateItem(device, i->second, false);
+        } else if (dt->hasPrefix("dm_")) {
+            generateItem(dm, i->second, false);
+        } else if (dt->hasPrefix("sink_")) {
+            generateItem(sink, i->second, false);
+        } else {
+            if (dt->getSuperType() == NULL) {
+                if (dt->getName().compare("datastream_object_t") != 0) //filter out datastream_object_t since these types are covered by the other fields
+                    generateItem(other, i->second, true);
             }
         }
     }

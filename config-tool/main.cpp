@@ -4,12 +4,12 @@
 
 int main(int argc, char *argv[])
 {
-    new DataType("void", true); //TODO move
-    new DataType("int", true);
-    new DataType("char", true);
-    new DataType("unsigned int", true);
-    new DataType("unsigned char", true);
-    new DataType("uint36_t", true);
+    new DataType("void"); //TODO move
+    new DataType("int");
+    new DataType("char");
+    new DataType("unsigned int");
+    new DataType("unsigned char");
+    new DataType("uint36_t");
 
     QApplication a(argc, argv);
     MainWindow w;
