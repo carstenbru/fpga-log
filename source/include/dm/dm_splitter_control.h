@@ -15,7 +15,7 @@
  *
  * Since we have no heap (malloc) on SpartanMC we need to allocate a fixed amount of memory with the struct.
  */
-#define DM_SPILTTER_CONTROL_MAX_TARGETS 8
+#define DM_SPLITTER_CONTROL_CONTROL_OUT_MAX 8
 
 #include "control_port.h"
 
@@ -24,7 +24,7 @@
  */
 typedef struct {
 	control_port_t control_in; /**< control port, this can be set at a control output to direct the control stream to this splitter */
-	const control_port_t* control_out[DM_SPILTTER_CONTROL_MAX_TARGETS]; /**< control output ports */
+	const control_port_t* control_out[DM_SPLITTER_CONTROL_CONTROL_OUT_MAX]; /**< control output ports */
 
 	int target_count; /**< currently assigned targets */
 } dm_splitter_control_t;

@@ -21,7 +21,7 @@ static void dm_splitter_control_new_control_message(void* const _splitter,
 
 void dm_splitter_control_init(dm_splitter_control_t* const splitter) {
 	int i;
-	for (i = 0; i < DM_SPILTTER_CONTROL_MAX_TARGETS; i++) {
+	for (i = 0; i < DM_SPLITTER_CONTROL_CONTROL_OUT_MAX; i++) {
 		splitter->control_out[i] = &control_port_dummy;
 	}
 
@@ -39,7 +39,7 @@ control_port_t dm_splitter_control_get_control_in(dm_splitter_control_t* const s
 
 int dm_splitter_control_add_control_out(dm_splitter_control_t* const splitter,
 		const control_port_t* const control_in) {
-	if (splitter->target_count < DM_SPILTTER_CONTROL_MAX_TARGETS) {
+	if (splitter->target_count < DM_SPLITTER_CONTROL_CONTROL_OUT_MAX) {
 		splitter->control_out[splitter->target_count++] = control_in;
 		return 1;
 	} else

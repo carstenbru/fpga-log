@@ -21,7 +21,7 @@
  *
  * Since we have no heap (malloc) on SpartanMC we need to allocate a fixed amount of memory with the struct.
  */
-#define SINK_UART_MAX_CONTROL_OUTS 8
+#define SINK_UART_CONTROL_OUT_MAX 8
 
 /** 
  * @brief struct describing a uart sink
@@ -30,7 +30,7 @@ typedef struct {
 	datastream_object_t super; /**< super-"class": datastream_object_t*/
 
 	data_port_t data_in; /**< data port, this can be set at a data output to direct the data stream to this device */
-	const control_port_t* control_out[SINK_UART_MAX_CONTROL_OUTS]; /**< control output ports */
+	const control_port_t* control_out[SINK_UART_CONTROL_OUT_MAX]; /**< control output ports */
 	int control_out_count; /**< currently assigned control outs */
 
 	formatter_t* formatter; /**< output log formatter */

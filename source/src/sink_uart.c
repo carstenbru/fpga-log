@@ -45,7 +45,7 @@ void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter,
 	sink_uart->super.update = sink_uart_update;
 
 	int i;
-	for (i = 0; i < SINK_UART_MAX_CONTROL_OUTS; i++) {
+	for (i = 0; i < SINK_UART_CONTROL_OUT_MAX; i++) {
 		sink_uart->control_out[i] = &control_port_dummy;
 	}
 
@@ -71,7 +71,7 @@ data_port_t sink_uart_get_data_in(sink_uart_t* const sink_uart) {
 
 int sink_uart_add_control_out(sink_uart_t* const sink_uart,
 		const control_port_t* const control_in) {
-	if (sink_uart->control_out_count < SINK_UART_MAX_CONTROL_OUTS) {
+	if (sink_uart->control_out_count < SINK_UART_CONTROL_OUT_MAX) {
 		sink_uart->control_out[sink_uart->control_out_count++] = control_in;
 		return 1;
 	} else

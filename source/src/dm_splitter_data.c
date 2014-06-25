@@ -20,7 +20,7 @@ static void dm_splitter_data_new_data(void* const _splitter,
 
 void dm_splitter_data_init(dm_splitter_data_t* const splitter) {
 	int i;
-	for (i = 0; i < DM_SPILTTER_DATA_MAX_TARGETS; i++) {
+	for (i = 0; i < DM_SPLITTER_DATA_DATA_OUT_MAX; i++) {
 		splitter->data_out[i] = &data_port_dummy;
 	}
 
@@ -37,7 +37,7 @@ data_port_t dm_splitter_get_data_in(dm_splitter_data_t* const splitter) {
 
 int dm_splitter_data_add_data_out(dm_splitter_data_t* const splitter,
 		const data_port_t* const data_in) {
-	if (splitter->target_count < DM_SPILTTER_DATA_MAX_TARGETS) {
+	if (splitter->target_count < DM_SPLITTER_DATA_DATA_OUT_MAX) {
 		splitter->data_out[splitter->target_count++] = data_in;
 		return 1;
 	} else
