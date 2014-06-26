@@ -4,6 +4,8 @@
 
 int main(int argc, char *argv[])
 {
+    SpmcPeripheral::loadPeripheralXMLs();
+
     new DataType("void"); //TODO move, perhaps read from config file
     DataTypeEnumeration* boolType = new DataTypeEnumeration("bool");
     boolType->addValue("FALSE");

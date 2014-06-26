@@ -66,11 +66,13 @@ void ConfigObjectDialog::addPeripheralParameters(QFormLayout *parent, SpmcPeriph
 
 void ConfigObjectDialog::addHardwareParametersGroup(QLayout *parent) {
     list<SpmcPeripheral*> peripherals = object->getPeripherals();
-    list<SpmcPeripheral*>::iterator i = peripherals.begin();
-    if (i != peripherals.end()) {
-        QFormLayout* layout = addGroup(parent, "Hardware Parameter");
-        for (; i != peripherals.end(); i++) {
-                addPeripheralParameters(layout, *i);
+
+    QFormLayout* layout = NULL;
+    for (list<SpmcPeripheral*>::iterator i = peripherals.begin(); i != peripherals.end(); i++) {
+        if (!((*i)->getParameters().empty())) {
+            if (layout == NULL)
+                layout = addGroup(parent, "Hardware Parameter");
+            addPeripheralParameters(layout, *i);
         }
     }
 }

@@ -3,8 +3,11 @@
 #include <QFile>
 #include <iostream>
 #include <QProcessEnvironment>
+#include <QDirIterator>
 
 using namespace std;
+
+std::map<std::string, std::string> SpmcPeripheral::peripheralXMLs;
 
 SpmcPeripheral::SpmcPeripheral(DataType *type) :
     dataType(type)
@@ -18,11 +21,41 @@ SpmcPeripheral::~SpmcPeripheral() {
     }
 }
 
+std::string SpmcPeripheral::readModuleNameFromFile(std::string fileName) {
+    QFile file(QString(fileName.c_str()));
+    if (!file.open(QIODevice::ReadOnly)) {
+        cerr << "unable to open peripheral module xml file: " << fileName << endl;
+        return "unable to open";
+    }
+    QXmlStreamReader reader(&file);
+    reader.readNextStartElement();
+    return reader.attributes().value("name").toString().toStdString();
+}
+
+void SpmcPeripheral::loadPeripheralXMLs() {
+    string path = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();
+    path += "/spartanmc/hardware/";
+    QDirIterator dirIter(QString(path.c_str()), (QDirIterator::Subdirectories | QDirIterator::FollowSymlinks));
+    while (dirIter.hasNext()) {
+        dirIter.next();
+        if (QFileInfo(dirIter.filePath()).isFile()) {
+            if (dirIter.fileName() == "module.xml") {
+                string fileName = dirIter.filePath().toStdString();
+                peripheralXMLs[readModuleNameFromFile(fileName)] = fileName;
+            }
+        }
+    }
+}
+
 string SpmcPeripheral::getFileName() {
-    string spmcRoot = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();
     string periName = dataType->getName();
     periName.erase(periName.length() - 7, periName.length());
-    return spmcRoot + "/spartanmc/hardware/" + periName + "/module.xml";
+    try {
+        return peripheralXMLs.at(periName);
+    } catch (exception) {
+        cerr << "unable to find peripheral module xml file: " << dataType->getName() << endl;
+        return "not found";
+    }
 }
 
 void SpmcPeripheral::readParametersFromFile() {
