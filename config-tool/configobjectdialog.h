@@ -5,6 +5,7 @@
 #include <QLineEdit>
 #include <QFormLayout>
 #include <map>
+#include <list>
 #include <string>
 #include "cobject.h"
 #include "datalogger.h"
@@ -23,6 +24,8 @@ public:
 private:
     QFormLayout* addGroup(QLayout* layout, std::string title);
     void addNameGroup(QLayout *parent);
+    void addPeripheralParameters(QFormLayout *parent, SpmcPeripheral *peripheral);
+    void addHardwareParametersGroup(QLayout *parent);
     void addReqParametersGroup(QLayout *parent);
 
     Ui::ConfigObjectDialog *ui;
@@ -31,10 +34,10 @@ private:
     DataLogger *dataLogger;
     QLineEdit objectName;
 
-    std::map<CMethodParameter*, QWidget*> paramWidgets;
+    std::map<CParameter*, QWidget*> paramWidgets;
 private slots:
     void nameEdited();
-    void storeReqParams();
+    void storeParams();
 };
 
 #endif // CONFIGOBJECTDIALOG_H

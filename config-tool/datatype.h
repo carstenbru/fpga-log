@@ -19,6 +19,7 @@ public:
     std::string getCleanedName();
     std::string getDisplayName() { return getCleanedName(); }
     bool hasPrefix(std::string prefix) { return (name.find(prefix) == 0); }
+    bool hasSuffix(std::string suffix) { return (name.rfind(suffix) == (name.length() - suffix.length())); }
 
     virtual QWidget* getConfigWidget(DataLogger* dataLogger, std::string startValue);
     virtual std::string getConfigData(QWidget* widget) { return ""; }

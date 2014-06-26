@@ -3,39 +3,24 @@
 
 #include <string>
 #include <list>
-
-class DataType;
-
-class CMethodParameter {
-public:
-    CMethodParameter(std::string name, DataType* dataType, bool pointer);
-
-    bool sameSignature(CMethodParameter& compare);
-    std::string getName() { return name; }
-    DataType* getDataType() { return dataType; }
-private:
-    std::string name;
-
-    DataType* dataType;
-    bool pointer;
-};
+#include "cparameter.h"
 
 class CMethod
 {
 public:
-    CMethod(std::string name, CMethodParameter *returnType);
+    CMethod(std::string name, CParameter returnType);
     ~CMethod();
 
-    void addParameter(CMethodParameter* paramter) { parameters.push_back(paramter); }
+    void addParameter(CParameter paramter) { parameters.push_back(paramter); }
     bool sameSignature(CMethod& compare);
 
     std::string getName() { return name; }
-    std::list<CMethodParameter*> getParameters() { return parameters; }
+    std::list<CParameter>* getParameters() { return &parameters; }
 private:
     std::string name;
 
-    CMethodParameter* returnType;
-    std::list<CMethodParameter*> parameters;
+    CParameter returnType;
+    std::list<CParameter> parameters;
 };
 
 #endif // CMETHOD_H

@@ -28,7 +28,9 @@ SOURCES += main.cpp\
     cobject.cpp \
     dataloggerothermodel.cpp \
     consoleredirector.cpp \
-    configobjectdialog.cpp
+    configobjectdialog.cpp \
+    spmcperipheral.cpp \
+    cparameter.cpp
 
 HEADERS  += mainwindow.h \
     datastreamobject.h \
@@ -44,7 +46,9 @@ HEADERS  += mainwindow.h \
     cobject.h \
     dataloggerothermodel.h \
     consoleredirector.h \
-    configobjectdialog.h
+    configobjectdialog.h \
+    spmcperipheral.h \
+    cparameter.h
 
 FORMS    += mainwindow.ui \
     newobjectdialog.ui \

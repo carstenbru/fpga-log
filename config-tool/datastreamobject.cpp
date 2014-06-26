@@ -42,22 +42,22 @@ void DatastreamObject::findPorts() {
     DataType* voidType = DataType::getType("void");
     DataType* intType = DataType::getType("int");
 
-    CMethod CInSig("cin_get_sig_dummy", new CMethodParameter("return", controlPortType, false));
-    CInSig.addParameter(new CMethodParameter("this", type, true));
-    CMethod DInSig("din_get_sig_dummy", new CMethodParameter("return", dataPortType, false));
-    DInSig.addParameter(new CMethodParameter("this", type, true));
-    CMethod COutSig("cout_set_sig_dummy", new CMethodParameter("return", voidType, false));
-    COutSig.addParameter(new CMethodParameter("this", type, true));
-    COutSig.addParameter(new CMethodParameter("port", controlPortType, true));
-    CMethod DOutSig("dout_set_sig_dummy", new CMethodParameter("return", voidType, false));
-    DOutSig.addParameter(new CMethodParameter("this", type, true));
-    DOutSig.addParameter(new CMethodParameter("port", dataPortType, true));
-    CMethod COutAddSig("cout_add_sig_dummy", new CMethodParameter("return", intType, false));
-    COutAddSig.addParameter(new CMethodParameter("this", type, true));
-    COutAddSig.addParameter(new CMethodParameter("port", controlPortType, true));
-    CMethod DOutAddSig("dout_add_sig_dummy", new CMethodParameter("return", intType, false));
-    DOutAddSig.addParameter(new CMethodParameter("this", type, true));
-    DOutAddSig.addParameter(new CMethodParameter("port", dataPortType, true));
+    CMethod CInSig("cin_get_sig_dummy", CParameter("return", controlPortType, false));
+    CInSig.addParameter(CParameter("this", type, true));
+    CMethod DInSig("din_get_sig_dummy", CParameter("return", dataPortType, false));
+    DInSig.addParameter(CParameter("this", type, true));
+    CMethod COutSig("cout_set_sig_dummy", CParameter("return", voidType, false));
+    COutSig.addParameter(CParameter("this", type, true));
+    COutSig.addParameter(CParameter("port", controlPortType, true));
+    CMethod DOutSig("dout_set_sig_dummy", CParameter("return", voidType, false));
+    DOutSig.addParameter(CParameter("this", type, true));
+    DOutSig.addParameter(CParameter("port", dataPortType, true));
+    CMethod COutAddSig("cout_add_sig_dummy", CParameter("return", intType, false));
+    COutAddSig.addParameter(CParameter("this", type, true));
+    COutAddSig.addParameter(CParameter("port", controlPortType, true));
+    CMethod DOutAddSig("dout_add_sig_dummy", CParameter("return", intType, false));
+    DOutAddSig.addParameter(CParameter("this", type, true));
+    DOutAddSig.addParameter(CParameter("port", dataPortType, true));
 
     list<CMethod*> methods = type->getMethods();
     for (list<CMethod*>::iterator i = methods.begin(); i != methods.end(); i++) {

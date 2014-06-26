@@ -42,7 +42,8 @@ void MainWindow::show() {
     dataLogger.newObject(DataTypeStruct::getType("device_hct99_t")); //TODO remove
     dataLogger.newObject(DataTypeStruct::getType("sink_sd_card_t"));
     dataLogger.newObject(DataTypeStruct::getType("dm_splitter_data_t"));
-    dataLogger.newObject(DataTypeStruct::getType("formatter_t"));
+    dataLogger.newObject(DataTypeStruct::getType("formatter_simple_t"));
+    dataLogger.newObject(DataTypeStruct::getType("control_protocol_ascii_t"));
 }
 
 MainWindow::~MainWindow()

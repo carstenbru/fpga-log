@@ -123,7 +123,7 @@ void HeaderParser::parseFileForMethods(string filename) {
 
                             try {
                                 DataType* rt = DataType::getType(returnType);
-                                CMethod* method = new CMethod(method_name, new CMethodParameter("return", rt, pointer));
+                                CMethod* method = new CMethod(method_name, CParameter("return", rt, pointer));
 
                                 string parameters;
                                 while (parameters.rfind(");") ==  string::npos) {
@@ -176,7 +176,7 @@ void HeaderParser::parseMethodParameter(CMethod* method, std::string parameter) 
         type.erase(type.length() - 1, 1);
     }
     try {
-        method->addParameter(new CMethodParameter(name, DataType::getType(type), pointer));
+        method->addParameter(CParameter(name, DataType::getType(type), pointer));
     } catch (exception e) {
         cerr << "method parameter parsing error: unknown type: " << type << endl;
         throw e;

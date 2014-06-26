@@ -3,8 +3,9 @@
 
 #include <QObject>
 #include <string>
-#include <map>
+#include <list>
 #include "datatype.h"
+#include "spmcperipheral.h"
 
 class CObject : public QObject
 {
@@ -12,18 +13,20 @@ class CObject : public QObject
 
 public:
     CObject(std::string name, DataTypeStruct *dataType);
+    virtual ~CObject();
 
     std::string getName() { return name; }
     void setName(std::string name) { this->name = name; }
     DataTypeStruct* getType() { return type; }
 
-    void setReqParameter(std::string parameter, std::string value) { reqParameters[parameter] = value; }
-    std::string getReqParameter(std::string parameter) { return reqParameters[parameter]; }
+    CMethod* getInitMethod() { return initMethod; }
+    std::list<SpmcPeripheral*> getPeripherals() { return peripherals; }
 protected:
     std::string name;
     DataTypeStruct* type;
 
-    std::map<std::string, std::string> reqParameters;
+    CMethod* initMethod;
+    std::list<SpmcPeripheral*> peripherals;
 };
 
 #endif // COBJECT_H
