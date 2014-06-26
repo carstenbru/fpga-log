@@ -38,20 +38,31 @@ void SpmcPeripheral::readParametersFromFile() {
     while (reader.readNextStartElement()) {
         QXmlStreamAttributes attributes = reader.attributes();
         string paramName = attributes.value("name").toString().toStdString();
-        string type = attributes.value("type").toString().toStdString(); //TODO with choice attributes as enumeration
+        string type = attributes.value("type").toString().toStdString();
         if (type.compare("int") == 0)
             type = "peripheral_int";
+        DataTypeEnumeration* dt = NULL;
         while (reader.readNextStartElement()) {
+            type = dataType->getName() + "_" + paramName;
             if (reader.name().toString().compare("range") == 0) {
-                QXmlStreamAttributes attributes = reader.attributes();
-                int min = attributes.value("min").toString().toInt();
-                int max = attributes.value("max").toString().toInt();
-                type = dataType->getName() + "_" + paramName;
                 try {
                     DataType::getType(type);
                 } catch (exception) {
+                    QXmlStreamAttributes attributes = reader.attributes();
+                    int min = attributes.value("min").toString().toInt();
+                    int max = attributes.value("max").toString().toInt();
                     new DataTypeNumber(type, min, max);
                 }
+            } else if (reader.name().toString().compare("choice") == 0) {
+                if (dt == NULL) {
+                    try {
+                        DataType::getType(type);
+                    } catch (exception) {
+                        dt = new DataTypeEnumeration(type);
+                        dt->addValue(reader.attributes().value("value").toString().toStdString());
+                    }
+                } else
+                    dt->addValue(reader.attributes().value("value").toString().toStdString());
             }
             reader.skipCurrentElement();
         }

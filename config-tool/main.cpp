@@ -5,7 +5,9 @@
 int main(int argc, char *argv[])
 {
     new DataType("void"); //TODO move, perhaps read from config file
-    new DataTypeNumber("bool", 0, 1); //TODO real bool type? (for checkbox in gui)
+    DataTypeEnumeration* boolType = new DataTypeEnumeration("bool");
+    boolType->addValue("FALSE");
+    boolType->addValue("TRUE");
     new DataTypeNumber("int", -131072, 131071);
     new DataTypeNumber("char", -256, 255);
     new DataTypeNumber("unsigned int", 0, 262143);

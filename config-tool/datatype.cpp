@@ -78,7 +78,6 @@ DataTypeNumber::DataTypeNumber(std::string name, long min, long max) :
     min(min),
     max(max)
 {
-
 }
 
 QWidget* DataTypeNumber::getConfigWidget(DataLogger* dataLogger, string startValue) {
@@ -95,4 +94,23 @@ QWidget* DataTypeNumber::getConfigWidget(DataLogger* dataLogger, string startVal
 std::string DataTypeNumber::getConfigData(QWidget* widget) {
     QSpinBox* sbox = dynamic_cast<QSpinBox*>(widget);
     return std::to_string(sbox->value());
+}
+
+DataTypeEnumeration::DataTypeEnumeration(std::string name) :
+    DataType(name)
+{
+}
+
+QWidget* DataTypeEnumeration::getConfigWidget(DataLogger* dataLogger, std::string startValue) {
+    QComboBox* cbox = new QComboBox();
+    for (list<string>::iterator i = values.begin(); i != values.end(); i++) {
+        cbox->addItem(QString((*i).c_str()));
+    }
+    cbox->setCurrentIndex(cbox->findText(QString(startValue.c_str())));
+    return cbox;
+}
+
+std::string DataTypeEnumeration::getConfigData(QWidget* widget) {
+    QComboBox* cbox = dynamic_cast<QComboBox*>(widget);
+    return cbox->currentText().toStdString();
 }

@@ -55,7 +55,8 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
         tokenizer<char_separator<char>, istreambuf_iterator<char> > tokens(headerIter, headerEnd, s);
         for (tokenizer<char_separator<char>, istreambuf_iterator<char> >::iterator i = tokens.begin(); i != tokens.end(); i++) {
             if ((*i).compare("typedef") == 0) {
-                if ((*++i).compare("struct") == 0) {
+                i++;
+                if ((*i).compare("struct") == 0) {
                     string superType;
                     bool hasSuper = false;
                     while ((*i).compare("}") != 0) {
@@ -74,6 +75,32 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                     DataTypeStruct* d = new DataTypeStruct(name);
                     if (hasSuper)
                         inheritanceMap[d] = superType;
+                } else if ((*i).compare("enum") == 0) {
+                    i++;
+                    i++;
+                    list<string> values;
+                    bool comment = false;
+                    while ((*i).compare("}") != 0) {
+                        if (!comment) {
+                          if ((*i).compare("/**<") == 0)
+                              comment = true;
+                          else {
+                              string value = *i;
+                              if (value.find(',') < value.length())
+                                  value.erase(value.find(','), value.length());
+                              values.push_back(value);
+                          }
+                        } else {
+                            if ((*i).compare("*/") == 0)
+                                comment = false;
+                        }
+                        if (++i == tokens.end())
+                            return;
+                    }
+                    string name = *++i;
+                    name.erase(name.find(';'), name.length());
+                    DataTypeEnumeration* d = new DataTypeEnumeration(name);
+                    d->addValues(values);
                 }
             } else if ((*i).compare("#define") == 0) {
                 string name = *(++i);

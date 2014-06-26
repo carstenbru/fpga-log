@@ -74,4 +74,19 @@ private:
     long max;
 };
 
+class DataTypeEnumeration : public DataType {
+public:
+    DataTypeEnumeration(std::string name);
+    virtual ~DataTypeEnumeration() {}
+
+    void addValue(std::string value) { values.push_back(value); }
+    void addValues(std::list<std::string> valueList) { values.insert(values.end(), valueList.begin(), valueList.end()); }
+
+    virtual QWidget* getConfigWidget(DataLogger* dataLogger, std::string startValue);
+    virtual std::string getConfigData(QWidget* widget);
+private:
+    std::list<std::string> values;
+};
+
+
 #endif // DATATYPE_H
