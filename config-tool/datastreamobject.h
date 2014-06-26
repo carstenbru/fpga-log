@@ -13,7 +13,7 @@ class DatastreamObject : public CObject
     Q_OBJECT
 
 public:
-    DatastreamObject(std::string name, DataType* type);
+    DatastreamObject(std::string name, DataTypeStruct *type);
     ~DatastreamObject();
 
     std::list<ControlPortIn*> getControlInPorts() { return controlInPorts; }

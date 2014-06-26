@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <string>
+#include <map>
 #include "datatype.h"
 
 class CObject : public QObject
@@ -10,14 +11,19 @@ class CObject : public QObject
     Q_OBJECT
 
 public:
-    CObject(std::string name, DataType* dataType);
+    CObject(std::string name, DataTypeStruct *dataType);
 
     std::string getName() { return name; }
     void setName(std::string name) { this->name = name; }
-    DataType* getType() { return type; }
+    DataTypeStruct* getType() { return type; }
+
+    void setReqParameter(std::string parameter, std::string value) { reqParameters[parameter] = value; }
+    std::string getReqParameter(std::string parameter) { return reqParameters[parameter]; }
 protected:
     std::string name;
-    DataType* type;
+    DataTypeStruct* type;
+
+    std::map<std::string, std::string> reqParameters;
 };
 
 #endif // COBJECT_H

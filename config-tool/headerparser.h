@@ -17,7 +17,7 @@ public:
     static std::string getDefinedString(std::string name);
     static int getDefinedInteger(std::string name);
 private:
-    void parseFileForDataTypes(std::string filename, std::map<DataType *, std::string> &inheritanceList);
+    void parseFileForDataTypes(std::string filename, std::map<DataTypeStruct *, std::string> &inheritanceList);
     void parseFileForMethods(std::string filename);
 
     void parseMethodParameters(CMethod* method, std::string parameters);

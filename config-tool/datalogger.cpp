@@ -15,7 +15,7 @@ DataLogger::~DataLogger() {
     }
 }
 
-void DataLogger::newObject(DataType *type) {
+void DataLogger::newObject(DataTypeStruct *type) {
     if (type->hasPrefix("device_") || type->hasPrefix("dm_") || type->hasPrefix("sink_")) {
         DatastreamObject* dso = new DatastreamObject(findObjectName(datastreamObjects, type), type);
         datastreamObjects.push_back(dso);
@@ -70,4 +70,19 @@ bool DataLogger::changeObjectName(CObject* object, std::string newName) {
     emit otherModulesChanged();
     object->setName(newName);
     return true;
+}
+
+template <typename T>
+void DataLogger::addInstancesToList(T searchList, std::list<CObject*>& destList, DataTypeStruct* dataType) {
+    for (typename T::iterator i = searchList.begin(); i != searchList.end(); i++) {
+        if ((*i)->getType()->isSuperclass(dataType))
+            destList.push_back(*i);
+    }
+}
+
+std::list<CObject*> DataLogger::getInstances(DataTypeStruct* dataType) {
+    std::list<CObject*> res;
+    addInstancesToList(datastreamObjects, res, dataType);
+    addInstancesToList(otherObjects, res, dataType);
+    return res;
 }

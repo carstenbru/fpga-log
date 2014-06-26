@@ -4,7 +4,7 @@
 
 using namespace std;
 
-DatastreamObject::DatastreamObject(string name, DataType *type) :
+DatastreamObject::DatastreamObject(string name, DataTypeStruct *type) :
     CObject(name, type),
     position(QPoint(0,0))
 {

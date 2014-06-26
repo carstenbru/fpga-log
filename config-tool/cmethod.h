@@ -12,6 +12,7 @@ public:
 
     bool sameSignature(CMethodParameter& compare);
     std::string getName() { return name; }
+    DataType* getDataType() { return dataType; }
 private:
     std::string name;
 
@@ -29,6 +30,7 @@ public:
     bool sameSignature(CMethod& compare);
 
     std::string getName() { return name; }
+    std::list<CMethodParameter*> getParameters() { return parameters; }
 private:
     std::string name;
 

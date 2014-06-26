@@ -16,15 +16,18 @@ public:
     DataLogger();
     ~DataLogger();
 
-    void newObject(DataType* type);
+    void newObject(DataTypeStruct *type);
     std::list<DatastreamObject*> getDatastreamModules() {return datastreamObjects; }
     std::vector<CObject*> getOtherObjects() { return otherObjects; }
+    std::list<CObject*> getInstances(DataTypeStruct *dataType);
     bool changeObjectName(CObject* object, std::string newName);
 private:
     template <typename T>
     bool containsObjectName(T searchList, std::string name);
     template <typename T>
     std::string findObjectName(T searchList, DataType* dataType);
+    template <typename T>
+    void addInstancesToList(T searchList, std::list<CObject*>& destList,  DataTypeStruct* dataType);
 
     std::list<DatastreamObject*> datastreamObjects;
     std::vector<CObject*> otherObjects;

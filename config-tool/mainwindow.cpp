@@ -39,9 +39,10 @@ void MainWindow::show() {
     hp.addFolder("../source/include/sink", true);
     hp.parseFiles();
 
-    dataLogger.newObject(DataType::getType("device_hct99_t")); //TODO remove
-    dataLogger.newObject(DataType::getType("sink_sd_card_t"));
-    dataLogger.newObject(DataType::getType("dm_splitter_data_t"));
+    dataLogger.newObject(DataTypeStruct::getType("device_hct99_t")); //TODO remove
+    dataLogger.newObject(DataTypeStruct::getType("sink_sd_card_t"));
+    dataLogger.newObject(DataTypeStruct::getType("dm_splitter_data_t"));
+    dataLogger.newObject(DataTypeStruct::getType("formatter_t"));
 }
 
 MainWindow::~MainWindow()
@@ -53,7 +54,7 @@ MainWindow::~MainWindow()
 void MainWindow::newObject() {
     NewObjectDialog dialog(this);
     if (dialog.exec() == QDialog::Accepted) {
-        DataType* dataType = dialog.getSelectedDataType();
+        DataTypeStruct* dataType = dialog.getSelectedDataType();
         if (dataType != NULL) {
             dataLogger.newObject(dataType);
         }

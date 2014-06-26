@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QLineEdit>
 #include <QFormLayout>
+#include <map>
 #include <string>
 #include "cobject.h"
 #include "datalogger.h"
@@ -19,19 +20,21 @@ class ConfigObjectDialog : public QDialog
 public:
     explicit ConfigObjectDialog(QWidget *parent, CObject* object, DataLogger *dataLogger);
     ~ConfigObjectDialog();
-
 private:
     QFormLayout* addGroup(QLayout* layout, std::string title);
-    void addNameGroup(QFormLayout* layout);
-    void addReqParametersGroup(QFormLayout* layout);
+    void addNameGroup(QLayout *parent);
+    void addReqParametersGroup(QLayout *parent);
 
     Ui::ConfigObjectDialog *ui;
 
     CObject* object;
     DataLogger *dataLogger;
     QLineEdit objectName;
+
+    std::map<CMethodParameter*, QWidget*> paramWidgets;
 private slots:
     void nameEdited();
+    void storeReqParams();
 };
 
 #endif // CONFIGOBJECTDIALOG_H

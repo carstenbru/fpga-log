@@ -18,10 +18,10 @@ public:
     explicit NewObjectDialog(QWidget *parent);
     ~NewObjectDialog();
 
-    DataType* getSelectedDataType();
+    DataTypeStruct *getSelectedDataType();
 private:
     void genrateTypeView();
-    bool generateItem(QStandardItem *parent, DataType* dataType, bool recursive);
+    bool generateItem(QStandardItem *parent, DataTypeStruct *dataType, bool recursive);
 
     Ui::NewObjectDialog *ui;
 };

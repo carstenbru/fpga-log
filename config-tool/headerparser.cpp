@@ -28,13 +28,13 @@ void HeaderParser::addFolder(std::string path, bool includeSubdirs) {
 }
 
 void HeaderParser::parseFiles() {
-    map<DataType*, string> inheritanceMap;
+    map<DataTypeStruct*, string> inheritanceMap;
     for (list<string>::iterator i = files.begin(); i != files.end(); i++) {
         parseFileForDataTypes(*i, inheritanceMap);
     }
 
-    for (map<DataType*, string>::iterator i = inheritanceMap.begin(); i != inheritanceMap.end(); i++) {
-        DataType* parent = DataType::getType(i->second);
+    for (map<DataTypeStruct*, string>::iterator i = inheritanceMap.begin(); i != inheritanceMap.end(); i++) {
+        DataTypeStruct* parent = DataTypeStruct::getType(i->second);
         i->first->setSuperType(parent);
         parent->addChild(i->first);
     }
@@ -44,7 +44,7 @@ void HeaderParser::parseFiles() {
     }
 }
 
-void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType*, std::string>& inheritanceMap) {
+void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataTypeStruct*, std::string>& inheritanceMap) {
     ifstream header(filename.c_str());
 
     if (header.is_open()) {
@@ -71,7 +71,7 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                     }
                     string name = *++i;
                     name.erase(name.find(';'), name.length());
-                    DataType* d = new DataType(name);
+                    DataTypeStruct* d = new DataTypeStruct(name);
                     if (hasSuper)
                         inheritanceMap[d] = superType;
                 }
@@ -111,7 +111,7 @@ void HeaderParser::parseFileForMethods(string filename) {
                 if (type.back() == '*') {
                     type.erase(type.length() - 1, 1);
                     try {
-                        DataType* dt = DataType::getType(type);
+                        DataTypeStruct* dt = DataTypeStruct::getType(type);
                         if (method_name.find(dt->getCleanedName()) == 0) {
                             method_name.erase(0, dt->getCleanedName().length() + 1);
 

@@ -17,15 +17,15 @@ NewObjectDialog::~NewObjectDialog()
     delete ui;
 }
 
-bool NewObjectDialog::generateItem(QStandardItem* parent, DataType* dataType, bool recursive) {
+bool NewObjectDialog::generateItem(QStandardItem* parent, DataTypeStruct* dataType, bool recursive) {
     QStandardItem* item = new QStandardItem(QString(dataType->getDisplayName().c_str()));
     item->setEditable(false);
-    item->setSelectable(!dataType->isAbstract());
+    item->setSelectable(dataType->isInstantiableObject());
     item->setData(QVariant(dataType->getName().c_str()));
     if (recursive) {
-        list<DataType*> childs = dataType->getChilds();
-        bool hasNotAbstractClass = !dataType->isAbstract();
-        for (list<DataType*>::iterator i = childs.begin(); i != childs.end(); i++) {
+        list<DataTypeStruct*> childs = dataType->getChilds();
+        bool hasNotAbstractClass = dataType->isInstantiableObject();
+        for (list<DataTypeStruct*>::iterator i = childs.begin(); i != childs.end(); i++) {
             hasNotAbstractClass |= generateItem(item, *i, true);
         }
         if (hasNotAbstractClass) {
@@ -61,9 +61,9 @@ void NewObjectDialog::genrateTypeView() {
     model->setItem(3, other);
 
 
-    std::map<std::string, DataType*> types = DataType::getTypes();
-    for (map<string, DataType*>::iterator i = types.begin(); i != types.end(); i++) {
-        DataType* dt = i->second;
+    std::map<std::string, DataTypeStruct*> types = DataTypeStruct::getTypes();
+    for (map<string, DataTypeStruct*>::iterator i = types.begin(); i != types.end(); i++) {
+        DataTypeStruct* dt = i->second;
         if (dt->hasPrefix("device_")) {
             generateItem(device, i->second, false);
         } else if (dt->hasPrefix("dm_")) {
@@ -82,12 +82,12 @@ void NewObjectDialog::genrateTypeView() {
     ui->treeView->setModel(model);
 }
 
-DataType* NewObjectDialog::getSelectedDataType() {
+DataTypeStruct* NewObjectDialog::getSelectedDataType() {
     QModelIndexList i = ui->treeView->selectionModel()->selectedIndexes();
     if (!i.isEmpty()) {
         QVariant v = i.first().data(Qt::UserRole + 1);
         try {
-            return DataType::getType(v.toString().toStdString());
+            return DataTypeStruct::getType(v.toString().toStdString());
         } catch (exception) {
             return NULL;
         }
