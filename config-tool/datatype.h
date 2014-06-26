@@ -21,8 +21,8 @@ public:
     bool hasPrefix(std::string prefix) { return (name.find(prefix) == 0); }
     bool hasSuffix(std::string suffix) { return (name.rfind(suffix) == (name.length() - suffix.length())); }
 
-    virtual QWidget* getConfigWidget(DataLogger* dataLogger, std::string startValue);
-    virtual std::string getConfigData(QWidget* widget) { return ""; }
+    virtual QWidget* getConfigWidget(DataLogger*, std::string);
+    virtual std::string getConfigData(QWidget*) { return ""; }
 
     static DataType* getType(std::string name) { return types.at(name); }
     static std::map<std::string, DataType*> getTypes() { return types; }
@@ -67,7 +67,7 @@ public:
     DataTypeNumber(std::string name, long min, long max);
     virtual ~DataTypeNumber() {}
 
-    virtual QWidget* getConfigWidget(DataLogger* dataLogger, std::string startValue);
+    virtual QWidget* getConfigWidget(DataLogger*, std::string startValue);
     virtual std::string getConfigData(QWidget* widget);
 private:
     long min;
@@ -82,11 +82,19 @@ public:
     void addValue(std::string value) { values.push_back(value); }
     void addValues(std::list<std::string> valueList) { values.insert(values.end(), valueList.begin(), valueList.end()); }
 
-    virtual QWidget* getConfigWidget(DataLogger* dataLogger, std::string startValue);
+    virtual QWidget* getConfigWidget(DataLogger*, std::string startValue);
     virtual std::string getConfigData(QWidget* widget);
 private:
     std::list<std::string> values;
 };
 
+class DataTypeString : public DataType {
+public:
+    DataTypeString(std::string name);
+    virtual ~DataTypeString() {}
+
+    virtual QWidget* getConfigWidget(DataLogger*, std::string startValue);
+    virtual std::string getConfigData(QWidget* widget);
+};
 
 #endif // DATATYPE_H

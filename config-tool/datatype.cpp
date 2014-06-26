@@ -2,6 +2,7 @@
 #include <iostream>
 #include <QSpinBox>
 #include <QComboBox>
+#include <QLineEdit>
 #include <datalogger.h>
 
 using namespace std;
@@ -23,7 +24,7 @@ std::string DataType::getCleanedName() {
     return s;
 }
 
-QWidget* DataType::getConfigWidget(DataLogger *dataLogger, string startValue) {
+QWidget* DataType::getConfigWidget(DataLogger*, string) {
     cerr << "Konfigurationselement fuer nicht konfigurierbaren Typ angefragt: " << name << endl;
     return NULL;
 }
@@ -80,7 +81,7 @@ DataTypeNumber::DataTypeNumber(std::string name, long min, long max) :
 {
 }
 
-QWidget* DataTypeNumber::getConfigWidget(DataLogger* dataLogger, string startValue) {
+QWidget* DataTypeNumber::getConfigWidget(DataLogger*, string startValue) {
     QSpinBox* sbox = new QSpinBox();
     int minInt = (min < numeric_limits<int>::min()) ? numeric_limits<int>::min() : min; //TODO implement subclass of QAbstractSpinBox with long int support
     int maxInt = (max > numeric_limits<int>::max()) ? numeric_limits<int>::max() : max;
@@ -101,7 +102,7 @@ DataTypeEnumeration::DataTypeEnumeration(std::string name) :
 {
 }
 
-QWidget* DataTypeEnumeration::getConfigWidget(DataLogger* dataLogger, std::string startValue) {
+QWidget* DataTypeEnumeration::getConfigWidget(DataLogger*, std::string startValue) {
     QComboBox* cbox = new QComboBox();
     for (list<string>::iterator i = values.begin(); i != values.end(); i++) {
         cbox->addItem(QString((*i).c_str()));
@@ -113,4 +114,20 @@ QWidget* DataTypeEnumeration::getConfigWidget(DataLogger* dataLogger, std::strin
 std::string DataTypeEnumeration::getConfigData(QWidget* widget) {
     QComboBox* cbox = dynamic_cast<QComboBox*>(widget);
     return cbox->currentText().toStdString();
+}
+
+DataTypeString::DataTypeString(std::string name) :
+    DataType(name)
+{
+}
+
+QWidget* DataTypeString::getConfigWidget(DataLogger*, std::string startValue) {
+    QLineEdit* lEdit = new QLineEdit();
+    lEdit->setText(startValue.c_str());
+    return lEdit;
+}
+
+std::string DataTypeString::getConfigData(QWidget* widget) {
+    QLineEdit* lEdit = dynamic_cast<QLineEdit*>(widget);
+    return lEdit->text().toStdString();
 }

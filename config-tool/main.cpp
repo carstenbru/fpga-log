@@ -10,8 +10,8 @@ int main(int argc, char *argv[])
     DataTypeEnumeration* boolType = new DataTypeEnumeration("bool");
     boolType->addValue("FALSE");
     boolType->addValue("TRUE");
+    new DataTypeString("char");
     new DataTypeNumber("int", -131072, 131071);
-    new DataTypeNumber("char", -256, 255);
     new DataTypeNumber("unsigned int", 0, 262143);
     new DataTypeNumber("unsigned char", 0, 511);
     new DataTypeNumber("uint36_t", 0, 68719476735);

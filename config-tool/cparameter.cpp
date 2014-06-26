@@ -9,9 +9,9 @@ CParameter::CParameter(std::string name, DataType* dataType, bool pointer) :
 
 CParameter::CParameter(std::string name, DataType* dataType, bool pointer, std::string value) :
     name(name),
+    value(value),
     dataType(dataType),
-    pointer(pointer),
-    value(value)
+    pointer(pointer)
 {
 }
 
