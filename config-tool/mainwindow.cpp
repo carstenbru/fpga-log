@@ -42,8 +42,8 @@ void MainWindow::show() {
     hp.parseFiles();
 
     dataLogger.newObject(DataTypeStruct::getType("device_hct99_t")); //TODO remove
-    dataLogger.newObject(DataTypeStruct::getType("sink_sd_card_t"));
-    dataLogger.newObject(DataTypeStruct::getType("device_pwm_t"));
+//    dataLogger.newObject(DataTypeStruct::getType("sink_sd_card_t"));
+    dataLogger.newObject(DataTypeStruct::getType("dm_timer_t"));
     dataLogger.newObject(DataTypeStruct::getType("formatter_simple_t"));
     dataLogger.newObject(DataTypeStruct::getType("control_protocol_ascii_t"));
 }

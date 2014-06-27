@@ -96,14 +96,13 @@ void ConfigObjectDialog::addHardwareParametersGroup(QLayout *parent) {
     for (list<SpmcPeripheral*>::iterator i = peripherals.begin(); i != peripherals.end(); i++) {
         if (!((*i)->getParameters().empty())) {
             addParameters(paramsLayout, (*i)->getParameters());
-
-            map<string, list<PeripheralPort*> > ports = (*i)->getPorts();
-            QVBoxLayout* pinLayout = new QVBoxLayout();
-            for (map<string, list<PeripheralPort*> >::iterator i = ports.begin(); i != ports.end(); i++) {
-                addPortsGroup(pinLayout, i->first, i->second);
-            }
-            addGroup(layout, "Pins", pinLayout);
         }
+        map<string, list<PeripheralPort*> > ports = (*i)->getPorts();
+        QVBoxLayout* pinLayout = new QVBoxLayout();
+        for (map<string, list<PeripheralPort*> >::iterator i = ports.begin(); i != ports.end(); i++) {
+            addPortsGroup(pinLayout, i->first, i->second);
+        }
+        addGroup(layout, "Pins", pinLayout);
     }
 
     if (!paramsLayout->isEmpty()) {

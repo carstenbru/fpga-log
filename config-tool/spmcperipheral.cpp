@@ -113,7 +113,11 @@ void SpmcPeripheral::readParameterElement(QXmlStreamReader& reader) {
 }
 
 void SpmcPeripheral::readPortsElement(QXmlStreamReader& reader) {
-    string groupName = reader.attributes().value("group").toString().toStdString();
+    string groupName = "global";
+    QStringRef group = reader.attributes().value("group");
+    if (!group.isEmpty()) {
+        groupName = group.toString().toStdString();
+    }
     while (reader.readNextStartElement()) {
         if (reader.name().compare("port") == 0) {
             PeripheralPort* port;
