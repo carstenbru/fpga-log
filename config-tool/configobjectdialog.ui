@@ -6,15 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>381</width>
-    <height>493</height>
+    <width>379</width>
+    <height>491</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Objekt konfigurieren</string>
   </property>
   <property name="windowIcon">
-   <iconset theme="document-properties"/>
+   <iconset theme="preferences-other">
+    <normaloff/>
+   </iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="sizeConstraint">
@@ -39,8 +41,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>365</width>
-        <height>444</height>
+        <width>363</width>
+        <height>442</height>
        </rect>
       </property>
      </widget>

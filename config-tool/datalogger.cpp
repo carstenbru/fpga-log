@@ -163,3 +163,7 @@ void DataLogger::loadTragetXMLs() {
         }
     }
 }
+
+void DataLogger::parameterChanged() {
+    emit criticalParameterChanged();
+}

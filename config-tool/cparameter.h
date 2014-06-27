@@ -1,15 +1,19 @@
 #ifndef CPARAMETER_H
 #define CPARAMETER_H
 
+#include <QObject>
 #include <string>
 #include <map>
 
 class DataType;
 
-class CParameter {
+class CParameter : public QObject {
+    Q_OBJECT
+
 public:
     CParameter(std::string name, DataType* dataType, bool pointer);
     CParameter(std::string name, DataType* dataType, bool pointer, std::string value);
+    CParameter(const CParameter& other);
 
     bool sameSignature(CParameter& compare);
     std::string getName() { return name; }
@@ -18,16 +22,22 @@ public:
     void setHideFromUser(bool hide) { hideFromUser = hide; }
     bool getHideFromUser() { return hideFromUser; }
 
-    void setValue(std::string value) { this->value = value; }
+    void setCritical(bool critical) { this->critical = critical; }
+    bool getCritical() { return critical; }
+
+    void setValue(std::string value) { this->value = value; emit valueChanged(value); }
     std::string getValue() { return value; }
 private:
     std::string name;
     std::string value;
 
     bool hideFromUser;
+    bool critical;
 
     DataType* dataType;
     bool pointer;
+signals:
+    void valueChanged(std::string value);
 };
 
 #endif // CPARAMETER_H

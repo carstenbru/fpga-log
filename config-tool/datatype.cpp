@@ -27,7 +27,7 @@ std::string DataType::getCleanedName() {
     return s;
 }
 
-QWidget* DataType::getConfigWidget(DataLogger*, string) {
+QWidget* DataType::getConfigWidget(DataLogger*, CParameter*) {
     cerr << "Konfigurationselement fuer nicht konfigurierbaren Typ angefragt: " << name << endl;
     return NULL;
 }
@@ -62,13 +62,13 @@ CMethod* DataTypeStruct::getMethod(std::string methodName) {
     return NULL;
 }
 
-QWidget* DataTypeStruct::getConfigWidget(DataLogger* dataLogger, string startValue) {
+QWidget* DataTypeStruct::getConfigWidget(DataLogger* dataLogger, CParameter *param) {
     QComboBox* cbox = new QComboBox();
     list<CObject*> instances = dataLogger->getInstances(this);
     for (list<CObject*>::iterator i = instances.begin(); i != instances.end(); i++) {
         cbox->addItem(QString((*i)->getName().c_str()));
     }
-    cbox->setCurrentIndex(cbox->findText(QString(startValue.c_str())));
+    cbox->setCurrentIndex(cbox->findText(QString(param->getValue().c_str())));
     return cbox;
 }
 
@@ -84,14 +84,19 @@ DataTypeNumber::DataTypeNumber(std::string name, long min, long max) :
 {
 }
 
-QWidget* DataTypeNumber::getConfigWidget(DataLogger*, string startValue) {
+QWidget* DataTypeNumber::getConfigWidget(DataLogger* dataLogger, CParameter *param) {
     QSpinBox* sbox = new QSpinBox();
     int minInt = (min < numeric_limits<int>::min()) ? numeric_limits<int>::min() : min; //TODO implement subclass of QAbstractSpinBox with long int support
     int maxInt = (max > numeric_limits<int>::max()) ? numeric_limits<int>::max() : max;
     sbox->setMinimum(minInt);
     sbox->setMaximum(maxInt);
-    long value = atol(startValue.c_str());
+    long value = atol(param->getValue().c_str());
     sbox->setValue(value);
+
+    if (param->getCritical()) {
+        QObject::connect(sbox, SIGNAL(valueChanged(int)), dataLogger, SLOT(parameterChanged()));
+    }
+
     return sbox;
 }
 
@@ -105,16 +110,16 @@ DataTypeEnumeration::DataTypeEnumeration(std::string name) :
 {
 }
 
-QWidget* DataTypeEnumeration::getConfigWidget(DataLogger*, std::string startValue) {
-    return getConfigBox(startValue);
+QWidget* DataTypeEnumeration::getConfigWidget(DataLogger*, CParameter *param) {
+    return getConfigBox(param);
 }
 
-QComboBox* DataTypeEnumeration::getConfigBox(std::string startValue) {
+QComboBox* DataTypeEnumeration::getConfigBox(CParameter* param) {
     QComboBox* cbox = new QComboBox();
     for (list<string>::iterator i = values.begin(); i != values.end(); i++) {
         cbox->addItem(QString((*i).c_str()));
     }
-    cbox->setCurrentIndex(cbox->findText(QString(startValue.c_str())));
+    cbox->setCurrentIndex(cbox->findText(QString(param->getValue().c_str())));
     return cbox;
 }
 
@@ -128,9 +133,9 @@ DataTypeString::DataTypeString(std::string name) :
 {
 }
 
-QWidget* DataTypeString::getConfigWidget(DataLogger*, std::string startValue) {
+QWidget* DataTypeString::getConfigWidget(DataLogger*, CParameter *param) {
     QLineEdit* lEdit = new QLineEdit();
-    lEdit->setText(startValue.c_str());
+    lEdit->setText(param->getValue().c_str());
     return lEdit;
 }
 
@@ -149,11 +154,12 @@ void DataTypePin::addPin(std::string groupName, Pin& pin) {
     pins[groupName].push_back(pin);
 }
 
-QWidget* DataTypePin::getConfigWidget(DataLogger*, std::string startValue) {
-    size_t d = startValue.find(":");
-    string groupName = startValue;
-    string pinName = startValue;
-    if (d < startValue.length()) {
+QWidget* DataTypePin::getConfigWidget(DataLogger*, CParameter *param) {
+    string value = param->getValue();
+    size_t d = value.find(":");
+    string groupName = value;
+    string pinName = value;
+    if (d < value.length()) {
         groupName.erase(d, groupName.length());
         pinName.erase(0, d + 1);
     }

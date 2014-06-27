@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1021</width>
-    <height>627</height>
+    <width>1019</width>
+    <height>625</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -70,7 +70,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1021</width>
+     <width>1019</width>
      <height>21</height>
     </rect>
    </property>
@@ -117,6 +117,9 @@
    </property>
   </action>
   <action name="actionTarget">
+   <property name="icon">
+    <iconset theme="preferences-system"/>
+   </property>
    <property name="text">
     <string>Zielplattform</string>
    </property>

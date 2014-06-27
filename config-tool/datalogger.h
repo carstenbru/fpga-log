@@ -47,10 +47,12 @@ private:
     static std::map<std::string, std::string> targetXMLs;
 private slots:
     void moduleConnectionsChanged();
+    void parameterChanged();
 signals:
     void datastreamModulesChanged();
     void otherModulesChanged();
     void connectionsChanged();
+    void criticalParameterChanged();
 };
 
 #endif // DATALOGGER_H

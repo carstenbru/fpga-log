@@ -16,6 +16,18 @@ ConfigObjectDialog::ConfigObjectDialog(QWidget *parent, CObject *object, DataLog
 {
     ui->setupUi(this);
 
+    setupUi();
+
+    connect(this, SIGNAL(finished(int)), this, SLOT(storeParams()));
+    connect(dataLogger, SIGNAL(criticalParameterChanged()), this, SLOT(reload()));
+}
+
+ConfigObjectDialog::~ConfigObjectDialog() {
+    delete ui;
+}
+
+void ConfigObjectDialog::setupUi() {
+    paramWidgets.clear();
 
     QWidget * contents = new QWidget;
     QVBoxLayout* layout = new QVBoxLayout();
@@ -23,15 +35,11 @@ ConfigObjectDialog::ConfigObjectDialog(QWidget *parent, CObject *object, DataLog
     contents->setLayout(layout);
     ui->scrollArea->setWidget(contents);
 
+    connect(contents, SIGNAL(destroyed()), this, SLOT(setupUi()));
+
     addNameGroup(layout);
     addHardwareParametersGroup(layout);
     addReqParametersGroup(layout);
-
-    connect(this, SIGNAL(finished(int)), this, SLOT(storeParams()));
-}
-
-ConfigObjectDialog::~ConfigObjectDialog() {
-    delete ui;
 }
 
 void ConfigObjectDialog::addGroup(QLayout* parentLayout, string title, QLayout *groupLayout) {
@@ -49,20 +57,28 @@ void ConfigObjectDialog::addNameGroup(QLayout* parent) {
     QFormLayout* layout = new QFormLayout();
     layout->addRow("Typ", new QLabel(QString(object->getType()->getDisplayName().c_str())));
 
-    objectName.setText(QString(object->getName().c_str()));
-    layout->addRow("Objektname", &objectName);
+    objectName = new QLineEdit();
+    objectName->setText(QString(object->getName().c_str()));
+    layout->addRow("Objektname", objectName);
 
-    connect(&objectName, SIGNAL(editingFinished()), this, SLOT(nameEdited()));
+    connect(objectName, SIGNAL(editingFinished()), this, SLOT(nameEdited()));
 
     addGroup(parent, "Objekt", layout);
 }
 
-void ConfigObjectDialog::addPeripheralParameters(QFormLayout *parent, SpmcPeripheral* peripheral) {
-    std::list<CParameter*> parameters = peripheral->getParameters();
+void ConfigObjectDialog::addPortsGroup(QLayout *parent, string groupName, list<PeripheralPort *>& ports) {
+    QFormLayout* portGroupLayout = new QFormLayout();
+    for (list<PeripheralPort*>::iterator i = ports.begin(); i != ports.end(); i++) {
+        addParameters(portGroupLayout, (*i)->getLines());
+    }
+    addGroup(parent, groupName, portGroupLayout);
+}
+
+void ConfigObjectDialog::addParameters(QFormLayout *parent, std::list<CParameter*> parameters) {
     for (std::list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
         if (!(*i)->getHideFromUser()) {
             string paramName = (*i)->getName();
-            QWidget* widget = (*i)->getDataType()->getConfigWidget(dataLogger, (*i)->getValue());
+            QWidget* widget = (*i)->getDataType()->getConfigWidget(dataLogger, *i);
             parent->addRow(paramName.c_str(), widget);
             paramWidgets[*i] = widget;
         }
@@ -72,12 +88,30 @@ void ConfigObjectDialog::addPeripheralParameters(QFormLayout *parent, SpmcPeriph
 void ConfigObjectDialog::addHardwareParametersGroup(QLayout *parent) {
     list<SpmcPeripheral*> peripherals = object->getPeripherals();
 
-    QFormLayout* layout = new QFormLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
+
+    QWidget* widget = new QWidget();
+    QFormLayout* paramsLayout = new QFormLayout();
+    widget->setLayout(paramsLayout);
     for (list<SpmcPeripheral*>::iterator i = peripherals.begin(); i != peripherals.end(); i++) {
         if (!((*i)->getParameters().empty())) {
-            addPeripheralParameters(layout, *i);
+            addParameters(paramsLayout, (*i)->getParameters());
+
+            map<string, list<PeripheralPort*> > ports = (*i)->getPorts();
+            QVBoxLayout* pinLayout = new QVBoxLayout();
+            for (map<string, list<PeripheralPort*> >::iterator i = ports.begin(); i != ports.end(); i++) {
+                addPortsGroup(pinLayout, i->first, i->second);
+            }
+            addGroup(layout, "Pins", pinLayout);
         }
     }
+
+    if (!paramsLayout->isEmpty()) {
+        layout->insertWidget(0, widget);
+    } else {
+        widget->deleteLater();
+    }
+
     addGroup(parent, "Hardware Parameter", layout);
 }
 
@@ -89,7 +123,7 @@ void ConfigObjectDialog::addReqParametersGroup(QLayout *parent) {
     for (; i != parameters->end(); i++) {
         DataType* type = (*i).getDataType();
         if (!type->hasSuffix("_regs_t")) {
-            QWidget* widget = type->getConfigWidget(dataLogger, (*i).getValue());
+            QWidget* widget = type->getConfigWidget(dataLogger, &*i);
             layout->addRow(( *i).getName().c_str(), widget);
             paramWidgets[&*i] = widget;
         }
@@ -98,7 +132,7 @@ void ConfigObjectDialog::addReqParametersGroup(QLayout *parent) {
 }
 
 void ConfigObjectDialog::nameEdited() {
-    dataLogger->changeObjectName(object, objectName.text().toStdString());
+    dataLogger->changeObjectName(object, objectName->text().toStdString());
 }
 
 void ConfigObjectDialog::storeParams() {
@@ -106,4 +140,9 @@ void ConfigObjectDialog::storeParams() {
         CParameter* param = i->first;
         param->setValue(param->getDataType()->getConfigData(i->second));
     }
+}
+
+void ConfigObjectDialog::reload() {
+    storeParams();
+    ui->scrollArea->widget()->deleteLater();
 }

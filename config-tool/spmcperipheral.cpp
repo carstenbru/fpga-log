@@ -1,5 +1,4 @@
 #include "spmcperipheral.h"
-#include <QXmlStreamReader>
 #include <QFile>
 #include <iostream>
 #include <QProcessEnvironment>
@@ -15,13 +14,18 @@ SpmcPeripheral::SpmcPeripheral(DataType *type, string parentModuleName, DataLogg
     dataType(type),
     parentModuleName(parentModuleName)
 {
-    readParametersFromFile();
+    readPeripheralXML();
     readModuleXML();
 }
 
 SpmcPeripheral::~SpmcPeripheral() {
     for (list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
         delete *i;
+    }
+    for (map<string, list<PeripheralPort*> >::iterator mi = ports.begin(); mi != ports.end(); mi++) {
+        for (list<PeripheralPort*>::iterator i = mi->second.begin(); i != mi->second.end(); i++) {
+            delete *i;
+        }
     }
 }
 
@@ -70,52 +74,89 @@ string SpmcPeripheral::getFileName() {
     }
 }
 
-void SpmcPeripheral::readParametersFromFile() {
+void SpmcPeripheral::readParameterElement(QXmlStreamReader& reader) {
+    QXmlStreamAttributes attributes = reader.attributes();
+    string paramName = attributes.value("name").toString().toStdString();
+    string type = attributes.value("type").toString().toStdString();
+    if (type.compare("int") == 0)
+        type = "peripheral_int";
+    DataTypeEnumeration* dt = NULL;
+    while (reader.readNextStartElement()) {
+        type = dataType->getName() + "_" + paramName;
+        if (reader.name().toString().compare("range") == 0) {
+            try {
+                DataType::getType(type);
+            } catch (exception) {
+                QXmlStreamAttributes attributes = reader.attributes();
+                int min = attributes.value("min").toString().toInt();
+                int max = attributes.value("max").toString().toInt();
+                new DataTypeNumber(type, min, max);
+            }
+        } else if (reader.name().toString().compare("choice") == 0) {
+            if (dt == NULL) {
+                try {
+                    DataType::getType(type);
+                } catch (exception) {
+                    dt = new DataTypeEnumeration(type);
+                    dt->addValue(reader.attributes().value("value").toString().toStdString());
+                }
+            } else
+                dt->addValue(reader.attributes().value("value").toString().toStdString());
+        }
+        reader.skipCurrentElement();
+    }
+    string value = attributes.value("value").toString().toStdString();
+    CParameter* param = new CParameter(paramName, DataType::getType(type), false, value);
+    parameters.push_back(param);
+    if (paramName.compare("CLOCK_FREQUENCY") == 0)
+        param->setHideFromUser(true);
+}
+
+void SpmcPeripheral::readPortsElement(QXmlStreamReader& reader) {
+    string groupName = reader.attributes().value("group").toString().toStdString();
+    while (reader.readNextStartElement()) {
+        if (reader.name().compare("port") == 0) {
+            PeripheralPort* port;
+            string portName = reader.attributes().value("name").toString().toStdString();
+            QStringRef width = reader.attributes().value("width");
+            if (width.isEmpty()) {
+                port = new PeripheralPort(portName);
+            } else {
+                bool directValue;
+                int portWidth = width.toString().toInt(&directValue);
+                if (!directValue) {
+                    string symbol = width.toString().toStdString();
+                    symbol.erase(0,2);
+                    symbol.erase(symbol.length() - 1, symbol.length());
+                    CParameter* p = getParameter(symbol);
+                    p->setCritical(true);
+                    port = new PeripheralPort(portName,  atoi(p->getValue().c_str()));
+                    QObject::connect(p, SIGNAL(valueChanged(std::string)), port, SLOT(newWidth(std::string)));
+                } else
+                    port = new PeripheralPort(portName, portWidth);
+            }
+            ports[groupName].push_back(port);
+        }
+        reader.skipCurrentElement();
+    }
+}
+
+void SpmcPeripheral::readPeripheralXML() {
     QFile file(QString(getFileName().c_str()));
     if (!file.open(QIODevice::ReadOnly)) {
         cerr << "unable to open peripheral module xml file: " << dataType->getName() << endl;
         return;
     }
     QXmlStreamReader reader(&file);
-    while (reader.name().compare("parameters") != 0) {
-        reader.readNextStartElement();
-    }
+    reader.readNextStartElement();
     while (reader.readNextStartElement()) {
-        QXmlStreamAttributes attributes = reader.attributes();
-        string paramName = attributes.value("name").toString().toStdString();
-        string type = attributes.value("type").toString().toStdString();
-        if (type.compare("int") == 0)
-            type = "peripheral_int";
-        DataTypeEnumeration* dt = NULL;
-        while (reader.readNextStartElement()) {
-            type = dataType->getName() + "_" + paramName;
-            if (reader.name().toString().compare("range") == 0) {
-                try {
-                    DataType::getType(type);
-                } catch (exception) {
-                    QXmlStreamAttributes attributes = reader.attributes();
-                    int min = attributes.value("min").toString().toInt();
-                    int max = attributes.value("max").toString().toInt();
-                    new DataTypeNumber(type, min, max);
-                }
-            } else if (reader.name().toString().compare("choice") == 0) {
-                if (dt == NULL) {
-                    try {
-                        DataType::getType(type);
-                    } catch (exception) {
-                        dt = new DataTypeEnumeration(type);
-                        dt->addValue(reader.attributes().value("value").toString().toStdString());
-                    }
-                } else
-                    dt->addValue(reader.attributes().value("value").toString().toStdString());
-            }
+        if (reader.name().compare("parameters") == 0) {
+            while (reader.readNextStartElement())
+                readParameterElement(reader);
+        } else if (reader.name().compare("ports") == 0) {
+            readPortsElement(reader);
+        } else
             reader.skipCurrentElement();
-        }
-        string value = attributes.value("value").toString().toStdString();
-        CParameter* param = new CParameter(paramName, DataType::getType(type), false, value);
-        parameters.push_back(param);
-        if (paramName.compare("CLOCK_FREQUENCY") == 0)
-            param->setHideFromUser(true);
     }
 }
 
@@ -145,4 +186,45 @@ void SpmcPeripheral::readModuleXML() {
         }
         reader.skipCurrentElement();
     }
+}
+
+PeripheralPort::PeripheralPort(std::string name) :
+    name(name),
+    width(1)
+{
+    lines.push_back(new CParameter(name, DataTypePin::getPinType(), false));
+}
+
+PeripheralPort::PeripheralPort(std::string name, int width) :
+    name(name),
+    width(width)
+{
+    for (int i = 0; i < width; i++) {
+        lines.push_back(new CParameter(name + "_" + to_string(i), DataTypePin::getPinType(), false));
+    }
+}
+
+PeripheralPort::~PeripheralPort() {
+    for (list<CParameter*>::iterator i = lines.begin(); i != lines.end(); i++) {
+        delete *i;
+    }
+}
+
+void PeripheralPort::newWidth(std::string widthVal) {
+    int newWidth = atoi(widthVal.c_str());
+
+    if (newWidth < width) {
+        int i = width - newWidth;
+        while (i--) {
+            CParameter* p =  lines.back();
+            lines.pop_back();
+            p->deleteLater();
+        }
+    }
+    if (newWidth > width) {
+        for (int i = width; i < newWidth; i++) {
+            lines.push_back(new CParameter(name + "_" + to_string(i), DataTypePin::getPinType(), false));
+        }
+    }
+    width = newWidth;
 }

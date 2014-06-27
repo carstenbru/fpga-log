@@ -26,12 +26,12 @@ void TargetConfigDialog::generateUi() {
     widget->setLayout(layout);
 
     CParameter* target = dataLogger->getTarget();
-    QComboBox* targetBox = dynamic_cast<DataTypeEnumeration*>(target->getDataType())->getConfigBox(target->getValue());
+    QComboBox* targetBox = dynamic_cast<DataTypeEnumeration*>(target->getDataType())->getConfigBox(target);
     layout->addRow("Zielplattform", targetBox);
     connect(targetBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(targetChanged(QString)));
 
     CParameter* clockPin = dataLogger->getClockPin();
-    clockPinWidget = clockPin->getDataType()->getConfigWidget(dataLogger, clockPin->getValue());
+    clockPinWidget = clockPin->getDataType()->getConfigWidget(dataLogger, clockPin);
     layout->addRow("Clock Pin", clockPinWidget);
 }
 

@@ -22,7 +22,7 @@ public:
     bool hasPrefix(std::string prefix) { return (name.find(prefix) == 0); }
     bool hasSuffix(std::string suffix) { return (name.rfind(suffix) == (name.length() - suffix.length())); }
 
-    virtual QWidget* getConfigWidget(DataLogger*, std::string);
+    virtual QWidget* getConfigWidget(DataLogger*, CParameter*);
     virtual std::string getConfigData(QWidget*) { return ""; }
 
     static DataType* getType(std::string name) { return types.at(name); }
@@ -49,7 +49,7 @@ public:
     void addChild(DataTypeStruct* child) { childs.push_back(child); }
     void addMethod(CMethod* method) { methods.push_back(method); }
 
-    virtual QWidget* getConfigWidget(DataLogger* dataLogger, std::string startValue);
+    virtual QWidget* getConfigWidget(DataLogger* dataLogger, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
 
     static DataTypeStruct* getType(std::string name) { return types.at(name); }
@@ -68,7 +68,7 @@ public:
     DataTypeNumber(std::string name, long min, long max);
     virtual ~DataTypeNumber() {}
 
-    virtual QWidget* getConfigWidget(DataLogger*, std::string startValue);
+    virtual QWidget* getConfigWidget(DataLogger*dataLogger, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
 private:
     long min;
@@ -83,10 +83,10 @@ public:
     void addValue(std::string value) { values.push_back(value); }
     void addValues(std::list<std::string> valueList) { values.insert(values.end(), valueList.begin(), valueList.end()); }
 
-    virtual QWidget* getConfigWidget(DataLogger*, std::string startValue);
+    virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
 
-    QComboBox* getConfigBox(std::string startValue);
+    QComboBox* getConfigBox(CParameter *param);
 private:
     std::list<std::string> values;
 };
@@ -96,7 +96,7 @@ public:
     DataTypeString(std::string name);
     virtual ~DataTypeString() {}
 
-    virtual QWidget* getConfigWidget(DataLogger*, std::string startValue);
+    virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
 };
 
@@ -121,7 +121,7 @@ public:
     DataTypePin(std::string name);
     virtual ~DataTypePin() {}
 
-    virtual QWidget* getConfigWidget(DataLogger*, std::string startValue);
+    virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
 
     void addPin(std::string groupName, Pin &pin);
