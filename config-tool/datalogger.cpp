@@ -1,19 +1,63 @@
 #include "datalogger.h"
 #include <sstream>
 #include <iostream>
+#include <QProcessEnvironment>
+#include <QFile>
+#include <QXmlStreamReader>
+#include <QDirIterator>
 
 using namespace std;
 
+std::map<std::string, std::string> DataLogger::targetXMLs;
+
 DataLogger::DataLogger() :
-    peripheralClockFreq("peripheralClockFreq", DataType::getType("peripheral_int"), false, "1000") //TODO value
+    target("target", DataType::getType("target"), false, "papilio-pro"),
+    clockPin("clock pin", DataType::getType("pin"), false, "CLK:32") //TODO value
 {
-    peripheralClockFreq.setHideFromUser(true);
+    loadTargetPins();
 }
 
 DataLogger::~DataLogger() {
     std::list<DatastreamObject*>::iterator i;
     for (i = datastreamObjects.begin(); i != datastreamObjects.end(); i++) {
         delete *i;
+    }
+}
+
+void DataLogger::loadTargetPins() {
+    DataTypePin* pinType = DataTypePin::getPinType();
+    pinType->clear();
+
+    QFile file(QString(targetXMLs[target.getValue()].c_str()));
+    if (!file.open(QIODevice::ReadOnly)) {
+        cerr << "unable to open target xml file: " << target.getValue() << endl;
+        return;
+    }
+    QXmlStreamReader reader(&file);
+    reader.readNextStartElement();
+    while (reader.readNextStartElement()) {
+        if (reader.name().compare("iopins") == 0) {
+            string groupName = reader.attributes().value("name").toString().toStdString();
+            while (reader.readNextStartElement()) {
+                if (reader.name().compare("pin") == 0) {
+                    Pin pin(reader.attributes().value("name").toString().toStdString());
+
+                    QXmlStreamAttributes attributes = reader.attributes();
+                    QStringRef fpgapin = attributes.value("fpgapin");
+                    if (!fpgapin.isEmpty()) {
+                        pin.setFpgapin(fpgapin.toString().toStdString());
+                    }
+                    QStringRef freq = attributes.value("freq");
+                    if (!freq.isEmpty()) {
+                        pin.setFreq(freq.toString().toStdString());
+                    }
+
+                    pinType->addPin(groupName, pin);
+                }
+                reader.skipCurrentElement();
+            }
+        } else
+            reader.skipCurrentElement();
     }
 }
 
@@ -87,4 +131,35 @@ std::list<CObject*> DataLogger::getInstances(DataTypeStruct* dataType) {
     addInstancesToList(datastreamObjects, res, dataType);
     addInstancesToList(otherObjects, res, dataType);
     return res;
+}
+
+string DataLogger::readTargetNameFromFile(string fileName) {
+    QFile file(QString(fileName.c_str()));
+    if (!file.open(QIODevice::ReadOnly)) {
+        cerr << "unable to open target xml file: " << fileName << endl;
+        return "unable to open";
+    }
+    QXmlStreamReader reader(&file);
+    reader.readNextStartElement();
+    return reader.attributes().value("name").toString().toStdString();
+}
+
+void DataLogger::loadTragetXMLs() {
+    DataTypeEnumeration* targetType = new DataTypeEnumeration("target");
+
+    string path = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();
+    path += "/lib/targets/";
+    QDirIterator dirIter(QString(path.c_str()), (QDirIterator::Subdirectories | QDirIterator::FollowSymlinks));
+    while (dirIter.hasNext()) {
+        dirIter.next();
+        if (QFileInfo(dirIter.filePath()).isFile()) {
+            if (QFileInfo(dirIter.filePath()).suffix() == "xml") {
+                string fileName = dirIter.filePath().toStdString();
+                string targetName = readTargetNameFromFile(fileName);
+                targetXMLs[targetName] = fileName;
+                targetType->addValue(targetName);
+
+            }
+        }
+    }
 }

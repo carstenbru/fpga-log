@@ -1,14 +1,17 @@
 #include "datatype.h"
 #include <iostream>
 #include <QSpinBox>
-#include <QComboBox>
 #include <QLineEdit>
-#include <datalogger.h>
+#include <QHBoxLayout>
+#include "datalogger.h"
+#include "pinbox.h"
 
 using namespace std;
 
 std::map<std::string, DataType*> DataType::types;
 std::map<std::string, DataTypeStruct*> DataTypeStruct::types;
+
+DataTypePin DataTypePin::pinType("pin");
 
 DataType::DataType(std::string name) :
     name(name)
@@ -103,6 +106,10 @@ DataTypeEnumeration::DataTypeEnumeration(std::string name) :
 }
 
 QWidget* DataTypeEnumeration::getConfigWidget(DataLogger*, std::string startValue) {
+    return getConfigBox(startValue);
+}
+
+QComboBox* DataTypeEnumeration::getConfigBox(std::string startValue) {
     QComboBox* cbox = new QComboBox();
     for (list<string>::iterator i = values.begin(); i != values.end(); i++) {
         cbox->addItem(QString((*i).c_str()));
@@ -130,4 +137,52 @@ QWidget* DataTypeString::getConfigWidget(DataLogger*, std::string startValue) {
 std::string DataTypeString::getConfigData(QWidget* widget) {
     QLineEdit* lEdit = dynamic_cast<QLineEdit*>(widget);
     return lEdit->text().toStdString();
+}
+
+DataTypePin::DataTypePin(std::string name) :
+    DataType(name)
+{
+
+}
+
+void DataTypePin::addPin(std::string groupName, Pin& pin) {
+    pins[groupName].push_back(pin);
+}
+
+QWidget* DataTypePin::getConfigWidget(DataLogger*, std::string startValue) {
+    size_t d = startValue.find(":");
+    string groupName = startValue;
+    string pinName = startValue;
+    if (d < startValue.length()) {
+        groupName.erase(d, groupName.length());
+        pinName.erase(0, d + 1);
+    }
+
+    QWidget* widget = new QWidget();
+    QHBoxLayout* layout = new QHBoxLayout();
+    layout->setMargin(0);
+    widget->setLayout(layout);
+
+    QComboBox* groupBox = new QComboBox();
+    layout->addWidget(groupBox);
+    for (map<string, list<Pin> >::iterator i = pins.begin(); i != pins.end(); i++) {
+        groupBox->addItem(QString(i->first.c_str()));
+    }
+    groupBox->setCurrentIndex(groupBox->findText(QString(groupName.c_str())));
+
+    PinBox* pinBox = new PinBox();
+    layout->addWidget(pinBox);
+    pinBox->setPinItems(QString(groupName.c_str()));
+    pinBox->setCurrentIndex(pinBox->findText(QString(pinName.c_str())));
+
+    QObject::connect(groupBox, SIGNAL(currentIndexChanged(QString)), pinBox, SLOT(setPinItems(QString)));
+
+    return widget;
+}
+
+std::string DataTypePin::getConfigData(QWidget* widget) {
+    QComboBox* groupBox = dynamic_cast<QComboBox*>(widget->children().at(1));
+    QComboBox* pinBox = dynamic_cast<QComboBox*>(widget->children().at(2));
+
+    return groupBox->currentText().toStdString() + ":" + pinBox->currentText().toStdString();
 }

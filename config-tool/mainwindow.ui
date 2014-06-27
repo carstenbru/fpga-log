@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1023</width>
-    <height>629</height>
+    <width>1021</width>
+    <height>627</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -70,7 +70,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1023</width>
+     <width>1021</width>
      <height>21</height>
     </rect>
    </property>
@@ -78,6 +78,7 @@
     <property name="title">
      <string>Datei</string>
     </property>
+    <addaction name="actionTarget"/>
     <addaction name="actionClose"/>
    </widget>
    <widget class="QMenu" name="menuObjects">
@@ -113,6 +114,11 @@
    </property>
    <property name="text">
     <string>Neues Objekt</string>
+   </property>
+  </action>
+  <action name="actionTarget">
+   <property name="text">
+    <string>Zielplattform</string>
    </property>
   </action>
  </widget>

@@ -112,10 +112,10 @@ void SpmcPeripheral::readParametersFromFile() {
             reader.skipCurrentElement();
         }
         string value = attributes.value("value").toString().toStdString();
-        if (paramName.compare("CLOCK_FREQUENCY") != 0)
-            parameters.push_back(new CParameter(paramName, DataType::getType(type), false, value));
-        else
-            parameters.push_back(dataLogger->getPeripheralClockFreq());
+        CParameter* param = new CParameter(paramName, DataType::getType(type), false, value);
+        parameters.push_back(param);
+        if (paramName.compare("CLOCK_FREQUENCY") == 0)
+            param->setHideFromUser(true);
     }
 }
 

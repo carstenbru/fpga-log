@@ -5,6 +5,7 @@
 #include <list>
 #include <map>
 #include <QWidget>
+#include <QComboBox>
 #include "cmethod.h"
 
 class DataLogger;
@@ -84,6 +85,8 @@ public:
 
     virtual QWidget* getConfigWidget(DataLogger*, std::string startValue);
     virtual std::string getConfigData(QWidget* widget);
+
+    QComboBox* getConfigBox(std::string startValue);
 private:
     std::list<std::string> values;
 };
@@ -95,6 +98,40 @@ public:
 
     virtual QWidget* getConfigWidget(DataLogger*, std::string startValue);
     virtual std::string getConfigData(QWidget* widget);
+};
+
+class Pin {
+public:
+    Pin(std::string name) : name(name) {}
+    ~Pin() {}
+
+    std::string getName() { return name; }
+    std::string getFpgapin() { return fpgapin; }
+    std::string getFreq() { return freq; }
+    void setFpgapin(std::string fpgapin) { this->fpgapin = fpgapin; }
+    void setFreq(std::string freq) { this->freq = freq; }
+private:
+    std::string name;
+    std::string fpgapin;
+    std::string freq;
+};
+
+class DataTypePin : public DataType {
+public:
+    DataTypePin(std::string name);
+    virtual ~DataTypePin() {}
+
+    virtual QWidget* getConfigWidget(DataLogger*, std::string startValue);
+    virtual std::string getConfigData(QWidget* widget);
+
+    void addPin(std::string groupName, Pin &pin);
+    std::list<Pin> getPinsInGroup(std::string group) { return pins.at(group); }
+    void clear() { pins.clear(); }
+
+    static DataTypePin* getPinType() { return &pinType; }
+private:
+    static DataTypePin pinType;
+    std::map<std::string, std::list<Pin> > pins;
 };
 
 #endif // DATATYPE_H

@@ -17,12 +17,17 @@ public:
     ~DataLogger();
 
     void newObject(DataTypeStruct *type);
-    std::list<DatastreamObject*> getDatastreamModules() {return datastreamObjects; }
+    std::list<DatastreamObject*> getDatastreamModules() { return datastreamObjects; }
     std::vector<CObject*> getOtherObjects() { return otherObjects; }
     std::list<CObject*> getInstances(DataTypeStruct *dataType);
     bool changeObjectName(CObject* object, std::string newName);
 
-    CParameter* getPeripheralClockFreq() { return &peripheralClockFreq; }
+    void loadTargetPins();
+
+    CParameter* getTarget() { return &target; }
+    CParameter* getClockPin() { return &clockPin; }
+
+    static void loadTragetXMLs();
 private:
     template <typename T>
     bool containsObjectName(T searchList, std::string name);
@@ -31,10 +36,15 @@ private:
     template <typename T>
     void addInstancesToList(T searchList, std::list<CObject*>& destList,  DataTypeStruct* dataType);
 
-    CParameter peripheralClockFreq;
+    static std::string readTargetNameFromFile(std::string fileName);
+
+    CParameter target;
+    CParameter clockPin;
 
     std::list<DatastreamObject*> datastreamObjects;
     std::vector<CObject*> otherObjects;
+
+    static std::map<std::string, std::string> targetXMLs;
 private slots:
     void moduleConnectionsChanged();
 signals:

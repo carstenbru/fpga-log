@@ -30,7 +30,9 @@ SOURCES += main.cpp\
     consoleredirector.cpp \
     configobjectdialog.cpp \
     spmcperipheral.cpp \
-    cparameter.cpp
+    cparameter.cpp \
+    pinbox.cpp \
+    targetconfigdialog.cpp
 
 HEADERS  += mainwindow.h \
     datastreamobject.h \
@@ -48,11 +50,14 @@ HEADERS  += mainwindow.h \
     consoleredirector.h \
     configobjectdialog.h \
     spmcperipheral.h \
-    cparameter.h
+    cparameter.h \
+    pinbox.h \
+    targetconfigdialog.h
 
 FORMS    += mainwindow.ui \
     newobjectdialog.ui \
-    configobjectdialog.ui
+    configobjectdialog.ui \
+    targetconfigdialog.ui
 
 RESOURCES += \
     icons.qrc

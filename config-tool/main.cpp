@@ -4,9 +4,10 @@
 
 int main(int argc, char *argv[])
 {
+    DataLogger::loadTragetXMLs();
     SpmcPeripheral::loadPeripheralXMLs();
 
-    new DataType("void"); //TODO move, perhaps read from config file
+    new DataType("void"); //TODO move
     DataTypeEnumeration* boolType = new DataTypeEnumeration("bool");
     boolType->addValue("FALSE");
     boolType->addValue("TRUE");

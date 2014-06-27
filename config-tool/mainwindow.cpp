@@ -6,6 +6,7 @@
 #include <iostream>
 #include <QProcessEnvironment>
 #include "consoleredirector.h"
+#include "targetconfigdialog.h"
 
 using namespace std;
 
@@ -19,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     new ConsoleRedirector(cerr, ui->textBrowser, "Red");
 
     connect(ui->actionNewObject, SIGNAL(triggered()), this, SLOT(newObject()));
+    connect(ui->actionTarget, SIGNAL(triggered()), this, SLOT(targetConfig()));
 
     ui->listView->setModel(&otherModel);
     connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(otherObjectConfig(QModelIndex)));
@@ -76,5 +78,10 @@ void MainWindow::otherObjectConfig(QModelIndex index) {
 
 void MainWindow::showConfigDialog(CObject& object) {
     ConfigObjectDialog dialog(this, &object, &dataLogger);
+    dialog.exec();
+}
+
+void MainWindow::targetConfig() {
+    TargetConfigDialog dialog(this, &dataLogger);
     dialog.exec();
 }

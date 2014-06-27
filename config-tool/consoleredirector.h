@@ -1,3 +1,9 @@
+/*
+ * This class is based on code from http://www.qtforum.org/article/678/redirecting-cout-cerr-to-qdebug.html
+ * accessed on 24.06.2014 22:32
+ * Thanks to members "stele", "Ignitor" and  "jamesst20" of qtforum.org!
+ */
+
 #ifndef CONSOLEREDIRECTOR_H
 #define CONSOLEREDIRECTOR_H
 
