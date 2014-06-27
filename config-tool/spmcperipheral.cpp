@@ -4,21 +4,33 @@
 #include <iostream>
 #include <QProcessEnvironment>
 #include <QDirIterator>
+#include "datalogger.h"
 
 using namespace std;
 
 std::map<std::string, std::string> SpmcPeripheral::peripheralXMLs;
 
-SpmcPeripheral::SpmcPeripheral(DataType *type) :
-    dataType(type)
+SpmcPeripheral::SpmcPeripheral(DataType *type, string parentModuleName, DataLogger* dataLogger) :
+    dataLogger(dataLogger),
+    dataType(type),
+    parentModuleName(parentModuleName)
 {
     readParametersFromFile();
+    readModuleXML();
 }
 
 SpmcPeripheral::~SpmcPeripheral() {
     for (list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
         delete *i;
     }
+}
+
+CParameter* SpmcPeripheral::getParameter(std::string name) {
+    for (std::list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
+        if ((*i)->getName().compare(name) == 0)
+            return *i;
+    }
+    return NULL;
 }
 
 std::string SpmcPeripheral::readModuleNameFromFile(std::string fileName) {
@@ -100,6 +112,37 @@ void SpmcPeripheral::readParametersFromFile() {
             reader.skipCurrentElement();
         }
         string value = attributes.value("value").toString().toStdString();
-        parameters.push_back(new CParameter(paramName, DataType::getType(type), false, value));
+        if (paramName.compare("CLOCK_FREQUENCY") != 0)
+            parameters.push_back(new CParameter(paramName, DataType::getType(type), false, value));
+        else
+            parameters.push_back(dataLogger->getPeripheralClockFreq());
+    }
+}
+
+void SpmcPeripheral::readModuleXML() {
+    string moduleXmlFile = "../modules/";
+    moduleXmlFile += parentModuleName;
+    moduleXmlFile += ".xml";
+    QFile file(QString(moduleXmlFile.c_str()));
+    if (!file.open(QIODevice::ReadOnly)) {
+        return;
+    }
+    QXmlStreamReader reader(&file);
+    reader.readNextStartElement();
+    while (reader.readNextStartElement()) {
+        if (reader.name().toString().compare("parameter") == 0) {
+            QXmlStreamAttributes attributes = reader.attributes();
+            CParameter* parameter = getParameter(attributes.value("name").toString().toStdString());
+            QStringRef value = attributes.value("value");
+            if (!value.isEmpty()) {
+                parameter->setValue(value.toString().toStdString());
+            }
+            QStringRef hideStr = attributes.value("hide");
+            if (!hideStr.isEmpty()) {
+                bool hide = (hideStr.toString().compare("TRUE") == 0);
+                parameter->setHideFromUser(hide);
+            }
+        }
+        reader.skipCurrentElement();
     }
 }

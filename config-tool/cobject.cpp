@@ -2,7 +2,7 @@
 
 using namespace std;
 
-CObject::CObject(std::string name, DataTypeStruct* dataType) :
+CObject::CObject(std::string name, DataTypeStruct* dataType, DataLogger* dataLogger) :
     name(name),
     type(dataType),
     initMethod(NULL)
@@ -15,7 +15,7 @@ CObject::CObject(std::string name, DataTypeStruct* dataType) :
         i++;
         for (; i != parameters->end(); i++) {
             if ((*i).getDataType()->hasSuffix("_regs_t")) {
-                peripherals.push_back(new SpmcPeripheral((*i).getDataType()));
+                peripherals.push_back(new SpmcPeripheral((*i).getDataType(), type->getCleanedName(), dataLogger));
             }
         }
     }

@@ -21,6 +21,8 @@ public:
     std::vector<CObject*> getOtherObjects() { return otherObjects; }
     std::list<CObject*> getInstances(DataTypeStruct *dataType);
     bool changeObjectName(CObject* object, std::string newName);
+
+    CParameter* getPeripheralClockFreq() { return &peripheralClockFreq; }
 private:
     template <typename T>
     bool containsObjectName(T searchList, std::string name);
@@ -28,6 +30,8 @@ private:
     std::string findObjectName(T searchList, DataType* dataType);
     template <typename T>
     void addInstancesToList(T searchList, std::list<CObject*>& destList,  DataTypeStruct* dataType);
+
+    CParameter peripheralClockFreq;
 
     std::list<DatastreamObject*> datastreamObjects;
     std::vector<CObject*> otherObjects;

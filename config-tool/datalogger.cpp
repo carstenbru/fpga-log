@@ -4,8 +4,10 @@
 
 using namespace std;
 
-DataLogger::DataLogger()
+DataLogger::DataLogger() :
+    peripheralClockFreq("peripheralClockFreq", DataType::getType("peripheral_int"), false, "1000") //TODO value
 {
+    peripheralClockFreq.setHideFromUser(true);
 }
 
 DataLogger::~DataLogger() {
@@ -17,13 +19,13 @@ DataLogger::~DataLogger() {
 
 void DataLogger::newObject(DataTypeStruct *type) {
     if (type->hasPrefix("device_") || type->hasPrefix("dm_") || type->hasPrefix("sink_")) {
-        DatastreamObject* dso = new DatastreamObject(findObjectName(datastreamObjects, type), type);
+        DatastreamObject* dso = new DatastreamObject(findObjectName(datastreamObjects, type), type, this);
         datastreamObjects.push_back(dso);
         connect(dso, SIGNAL(connectionsChanged()), this, SLOT(moduleConnectionsChanged()));
         emit datastreamModulesChanged();
     }
     else {
-        CObject* co = new CObject(findObjectName(otherObjects, type), type); //TODO name!
+        CObject* co = new CObject(findObjectName(otherObjects, type), type, this);
         otherObjects.push_back(co);
         emit otherModulesChanged();
     }

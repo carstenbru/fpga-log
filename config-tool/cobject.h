@@ -12,7 +12,7 @@ class CObject : public QObject
     Q_OBJECT
 
 public:
-    CObject(std::string name, DataTypeStruct *dataType);
+    CObject(std::string name, DataTypeStruct *dataType, DataLogger* dataLogger);
     virtual ~CObject();
 
     std::string getName() { return name; }

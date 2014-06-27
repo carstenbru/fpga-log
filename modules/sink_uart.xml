@@ -1,0 +1,6 @@
+<module name="sink_uart">
+  <parameter name="FIFO_RX_DEPTH" value="64" />
+  <parameter name="FIFO_TX_DEPTH" value="8" />
+  <parameter name="BAUDRATE" value="115200" />
+  <parameter name="INTERRUPT_SUPPORTED" value="FALSE" hide="TRUE" />
+</module>

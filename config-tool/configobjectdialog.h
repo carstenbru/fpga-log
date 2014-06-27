@@ -22,7 +22,7 @@ public:
     explicit ConfigObjectDialog(QWidget *parent, CObject* object, DataLogger *dataLogger);
     ~ConfigObjectDialog();
 private:
-    QFormLayout* addGroup(QLayout* layout, std::string title);
+    void addGroup(QLayout* parentLayout, std::string title, QLayout* groupLayout);
     void addNameGroup(QLayout *parent);
     void addPeripheralParameters(QFormLayout *parent, SpmcPeripheral *peripheral);
     void addHardwareParametersGroup(QLayout *parent);

@@ -4,8 +4,8 @@
 
 using namespace std;
 
-DatastreamObject::DatastreamObject(string name, DataTypeStruct *type) :
-    CObject(name, type),
+DatastreamObject::DatastreamObject(string name, DataTypeStruct *type, DataLogger* dataLogger) :
+    CObject(name, type, dataLogger),
     position(QPoint(0,0))
 {
     findPorts();

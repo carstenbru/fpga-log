@@ -2,6 +2,7 @@
 
 CParameter::CParameter(std::string name, DataType* dataType, bool pointer) :
     name(name),
+    hideFromUser(false),
     dataType(dataType),
     pointer(pointer)
 {
@@ -10,6 +11,7 @@ CParameter::CParameter(std::string name, DataType* dataType, bool pointer) :
 CParameter::CParameter(std::string name, DataType* dataType, bool pointer, std::string value) :
     name(name),
     value(value),
+    hideFromUser(false),
     dataType(dataType),
     pointer(pointer)
 {

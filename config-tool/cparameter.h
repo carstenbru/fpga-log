@@ -15,11 +15,16 @@ public:
     std::string getName() { return name; }
     DataType* getDataType() { return dataType; }
 
+    void setHideFromUser(bool hide) { hideFromUser = hide; }
+    bool getHideFromUser() { return hideFromUser; }
+
     void setValue(std::string value) { this->value = value; }
     std::string getValue() { return value; }
 private:
     std::string name;
     std::string value;
+
+    bool hideFromUser;
 
     DataType* dataType;
     bool pointer;
