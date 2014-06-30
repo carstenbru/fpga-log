@@ -10,8 +10,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#include "pc_native/pc_compatibility.h"
-#include "pc_native/peripherals.h"
+#include <fpga-log/pc_compatibility.h>
 
 spmc_timer_t sim_timers[TIMER_COUNT];
 

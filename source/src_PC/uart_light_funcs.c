@@ -7,7 +7,7 @@
 
 #include <uart.h>
 #include <unistd.h>
-#include "pc_native/pc_compatibility.h"
+#include <fpga-log/pc_compatibility.h>
 
 /**
  * @brief uart light recive function on PC (using pipes)

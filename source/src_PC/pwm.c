@@ -10,12 +10,12 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "peripheral_funcs/pwm.h"
-#include "pc_native/pc_compatibility.h"
+#include <fpga-log/peripheral_funcs/pwm.h>
+#include <fpga-log/pc_compatibility.h>
 
-void pwm_config_channels(pwm_regs_t* const pwm, unsigned int bank,
-		unsigned int channels, unsigned int frequency, unsigned char duty,
-		int phase) {
+void pwm_config_channels(pwm_regs_t* const pwm, unsigned long int peri_clock,
+		unsigned int bank, unsigned int channels, unsigned int frequency,
+		unsigned char duty, int phase) {
 	char buffer[1024];
 
 	//SpartanMC stdio.h overwrites normal c-header, but sprintf is there
@@ -27,8 +27,9 @@ void pwm_config_channels(pwm_regs_t* const pwm, unsigned int bank,
 	write((&pipes[(int_ptr) pwm])->out, &buffer, i);
 }
 
-void pwm_config_single_channel(pwm_regs_t* const pwm, unsigned int channel,
-		unsigned int frequency, unsigned char duty, int phase) {
-	pwm_config_channels(pwm, channel / 18, (1 << (channel % 18)), frequency, duty,
-			phase);
+void pwm_config_single_channel(pwm_regs_t* const pwm,
+		unsigned long int peri_clock, unsigned int channel, unsigned int frequency,
+		unsigned char duty, int phase) {
+	pwm_config_channels(pwm, peri_clock, channel / 18, (1 << (channel % 18)),
+			frequency, duty, phase);
 }

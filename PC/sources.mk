@@ -13,6 +13,7 @@ EXECUTABLES :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+testsystem/firmware/src \
 source/src_PC \
 source/src_PC/spartanMC_printf \
 source/src \

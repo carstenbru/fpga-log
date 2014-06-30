@@ -7,7 +7,7 @@
 
 #include <fpga-log/datastream_source.h>
 #include <peripherals/timestamp_gen.h>
-#include <fpga-log/pc_native/pc_compatibility.h>
+#include <fpga-log/pc_compatibility.h>
 #include <fpga-log/sys_init.h>
 
 datastream_source_t* datastream_source_list[MAX_DATASTREAM_SOURCES];

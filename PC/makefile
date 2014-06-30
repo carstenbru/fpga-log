@@ -8,6 +8,7 @@ RM := rm
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include testsystem/firmware/src/subdir.mk
 -include source/src_PC/spartanMC_printf/subdir.mk
 -include source/src_PC/subdir.mk
 -include source/src/subdir.mk

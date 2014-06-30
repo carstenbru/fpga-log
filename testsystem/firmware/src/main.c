@@ -31,7 +31,7 @@
 #include <fpga-log/dm/dm_timer.h>
 #include <fpga-log/dm/control_action_simple.h>
 
-#include <fpga-log/pc_native/pc_compatibility.h>
+#include <fpga-log/pc_compatibility.h>
 
 #include <fpga-log/FatFs/ff.h>
 #include <fpga-log/sink/sink_sd_card.h>

@@ -7,7 +7,7 @@
 
 #include <peripherals/compare.h>
 
-#include "pc_native/pc_compatibility.h"
+#include <fpga-log/pc_compatibility.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,7 +22,7 @@ unsigned int fifo_first_valid[PIPE_COUNT];
 
 io_descr_t stdio_descr = { };
 
-timestamp_gen_regs_t* TIMESTAMP_GEN;
+timestamp_gen_regs_t* timestamp_gen;
 unsigned int timestamp_gen_capture_signals[] = TIMESTAMP_CAPTURE_SIGNALS;
 struct timeval timestamp_gen_start;
 
@@ -106,6 +106,14 @@ void timestamp_gen_generate_software_timestamp(
 void sys_init(void) {
 	pipes_init();
 
-	TIMESTAMP_GEN = malloc(sizeof(timestamp_gen_regs_t));
+	timestamp_gen = malloc(sizeof(timestamp_gen_regs_t));
 	software_timestamp_count = 0;
+}
+
+unsigned long int get_peri_clock(void) {
+	return 100000000;
+}
+
+timestamp_gen_regs_t* get_timestamp_gen(void) {
+	return timestamp_gen;
 }

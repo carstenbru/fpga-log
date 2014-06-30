@@ -16,11 +16,12 @@
 #include <peripherals/timer.h>
 #include <peripherals/timestamp_gen.h>
 
-#include <fpga-log/pc_native/peripherals.h>
+#include "pc_peripherals.h"
 
 unsigned int timestamp_gen_not_empty(timestamp_gen_regs_t* timestamp_gen);
 void timestamp_gen_generate_software_timestamp(
 		timestamp_gen_regs_t* timestamp_gen, unsigned int id);
+
 
 #define TIMESTAMP_GEN_NOT_EMPTY(tsgen) (timestamp_gen_not_empty(tsgen))
 #define TIMESTAMP_GEN_GENERATE_SOFTWARE_TIMESTAMP(tsgen, id) (timestamp_gen_generate_software_timestamp(tsgen, id))
@@ -28,6 +29,7 @@ void timestamp_gen_generate_software_timestamp(
 #define MAX_SOFTWARE_TIMESTAMPS 64
 
 #define TIMER_2000HZ_COMPARE 0
+#define TIMESTAMP_GEN 10
 
 typedef long int_ptr;
 
@@ -57,11 +59,6 @@ typedef struct {
 
 	int comp_val; /**< compare value */
 } spmc_compare_t;
-
-/**
- * @brief timestamp peripheral simulation
- */
-extern timestamp_gen_regs_t* TIMESTAMP_GEN;
 
 /**
  * @brief array of the pipes simulating SpartanMC peripherals

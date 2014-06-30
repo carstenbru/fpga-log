@@ -10,8 +10,7 @@
 #include <sys/time.h>
 #include <stdlib.h>
 
-#include "pc_native/peripherals.h"
-#include "pc_native/pc_compatibility.h"
+#include <fpga-log/pc_compatibility.h>
 
 spmc_compare_t sim_compares[COMPARE_COUNT];
 
