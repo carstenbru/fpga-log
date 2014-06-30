@@ -9,7 +9,8 @@ using namespace std;
 
 std::map<std::string, std::string> SpmcPeripheral::peripheralXMLs;
 
-SpmcPeripheral::SpmcPeripheral(DataType *type, string parentModuleName, DataLogger* dataLogger) :
+SpmcPeripheral::SpmcPeripheral(string name, DataType *type, string parentModuleName, DataLogger* dataLogger) :
+    name(name),
     dataLogger(dataLogger),
     dataType(type),
     parentModuleName(parentModuleName)
@@ -175,20 +176,26 @@ void SpmcPeripheral::readModuleXML() {
     QXmlStreamReader reader(&file);
     reader.readNextStartElement();
     while (reader.readNextStartElement()) {
-        if (reader.name().toString().compare("parameter") == 0) {
-            QXmlStreamAttributes attributes = reader.attributes();
-            CParameter* parameter = getParameter(attributes.value("name").toString().toStdString());
-            QStringRef value = attributes.value("value");
-            if (!value.isEmpty()) {
-                parameter->setValue(value.toString().toStdString());
+        if ((reader.name().toString().compare("peripheral") == 0) &&
+                (reader.attributes().value("name").toString().toStdString().compare(name) == 0)) {
+            while (reader.readNextStartElement()) {
+                if (reader.name().toString().compare("parameter") == 0) {
+                    QXmlStreamAttributes attributes = reader.attributes();
+                    CParameter* parameter = getParameter(attributes.value("name").toString().toStdString());
+                    QStringRef value = attributes.value("value");
+                    if (!value.isEmpty()) {
+                        parameter->setValue(value.toString().toStdString());
+                    }
+                    QStringRef hideStr = attributes.value("hide");
+                    if (!hideStr.isEmpty()) {
+                        bool hide = (hideStr.toString().compare("TRUE") == 0);
+                        parameter->setHideFromUser(hide);
+                    }
+                }
+                reader.skipCurrentElement();
             }
-            QStringRef hideStr = attributes.value("hide");
-            if (!hideStr.isEmpty()) {
-                bool hide = (hideStr.toString().compare("TRUE") == 0);
-                parameter->setHideFromUser(hide);
-            }
-        }
-        reader.skipCurrentElement();
+        } else
+            reader.skipCurrentElement();
     }
 }
 

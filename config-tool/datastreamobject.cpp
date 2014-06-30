@@ -76,11 +76,11 @@ void DatastreamObject::findPorts() {
             string maxDef = type->getCleanedName().append("_").append(port_name).append("_MAX");
             transform(maxDef.begin(), maxDef.end(), maxDef.begin(), ::toupper);
             if (m->sameSignature(DOutAddSig)) {
-                for (int i = 0; i < HeaderParser::getDefinedInteger(maxDef); i++) { //TODO use really definied number
+                for (int i = 0; i < HeaderParser::getDefinedInteger(maxDef); i++) {
                     addPort(new DataPortOut(port_name));
                 }
             } else if (m->sameSignature(COutAddSig)) {
-                for (int i = 0; i < HeaderParser::getDefinedInteger(maxDef); i++) { //TODO use really definied number
+                for (int i = 0; i < HeaderParser::getDefinedInteger(maxDef); i++) {
                     addPort(new ControlPortOut(port_name));
                 }
             }

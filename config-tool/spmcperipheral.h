@@ -30,7 +30,7 @@ public slots:
 class SpmcPeripheral
 {
 public:
-    SpmcPeripheral(DataType* dataType, std::string parentModuleName, DataLogger *dataLogger);
+    SpmcPeripheral(std::string name, DataType* dataType, std::string parentModuleName, DataLogger *dataLogger);
     ~SpmcPeripheral();
 
     std::list<CParameter*> getParameters() { return parameters; }
@@ -47,6 +47,7 @@ private:
 
     static std::string readModuleNameFromFile(std::string fileName);
 
+    std::string name;
     DataLogger* dataLogger;
 
     DataType* dataType;
