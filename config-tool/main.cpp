@@ -1,6 +1,10 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <iostream>
+#include <QProcessEnvironment>
+#include "headerparser.h"
+
+using namespace std;
 
 int main(int argc, char *argv[])
 {
@@ -17,6 +21,17 @@ int main(int argc, char *argv[])
     new DataTypeNumber("unsigned char", 0, 511);
     new DataTypeNumber("uint36_t", 0, 68719476735);
     new DataTypeNumber("peripheral_int", -2147483648, 2147483647);
+
+    HeaderParser hp = HeaderParser();
+    string spmc_root = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();
+    if (!spmc_root.empty()) {
+        hp.addFolder(spmc_root + "/spartanmc/include/peripherals", false);
+        hp.addFolder("../source/include", false);
+        hp.addFolder("../source/include/device", true);
+        hp.addFolder("../source/include/dm", true);
+        hp.addFolder("../source/include/sink", true);
+        hp.parseFiles();
+    }
 
     QApplication a(argc, argv);
     MainWindow w;

@@ -32,17 +32,12 @@ void MainWindow::show() {
     datastreamView = new DatastreamView(ui->graphicsView, &dataLogger);
     connect(datastreamView, SIGNAL(requestConfigDialog(CObject&)), this, SLOT(showConfigDialog(CObject&)));
 
-    HeaderParser hp = HeaderParser(); //TODO move to main?
     string spmc_root = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();
-    hp.addFolder(spmc_root + "/spartanmc/include/peripherals", false);
-    hp.addFolder("../source/include", false);
-    hp.addFolder("../source/include/device", true);
-    hp.addFolder("../source/include/dm", true);
-    hp.addFolder("../source/include/sink", true);
-    hp.parseFiles();
+    if (spmc_root.empty()) {
+        cerr << "SpartanMC root nicht gesetzt. Bitte setzen sie die $SPARTANMC_ROOT Umgebungsvariable." << endl;
+    }
 
     dataLogger.newObject(DataTypeStruct::getType("device_hct99_t")); //TODO remove
-//    dataLogger.newObject(DataTypeStruct::getType("sink_sd_card_t"));
     dataLogger.newObject(DataTypeStruct::getType("dm_timer_t"));
     dataLogger.newObject(DataTypeStruct::getType("formatter_simple_t"));
     dataLogger.newObject(DataTypeStruct::getType("control_protocol_ascii_t"));
