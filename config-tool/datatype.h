@@ -14,9 +14,11 @@ class DataType
 {
 public:
     DataType(std::string name);
+    DataType(std::string name, std::string headerFile);
     virtual ~DataType() {}
 
     std::string getName() { return name; }
+    std::string getHeaderName() { return headerFile; }
     std::string getCleanedName();
     std::string getDisplayName() { return getCleanedName(); }
     bool hasPrefix(std::string prefix) { return (name.find(prefix) == 0); }
@@ -24,18 +26,20 @@ public:
 
     virtual QWidget* getConfigWidget(DataLogger*, CParameter*);
     virtual std::string getConfigData(QWidget*) { return ""; }
+    virtual std::string getDefaultValue() { return ""; }
 
     static DataType* getType(std::string name) { return types.at(name); }
     static std::map<std::string, DataType*> getTypes() { return types; }
 private:
     std::string name;
+    std::string headerFile;
 
     static std::map<std::string, DataType*> types;
 };
 
 class DataTypeStruct : public DataType {
 public:
-    DataTypeStruct(std::string name);
+    DataTypeStruct(std::string name, std::string headerFile);
     virtual ~DataTypeStruct() {}
 
     DataTypeStruct* getSuperType() { return super; }
@@ -70,6 +74,7 @@ public:
 
     virtual QWidget* getConfigWidget(DataLogger*dataLogger, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
+    virtual std::string getDefaultValue() { return std::to_string((min < 0) ? 0 : min); }
 private:
     long min;
     long max;
@@ -78,6 +83,7 @@ private:
 class DataTypeEnumeration : public DataType {
 public:
     DataTypeEnumeration(std::string name);
+    DataTypeEnumeration(std::string name, std::string headerFile);
     virtual ~DataTypeEnumeration() {}
 
     void addValue(std::string value) { values.push_back(value); }
@@ -85,6 +91,7 @@ public:
 
     virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
+    virtual std::string getDefaultValue() { return values.front(); }
 
     QComboBox* getConfigBox(CParameter *param);
 private:

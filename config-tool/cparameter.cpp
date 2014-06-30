@@ -1,8 +1,10 @@
 #include "cparameter.h"
+#include "datatype.h"
 
 CParameter::CParameter(std::string name, DataType* dataType, bool pointer) :
     QObject(),
     name(name),
+    value(dataType->getDefaultValue()),
     hideFromUser(false),
     critical(false),
     dataType(dataType),

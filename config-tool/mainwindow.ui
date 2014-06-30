@@ -93,8 +93,15 @@
     </property>
     <addaction name="actionNewObject"/>
    </widget>
+   <widget class="QMenu" name="menuGenerate">
+    <property name="title">
+     <string>Generieren</string>
+    </property>
+    <addaction name="actionGenerate"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuObjects"/>
+   <addaction name="menuGenerate"/>
   </widget>
   <action name="actionClose">
    <property name="icon">
@@ -133,6 +140,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionGenerate">
+   <property name="text">
+    <string>Dateien erzeugen</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
    </property>
   </action>
  </widget>

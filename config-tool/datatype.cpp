@@ -14,7 +14,15 @@ std::map<std::string, DataTypeStruct*> DataTypeStruct::types;
 DataTypePin DataTypePin::pinType("pin");
 
 DataType::DataType(std::string name) :
-    name(name)
+    name(name),
+    headerFile("")
+{
+    types[name] = this;
+}
+
+DataType::DataType(std::string name, std::string headerFile) :
+    name(name),
+    headerFile(headerFile)
 {
     types[name] = this;
 }
@@ -32,8 +40,8 @@ QWidget* DataType::getConfigWidget(DataLogger*, CParameter*) {
     return NULL;
 }
 
-DataTypeStruct::DataTypeStruct(std::string name) :
-    DataType(name),
+DataTypeStruct::DataTypeStruct(std::string name, string headerFile) :
+    DataType(name, headerFile),
     super(NULL)
 {
     types[name] = this;
@@ -107,6 +115,11 @@ std::string DataTypeNumber::getConfigData(QWidget* widget) {
 
 DataTypeEnumeration::DataTypeEnumeration(std::string name) :
     DataType(name)
+{
+}
+
+DataTypeEnumeration::DataTypeEnumeration(std::string name, string headerFile) :
+    DataType(name, headerFile)
 {
 }
 

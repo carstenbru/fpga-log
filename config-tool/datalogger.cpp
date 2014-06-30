@@ -152,6 +152,17 @@ std::list<CObject*> DataLogger::getInstances(DataTypeStruct* dataType) {
     return res;
 }
 
+std::map<std::string, CObject*> DataLogger::getObjectsMap() {
+    map<string, CObject*> map;
+    for (list<DatastreamObject*>::iterator i = datastreamObjects.begin(); i != datastreamObjects.end(); i++) {
+        map[(*i)->getName()] = (*i);
+    }
+    for (vector<CObject*>::iterator i = otherObjects.begin(); i != otherObjects.end(); i++) {
+        map[(*i)->getName()] = (*i);
+    }
+    return map;
+}
+
 string DataLogger::readTargetNameFromFile(string fileName) {
     QFile file(QString(fileName.c_str()));
     if (!file.open(QIODevice::ReadOnly)) {

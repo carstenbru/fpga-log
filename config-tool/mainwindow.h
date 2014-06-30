@@ -33,6 +33,7 @@ public slots:
     void newObject();
     void showConfigDialog(CObject& object);
     void targetConfig();
+    void generate();
 private slots:
     void otherObjectConfig(QModelIndex index);
 };

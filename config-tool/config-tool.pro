@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     spmcperipheral.cpp \
     cparameter.cpp \
     pinbox.cpp \
-    targetconfigdialog.cpp
+    targetconfigdialog.cpp \
+    outputgenerator.cpp
 
 HEADERS  += mainwindow.h \
     datastreamobject.h \
@@ -52,7 +53,8 @@ HEADERS  += mainwindow.h \
     spmcperipheral.h \
     cparameter.h \
     pinbox.h \
-    targetconfigdialog.h
+    targetconfigdialog.h \
+    outputgenerator.h
 
 FORMS    += mainwindow.ui \
     newobjectdialog.ui \

@@ -30,7 +30,12 @@ std::streamsize ConsoleRedirector::xsputn(const char *p, std::streamsize n) {
     oldBuf->sputn(p, n); //send data to original stream
 
     stringstream ss;
-    ss << "<font color=\"" << htmlColor << "\">" << p << "</font>";
+    QString s(p);
+    s.replace("<", "&lt;");
+    s.replace("\n", "<br>");
+    s.replace(" ", "&nbsp;");
+
+    ss << "<font color=\"" << htmlColor << "\">" << s.toStdString() << "</font>";
     logWindow->insertHtml(QString(ss.str().c_str()));
     return n;
 }

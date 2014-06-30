@@ -21,6 +21,7 @@ public:
     std::list<DatastreamObject*> getDatastreamModules() { return datastreamObjects; }
     std::vector<CObject*> getOtherObjects() { return otherObjects; }
     std::list<CObject*> getInstances(DataTypeStruct *dataType);
+    std::map<std::string, CObject*> getObjectsMap();
     bool changeObjectName(CObject* object, std::string newName);
 
     void loadTargetPins();

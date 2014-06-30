@@ -2,9 +2,10 @@
 
 using namespace std;
 
-CMethod::CMethod(std::string name, CParameter returnType) :
+CMethod::CMethod(std::string name, CParameter returnType, string headerFile) :
     name(name),
-    returnType(returnType)
+    returnType(returnType),
+    headerFile(headerFile)
 {
 }
 

@@ -72,7 +72,7 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                     }
                     string name = *++i;
                     name.erase(name.find(';'), name.length());
-                    DataTypeStruct* d = new DataTypeStruct(name);
+                    DataTypeStruct* d = new DataTypeStruct(name, filename);
                     if (hasSuper)
                         inheritanceMap[d] = superType;
                 } else if ((*i).compare("enum") == 0) {
@@ -99,7 +99,7 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                     }
                     string name = *++i;
                     name.erase(name.find(';'), name.length());
-                    DataTypeEnumeration* d = new DataTypeEnumeration(name);
+                    DataTypeEnumeration* d = new DataTypeEnumeration(name, filename);
                     d->addValues(values);
                 }
             } else if ((*i).compare("#define") == 0) {
@@ -150,7 +150,7 @@ void HeaderParser::parseFileForMethods(string filename) {
 
                             try {
                                 DataType* rt = DataType::getType(returnType);
-                                CMethod* method = new CMethod(method_name, CParameter("return", rt, pointer));
+                                CMethod* method = new CMethod(method_name, CParameter("return", rt, pointer), filename);
 
                                 string parameters;
                                 while (parameters.rfind(");") ==  string::npos) {

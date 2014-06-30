@@ -8,7 +8,8 @@
 class CMethod
 {
 public:
-    CMethod(std::string name, CParameter returnType);
+    CMethod(std::string name, CParameter returnType, std::string headerFile);
+    CMethod(std::string name, CParameter returnType) : CMethod(name, returnType, "") {}
     ~CMethod();
 
     void addParameter(CParameter paramter) { parameters.push_back(paramter); }
@@ -16,11 +17,14 @@ public:
 
     std::string getName() { return name; }
     std::list<CParameter>* getParameters() { return &parameters; }
+    std::string getHeaderName() { return headerFile; }
 private:
     std::string name;
 
     CParameter returnType;
     std::list<CParameter> parameters;
+
+    std::string headerFile;
 };
 
 #endif // CMETHOD_H
