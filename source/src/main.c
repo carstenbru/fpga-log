@@ -128,7 +128,7 @@ int main() {
 
 	sink_uart_add_control_out(&sink_uart, &pwm_dev.control_in);
 	//sink_uart_add_control_out(&sink_uart, &uart_raw.control_in);
-	sink_uart_add_control_out(&sink_uart, &hct99.control_in);
+	sink_uart_add_control_out(&sink_uart, device_hct99_get_control_in(&hct99));
 
 	while (1) {
 		datastream_sources_send_data();

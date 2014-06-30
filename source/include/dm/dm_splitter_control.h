@@ -44,7 +44,7 @@ void dm_splitter_control_init(dm_splitter_control_t* const splitter);
  * @param splitter		pointer to the control-stream splitter
  * @return the control input port
  */
-control_port_t dm_splitter_control_get_control_in(dm_splitter_control_t* const splitter);
+control_port_t* dm_splitter_control_get_control_in(dm_splitter_control_t* const splitter);
 
 /**
  * @brief adds a new control destination to the splitter

@@ -49,7 +49,7 @@ void dm_filter_init(dm_filter_t* const filter, int mode,
  * @param filter		 pointer to the datastream filter
  * @return the data input port
  */
-data_port_t dm_filter_get_data_in(dm_filter_t* const filter);
+data_port_t* dm_filter_get_data_in(dm_filter_t* const filter);
 
 /**
  * @brief connects the data output port of a filter to a given destination

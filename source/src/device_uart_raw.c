@@ -49,8 +49,8 @@ void device_uart_raw_init(device_uart_raw_t* const uart_raw,
 	uart_light_enable_rxint(uart_light);
 }
 
-control_port_t device_uart_raw_get_control_in(device_uart_raw_t* const uart_raw) {
-	return uart_raw->control_in;
+control_port_t* device_uart_raw_get_control_in(device_uart_raw_t* const uart_raw) {
+	return &uart_raw->control_in;
 }
 
 void device_uart_raw_set_data_out(device_uart_raw_t* const uart_raw,

@@ -40,6 +40,6 @@ void device_pwm_init(device_pwm_t* const _pwm_device, pwm_regs_t* const pwm_regs
  * @param pwm		 pointer to the PWM device
  * @return the control input port
  */
-control_port_t device_pwm_get_control_in(device_pwm_t* const pwm);
+control_port_t* device_pwm_get_control_in(device_pwm_t* const pwm);
 
 #endif

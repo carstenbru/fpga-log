@@ -33,8 +33,8 @@ void dm_splitter_control_init(dm_splitter_control_t* const splitter) {
 	splitter->target_count = 0;
 }
 
-control_port_t dm_splitter_control_get_control_in(dm_splitter_control_t* const splitter) {
-	return splitter->control_in;
+control_port_t* dm_splitter_control_get_control_in(dm_splitter_control_t* const splitter) {
+	return &splitter->control_in;
 }
 
 int dm_splitter_control_add_control_out(dm_splitter_control_t* const splitter,

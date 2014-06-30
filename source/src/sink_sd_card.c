@@ -88,8 +88,8 @@ void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
 	//TODO when close file/sync so that no data gets lost?
 }
 
-data_port_t sink_sd_card_get_data_in(sink_sd_card_t* const sink_sd_card) {
-	return sink_sd_card->data_in;
+data_port_t* sink_sd_card_get_data_in(sink_sd_card_t* const sink_sd_card) {
+	return &sink_sd_card->data_in;
 }
 
 static void sink_sd_write_byte(void *param, unsigned char byte) {

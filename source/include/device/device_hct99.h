@@ -143,7 +143,7 @@ void device_hct99_init(device_hct99_t* const hct99,
  * @param hct99 pointer to the hct99 device
  * @return the control input port
  */
-control_port_t device_hct99_get_control_in(device_hct99_t* const hct99);
+control_port_t* device_hct99_get_control_in(device_hct99_t* const hct99);
 
 /**
  * @brief connects the data output port of a HCT-99 device to a given destination

@@ -46,7 +46,7 @@ void dm_trigger_init(dm_trigger_t* const trigger,
  * @param trigger		 pointer to the datastream trigger
  * @return the data input port
  */
-data_port_t dm_trigger_get_data_in(dm_trigger_t* const trigger);
+data_port_t* dm_trigger_get_data_in(dm_trigger_t* const trigger);
 
 /**
  * @brief connects the control output port of a trigger to a given destination

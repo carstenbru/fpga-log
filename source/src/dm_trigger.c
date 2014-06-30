@@ -31,8 +31,8 @@ void dm_trigger_init(dm_trigger_t* const trigger,
 	trigger->condition = &datastream_condition_always_true;
 }
 
-data_port_t dm_trigger_get_data_in(dm_trigger_t* const trigger) {
-	return trigger->data_in;
+data_port_t* dm_trigger_get_data_in(dm_trigger_t* const trigger) {
+	return &trigger->data_in;
 }
 
 void dm_trigger_set_control_out(dm_trigger_t* const trigger,
