@@ -73,7 +73,9 @@ void MainWindow::otherObjectConfig(QModelIndex index) {
 
 void MainWindow::showConfigDialog(CObject& object) {
     ConfigObjectDialog dialog(this, &object, &dataLogger);
-    dialog.exec();
+    if (dialog.exec() == QDialog::Rejected) {
+        dataLogger.deleteObject(&object);
+    }
 }
 
 void MainWindow::targetConfig() {

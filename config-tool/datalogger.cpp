@@ -75,6 +75,25 @@ void DataLogger::newObject(DataTypeStruct *type) {
     }
 }
 
+template <typename T>
+bool DataLogger::deleteObject(T& searchList, CObject *object) {
+    for (typename T::iterator i = searchList.begin(); i != searchList.end(); i++) {
+        if ((*i) == object) {
+            delete *i;
+            i = searchList.erase(i);
+            return true;
+        }
+    }
+    return false;
+}
+
+void DataLogger::deleteObject(CObject *object) {
+    if (deleteObject(datastreamObjects, object))
+        emit datastreamModulesChanged();
+    else if (deleteObject(otherObjects, object))
+        emit otherModulesChanged();
+}
+
 void DataLogger::moduleConnectionsChanged() {
     emit connectionsChanged();
 }

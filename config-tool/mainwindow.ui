@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1019</width>
-    <height>625</height>
+    <width>1017</width>
+    <height>623</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -70,7 +70,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1019</width>
+     <width>1017</width>
      <height>21</height>
     </rect>
    </property>
@@ -105,6 +105,9 @@
    <property name="text">
     <string>Beenden</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
   </action>
   <action name="actionNewObject">
    <property name="icon">
@@ -115,13 +118,21 @@
    <property name="text">
     <string>Neues Objekt</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
   </action>
   <action name="actionTarget">
    <property name="icon">
-    <iconset theme="preferences-system"/>
+    <iconset theme="preferences-system">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>Zielplattform</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
  </widget>

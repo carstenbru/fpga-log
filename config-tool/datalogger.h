@@ -17,6 +17,7 @@ public:
     ~DataLogger();
 
     void newObject(DataTypeStruct *type);
+    void deleteObject(CObject* object);
     std::list<DatastreamObject*> getDatastreamModules() { return datastreamObjects; }
     std::vector<CObject*> getOtherObjects() { return otherObjects; }
     std::list<CObject*> getInstances(DataTypeStruct *dataType);
@@ -35,6 +36,8 @@ private:
     std::string findObjectName(T searchList, DataType* dataType);
     template <typename T>
     void addInstancesToList(T searchList, std::list<CObject*>& destList,  DataTypeStruct* dataType);
+    template <typename T>
+    bool deleteObject(T& searchList, CObject* object);
 
     static std::string readTargetNameFromFile(std::string fileName);
 
