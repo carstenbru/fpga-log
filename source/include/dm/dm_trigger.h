@@ -11,10 +11,10 @@
 #ifndef DM_TRIGGER_H_
 #define DM_TRIGGER_H_
 
-#include "data_port.h"
-#include "control_port.h"
-#include "dm/datastream_condition.h"
-#include "dm/control_action.h"
+#include <fpga-log/data_port.h>
+#include <fpga-log/control_port.h>
+#include <fpga-log/dm/datastream_condition.h>
+#include <fpga-log/dm/control_action.h>
 
 /**
  * @brief struct describing a datastream trigger

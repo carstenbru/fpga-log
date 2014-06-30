@@ -7,10 +7,10 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "dm/dm_timer.h"
+#include <fpga-log/dm/dm_timer.h>
 
-#include "peripheral_funcs/timer_funcs.h"
-#include "peripheral_funcs/compare_funcs.h"
+#include <fpga-log/peripheral_funcs/timer_funcs.h>
+#include <fpga-log/peripheral_funcs/compare_funcs.h>
 
 /**
  * @brief timer update function

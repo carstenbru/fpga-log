@@ -7,7 +7,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "dm/dm_filter.h"
+#include <fpga-log/dm/dm_filter.h>
 
 /**
  * @brief incoming data function of the filter in pass mode

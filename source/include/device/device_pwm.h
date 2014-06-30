@@ -8,8 +8,8 @@
 #ifndef DEVICE_PWM_H_
 #define DEVICE_PWM_H_
 
-#include "peripherals/pwm.h"
-#include "control_port.h"
+#include <peripherals/pwm.h>
+#include <fpga-log/control_port.h>
 
 #define DEVICE_PWM_START_FREQUENCY 100
 

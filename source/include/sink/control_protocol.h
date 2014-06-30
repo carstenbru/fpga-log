@@ -8,7 +8,7 @@
 #ifndef CONTROL_PROTOCOL_H_
 #define CONTROL_PROTOCOL_H_
 
-#include "control_port.h"
+#include <fpga-log/control_port.h>
 
 /**
  * @brief struct defining a control protocol

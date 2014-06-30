@@ -5,7 +5,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "sink/control_protocol_ascii.h"
+#include <fpga-log/sink/control_protocol_ascii.h>
 
 /**
  * @brief parse function of the ascii control protocol
@@ -26,11 +26,6 @@ void control_protocol_ascii_init(
 	PROTOCOL_ASCII_DEFAULT_OUT_SELECT_CHAR;
 
 	control_protocol_ascii->state = -1;
-	int i;
-	for (i = 0; i < PROTOCOL_ASCII_MAX_PARAMETERS; i++) {
-		control_protocol_ascii->parsed_parameters[i].value =
-				&control_protocol_ascii->parameter_values[i];
-	}
 }
 
 void control_protocol_ascii_set_special_chars(
@@ -58,7 +53,7 @@ static void control_protocol_ascii_parse(void* const _protocol,
 				if (protocol->state == 1) {  //valid parameter parsed
 					if (protocol->parsed_parameters[protocol->parsed_param_count].type
 							!= protocol->out_select_char) {  //not output selection parameter
-						protocol->parameter_values[protocol->parsed_param_count++] =
+						protocol->parsed_parameters[protocol->parsed_param_count++].value =
 								protocol->cur_value;
 						if (protocol->parsed_param_count >= PROTOCOL_ASCII_MAX_PARAMETERS)
 							protocol->parsed_param_count = 0;  //TODO some error handling

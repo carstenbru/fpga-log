@@ -5,7 +5,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "sink/control_protocol.h"
+#include <fpga-log/sink/control_protocol.h>
 
 void control_protocol_set_message_dest(
 		control_protocol_t* const control_protocol,

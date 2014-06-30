@@ -5,8 +5,8 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "device/device_hct99.h"
-#include "peripheral_funcs/uart_light_funcs.h"
+#include <fpga-log/device/device_hct99.h>
+#include <fpga-log/peripheral_funcs/uart_light_funcs.h>
 
 /**
  * @brief checks if a byte is a ASCII digit

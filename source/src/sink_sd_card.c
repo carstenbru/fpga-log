@@ -5,7 +5,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "sink/sink_sd_card.h"
+#include <fpga-log/sink/sink_sd_card.h>
 #include <stdio.h>
 
 static sink_sd_card_t* pdrv_resolve[_VOLUMES];

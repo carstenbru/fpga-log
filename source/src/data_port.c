@@ -5,7 +5,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "data_port.h"
+#include <fpga-log/data_port.h>
 
 /**
  * @brief data_port new data dummy function

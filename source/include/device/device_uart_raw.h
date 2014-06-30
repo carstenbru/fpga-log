@@ -10,9 +10,9 @@
 
 #include <uart.h>
 
-#include "datastream_source.h"
-#include "data_port.h"
-#include "control_port.h"
+#include <fpga-log/datastream_source.h>
+#include <fpga-log/data_port.h>
+#include <fpga-log/control_port.h>
 
 /** 
  * @brief struct describing a uart raw device 

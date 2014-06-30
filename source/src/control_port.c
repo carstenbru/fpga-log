@@ -5,7 +5,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "control_port.h"
+#include <fpga-log/control_port.h>
 
 /**
  * @brief control_port measure dummy function

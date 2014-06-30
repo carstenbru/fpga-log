@@ -5,9 +5,8 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "peripheral_funcs/sdcard.h"
+#include <fpga-log/peripheral_funcs/sdcard.h>
 
-#include <system/peripherals.h>
 #include <peripherals/uart_light.h>
 
 /**

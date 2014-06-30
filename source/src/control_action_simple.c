@@ -8,7 +8,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "dm/control_action_simple.h"
+#include <fpga-log/dm/control_action_simple.h>
 
 /**
  * @brief execute function of the simple control action

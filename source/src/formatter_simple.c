@@ -6,9 +6,9 @@
  */
 
 #include <stdio.h>
-#include "sink/formatter/formatter_simple.h"
-#include "long_int.h"
-#include "simple_float.h"
+#include <fpga-log/sink/formatter/formatter_simple.h>
+#include <fpga-log/long_int.h>
+#include <fpga-log/simple_float.h>
 
 /**
  * @brief simple formatter output log format function

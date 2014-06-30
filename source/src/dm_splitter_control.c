@@ -7,7 +7,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "dm/dm_splitter_control.h"
+#include <fpga-log/dm/dm_splitter_control.h>
 
 /**
  * @brief measure function of the control-stream splitter

@@ -5,7 +5,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "sink/sink_uart.h"
+#include <fpga-log/sink/sink_uart.h>
 
 /**
  * @brief uart sink update function

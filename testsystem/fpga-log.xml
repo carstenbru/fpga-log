@@ -161,7 +161,7 @@
             </port>
         </gluelogic>
         <processor_module id="#7AB8">
-            <attribute id="firmware" xml:space="preserve">../source</attribute>
+            <attribute id="firmware" xml:space="preserve">./firmware</attribute>
             <attribute id="name" xml:space="preserve">subsystem_0</attribute>
             <peripheral id="#3BC3">
                 <attribute id="module_type" xml:space="preserve">timer</attribute>

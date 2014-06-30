@@ -10,12 +10,12 @@
 
 #include <peripherals/sdcard.h>
 
-#include "FatFs/ff.h"
-#include "FatFs/diskio.h"
+#include <fpga-log/FatFs/ff.h>
+#include <fpga-log/FatFs/diskio.h>
 
-#include "datastream_object.h"
-#include "data_port.h"
-#include "sink/formatter/formatter.h"
+#include <fpga-log/datastream_object.h>
+#include <fpga-log/data_port.h>
+#include <fpga-log/sink/formatter/formatter.h>
 
 /**
  * @brief defines the maximal usable file name length of the log file

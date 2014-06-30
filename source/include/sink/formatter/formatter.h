@@ -10,7 +10,7 @@
 #ifndef FORMATTER_H_
 #define FORMATTER_H_
 
-#include "data_port.h"
+#include <fpga-log/data_port.h>
 
 /** 
  * @brief struct defining a formatter with its state and functions

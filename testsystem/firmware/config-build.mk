@@ -56,17 +56,17 @@ OBJECTS:=*
 
 # spartanmc library objects
 # (not recompiled for each project)
-LIB_OBJ_FILES:=startup peri
+LIB_OBJ_FILES:=startup peri fpga-log
 
 # spartanmc assembler library objects
 # (recompiled for each project)
 LIB_AS_FILES:=
 
 # compiler flags
-CFLAGS:=-O2 -fomit-frame-pointer -fno-inline -spmc-force-cc-branches=yes
+CFLAGS:=-O2 -fomit-frame-pointer -fno-inline
 
 # list of defines
-DEFINES:=PERI_CLOCK=16000000
+DEFINES:=
 
 # linker script, leave empty for default
 LINKER_SCRIPT:=

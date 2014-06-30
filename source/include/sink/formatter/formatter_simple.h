@@ -8,7 +8,7 @@
 #ifndef FORMATTER_SIMPLE_H_
 #define FORMATTER_SIMPLE_H_
 
-#include "sink/formatter/formatter.h"
+#include <fpga-log/sink/formatter/formatter.h>
 
 /**
  * @brief high prescision timestamp digits in log

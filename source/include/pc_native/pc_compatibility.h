@@ -16,7 +16,7 @@
 #include <peripherals/timer.h>
 #include <peripherals/timestamp_gen.h>
 
-#include "pc_native/peripherals.h"
+#include <fpga-log/pc_native/peripherals.h>
 
 unsigned int timestamp_gen_not_empty(timestamp_gen_regs_t* timestamp_gen);
 void timestamp_gen_generate_software_timestamp(
@@ -26,6 +26,8 @@ void timestamp_gen_generate_software_timestamp(
 #define TIMESTAMP_GEN_GENERATE_SOFTWARE_TIMESTAMP(tsgen, id) (timestamp_gen_generate_software_timestamp(tsgen, id))
 
 #define MAX_SOFTWARE_TIMESTAMPS 64
+
+#define TIMER_2000HZ_COMPARE 0
 
 typedef long int_ptr;
 

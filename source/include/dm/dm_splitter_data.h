@@ -17,7 +17,7 @@
  */
 #define DM_SPLITTER_DATA_DATA_OUT_MAX 8
 
-#include "data_port.h"
+#include <fpga-log/data_port.h>
 
 /**
  * @brief struct describing a datastream splitter

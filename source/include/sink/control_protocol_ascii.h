@@ -8,7 +8,7 @@
 #ifndef CONTROL_PROTOCOL_ASCII_H_
 #define CONTROL_PROTOCOL_ASCII_H_
 
-#include "sink/control_protocol.h"
+#include <fpga-log/sink/control_protocol.h>
 
 #define PROTOCOL_ASCII_MAX_PARAMETERS 8
 
@@ -33,7 +33,6 @@ typedef struct {
 	unsigned int cur_value;
 
 	unsigned int parsed_param_count; /**< number of already parsed parameters in current command */
-	unsigned int parameter_values[PROTOCOL_ASCII_MAX_PARAMETERS];
 	control_parameter_t parsed_parameters[PROTOCOL_ASCII_MAX_PARAMETERS]; /**< already parsed parameters in current command */
 } control_protocol_ascii_t;
 

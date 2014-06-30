@@ -5,7 +5,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "datastream_object.h"
+#include <fpga-log/datastream_object.h>
 
 int datastream_object_count = 0;
 datastream_object_t* datastream_object_list[MAX_DATASTREAM_OBJECTS];

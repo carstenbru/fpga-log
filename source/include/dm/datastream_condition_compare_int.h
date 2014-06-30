@@ -12,7 +12,7 @@
 #ifndef DATASTREAM_CONDITION_COMPARE_INT_H_
 #define DATASTREAM_CONDITION_COMPARE_INT_H_
 
-#include "dm/datastream_condition.h"
+#include <fpga-log/dm/datastream_condition.h>
 
 /**
  * @brief enumeration of the different compare modes

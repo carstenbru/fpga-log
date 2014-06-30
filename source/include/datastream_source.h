@@ -10,7 +10,7 @@
 
 #define MAX_DATASTREAM_SOURCES 64
 
-#include "datastream_object.h"
+#include <fpga-log/datastream_object.h>
 #include <peripherals/timestamp_gen.h>
 
 /**

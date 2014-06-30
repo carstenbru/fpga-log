@@ -11,7 +11,7 @@
 #ifndef DATASTREAM_CONDITION_COMPARE_LONG_H_
 #define DATASTREAM_CONDITION_COMPARE_LONG_H_
 
-#include "dm/datastream_condition.h"
+#include <fpga-log/dm/datastream_condition.h>
 
 /**
  * @brief struct defining a compare condition on long or simple_float_b10

@@ -1,7 +1,7 @@
 /**
  * @file main.c
  * @brief main source file containing main routine
- * 
+ *
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
@@ -9,32 +9,32 @@
 #include <system/peripherals.h>
 #include <uart.h>
 
-#include "peripheral_funcs/pwm.h"
+#include <fpga-log/peripheral_funcs/pwm.h>
 
-#include "sys_init.h"
+#include <fpga-log/sys_init.h>
 
-#include "datastream_object.h"
-#include "datastream_source.h"
-#include "device/device_uart_raw.h"
-#include "device/device_pwm.h"
-#include "device/device_hct99.h"
-#include "sink/sink_uart.h"
-#include "sink/formatter/formatter_simple.h"
-#include "sink/control_protocol_ascii.h"
-#include "dm/dm_splitter_data.h"
-#include "dm/dm_splitter_control.h"
-#include "dm/dm_trigger.h"
-#include "dm/datastream_condition_compare_int.h"
-#include "dm/datastream_condition_compare_float.h"
-#include "dm/datastream_condition_compare_val_name.h"
-#include "dm/dm_filter.h"
-#include "dm/dm_timer.h"
-#include "dm/control_action_simple.h"
+#include <fpga-log/datastream_object.h>
+#include <fpga-log/datastream_source.h>
+#include <fpga-log/device/device_uart_raw.h>
+#include <fpga-log/device/device_pwm.h>
+#include <fpga-log/device/device_hct99.h>
+#include <fpga-log/sink/sink_uart.h>
+#include <fpga-log/sink/formatter/formatter_simple.h>
+#include <fpga-log/sink/control_protocol_ascii.h>
+#include <fpga-log/dm/dm_splitter_data.h>
+#include <fpga-log/dm/dm_splitter_control.h>
+#include <fpga-log/dm/dm_trigger.h>
+#include <fpga-log/dm/datastream_condition_compare_int.h>
+#include <fpga-log/dm/datastream_condition_compare_float.h>
+#include <fpga-log/dm/datastream_condition_compare_val_name.h>
+#include <fpga-log/dm/dm_filter.h>
+#include <fpga-log/dm/dm_timer.h>
+#include <fpga-log/dm/control_action_simple.h>
 
-#include "pc_native/pc_compatibility.h"
+#include <fpga-log/pc_native/pc_compatibility.h>
 
-#include "FatFs/ff.h"
-#include "sink/sink_sd_card.h"
+#include <fpga-log/FatFs/ff.h>
+#include <fpga-log/sink/sink_sd_card.h>
 
 sink_uart_t sink_uart;
 formatter_simple_t formatter_simple, formatter_simple2;
@@ -64,7 +64,7 @@ control_action_simple_t c_action2;
  * @brief main function
  */
 int main() {
-	sys_init();
+	sys_init(16000000, TIMER_2000HZ_COMPARE, TIMESTAMP_GEN);
 
 	device_hct99_init(&hct99, UART_LIGHT_1, 1);
 	device_pwm_init(&pwm_dev, PWM_0);
@@ -109,7 +109,7 @@ int main() {
 	control_action_simple_add_paramter_exp(&c_action2, 'y', 2);
 
 	dm_trigger_init(&trigger, &c_action2);
-	dm_trigger_set_control_out(&trigger, &hct99.control_in);
+	//dm_trigger_set_control_out(&trigger, &hct99.control_in);
 
 	datastream_condition_compare_val_name_init(&cond3, RESULT_MODE_EQUAL, "Tc");
 	dm_filter_init(&filter, FILTER_MODE_PASS, (datastream_condition_t*) &cond3);

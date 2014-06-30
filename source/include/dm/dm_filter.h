@@ -10,8 +10,8 @@
 #ifndef DM_FILTER_H_
 #define DM_FILTER_H_
 
-#include "data_port.h"
-#include "dm/datastream_condition.h"
+#include <fpga-log/data_port.h>
+#include <fpga-log/dm/datastream_condition.h>
 
 /**
  * @brief enumeration of the different filter modes

@@ -10,10 +10,10 @@
 
 #include <uart.h>
 
-#include "datastream_source.h"
-#include "data_port.h"
-#include "control_port.h"
-#include "simple_float.h"
+#include <fpga-log/datastream_source.h>
+#include <fpga-log/data_port.h>
+#include <fpga-log/control_port.h>
+#include <fpga-log/simple_float.h>
 
 /**
  * @brief enumeration of the different control commands of the HCT-99

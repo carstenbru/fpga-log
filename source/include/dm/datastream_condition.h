@@ -11,7 +11,7 @@
 #ifndef DATASTREAM_CONDITION_H_
 #define DATASTREAM_CONDITION_H_
 
-#include "data_port.h"
+#include <fpga-log/data_port.h>
 
 /**
  * @brief struct defining a datastream condition

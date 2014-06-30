@@ -21,9 +21,9 @@
 extern "C" {
 #endif
 
-#include "integer.h"	/* Basic integer types */
-#include "ffconf.h"		/* FatFs configuration options */
-#include "long_int.h"
+#include <fpga-log/FatFs/integer.h>	/* Basic integer types */
+#include <fpga-log/FatFs/ffconf.h>		/* FatFs configuration options */
+#include <fpga-log/long_int.h>
 
 #if _FATFS != _FFCONF
 #error Wrong configuration file (ffconf.h).

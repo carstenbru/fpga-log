@@ -7,7 +7,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "dm/dm_splitter_data.h"
+#include <fpga-log/dm/dm_splitter_data.h>
 
 /**
  * @brief incoming data function of the datastream splitter

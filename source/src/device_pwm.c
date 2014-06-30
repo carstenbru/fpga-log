@@ -5,8 +5,9 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "device/device_pwm.h"
-#include "peripheral_funcs/pwm.h"
+#include <fpga-log/device/device_pwm.h>
+#include <fpga-log/peripheral_funcs/pwm.h>
+#include <fpga-log/sys_init.h>
 
 /**
  * @brief control message function of pwm device
@@ -65,8 +66,8 @@ static void device_pwm_control_message(void* const _pwm_device,
 	}
 
 	if (bank == -1) {
-		pwm_config_single_channel(pwm_device->pwm, channel, frequency, duty, phase);
+		pwm_config_single_channel(pwm_device->pwm, get_peri_clock(), channel, frequency, duty, phase);
 	} else {
-		pwm_config_channels(pwm_device->pwm, bank, channel, frequency, duty, phase);
+		pwm_config_channels(pwm_device->pwm, get_peri_clock(), bank, channel, frequency, duty, phase);
 	}
 }

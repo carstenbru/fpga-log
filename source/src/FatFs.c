@@ -113,8 +113,8 @@
 /                   Fixed creation of an entry with LFN fails on too many SFN collisions.
 /---------------------------------------------------------------------------*/
 
-#include "FatFs/ff.h"			/* Declarations of FatFs API */
-#include "FatFs/diskio.h"		/* Declarations of disk I/O functions */
+#include <fpga-log/FatFs/ff.h>			/* Declarations of FatFs API */
+#include <fpga-log/FatFs/diskio.h>		/* Declarations of disk I/O functions */
 
 
 

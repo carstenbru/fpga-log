@@ -10,11 +10,11 @@
 
 #include <uart.h>
 
-#include "datastream_object.h"
-#include "data_port.h"
-#include "control_port.h"
-#include "sink/formatter/formatter.h"
-#include "sink/control_protocol.h"
+#include <fpga-log/datastream_object.h>
+#include <fpga-log/data_port.h>
+#include <fpga-log/control_port.h>
+#include <fpga-log/sink/formatter/formatter.h>
+#include <fpga-log/sink/control_protocol.h>
 
 /**
  * @brief number of maximal control outs for a uart sink

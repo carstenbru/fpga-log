@@ -5,11 +5,11 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "FatFs/ff.h"
-#include "FatFs/diskio.h"
-#include "sink/sink_sd_card.h"
+#include <fpga-log/FatFs/ff.h>
+#include <fpga-log/FatFs/diskio.h>
+#include <fpga-log/sink/sink_sd_card.h>
 
-#include "peripheral_funcs/sdcard.h"
+#include <fpga-log/peripheral_funcs/sdcard.h>
 
 /**
  * @brief returns current time packed into a DWORD variable

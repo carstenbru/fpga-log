@@ -8,7 +8,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "dm/dm_trigger.h"
+#include <fpga-log/dm/dm_trigger.h>
 
 /**
  * @brief incoming data function of the trigger

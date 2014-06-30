@@ -17,7 +17,7 @@
  */
 #define DM_SPLITTER_CONTROL_CONTROL_OUT_MAX 8
 
-#include "control_port.h"
+#include <fpga-log/control_port.h>
 
 /**
  * @brief struct describing a control-stream splitter

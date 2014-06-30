@@ -11,7 +11,7 @@
 #ifndef CONTROL_ACTION_SIMPLE_H_
 #define CONTROL_ACTION_SIMPLE_H_
 
-#include "control_action.h"
+#include <fpga-log/dm/control_action.h>
 
 /**
  * @brief maximum number of commands the control action can consist of

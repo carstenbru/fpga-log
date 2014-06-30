@@ -8,8 +8,8 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "dm/datastream_condition_compare_val_name.h"
-#include "data_port.h"
+#include <fpga-log/dm/datastream_condition_compare_val_name.h>
+#include <fpga-log/data_port.h>
 
 static int datastream_condition_compare_val_name_is_fullfilled_equal(
 		void* const condition, const data_package_t* const package) {

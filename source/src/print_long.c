@@ -6,7 +6,7 @@
  */
 
 #include <stdio.h>
-#include "long_int.h"
+#include <fpga-log/long_int.h>
 
 void print_long(unsigned long int val, unsigned int minwidth,
 		unsigned int maxwidth) {

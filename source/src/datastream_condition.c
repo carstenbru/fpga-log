@@ -8,7 +8,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "dm/datastream_condition.h"
+#include <fpga-log/dm/datastream_condition.h>
 
 static int cond_always_true(void* const trigger_condition, const data_package_t* const package) {
 	return 1;

@@ -5,8 +5,8 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "device/device_uart_raw.h"
-#include "peripheral_funcs/uart_light_funcs.h"
+#include <fpga-log/device/device_uart_raw.h>
+#include <fpga-log/peripheral_funcs/uart_light_funcs.h>
 
 /**
  * @brief uart raw send data function

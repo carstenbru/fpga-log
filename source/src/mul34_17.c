@@ -5,7 +5,7 @@
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
-#include "long_int.h"
+#include <fpga-log/long_int.h>
 
 unsigned long int mul34_17(unsigned long int a_34, unsigned int b_17) {
 	unsigned long int result = 0;

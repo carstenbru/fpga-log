@@ -13,9 +13,9 @@
 #include <peripherals/timer.h>
 #include <peripherals/compare.h>
 #include <stdint.h>
-#include "control_port.h"
-#include "datastream_object.h"
-#include "dm/control_action.h"
+#include <fpga-log/control_port.h>
+#include <fpga-log/datastream_object.h>
+#include <fpga-log/dm/control_action.h>
 
 /**
  * @brief struct describing a timer module
