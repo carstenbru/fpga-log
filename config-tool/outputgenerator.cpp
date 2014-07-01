@@ -121,6 +121,8 @@ void OutputGenerator::writeConnectPorts(ostream& stream) {
 
 void OutputGenerator::writeHeaderIncludes(std::ostream& stream) {
     for (set<string>::iterator i = usedHeaders.begin(); i != usedHeaders.end(); i++) {
-        stream << "#include <" << *i << ">" << endl; //TODO correct header path
+        string s = *i;
+        s.erase(0, s.find("include") + 8);
+        stream << "#include <fpga-log/" << s << ">" << endl;
     }
 }
