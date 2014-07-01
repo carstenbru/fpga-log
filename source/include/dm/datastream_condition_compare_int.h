@@ -42,10 +42,10 @@ typedef struct {
 /**
  * @brief initializes the compare condition
  *
- * @param cond			pointer to the compare condition to initialize
- * @param comp_func	compare function which compares new value with the reference value
- * @param mode			mode of the compare condition, should be a value of enumeration @ref datastream_condition_compare_mode
- * @param value			new compare value
+ * @param cond					pointer to the compare condition to initialize
+ * @param compare_func	compare function which compares new value with the reference value
+ * @param mode					mode of the compare condition, should be a value of enumeration @ref datastream_condition_compare_int_mode
+ * @param value					new compare value
  */
 void datastream_condition_compare_int_init(
 		datastream_condition_compare_int_t* const cond,

@@ -61,7 +61,7 @@ void control_action_simple_add_command(
  */
 void control_action_simple_add_paramter(
 		control_action_simple_t* const control_action_simple,
-		control_parameter_t* paramter);
+		control_parameter_t* parameter);
 
 /**
  * @brief adds a parameter to the last command

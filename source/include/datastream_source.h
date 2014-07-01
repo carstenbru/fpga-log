@@ -40,7 +40,8 @@ typedef struct {
  *
  * For multiple id's call this function with each id.
  *
- * @param object	the datastream_source to initialize
+ * @param source	the datastream_source to initialize
+ * @param id			id of the datastream source, has to match the line id in the timestamp generator
  * @return 1 on success, otherwise 0 (illegal id)
  */
 int datastream_source_init(datastream_source_t* const source,

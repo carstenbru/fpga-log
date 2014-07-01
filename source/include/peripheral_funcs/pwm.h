@@ -17,7 +17,7 @@
  * @brief configures (multiple) pwm channels
  *
  * @param pwm 				pointer to the pwm peripheral
- * @param peri_clcok	spartanMC peripheral clock in Hz
+ * @param peri_clock	spartanMC peripheral clock in Hz
  * @param bank				bank of the channels to configure (channel 0-17 are bank 1, 18-35 bank 2,...)
  * @param channels 		mask with channels to configure (every bit represents one channel)
  * @param frequency		frequency of the pwm signal in Hz
@@ -32,7 +32,7 @@ void pwm_config_channels(pwm_regs_t* const pwm, unsigned long int peri_clock,
  * @brief configures a single pwm channel
  *
  * @param pwm					pointer to the pwm peripheral
- * @param peri_clcok	spartanMC peripheral clock in Hz
+ * @param peri_clock	spartanMC peripheral clock in Hz
  * @param channel			number of the channel to configure
  * @param frequency 	frequency of the pwm signal in Hz
  * @param duty				duty cycle of the pwm signal in %

@@ -40,6 +40,7 @@ typedef struct {
 /**
  * @brief stets the write destination of the formatter
  * 
+ * @param formatter		pointer to the formatter
  * @param	write_byte	function which will be called to write bytes
  * @param	param				parameter which will be passed to write_byte function
  */

@@ -44,10 +44,10 @@ void control_action_simple_add_command(
 
 void control_action_simple_add_paramter(
 		control_action_simple_t* const control_action_simple,
-		control_parameter_t* paramter) {
+		control_parameter_t* parameter) {
 	unsigned int cur_command = control_action_simple->configured_commands - 1;
 	control_action_simple->command_list[cur_command][control_action_simple->configured_parameters[cur_command]] =
-			*paramter;
+			*parameter;
 	control_action_simple->configured_parameters[cur_command]++;
 }
 
