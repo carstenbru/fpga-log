@@ -8,7 +8,7 @@ if [ -n "$SPARTANMC_ROOT" ]
 then
   rm $SPARTANMC_ROOT/spartanmc/lib_obj/src/fpga-log 2> /dev/null
   ln -s $fpga_log_dir/source/src $SPARTANMC_ROOT/spartanmc/lib_obj/src/fpga-log
-  rm $SPARTANMC_ROOT/spartanmc/include/fpga-log
+  rm $SPARTANMC_ROOT/spartanmc/include/fpga-log 2> /dev/null
   ln -s $fpga_log_dir/source/include $SPARTANMC_ROOT/spartanmc/include/fpga-log
   
   ln -sf $fpga_log_dir/spartanmc/include/peripherals/* $SPARTANMC_ROOT/spartanmc/include/peripherals/
