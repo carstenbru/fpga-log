@@ -4,12 +4,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../testsystem/firmware/src/logger_config.c \
 ../testsystem/firmware/src/main.c 
 
 OBJS += \
+./testsystem/firmware/src/logger_config.o \
 ./testsystem/firmware/src/main.o 
 
 C_DEPS += \
+./testsystem/firmware/src/logger_config.d \
 ./testsystem/firmware/src/main.d 
 
 

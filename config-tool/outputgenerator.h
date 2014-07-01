@@ -16,6 +16,8 @@ private:
     void writeVariableDefinitions(std::ostream& stream);
     void writeInitFunction(std::ostream& stream);
     void writeConnectPorts(std::ostream& stream);
+    void writeAdvancedConfig(std::ostream& stream);
+    void writePreamble(std::ostream& stream);
     void writeHeaderIncludes(std::ostream& stream);
 
     void writeObjectInit(std::ostream& stream, CObject* object, std::map<std::string, CObject *> &objects, std::map<std::string, bool>& initDone);
