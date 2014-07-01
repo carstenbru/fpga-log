@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "gui/mainwindow.h"
 #include <QApplication>
 #include <iostream>
 #include <QProcessEnvironment>
