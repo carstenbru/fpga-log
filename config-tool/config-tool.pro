@@ -14,52 +14,52 @@ TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+        gui/mainwindow.cpp \
     datastreamobject.cpp \
     port.cpp \
     datalogger.cpp \
-    datastreamview.cpp \
-    moveablebutton.cpp \
-    portbutton.cpp \
+    gui/datastreamview.cpp \
+    gui/moveablebutton.cpp \
+    gui/portbutton.cpp \
     headerparser.cpp \
     datatype.cpp \
-    newobjectdialog.cpp \
+    gui/newobjectdialog.cpp \
     cmethod.cpp \
     cobject.cpp \
-    dataloggerothermodel.cpp \
-    consoleredirector.cpp \
-    configobjectdialog.cpp \
+    gui/dataloggerothermodel.cpp \
+    gui/consoleredirector.cpp \
+    gui/configobjectdialog.cpp \
     spmcperipheral.cpp \
     cparameter.cpp \
-    pinbox.cpp \
-    targetconfigdialog.cpp \
+    gui/pinbox.cpp \
+    gui/targetconfigdialog.cpp \
     outputgenerator.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += gui/mainwindow.h \
     datastreamobject.h \
     port.h \
     datalogger.h \
-    datastreamview.h \
-    moveablebutton.h \
-    portbutton.h \
+    gui/datastreamview.h \
+    gui/moveablebutton.h \
+    gui/portbutton.h \
     headerparser.h \
     datatype.h \
-    newobjectdialog.h \
+    gui/newobjectdialog.h \
     cmethod.h \
     cobject.h \
-    dataloggerothermodel.h \
-    consoleredirector.h \
-    configobjectdialog.h \
+    gui/dataloggerothermodel.h \
+    gui/consoleredirector.h \
+    gui/configobjectdialog.h \
     spmcperipheral.h \
     cparameter.h \
-    pinbox.h \
-    targetconfigdialog.h \
+    gui/pinbox.h \
+    gui/targetconfigdialog.h \
     outputgenerator.h
 
-FORMS    += mainwindow.ui \
-    newobjectdialog.ui \
-    configobjectdialog.ui \
-    targetconfigdialog.ui
+FORMS    += gui/mainwindow.ui \
+    gui/newobjectdialog.ui \
+    gui/configobjectdialog.ui \
+    gui/targetconfigdialog.ui
 
 RESOURCES += \
     icons.qrc
