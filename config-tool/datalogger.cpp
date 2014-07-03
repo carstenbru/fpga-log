@@ -11,8 +11,9 @@ using namespace std;
 std::map<std::string, std::string> DataLogger::targetXMLs;
 
 DataLogger::DataLogger() :
-    target("target", DataType::getType("target"), false, "papilio-pro"),
-    clockPin("clock pin", DataType::getType("pin"), false, "CLK:32") //TODO value
+    target("Zielplattform", DataType::getType("target"), false, "papilio-pro"),
+    clockPin("Clock Pin", DataType::getType("pin"), false, "CLK:32"),
+    clockFreq("Taktfrequenz", DataType::getType("peripheral_int"), false, "32000000")
 {
     loadTargetPins();
 }
@@ -43,10 +44,6 @@ void DataLogger::loadTargetPins() {
                     Pin pin(reader.attributes().value("name").toString().toStdString());
 
                     QXmlStreamAttributes attributes = reader.attributes();
-                    QStringRef fpgapin = attributes.value("fpgapin");
-                    if (!fpgapin.isEmpty()) {
-                        pin.setFpgapin(fpgapin.toString().toStdString());
-                    }
                     QStringRef freq = attributes.value("freq");
                     if (!freq.isEmpty()) {
                         pin.setFreq(freq.toString().toStdString());
@@ -196,4 +193,12 @@ void DataLogger::loadTragetXMLs() {
 
 void DataLogger::parameterChanged() {
     emit criticalParameterChanged();
+}
+
+int DataLogger::getClk() {
+    return atoi(clockFreq.getValue().c_str());
+}
+
+int DataLogger::getPeriClk() {
+    return getClk() / 2;
 }

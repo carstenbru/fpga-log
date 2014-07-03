@@ -113,13 +113,14 @@ public:
     ~Pin() {}
 
     std::string getName() { return name; }
-    std::string getFpgapin() { return fpgapin; }
     std::string getFreq() { return freq; }
-    void setFpgapin(std::string fpgapin) { this->fpgapin = fpgapin; }
     void setFreq(std::string freq) { this->freq = freq; }
+
+    static std::string getGroupFromFullName(std::string fullName);
+    static std::string getPinFromFullName(std::string fullName);
 private:
     std::string name;
-    std::string fpgapin;
+
     std::string freq;
 };
 
@@ -128,11 +129,13 @@ public:
     DataTypePin(std::string name);
     virtual ~DataTypePin() {}
 
-    virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
+    virtual QWidget* getConfigWidget(DataLogger*dataLogger, CParameter* param);
+    QWidget* getConfigWidget(DataLogger*, CParameter* param, QObject* receiver, const char *slot);
     virtual std::string getConfigData(QWidget* widget);
 
     void addPin(std::string groupName, Pin &pin);
     std::list<Pin> getPinsInGroup(std::string group) { return pins.at(group); }
+    Pin* getPin(std::string group, std::string pin);
     void clear() { pins.clear(); }
 
     static DataTypePin* getPinType() { return &pinType; }

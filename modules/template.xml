@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration id="DOCUMENT_ROOT" xmlns="http://www.mr.inf.tu-dresden.de/spartanmc/configuration">
+    <attribute id="jconfig_required_version" xml:space="preserve">0</attribute>
+    <attribute id="jconfig_version" xml:space="preserve">0</attribute>
+TARGET_NODE
+    <top_module id="TOP_MODULE">
+        <attribute id="name" xml:space="preserve">fpga_log</attribute>
+        <attribute id="uc_data" xml:space="preserve"/>
+        <attribute id="uc_file" xml:space="preserve"/>
+        <processor_module id="SUBSYSTEM">
+            <attribute id="firmware" xml:space="preserve">./firmware</attribute>
+            <attribute id="name" xml:space="preserve">subsystem</attribute>
+            <peripheral id="TIMER_2000HZ_COMPARE">
+                <attribute id="module_type" xml:space="preserve">compare</attribute>
+                <attribute id="name" xml:space="preserve">timer_2000hz_compare</attribute>
+                <port id="#PORT.access_peri">
+                    <attribute id="name" xml:space="preserve">access_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#4045">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.access_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.addr_peri">
+                    <attribute id="name" xml:space="preserve">addr_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#1170">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.addr_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.clk_peri">
+                    <attribute id="name" xml:space="preserve">clk_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#9AAE">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.clk_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.di_peri">
+                    <attribute id="name" xml:space="preserve">di_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#B303">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.di_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.do_peri">
+                    <attribute id="name" xml:space="preserve">do_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#E496">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.do_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.intr">
+                    <attribute id="name" xml:space="preserve">intr</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.pin_out">
+                    <attribute id="name" xml:space="preserve">pin_out</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#80F1">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/TIMER_2000HZ/#PORT.reset_i</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.reset">
+                    <attribute id="name" xml:space="preserve">reset</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#EA6F">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.reset</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.timer_data">
+                    <attribute id="name" xml:space="preserve">timer_data</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#BD67">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/TIMER_2000HZ/#PORT.count_o</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.wr_peri">
+                    <attribute id="name" xml:space="preserve">wr_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#DE19">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.wr_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+            </peripheral>
+            <gluelogic id="TIMER_2000HZ">
+                <attribute id="module_type" xml:space="preserve">generic_counter</attribute>
+                <attribute id="name" xml:space="preserve">timer_2000hz</attribute>
+                <parameter id="#PARAM.WIDTH">
+                    <attribute id="name" xml:space="preserve">WIDTH</attribute>
+                    <attribute id="value" xml:space="preserve">18</attribute>
+                </parameter>
+                <port id="#PORT.clk_i">
+                    <attribute id="name" xml:space="preserve">clk_i</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#948F">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.clk_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.count_o">
+                    <attribute id="name" xml:space="preserve">count_o</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#BD67">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/TIMER_2000HZ_COMPARE/#PORT.timer_data</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.en_i">
+                    <attribute id="name" xml:space="preserve">en_i</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#1F7D">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/VCC_GND/#PORT.VCC</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.overflow_o">
+                    <attribute id="name" xml:space="preserve">overflow_o</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.reset_i">
+                    <attribute id="name" xml:space="preserve">reset_i</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#80F1">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/TIMER_2000HZ_COMPARE/#PORT.pin_out</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+            </gluelogic>
+            <processor id="SPARTANMC">
+                <attribute id="module_type" xml:space="preserve">spartanmc</attribute>
+                <attribute id="name" xml:space="preserve">spartanmc</attribute>
+                <parameter id="#PARAM.HARDWARE_MUL">
+                    <attribute id="name" xml:space="preserve">HARDWARE_MUL</attribute>
+                    <attribute id="value" xml:space="preserve">1</attribute>
+                </parameter>
+                <parameter id="#PARAM.INTR_VECTOR">
+                    <attribute id="name" xml:space="preserve">INTR_VECTOR</attribute>
+                    <attribute id="value" xml:space="preserve">0x20</attribute>
+                </parameter>
+                <parameter id="#PARAM.MCU_ID">
+                    <attribute id="name" xml:space="preserve">MCU_ID</attribute>
+                    <attribute id="value" xml:space="preserve">0</attribute>
+                </parameter>
+                <parameter id="#PARAM.PERIPHERIE_REGS">
+                    <attribute id="name" xml:space="preserve">PERIPHERIE_REGS</attribute>
+                    <attribute id="value" xml:space="preserve">2</attribute>
+                </parameter>
+                <parameter id="#PARAM.RAMBLOCKS">
+                    <attribute id="name" xml:space="preserve">RAMBLOCKS</attribute>
+                    <attribute id="value" xml:space="preserve">14</attribute>
+                </parameter>
+                <parameter id="#PARAM.RESET_VECTOR">
+                    <attribute id="name" xml:space="preserve">RESET_VECTOR</attribute>
+                    <attribute id="value" xml:space="preserve">0x0</attribute>
+                </parameter>
+                <parameter id="#PARAM.SHOW_INSTR">
+                    <attribute id="name" xml:space="preserve">SHOW_INSTR</attribute>
+                    <attribute id="value" xml:space="preserve">1</attribute>
+                </parameter>
+                <parameter id="#PARAM.SHOW_MEM">
+                    <attribute id="name" xml:space="preserve">SHOW_MEM</attribute>
+                    <attribute id="value" xml:space="preserve">1</attribute>
+                </parameter>
+                <parameter id="#PARAM.SHOW_PERI">
+                    <attribute id="name" xml:space="preserve">SHOW_PERI</attribute>
+                    <attribute id="value" xml:space="preserve">1</attribute>
+                </parameter>
+                <parameter id="#PARAM.SINGLE_SHIFT">
+                    <attribute id="name" xml:space="preserve">SINGLE_SHIFT</attribute>
+                    <attribute id="value" xml:space="preserve">0</attribute>
+                </parameter>
+                <parameter id="#PARAM.THREE_PORT_REGISTER_FILE">
+                    <attribute id="name" xml:space="preserve">THREE_PORT_REGISTER_FILE</attribute>
+                    <attribute id="value" xml:space="preserve">YES</attribute>
+                </parameter>
+                <port id="#PORT.access_peri">
+                    <attribute id="name" xml:space="preserve">access_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.addr_high">
+                    <attribute id="name" xml:space="preserve">addr_high</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.addr_peri">
+                    <attribute id="name" xml:space="preserve">addr_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.alarm">
+                    <attribute id="name" xml:space="preserve">alarm</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.clk1">
+                    <attribute id="name" xml:space="preserve">clk1</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#2B4B">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SYSCLK/#PORT.clk1</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.clk2">
+                    <attribute id="name" xml:space="preserve">clk2</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#600D">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SYSCLK/#PORT.clk2</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.clk2x">
+                    <attribute id="name" xml:space="preserve">clk2x</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#984A">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SYSCLK/#PORT.clk2x</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.clk_peri">
+                    <attribute id="name" xml:space="preserve">clk_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.di_peri">
+                    <attribute id="name" xml:space="preserve">di_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.do_peri">
+                    <attribute id="name" xml:space="preserve">do_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.intr">
+                    <attribute id="name" xml:space="preserve">intr</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.intr_enable">
+                    <attribute id="name" xml:space="preserve">intr_enable</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.ir_return">
+                    <attribute id="name" xml:space="preserve">ir_return</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.leds_lowactiv">
+                    <attribute id="name" xml:space="preserve">leds_lowactiv</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.locked">
+                    <attribute id="name" xml:space="preserve">locked</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#2FF0">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SYSCLK/#PORT.locked</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.mem_access">
+                    <attribute id="name" xml:space="preserve">mem_access</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.mem_clk">
+                    <attribute id="name" xml:space="preserve">mem_clk</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.phase">
+                    <attribute id="name" xml:space="preserve">phase</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#6332">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SYSCLK/#PORT.phase</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.reset">
+                    <attribute id="name" xml:space="preserve">reset</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.store_access">
+                    <attribute id="name" xml:space="preserve">store_access</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.wr_peri">
+                    <attribute id="name" xml:space="preserve">wr_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <node id="IO_BASE_ADR">
+                    <attribute id="mem_auto" xml:space="preserve">FALSE</attribute>
+                    <attribute id="mem_size" xml:space="preserve">0x400</attribute>
+                    <attribute id="mem_start" xml:space="preserve">0x1A000</attribute>
+                    <attribute id="value" xml:space="preserve">0x1A000</attribute>
+                </node>
+                <node id="PROGRAM_RAM">
+                    <attribute id="mem_auto" xml:space="preserve">FALSE</attribute>
+                    <attribute id="mem_size" xml:space="preserve">0x7000</attribute>
+                    <attribute id="mem_start" xml:space="preserve">0x0</attribute>
+                    <attribute id="value" xml:space="preserve">0x0</attribute>
+                </node>
+            </processor>
+            <peripheral id="TIMESTAMP_GEN">
+                <attribute id="module_type" xml:space="preserve">timestamp_gen</attribute>
+                <attribute id="name" xml:space="preserve">timestamp_gen</attribute>
+                <parameter id="#PARAM.CLOCK_FREQUENCY">
+                    <attribute id="name" xml:space="preserve">CLOCK_FREQUENCY</attribute>
+PERI_CLOCK_ATTRIBUTE
+                </parameter>
+                <parameter id="#PARAM.SOURCES">
+                    <attribute id="name" xml:space="preserve">SOURCES</attribute>
+                    <attribute id="value" xml:space="preserve">2</attribute>
+                </parameter>
+                <port id="#PORT.access_peri">
+                    <attribute id="name" xml:space="preserve">access_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#FA27">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.access_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.addr_peri">
+                    <attribute id="name" xml:space="preserve">addr_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#2BED">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.addr_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.clk_peri">
+                    <attribute id="name" xml:space="preserve">clk_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#E0E3">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.clk_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.di_peri">
+                    <attribute id="name" xml:space="preserve">di_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#2035">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.di_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.do_peri">
+                    <attribute id="name" xml:space="preserve">do_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#CF56">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.do_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.reset">
+                    <attribute id="name" xml:space="preserve">reset</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#9567">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.reset</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.source">
+                    <attribute id="name" xml:space="preserve">source</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.wr_peri">
+                    <attribute id="name" xml:space="preserve">wr_peri</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#367B">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.wr_peri</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                    </connection>
+                </port>
+	      </peripheral>
+FPGA-LOG_PERIPHERALS
+        </processor_module>
+FPGA_PINS
+        <gluelogic id="SYSCLK">
+            <attribute id="module_type" xml:space="preserve">sysclk</attribute>
+            <attribute id="name" xml:space="preserve">sysclk</attribute>
+            <parameter id="#PARAM.CLKDV_DIVIDE">
+                <attribute id="name" xml:space="preserve">CLKDV_DIVIDE</attribute>
+                <attribute id="value" xml:space="preserve">2.0</attribute>
+            </parameter>
+            <parameter id="#PARAM.CLKFX_DIVIDE">
+                <attribute id="name" xml:space="preserve">CLKFX_DIVIDE</attribute>
+                <attribute id="value" xml:space="preserve">1</attribute>
+            </parameter>
+            <parameter id="#PARAM.CLKFX_MULTIPLY">
+                <attribute id="name" xml:space="preserve">CLKFX_MULTIPLY</attribute>
+                <attribute id="value" xml:space="preserve">4</attribute>
+            </parameter>
+            <parameter id="#PARAM.CLKIN_DIVIDE_BY_2">
+                <attribute id="name" xml:space="preserve">CLKIN_DIVIDE_BY_2</attribute>
+                <attribute id="value" xml:space="preserve">TRUE</attribute>
+            </parameter>
+            <parameter id="#PARAM.CLKIN_PERIOD">
+                <attribute id="name" xml:space="preserve">CLKIN_PERIOD</attribute>
+CLOCK_PERIOD_ATTRIBUTE
+            </parameter>
+            <parameter id="#PARAM.DFS_FREQUENCY_MODE">
+                <attribute id="name" xml:space="preserve">DFS_FREQUENCY_MODE</attribute>
+                <attribute id="value" xml:space="preserve">LOW</attribute>
+            </parameter>
+            <parameter id="#PARAM.INSTANTIATE_BUFGS">
+                <attribute id="name" xml:space="preserve">INSTANTIATE_BUFGS</attribute>
+                <attribute id="value" xml:space="preserve">YES</attribute>
+            </parameter>
+            <parameter id="#PARAM.RESET_LEVEL">
+                <attribute id="name" xml:space="preserve">RESET_LEVEL</attribute>
+                <attribute id="value" xml:space="preserve">LOW_ACTIVE</attribute>
+            </parameter>
+            <port id="#PORT.clk1">
+                <attribute id="name" xml:space="preserve">clk1</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clk2">
+                <attribute id="name" xml:space="preserve">clk2</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clk270">
+                <attribute id="name" xml:space="preserve">clk270</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clk2x">
+                <attribute id="name" xml:space="preserve">clk2x</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clk2x180">
+                <attribute id="name" xml:space="preserve">clk2x180</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clk_gen">
+                <attribute id="name" xml:space="preserve">clk_gen</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+                <connection id="#3142">
+                    <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.CLK</attribute>
+                    <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                </connection>
+            </port>
+            <port id="#PORT.clkdv">
+                <attribute id="name" xml:space="preserve">clkdv</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clkfx">
+                <attribute id="name" xml:space="preserve">clkfx</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clkfx180">
+                <attribute id="name" xml:space="preserve">clkfx180</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.locked">
+                <attribute id="name" xml:space="preserve">locked</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.phase">
+                <attribute id="name" xml:space="preserve">phase</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.reset">
+                <attribute id="name" xml:space="preserve">reset</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+                <connection id="#8823">
+                    <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/VCC_GND/#PORT.VCC</attribute>
+                    <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                </connection>
+            </port>
+        </gluelogic>
+        <gluelogic id="VCC_GND">
+            <attribute id="module_type" xml:space="preserve">vcc_gnd</attribute>
+            <attribute id="name" xml:space="preserve">vcc_gnd</attribute>
+            <port id="#PORT.GND">
+                <attribute id="name" xml:space="preserve">GND</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.VCC">
+                <attribute id="name" xml:space="preserve">VCC</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.Z">
+                <attribute id="name" xml:space="preserve">Z</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+        </gluelogic>
+    </top_module>
+</configuration>

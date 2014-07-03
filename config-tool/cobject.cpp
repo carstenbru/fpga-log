@@ -15,7 +15,7 @@ CObject::CObject(std::string name, DataTypeStruct* dataType, DataLogger* dataLog
         i++;
         for (; i != parameters->end(); i++) {
             if ((*i).getDataType()->hasSuffix("_regs_t")) {
-                peripherals.push_back(new SpmcPeripheral((*i).getName(), (*i).getDataType(), type->getCleanedName(), dataLogger));
+                peripherals.push_back(new SpmcPeripheral((*i).getName(), (*i).getDataType(), this, dataLogger));
             }
         }
     }

@@ -3,12 +3,18 @@
 #include <string>
 #include <algorithm>
 #include <sstream>
+#include <QFile>
+#include <QProcessEnvironment>
+#include <iostream>
+#include <ios>
+#include <fstream>
 #include "cobject.h"
 
 using namespace std;
 
 OutputGenerator::OutputGenerator(DataLogger *dataLogger) :
-    dataLogger(dataLogger)
+    dataLogger(dataLogger),
+    usedIdCounter(0)
 {
 }
 
@@ -30,6 +36,8 @@ void OutputGenerator::generateCSource() {
 
     writeHeaderIncludes(stream);
     stream << endl << tmpFile.str();
+
+    cout << "C-Konfigurationsdatei erfolgreich geschrieben." << endl;
 }
 
 void OutputGenerator::writeVariableDefinitions(std::ostream& stream) {
@@ -146,4 +154,204 @@ void OutputGenerator::writePreamble(std::ostream& stream) {
 void OutputGenerator::writeAdvancedConfig(std::ostream& stream) {
     stream << "void advanced_config(void) {" << endl;
     stream << "}" << endl;
+}
+
+void OutputGenerator::generateSystemXML() {
+    ifstream templateFile("../modules/template.xml");
+    if (!templateFile.is_open()) {
+        cerr << "System Template XML konnte nicht geöffnet werden." << endl;
+        return;
+    }
+
+    ofstream file;
+    file.open("../test/fpga-log.xml");  //TODO
+    ostream& stream = file;
+
+    QString targetNode;
+    QXmlStreamWriter targetWriter(&targetNode);
+    targetWriter.setAutoFormatting(true);
+    writeTargetNode(targetWriter);
+
+    QString peripherals;
+    QXmlStreamWriter peripheralsWriter(&peripherals);
+    peripheralsWriter.setAutoFormatting(true);
+    writePeripherals(peripheralsWriter);
+
+    QString pins;
+    QXmlStreamWriter pinsWriter(&pins);
+    pinsWriter.setAutoFormatting(true);
+    writePins(pinsWriter);
+
+    while (!templateFile.eof()) {
+        string line;
+        getline(templateFile, line);
+        if (line.compare("TARGET_NODE") == 0) {
+            stream << targetNode.toStdString() << endl;
+        } else if (line.compare("FPGA-LOG_PERIPHERALS") == 0) {
+            stream << peripherals.toStdString() << endl;
+        } else if (line.compare("PERI_CLOCK_ATTRIBUTE") == 0) {
+            stream << "<attribute id=\"value\">" << dataLogger->getPeriClk() << "</attribute>" << endl;
+        } else if (line.compare("CLOCK_PERIOD_ATTRIBUTE") == 0) {
+            stream << "<attribute id=\"value\">" << (1000000000.0f / dataLogger->getClk()) << "</attribute>" << endl;
+        } else if (line.compare("FPGA_PINS") == 0) {
+            stream << pins.toStdString() << endl;
+        } else {
+            stream << line << endl;
+        }
+    }
+    file.close();
+    cout << "System Konfigurationsdatei erfolgreich geschrieben." << endl;
+}
+
+void OutputGenerator::writeAttributeElement(QXmlStreamWriter& writer, QString id, QString text) {
+    writer.writeStartElement("attribute");
+    writer.writeAttribute("id", id);
+    writer.writeCharacters(text);
+    writer.writeEndElement();
+}
+
+void OutputGenerator::writeTargetNode(QXmlStreamWriter& writer) {
+    writer.writeStartElement("node");
+    writer.writeAttribute("id", "TARGET");
+    writeAttributeElement(writer, "preset", dataLogger->getTarget()->getValue().c_str());
+    writer.writeEndElement();
+}
+
+void OutputGenerator::writeParameter(QXmlStreamWriter& writer, CParameter* parameter) {
+    writer.writeStartElement("parameter");
+    string name = parameter->getName();
+    string pname = name;
+    transform(pname.begin(), pname.end(), pname.begin(), ::toupper);
+    pname = "#PARAM." + pname;
+    writer.writeAttribute("id", pname.c_str());
+    writeAttributeElement(writer, "name", name.c_str());
+    if (name.compare("CLOCK_FREQUENCY") == 0) {
+        writeAttributeElement(writer, "value", to_string(dataLogger->getPeriClk()).c_str());
+    } else {
+        writeAttributeElement(writer, "value", parameter->getValue().c_str());
+    }
+    writer.writeEndElement();
+}
+
+void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* peripheral) {
+    writer.writeStartElement("peripheral");
+    string peripheralName = peripheral->getCompleteName().c_str();
+    string peripheralNameUpper = peripheralName;
+    transform(peripheralNameUpper.begin(), peripheralNameUpper.end(), peripheralNameUpper.begin(), ::toupper);
+    writer.writeAttribute("id", peripheralNameUpper.c_str());
+    string type = peripheral->getDataType()->getCleanedName();
+    type.erase(type.length() - 5, type.length());
+    writeAttributeElement(writer, "module_type", type.c_str());
+    writeAttributeElement(writer, "name", peripheralName.c_str());
+
+    list<CParameter*> parameters = peripheral->getParameters();
+    for (list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
+        writeParameter(writer, *i);
+    }
+
+    map<string, list<PeripheralPort*> > ports = peripheral->getPorts();
+    for (map<string, list<PeripheralPort*> >::iterator groupIt = ports.begin(); groupIt != ports.end(); groupIt++) {
+        list<PeripheralPort*> group = groupIt->second;
+        for (list<PeripheralPort*>::iterator i = group.begin(); i != group.end(); i++) {
+            PeripheralPort* port = *i;
+            writer.writeStartElement("port");
+            string portName = port->getName();
+            string portId = "#PORT." + portName;
+            writer.writeAttribute("id", portId.c_str());
+
+            writeAttributeElement(writer, "name", portName.c_str());
+
+            list<CParameter*> lines = port->getLines();
+            int lsb = 0;
+            for (list<CParameter*>::iterator portIt = lines.begin(); portIt != lines.end(); portIt++) {
+                QString destination = (*portIt)->getValue().c_str();
+                if (!destination.isEmpty()) {
+                    destination.replace(":", "_");
+                    usedPins.push_back(FpgaPin(destination.toStdString(), port->getDirection())); //TODO direction
+                    destination = "#PIN." + destination;
+                    writeConnection(writer, destination.toStdString(), lsb++);
+                }
+            }
+
+            writer.writeEndElement();
+        }
+    }
+
+    writeSpmcConnections(writer);
+
+    writer.writeEndElement();
+}
+
+void OutputGenerator::writePeripherals(QXmlStreamWriter& writer) {
+    map<string, CObject*> objects = dataLogger->getObjectsMap();
+    for (map<string, CObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
+        list<SpmcPeripheral*> peripherals = i->second->getPeripherals();
+        for (list<SpmcPeripheral*>::iterator ip = peripherals.begin(); ip != peripherals.end(); ip++) {
+            writePeripheral(writer, *ip);
+        }
+    }
+}
+
+void OutputGenerator::writeConnection(QXmlStreamWriter& writer, std::string destination, int lsb) {
+    writer.writeStartElement("connection");
+    string connectionId = "#" + to_string(usedIdCounter++);
+    writer.writeAttribute("id", connectionId.c_str());
+    destination = "/TOP_MODULE/" + destination;
+    writeAttributeElement(writer, "connected_port", destination.c_str());
+    writeAttributeElement(writer, "lsb_index", to_string(lsb).c_str());
+
+    writer.writeEndElement();
+}
+
+void OutputGenerator::writePortConnection(QXmlStreamWriter& writer, std::string port, string destination, int lsb) {
+    writer.writeStartElement("port");
+    string portId = "#PORT." + port;
+    writer.writeAttribute("id", portId.c_str());
+    writeAttributeElement(writer, "name", port.c_str());
+
+    writeConnection(writer, destination, lsb);
+
+    writer.writeEndElement();
+}
+
+void OutputGenerator::writeSpmcConnections(QXmlStreamWriter& writer) {
+    writePortConnection(writer, "access_peri", "SUBSYSTEM/SPARTANMC/#PORT.access_peri", 0);
+    writePortConnection(writer, "addr_peri", "SUBSYSTEM/SPARTANMC/#PORT.addr_peri", 0);
+    writePortConnection(writer, "clk_peri", "SUBSYSTEM/SPARTANMC/#PORT.clk_peri", 0);
+    writePortConnection(writer, "do_peri", "SUBSYSTEM/SPARTANMC/#PORT.do_peri", 0);
+    writePortConnection(writer, "reset", "SUBSYSTEM/SPARTANMC/#PORT.reset", 0);
+    writePortConnection(writer, "wr_peri", "SUBSYSTEM/SPARTANMC/#PORT.wr_peri", 0);
+    writePortConnection(writer, "di_peri", "SUBSYSTEM/SPARTANMC/#PORT.di_peri", 0);
+}
+
+void OutputGenerator::writeClkPin(QXmlStreamWriter& writer) {
+    writer.writeStartElement("fpga_pin");
+    CParameter* clkPinParam = dataLogger->getClockPin();
+    QString pinName = clkPinParam->getValue().c_str();
+    pinName.replace(":", "_");
+    writer.writeAttribute("id", "#PIN.CLK");
+
+    writeAttributeElement(writer, "name", pinName);
+    writeAttributeElement(writer, "direction", "INPUT");
+    writeAttributeElement(writer, "io_standard", "LVCMOS33");
+
+    writer.writeEndElement();
+}
+
+void OutputGenerator::writePins(QXmlStreamWriter& writer) {
+    writeClkPin(writer);
+
+    for (list<FpgaPin>::iterator i = usedPins.begin(); i != usedPins.end(); i++) {
+         writer.writeStartElement("fpga_pin");
+         QString pinName = (*i).getName().c_str();
+         pinName.replace(":", "_");
+         string pinId = "#PIN." + pinName.toStdString();
+         writer.writeAttribute("id", pinId.c_str());
+
+         writeAttributeElement(writer, "name", pinName);
+         writeAttributeElement(writer, "direction", (*i).getDirection().c_str());
+         writeAttributeElement(writer, "io_standard", "LVCMOS33");
+
+         writer.writeEndElement();
+    }
 }

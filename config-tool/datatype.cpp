@@ -167,15 +167,13 @@ void DataTypePin::addPin(std::string groupName, Pin& pin) {
     pins[groupName].push_back(pin);
 }
 
-QWidget* DataTypePin::getConfigWidget(DataLogger*, CParameter *param) {
-    string value = param->getValue();
-    size_t d = value.find(":");
-    string groupName = value;
-    string pinName = value;
-    if (d < value.length()) {
-        groupName.erase(d, groupName.length());
-        pinName.erase(0, d + 1);
-    }
+QWidget* DataTypePin::getConfigWidget(DataLogger* dataLogger, CParameter *param) {
+    return getConfigWidget(dataLogger, param, NULL, NULL);
+}
+
+QWidget* DataTypePin::getConfigWidget(DataLogger*, CParameter* param, QObject* receiver, const char* slot) {
+    string pin = param->getValue();
+    string groupName = Pin::getGroupFromFullName(pin);
 
     QWidget* widget = new QWidget();
     QHBoxLayout* layout = new QHBoxLayout();
@@ -192,9 +190,13 @@ QWidget* DataTypePin::getConfigWidget(DataLogger*, CParameter *param) {
     PinBox* pinBox = new PinBox();
     layout->addWidget(pinBox);
     pinBox->setPinItems(QString(groupName.c_str()));
-    pinBox->setCurrentIndex(pinBox->findText(QString(pinName.c_str())));
+    pinBox->setCurrentIndex(pinBox->findText(QString(Pin::getPinFromFullName(pin).c_str())));
 
     QObject::connect(groupBox, SIGNAL(currentIndexChanged(QString)), pinBox, SLOT(setPinItems(QString)));
+
+    if (receiver != NULL) {
+        QObject::connect(pinBox, SIGNAL(currentIndexChanged(QString)), receiver, slot);
+    }
 
     return widget;
 }
@@ -203,5 +205,36 @@ std::string DataTypePin::getConfigData(QWidget* widget) {
     QComboBox* groupBox = dynamic_cast<QComboBox*>(widget->children().at(1));
     QComboBox* pinBox = dynamic_cast<QComboBox*>(widget->children().at(2));
 
-    return groupBox->currentText().toStdString() + ":" + pinBox->currentText().toStdString();
+    string group = groupBox->currentText().toStdString();
+    string pin = pinBox->currentText().toStdString();
+
+    if (group.empty() || pin.empty())
+        return "";
+
+    return group + ":" + pin;
+}
+
+Pin* DataTypePin::getPin(std::string group, std::string pin) {
+    list<Pin>& pinsInGroup = pins.at(group);
+    for (list<Pin>::iterator i = pinsInGroup.begin(); i != pinsInGroup.end(); i++) {
+        if ((*i).getName().compare(pin) == 0)
+            return &*i;
+    }
+    return NULL;
+}
+
+string Pin::getGroupFromFullName(string fullName) {
+    size_t d = fullName.find(":");
+    if (d < fullName.length()) {
+        fullName.erase(d, fullName.length());
+    }
+    return fullName;
+}
+
+string Pin::getPinFromFullName(string fullName) {
+    size_t d = fullName.find(":");
+    if (d < fullName.length()) {
+        fullName.erase(0, d + 1);
+    }
+    return fullName;
 }

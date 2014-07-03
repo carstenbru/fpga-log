@@ -88,5 +88,6 @@ void MainWindow::targetConfig() {
 
 void MainWindow::generate() {
     OutputGenerator og(&dataLogger);
-    og.generateCSource();
+    //og.generateCSource();
+    og.generateSystemXML();
 }

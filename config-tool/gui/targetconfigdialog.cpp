@@ -1,6 +1,8 @@
 #include "targetconfigdialog.h"
 #include "ui_targetconfigdialog.h"
 
+using namespace std;
+
 TargetConfigDialog::TargetConfigDialog(QWidget *parent, DataLogger* dataLogger) :
     QDialog(parent),
     ui(new Ui::TargetConfigDialog),
@@ -27,12 +29,16 @@ void TargetConfigDialog::generateUi() {
 
     CParameter* target = dataLogger->getTarget();
     QComboBox* targetBox = dynamic_cast<DataTypeEnumeration*>(target->getDataType())->getConfigBox(target);
-    layout->addRow("Zielplattform", targetBox);
+    layout->addRow(target->getName().c_str(), targetBox);
     connect(targetBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(targetChanged(QString)));
 
     CParameter* clockPin = dataLogger->getClockPin();
-    clockPinWidget = clockPin->getDataType()->getConfigWidget(dataLogger, clockPin);
-    layout->addRow("Clock Pin", clockPinWidget);
+    clockPinWidget = DataTypePin::getPinType()->getConfigWidget(dataLogger, clockPin, this, SLOT(pinChanged()));
+    layout->addRow(clockPin->getName().c_str(), clockPinWidget);
+
+    CParameter* clockFreq = dataLogger->getClockFreq();
+    clockFreqWidget = clockFreq->getDataType()->getConfigWidget(dataLogger, clockFreq);
+    layout->addRow(clockFreq->getName().c_str(), clockFreqWidget);
 }
 
 void TargetConfigDialog::targetChanged(QString newTarget) {
@@ -43,7 +49,24 @@ void TargetConfigDialog::targetChanged(QString newTarget) {
     generateUi();
 }
 
-void TargetConfigDialog::storeParams() {
+void TargetConfigDialog::pinChanged() {
     CParameter* clkParam = dataLogger->getClockPin();
-    clkParam->setValue(clkParam->getDataType()->getConfigData(clockPinWidget));
+    string clkPin = clkParam->getDataType()->getConfigData(clockPinWidget);
+    clkParam->setValue(clkPin);
+
+    Pin* freqPin = DataTypePin::getPinType()->getPin(Pin::getGroupFromFullName(clkPin), Pin::getPinFromFullName(clkPin));
+    if (freqPin != NULL) {
+        string freq = freqPin->getFreq();
+        if (!freq.empty()) {
+            dataLogger->getClockFreq()->setValue(freq);
+        }
+    }
+
+    widget->deleteLater();
+    generateUi();
+}
+
+void TargetConfigDialog::storeParams() {
+    CParameter* clkFreqParam = dataLogger->getClockFreq();
+    clkFreqParam->setValue(clkFreqParam->getDataType()->getConfigData(clockFreqWidget));
 }

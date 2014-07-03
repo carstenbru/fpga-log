@@ -23,13 +23,17 @@ public:
     std::list<CObject*> getInstances(DataTypeStruct *dataType);
     std::map<std::string, CObject*> getObjectsMap();
     bool changeObjectName(CObject* object, std::string newName);
+    int getClk();
+    int getPeriClk();
 
     void loadTargetPins();
 
     CParameter* getTarget() { return &target; }
     CParameter* getClockPin() { return &clockPin; }
+    CParameter* getClockFreq() { return &clockFreq; }
 
     static void loadTragetXMLs();
+    static std::string getTargetXML(std::string target) { return targetXMLs.at(target); }
 private:
     template <typename T>
     bool containsObjectName(T searchList, std::string name);
@@ -44,6 +48,7 @@ private:
 
     CParameter target;
     CParameter clockPin;
+    CParameter clockFreq;
 
     std::list<DatastreamObject*> datastreamObjects;
     std::vector<CObject*> otherObjects;

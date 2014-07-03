@@ -27,8 +27,10 @@ private:
 
     QWidget* widget;
     QWidget* clockPinWidget;
+    QWidget* clockFreqWidget;
 private slots:
     void targetChanged(QString newTarget);
+    void pinChanged();
     void storeParams();
 };
 

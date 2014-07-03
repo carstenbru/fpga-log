@@ -4,16 +4,17 @@
 #include <QProcessEnvironment>
 #include <QDirIterator>
 #include "datalogger.h"
+#include "cobject.h"
 
 using namespace std;
 
 std::map<std::string, std::string> SpmcPeripheral::peripheralXMLs;
 
-SpmcPeripheral::SpmcPeripheral(string name, DataType *type, string parentModuleName, DataLogger* dataLogger) :
+SpmcPeripheral::SpmcPeripheral(string name, DataType *type, CObject* parentObject, DataLogger* dataLogger) :
     name(name),
     dataLogger(dataLogger),
     dataType(type),
-    parentModuleName(parentModuleName)
+    parentObject(parentObject)
 {
     readPeripheralXML();
     readModuleXML();
@@ -31,7 +32,16 @@ SpmcPeripheral::~SpmcPeripheral() {
 }
 
 CParameter* SpmcPeripheral::getParameter(std::string name) {
-    for (std::list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
+    for (list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
+        if ((*i)->getName().compare(name) == 0)
+            return *i;
+    }
+    return NULL;
+}
+
+PeripheralPort* SpmcPeripheral::getPort(std::string group, std::string name) {
+    list<PeripheralPort*> portGroup = ports.at(group);
+    for (list<PeripheralPort*>::iterator i = portGroup.begin(); i != portGroup.end(); i++) {
         if ((*i)->getName().compare(name) == 0)
             return *i;
     }
@@ -113,7 +123,7 @@ void SpmcPeripheral::readParameterElement(QXmlStreamReader& reader) {
         param->setHideFromUser(true);
 }
 
-void SpmcPeripheral::readPortsElement(QXmlStreamReader& reader) {
+void SpmcPeripheral::readPortsElement(QXmlStreamReader& reader, std::string direction) {
     string groupName = "global";
     QStringRef group = reader.attributes().value("group");
     if (!group.isEmpty()) {
@@ -140,6 +150,11 @@ void SpmcPeripheral::readPortsElement(QXmlStreamReader& reader) {
                 } else
                     port = new PeripheralPort(portName, portWidth);
             }
+            string pinDiretion = reader.attributes().value("direction").toString().toStdString();
+            if (pinDiretion.empty())
+                port->setDirection(direction);
+            else
+                port->setDirection(pinDiretion);
             ports[groupName].push_back(port);
         }
         reader.skipCurrentElement();
@@ -159,7 +174,8 @@ void SpmcPeripheral::readPeripheralXML() {
             while (reader.readNextStartElement())
                 readParameterElement(reader);
         } else if (reader.name().compare("ports") == 0) {
-            readPortsElement(reader);
+            string diretion = reader.attributes().value("direction").toString().toStdString();
+            readPortsElement(reader, diretion);
         } else
             reader.skipCurrentElement();
     }
@@ -167,7 +183,7 @@ void SpmcPeripheral::readPeripheralXML() {
 
 void SpmcPeripheral::readModuleXML() {
     string moduleXmlFile = "../modules/";
-    moduleXmlFile += parentModuleName;
+    moduleXmlFile += parentObject->getType()->getCleanedName();
     moduleXmlFile += ".xml";
     QFile file(QString(moduleXmlFile.c_str()));
     if (!file.open(QIODevice::ReadOnly)) {
@@ -191,12 +207,28 @@ void SpmcPeripheral::readModuleXML() {
                         bool hide = (hideStr.toString().compare("TRUE") == 0);
                         parameter->setHideFromUser(hide);
                     }
+                } else if (reader.name().toString().compare("port") == 0) {
+                    QXmlStreamAttributes attributes = reader.attributes();
+                    PeripheralPort* port = getPort(attributes.value("group").toString().toStdString(), attributes.value("name").toString().toStdString());
+                    QStringRef destination = attributes.value("destination");
+                    if (!destination.isEmpty()) {
+                        port->getLines().front()->setValue(destination.toString().toStdString());
+                    }
+                    QStringRef hideStr = attributes.value("hide");
+                    if (!hideStr.isEmpty()) {
+                        bool hide = (hideStr.toString().compare("TRUE") == 0);
+                        port->setHideFromUser(hide);
+                    }
                 }
                 reader.skipCurrentElement();
             }
         } else
             reader.skipCurrentElement();
     }
+}
+
+std::string SpmcPeripheral::getCompleteName() {
+    return parentObject->getName() + "_" + name;
 }
 
 PeripheralPort::PeripheralPort(std::string name) :
@@ -219,6 +251,17 @@ PeripheralPort::~PeripheralPort() {
     for (list<CParameter*>::iterator i = lines.begin(); i != lines.end(); i++) {
         delete *i;
     }
+}
+
+void PeripheralPort::setHideFromUser(bool hide) {
+    for (list<CParameter*>::iterator i = lines.begin(); i != lines.end(); i++) {
+        (*i)->setHideFromUser(hide);
+    }
+}
+
+void PeripheralPort::setDirection(std::string direction) {
+    transform(direction.begin(), direction.end(), direction.begin(), ::toupper);
+    this->direction = direction;
 }
 
 void PeripheralPort::newWidth(std::string widthVal) {
