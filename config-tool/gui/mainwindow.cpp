@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionNewObject, SIGNAL(triggered()), this, SLOT(newObject()));
     connect(ui->actionTarget, SIGNAL(triggered()), this, SLOT(targetConfig()));
     connect(ui->actionGenerate, SIGNAL(triggered()), this, SLOT(generate()));
+    connect(ui->actionBitfileGenerate, SIGNAL(triggered()), this, SLOT(synthesize()));
 
     ui->listView->setModel(&otherModel);
     connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(otherObjectConfig(QModelIndex)));
@@ -87,7 +88,12 @@ void MainWindow::targetConfig() {
 }
 
 void MainWindow::generate() {
-    OutputGenerator og(&dataLogger);
-    //og.generateCSource();
-    og.generateSystemXML();
+    OutputGenerator og(&dataLogger, "../test/");
+    og.generateConfigFiles();
+}
+
+void MainWindow::synthesize() {
+    OutputGenerator og(&dataLogger, "../test/");
+    og.generateConfigFiles();
+    og.synthesizeSystem();
 }

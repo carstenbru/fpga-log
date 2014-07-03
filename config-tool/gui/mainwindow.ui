@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1017</width>
-    <height>623</height>
+    <width>1015</width>
+    <height>621</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -70,7 +70,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1017</width>
+     <width>1015</width>
      <height>21</height>
     </rect>
    </property>
@@ -97,6 +97,7 @@
     <property name="title">
      <string>Generieren</string>
     </property>
+    <addaction name="actionBitfileGenerate"/>
     <addaction name="actionGenerate"/>
    </widget>
    <addaction name="menuFile"/>
@@ -145,6 +146,17 @@
   <action name="actionGenerate">
    <property name="text">
     <string>Dateien erzeugen</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionBitfileGenerate">
+   <property name="icon">
+    <iconset theme="system-run"/>
+   </property>
+   <property name="text">
+    <string>Bitfile erstellen</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>

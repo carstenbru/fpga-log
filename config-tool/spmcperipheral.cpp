@@ -212,7 +212,15 @@ void SpmcPeripheral::readModuleXML() {
                     PeripheralPort* port = getPort(attributes.value("group").toString().toStdString(), attributes.value("name").toString().toStdString());
                     QStringRef destination = attributes.value("destination");
                     if (!destination.isEmpty()) {
-                        port->getLines().front()->setValue(destination.toString().toStdString());
+                        CParameter* p = port->getLines().front();
+                        p->setValue(destination.toString().toStdString());
+
+                        QStringRef parameter = attributes.value("parameter");
+                        if (!parameter.isEmpty()) {
+                            string paramStr = parameter.toString().toStdString();
+                            p->setName(paramStr);
+                            parentObject->getInitMethod()->getParameter(paramStr)->setHideFromUser(true);
+                        }
                     }
                     QStringRef hideStr = attributes.value("hide");
                     if (!hideStr.isEmpty()) {
@@ -229,6 +237,10 @@ void SpmcPeripheral::readModuleXML() {
 
 std::string SpmcPeripheral::getCompleteName() {
     return parentObject->getName() + "_" + name;
+}
+
+std::string SpmcPeripheral::getParentName() {
+    return parentObject->getName();
 }
 
 PeripheralPort::PeripheralPort(std::string name) :

@@ -136,7 +136,7 @@ TARGET_NODE
             </gluelogic>
             <processor id="SPARTANMC">
                 <attribute id="module_type" xml:space="preserve">spartanmc</attribute>
-                <attribute id="name" xml:space="preserve">spartanmc</attribute>
+                <attribute id="name" xml:space="preserve">spartanmc_0</attribute>
                 <parameter id="#PARAM.HARDWARE_MUL">
                     <attribute id="name" xml:space="preserve">HARDWARE_MUL</attribute>
                     <attribute id="value" xml:space="preserve">1</attribute>

@@ -123,9 +123,11 @@ void ConfigObjectDialog::addReqParametersGroup(QLayout *parent) {
     for (; i != parameters->end(); i++) {
         DataType* type = (*i).getDataType();
         if (!type->hasSuffix("_regs_t")) {
-            QWidget* widget = type->getConfigWidget(dataLogger, &*i);
-            layout->addRow(( *i).getName().c_str(), widget);
-            paramWidgets[&*i] = widget;
+            if (!(*i).getHideFromUser()) {
+                QWidget* widget = type->getConfigWidget(dataLogger, &*i);
+                layout->addRow(( *i).getName().c_str(), widget);
+                paramWidgets[&*i] = widget;
+            }
         }
     }
     addGroup(parent, "benötigte Parameter", layout);

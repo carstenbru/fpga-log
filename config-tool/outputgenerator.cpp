@@ -8,18 +8,61 @@
 #include <iostream>
 #include <ios>
 #include <fstream>
+#include <QCoreApplication>
 #include "cobject.h"
 
 using namespace std;
 
-OutputGenerator::OutputGenerator(DataLogger *dataLogger) :
+OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     dataLogger(dataLogger),
-    usedIdCounter(0)
+    directory(directory),
+    usedIdCounter(0),
+    usedTimestampSources(0)
 {
 }
 
+/*
+ * This function is based on "waqas" answer on
+ * http://stackoverflow.com/questions/478898/how-to-execute-a-command-and-get-output-of-command-within-c
+ * Thanks!
+ */
+void exec(const char* cmd) {
+    FILE* pipe = popen(cmd, "r");
+    if (!pipe)
+        cerr << "pipe error";
+    char buffer[1024];
+    while(!feof(pipe)) {
+        if(fgets(buffer, 128, pipe) != NULL) {
+            cout << buffer;
+            QCoreApplication::processEvents();
+        }
+    }
+    pclose(pipe);
+}
+
+void OutputGenerator::generateConfigFiles() {
+    generateSystemXML();
+    generateCSource();;
+
+    string jconfig = "cd " + directory + " && make jconfig +args=\"--generate fpga-log.xml\"";
+    exec(jconfig.c_str());
+
+    cout << "Alle Dateien erfolgreich erstellt!" << endl;
+}
+
+void OutputGenerator::synthesizeSystem() {
+    generateConfigFiles();
+    string jconfig = "cd " + directory + " && make all";
+    exec(jconfig.c_str());
+
+    cout << "Bitfile Erstellung abgeschlossen!" << endl;
+}
+
 void OutputGenerator::generateCSource() {
-    ostream& stream = cout; //TODO
+    ofstream file;
+    file.open(directory + "/firmware/src/logger_config.c");
+
+    ostream& stream = file;
 
     writePreamble(stream);
     stream << endl;
@@ -37,6 +80,7 @@ void OutputGenerator::generateCSource() {
     writeHeaderIncludes(stream);
     stream << endl << tmpFile.str();
 
+    file.close();
     cout << "C-Konfigurationsdatei erfolgreich geschrieben." << endl;
 }
 
@@ -164,7 +208,7 @@ void OutputGenerator::generateSystemXML() {
     }
 
     ofstream file;
-    file.open("../test/fpga-log.xml");  //TODO
+    file.open(directory + "/fpga-log.xml");
     ostream& stream = file;
 
     QString targetNode;
@@ -182,6 +226,7 @@ void OutputGenerator::generateSystemXML() {
     pinsWriter.setAutoFormatting(true);
     writePins(pinsWriter);
 
+    usedTimestampSources = max(1, usedTimestampSources);
     while (!templateFile.eof()) {
         string line;
         getline(templateFile, line);
@@ -193,6 +238,8 @@ void OutputGenerator::generateSystemXML() {
             stream << "<attribute id=\"value\">" << dataLogger->getPeriClk() << "</attribute>" << endl;
         } else if (line.compare("CLOCK_PERIOD_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << (1000000000.0f / dataLogger->getClk()) << "</attribute>" << endl;
+        } else if (line.compare("TIMESTAMP_GEN_SOURCES_ATTRIBUTE") == 0) {
+            stream << "<attribute id=\"value\">" << usedTimestampSources << "</attribute>" << endl;
         } else if (line.compare("FPGA_PINS") == 0) {
             stream << pins.toStdString() << endl;
         } else {
@@ -266,9 +313,24 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
             for (list<CParameter*>::iterator portIt = lines.begin(); portIt != lines.end(); portIt++) {
                 QString destination = (*portIt)->getValue().c_str();
                 if (!destination.isEmpty()) {
-                    destination.replace(":", "_");
-                    usedPins.push_back(FpgaPin(destination.toStdString(), port->getDirection())); //TODO direction
-                    destination = "#PIN." + destination;
+                    if (destination.contains(":")) { //pin destination
+                        destination.replace(":", "_");
+                        usedPins.push_back(FpgaPin(destination.toStdString(), port->getDirection()));
+                        destination = "#PIN." + destination;
+                    } else if (destination.startsWith("./")) { //other peripheral of this module as destination
+                        destination.remove(0, 2);
+                        string destName = destination.toStdString();
+                        int slash = destName.find("/");
+                        destName.erase(slash, destName.length());
+                        destName = "SUBSYSTEM/" + peripheral->getParentName() + "_" + destName;
+                        transform(destName.begin(), destName.end(), destName.begin(), ::toupper);
+                        destination.remove(0, slash);
+                        destination = destName.c_str() + destination;
+                    } else if (destination.compare("TIMESTAMP_GEN") == 0) { //timestamp generator source
+                        destination = "SUBSYSTEM/TIMESTAMP_GEN/#PORT.source";
+                        string param = (*portIt)->getName();
+                        peripheral->getParentObject()->getInitMethod()->getParameter(param)->setValue(to_string(usedTimestampSources++));
+                    }
                     writeConnection(writer, destination.toStdString(), lsb++);
                 }
             }

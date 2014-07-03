@@ -26,6 +26,7 @@ public:
     bool getCritical() { return critical; }
 
     void setValue(std::string value) { this->value = value; emit valueChanged(value); }
+    void setName(std::string name) { this->name = name; }
     std::string getValue() { return value; }
 private:
     std::string name;

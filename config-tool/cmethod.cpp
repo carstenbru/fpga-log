@@ -31,3 +31,11 @@ bool CMethod::sameSignature(CMethod &compare) {
     return true;
 }
 
+CParameter* CMethod::getParameter(std::string name) {
+    for (list<CParameter>::iterator i = parameters.begin(); i != parameters.end(); i++) {
+        if ((*i).getName().compare(name) == 0)
+            return &*i;
+    }
+    return NULL;
+}
+

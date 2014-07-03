@@ -37,5 +37,6 @@ std::streamsize ConsoleRedirector::xsputn(const char *p, std::streamsize n) {
 
     ss << "<font color=\"" << htmlColor << "\">" << s.toStdString() << "</font>";
     logWindow->insertHtml(QString(ss.str().c_str()));
+    logWindow->moveCursor(QTextCursor::End);
     return n;
 }

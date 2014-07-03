@@ -34,6 +34,7 @@ public slots:
     void showConfigDialog(CObject& object);
     void targetConfig();
     void generate();
+    void synthesize();
 private slots:
     void otherObjectConfig(QModelIndex index);
 };

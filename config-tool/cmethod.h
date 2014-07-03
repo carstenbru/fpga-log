@@ -17,6 +17,7 @@ public:
 
     std::string getName() { return name; }
     std::list<CParameter>* getParameters() { return &parameters; }
+    CParameter* getParameter(std::string name);
     std::string getHeaderName() { return headerFile; }
 private:
     std::string name;

@@ -45,6 +45,8 @@ public:
     PeripheralPort* getPort(std::string group, std::string name);
     std::map<std::string, std::list<PeripheralPort*> > getPorts() { return ports; }
     std::string getCompleteName();
+    std::string getParentName();
+    CObject* getParentObject() { return parentObject; }
     DataType* getDataType() { return dataType; }
 
     static void loadPeripheralXMLs();

@@ -20,11 +20,14 @@ private:
 class OutputGenerator
 {
 public:
-    OutputGenerator(DataLogger* dataLogger);
+    OutputGenerator(DataLogger* dataLogger, std::string directory);
 
+    void generateConfigFiles();
+    void synthesizeSystem();
+private:
     void generateCSource();
     void generateSystemXML();
-private:
+
     void writeVariableDefinitions(std::ostream& stream);
     void writeInitFunction(std::ostream& stream);
     void writeConnectPorts(std::ostream& stream);
@@ -48,10 +51,14 @@ private:
     void writePins(QXmlStreamWriter& writer);
 
     DataLogger* dataLogger;
+
+    std::string directory;
+
     std::set<std::string> usedHeaders;
 
     int usedIdCounter;
     std::list<FpgaPin> usedPins;
+    int usedTimestampSources;
 };
 
 #endif // OUTPUTGENERATOR_H
