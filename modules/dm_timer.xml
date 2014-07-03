@@ -1,0 +1,11 @@
+<module name="dm_timer">
+  <peripheral name="timer_regs" >
+    <port group="global" name="clk_i" destination="SUBSYSTEM/TIMER_2000HZ_COMPARE/#PORT.pin_out" hide="TRUE" />
+    <port group="global" name="timer_out" hide="TRUE" />
+  </peripheral>
+  <peripheral name="compare_regs" >
+    <port group="global" name="timer_data" destination="./timer_regs/#PORT.timer_out" hide="TRUE" />
+    <port group="global" name="intr" hide="TRUE" />
+    <port group="global" name="pin_out" hide="TRUE" />
+  </peripheral>
+</module>

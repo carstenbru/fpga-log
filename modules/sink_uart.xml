@@ -4,5 +4,7 @@
     <parameter name="FIFO_TX_DEPTH" value="8" />
     <parameter name="BAUDRATE" value="115200" />
     <parameter name="INTERRUPT_SUPPORTED" value="FALSE" hide="TRUE" />
+    
+    <port group="Controller" name="intr" hide="TRUE" />
   </peripheral>
 </module>

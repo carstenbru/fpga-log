@@ -1,8 +1,5 @@
-<module name="device_hct99">
+<module name="device_uart_raw">
   <peripheral name="uart_light" >
-    <parameter name="FIFO_RX_DEPTH" value="8" hide="TRUE" />
-    <parameter name="FIFO_TX_DEPTH" value="8" hide="TRUE" />
-    <parameter name="BAUDRATE" value="19200" hide="TRUE" />
     <parameter name="INTERRUPT_SUPPORTED" value="TRUE" hide="TRUE" />
     
     <port group="Controller" name="intr" destination="TIMESTAMP_GEN" parameter="id" hide="TRUE" />

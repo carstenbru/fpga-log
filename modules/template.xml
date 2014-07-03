@@ -307,7 +307,7 @@ PERI_CLOCK_ATTRIBUTE
                 </parameter>
                 <parameter id="#PARAM.SOURCES">
                     <attribute id="name" xml:space="preserve">SOURCES</attribute>
-                    <attribute id="value" xml:space="preserve">2</attribute>
+TIMESTAMP_GEN_SOURCES_ATTRIBUTE
                 </parameter>
                 <port id="#PORT.access_peri">
                     <attribute id="name" xml:space="preserve">access_peri</attribute>
