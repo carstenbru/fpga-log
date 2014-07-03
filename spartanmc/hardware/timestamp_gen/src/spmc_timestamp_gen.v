@@ -5,7 +5,7 @@ module spmc_timestamp_gen #(
         //*** Connections to SpartanMC Core (do not change) ***
         input wire              clk_peri,       //System-Clock
         input wire      [17:0]  do_peri,        //Data Bus  from MC
-        output          [17:0]  di_peri,        //Data Bus  to MC
+        output wire     [17:0]  di_peri,        //Data Bus  to MC
         input wire      [9:0]   addr_peri,      //Address Bus from MC
         input wire              access_peri,    //Peripheral Access Signal
         input wire              wr_peri,        //Write Enable Signal
@@ -43,7 +43,7 @@ module spmc_timestamp_gen #(
   reg [6:0] fifo_ts_write;
   reg [35:0] fifo_in_dat;
   wire [35:0] fifo_out_dat;
-  wire fifo_empty;
+  wire fifo_n_empty;
   
   reg [17:0] fifo_top [0:7];
   reg [1:0] fifo_top_read_state;
