@@ -29,7 +29,7 @@ static void dm_filter_new_data_block(void* const _filter,
 
 
 
-void dm_filter_init(dm_filter_t* const filter, int mode,
+void dm_filter_init(dm_filter_t* const filter, dm_filter_mode mode,
 		datastream_condition_t* const condition) {
 	filter->data_out = &data_port_dummy;
 

@@ -40,7 +40,7 @@ typedef struct {
  * @param mode			operating mode of the filter, should be a value of enumeration @ref dm_filter_mode
  * @param condition	the filter condition
  */
-void dm_filter_init(dm_filter_t* const filter, int mode,
+void dm_filter_init(dm_filter_t* const filter, dm_filter_mode mode,
 		datastream_condition_t* const condition);
 
 /**
