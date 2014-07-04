@@ -5,6 +5,8 @@
 #include <iostream>
 #include <map>
 #include <set>
+#include <QObject>
+#include <QProcess>
 
 class FpgaPin {
 public:
@@ -17,8 +19,10 @@ private:
     std::string direction;
 };
 
-class OutputGenerator
+class OutputGenerator : public QObject
 {
+    Q_OBJECT
+
 public:
     OutputGenerator(DataLogger* dataLogger, std::string directory);
 
@@ -50,6 +54,8 @@ private:
     void writeClkPin(QXmlStreamWriter& writer);
     void writePins(QXmlStreamWriter& writer);
 
+    void exec(std::string cmd);
+
     DataLogger* dataLogger;
 
     std::string directory;
@@ -59,6 +65,16 @@ private:
     int usedIdCounter;
     std::list<FpgaPin> usedPins;
     int usedTimestampSources;
+
+    QProcess process;
+    std::list<std::string> pending;
+    bool busy;
+private slots:
+    void newChildStdOut();
+    void newChildErrOut();
+    void processFinished();
+signals:
+    void finished();
 };
 
 #endif // OUTPUTGENERATOR_H

@@ -3,10 +3,6 @@
 #include <string>
 #include <algorithm>
 #include <sstream>
-#include <QFile>
-#include <QProcessEnvironment>
-#include <iostream>
-#include <ios>
 #include <fstream>
 #include <QCoreApplication>
 #include "cobject.h"
@@ -17,43 +13,57 @@ OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     dataLogger(dataLogger),
     directory(directory),
     usedIdCounter(0),
-    usedTimestampSources(0)
+    usedTimestampSources(0),
+    process(this),
+    busy(false)
 {
+    process.setWorkingDirectory(directory.c_str());
+    connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(newChildStdOut()));
+    connect(&process, SIGNAL(readyReadErrorOutput()), this, SLOT(newChildErrOut()));
+    connect(&process, SIGNAL(finished(int)), this, SLOT(processFinished()));
 }
 
-/*
- * This function is based on "waqas" answer on
- * http://stackoverflow.com/questions/478898/how-to-execute-a-command-and-get-output-of-command-within-c
- * Thanks!
- */
-void exec(const char* cmd) {
-    FILE* pipe = popen(cmd, "r");
-    if (!pipe)
-        cerr << "pipe error";
-    char buffer[1024];
-    while(!feof(pipe)) {
-        if(fgets(buffer, 128, pipe) != NULL) {
-            cout << buffer;
-            QCoreApplication::processEvents();
-        }
+void OutputGenerator::exec(string cmd) {
+    if (!busy) {
+        busy = true;
+        process.start(QString(cmd.c_str()));
+    } else {
+        pending.push_back(cmd);
     }
-    pclose(pipe);
+}
+
+void OutputGenerator::processFinished() {
+    if (pending.empty()) {
+        busy = false;
+        emit finished();
+    } else {
+        process.start(QString(pending.front().c_str()));
+        pending.pop_front();
+    }
+}
+
+void OutputGenerator::newChildStdOut() {
+    cout << QString(process.readAllStandardOutput()).toStdString();
+}
+
+void OutputGenerator::newChildErrOut() {
+    cerr << QString(process.readAllStandardError()).toStdString();
 }
 
 void OutputGenerator::generateConfigFiles() {
     generateSystemXML();
     generateCSource();;
 
-    string jconfig = "cd " + directory + " && make jconfig +args=\"--generate fpga-log.xml\"";
-    exec(jconfig.c_str());
+    string jconfig = "make jconfig +args=\"--generate fpga-log.xml\"";
+    exec(jconfig);
 
     cout << "Alle Dateien erfolgreich erstellt!" << endl;
 }
 
 void OutputGenerator::synthesizeSystem() {
     generateConfigFiles();
-    string jconfig = "cd " + directory + " && make all";
-    exec(jconfig.c_str());
+    string jconfig = "make all";
+    exec(jconfig);
 
     cout << "Bitfile Erstellung abgeschlossen!" << endl;
 }

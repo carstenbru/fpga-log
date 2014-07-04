@@ -35,6 +35,7 @@ public slots:
     void targetConfig();
     void generate();
     void synthesize();
+    void flash();
 private slots:
     void otherObjectConfig(QModelIndex index);
 };

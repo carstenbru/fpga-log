@@ -88,12 +88,16 @@ void MainWindow::targetConfig() {
 }
 
 void MainWindow::generate() {
-    OutputGenerator og(&dataLogger, "../test/");
-    og.generateConfigFiles();
+    OutputGenerator* og = new OutputGenerator(&dataLogger, "../test/");
+    og->generateConfigFiles();
 }
 
 void MainWindow::synthesize() {
-    OutputGenerator og(&dataLogger, "../test/");
-    og.generateConfigFiles();
-    og.synthesizeSystem();
+    OutputGenerator* og = new OutputGenerator(&dataLogger, "../test/");
+    og->generateConfigFiles();
+    og->synthesizeSystem();
+}
+
+void MainWindow::flash() {
+
 }
