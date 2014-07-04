@@ -28,6 +28,7 @@ public:
 
     void generateConfigFiles();
     void synthesizeSystem();
+    void flash();
 private:
     void generateCSource();
     void generateSystemXML();

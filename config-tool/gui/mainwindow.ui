@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1015</width>
-    <height>621</height>
+    <width>1011</width>
+    <height>617</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -70,7 +70,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1015</width>
+     <width>1011</width>
      <height>21</height>
     </rect>
    </property>
@@ -94,10 +94,15 @@
     <addaction name="actionNewObject"/>
    </widget>
    <widget class="QMenu" name="menuGenerate">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="title">
      <string>Generieren</string>
     </property>
     <addaction name="actionBitfileGenerate"/>
+    <addaction name="actionFlash"/>
+    <addaction name="separator"/>
     <addaction name="actionGenerate"/>
    </widget>
    <addaction name="menuFile"/>
@@ -152,14 +157,27 @@
    </property>
   </action>
   <action name="actionBitfileGenerate">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
-    <iconset theme="system-run"/>
+    <iconset theme="system-run">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>Bitfile erstellen</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionFlash">
+   <property name="text">
+    <string>Upload</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
    </property>
   </action>
  </widget>

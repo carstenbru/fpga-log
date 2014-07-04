@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionTarget, SIGNAL(triggered()), this, SLOT(targetConfig()));
     connect(ui->actionGenerate, SIGNAL(triggered()), this, SLOT(generate()));
     connect(ui->actionBitfileGenerate, SIGNAL(triggered()), this, SLOT(synthesize()));
+    connect(ui->actionFlash, SIGNAL(triggered()), this, SLOT(flash()));
 
     ui->listView->setModel(&otherModel);
     connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(otherObjectConfig(QModelIndex)));
@@ -99,5 +100,6 @@ void MainWindow::synthesize() {
 }
 
 void MainWindow::flash() {
-
+    OutputGenerator* og = new OutputGenerator(&dataLogger, "../test/");
+    og->flash();
 }

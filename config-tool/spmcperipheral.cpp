@@ -182,7 +182,7 @@ void SpmcPeripheral::readPeripheralXML() {
 }
 
 void SpmcPeripheral::readModuleXML() {
-    string moduleXmlFile = "../modules/";
+    string moduleXmlFile = "../config-tool-files/modules/";
     moduleXmlFile += parentObject->getType()->getCleanedName();
     moduleXmlFile += ".xml";
     QFile file(QString(moduleXmlFile.c_str()));

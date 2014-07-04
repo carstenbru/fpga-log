@@ -19,7 +19,7 @@ OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
 {
     process.setWorkingDirectory(directory.c_str());
     connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(newChildStdOut()));
-    connect(&process, SIGNAL(readyReadErrorOutput()), this, SLOT(newChildErrOut()));
+    connect(&process, SIGNAL(readyReadStandardError()), this, SLOT(newChildErrOut()));
     connect(&process, SIGNAL(finished(int)), this, SLOT(processFinished()));
 }
 
@@ -54,16 +54,14 @@ void OutputGenerator::generateConfigFiles() {
     generateSystemXML();
     generateCSource();;
 
-    string jconfig = "make jconfig +args=\"--generate fpga-log.xml\"";
-    exec(jconfig);
+    exec("make jconfig +args=\"--generate fpga-log.xml\"");
 
     cout << "Alle Dateien erfolgreich erstellt!" << endl;
 }
 
 void OutputGenerator::synthesizeSystem() {
     generateConfigFiles();
-    string jconfig = "make all";
-    exec(jconfig);
+    exec("make all");
 
     cout << "Bitfile Erstellung abgeschlossen!" << endl;
 }
@@ -211,7 +209,7 @@ void OutputGenerator::writeAdvancedConfig(std::ostream& stream) {
 }
 
 void OutputGenerator::generateSystemXML() {
-    ifstream templateFile("../modules/template.xml");
+    ifstream templateFile("../config-tool-files/template.xml");
     if (!templateFile.is_open()) {
         cerr << "System Template XML konnte nicht geöffnet werden." << endl;
         return;
@@ -426,4 +424,8 @@ void OutputGenerator::writePins(QXmlStreamWriter& writer) {
 
          writer.writeEndElement();
     }
+}
+
+void OutputGenerator::flash() {
+    exec("./flash.sh");
 }
