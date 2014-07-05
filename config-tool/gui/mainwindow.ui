@@ -100,7 +100,7 @@
     <property name="title">
      <string>Generieren</string>
     </property>
-    <addaction name="actionBitfileGenerate"/>
+    <addaction name="actionSynthesize"/>
     <addaction name="actionFlash"/>
     <addaction name="separator"/>
     <addaction name="actionGenerate"/>
@@ -156,7 +156,7 @@
     <string>Ctrl+F</string>
    </property>
   </action>
-  <action name="actionBitfileGenerate">
+  <action name="actionSynthesize">
    <property name="enabled">
     <bool>true</bool>
    </property>
@@ -173,6 +173,9 @@
    </property>
   </action>
   <action name="actionFlash">
+   <property name="icon">
+    <iconset theme="media-flash"/>
+   </property>
    <property name="text">
     <string>Upload</string>
    </property>

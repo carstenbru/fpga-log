@@ -70,12 +70,14 @@ private:
     QProcess process;
     std::list<std::string> pending;
     bool busy;
+
+    bool error;
 private slots:
     void newChildStdOut();
     void newChildErrOut();
     void processFinished();
 signals:
-    void finished();
+    void finished(bool errorOccured);
 };
 
 #endif // OUTPUTGENERATOR_H

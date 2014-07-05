@@ -8,6 +8,7 @@
 #include "datastreamview.h"
 #include "datatype.h"
 #include "dataloggerothermodel.h"
+#include "outputgenerator.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,12 +24,19 @@ public:
 
     virtual void show();
 private:
+    void newOutputGenerator();
+
     Ui::MainWindow *ui;
 
     DatastreamView* datastreamView;
 
     DataLogger dataLogger;
     DataLoggerOtherModel otherModel;
+
+    OutputGenerator* outputGenerator;
+
+    bool dataLoggerSaved;
+    bool bitfileGenerated;
 public slots:
     void newObject();
     void showConfigDialog(CObject& object);
@@ -38,6 +46,8 @@ public slots:
     void flash();
 private slots:
     void otherObjectConfig(QModelIndex index);
+    void outputGeneratorFinished(bool errorOccured);
+    void dataLoggerChanged();
 };
 
 #endif // MAINWINDOW_H

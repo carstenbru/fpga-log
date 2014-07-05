@@ -15,7 +15,8 @@ OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     usedIdCounter(0),
     usedTimestampSources(0),
     process(this),
-    busy(false)
+    busy(false),
+    error(false)
 {
     process.setWorkingDirectory(directory.c_str());
     connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(newChildStdOut()));
@@ -33,9 +34,9 @@ void OutputGenerator::exec(string cmd) {
 }
 
 void OutputGenerator::processFinished() {
-    if (pending.empty()) {
+    if (pending.empty() || error) {
         busy = false;
-        emit finished();
+        emit finished(error);
     } else {
         process.start(QString(pending.front().c_str()));
         pending.pop_front();
@@ -55,15 +56,12 @@ void OutputGenerator::generateConfigFiles() {
     generateCSource();;
 
     exec("make jconfig +args=\"--generate fpga-log.xml\"");
-
-    cout << "Alle Dateien erfolgreich erstellt!" << endl;
 }
 
 void OutputGenerator::synthesizeSystem() {
     generateConfigFiles();
-    exec("make all");
 
-    cout << "Bitfile Erstellung abgeschlossen!" << endl;
+    exec("make all");
 }
 
 void OutputGenerator::generateCSource() {
@@ -141,6 +139,7 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
             }
 
             if (value.empty()) {
+                error = true;
                 cerr << "FEHLER: Parameter " << (*i).getName() << " von Objekt " << object->getName() << " nicht gesetzt!" << endl;
             }
 
