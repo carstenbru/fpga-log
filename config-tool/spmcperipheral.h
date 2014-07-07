@@ -27,6 +27,8 @@ public:
     std::string getName() { return name; }
     std::string getDirection() { return direction; }
     void setHideFromUser(bool hide);
+    void setConstraints(std::string constraints) { this->constraints = constraints; }
+    std::string getConstraints() { return constraints; }
 
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, PeripheralPort& port);
 private:
@@ -36,6 +38,8 @@ private:
     std::string widthRef;
 
     std::list<CParameter*> lines;
+
+    std::string constraints;
 public slots:
     void newWidth(std::string widthVal);
 };

@@ -10,13 +10,17 @@
 
 class FpgaPin {
 public:
-    FpgaPin(std::string name, std::string direction) : name(name), direction(direction) {}
+    FpgaPin(std::string name, std::string direction, std::string constraints) : name(name), direction(direction), constraints(constraints) {}
 
     std::string getName() { return name; }
     std::string getDirection() { return direction; }
+
+    std::string getConstraints() { return constraints; }
 private:
     std::string name;
     std::string direction;
+
+    std::string constraints;
 };
 
 class OutputGenerator : public QObject

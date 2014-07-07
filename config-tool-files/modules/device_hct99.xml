@@ -6,5 +6,6 @@
     <parameter name="INTERRUPT_SUPPORTED" value="TRUE" hide="TRUE" />
     
     <port group="Controller" name="intr" destination="TIMESTAMP_GEN" parameter="id" hide="TRUE" />
+    <port group="Receiver" name="rx" constraints="PULLUP" />
   </peripheral>
 </module>

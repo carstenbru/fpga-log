@@ -343,7 +343,7 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
                 if (!destination.isEmpty()) {
                     if (destination.contains(":")) { //pin destination
                         destination.replace(":", "_");
-                        usedPins.push_back(FpgaPin(destination.toStdString(), port->getDirection()));
+                        usedPins.push_back(FpgaPin(destination.toStdString(), port->getDirection(), port->getConstraints()));
                         destination = "#PIN." + destination;
                     } else if (destination.startsWith("./")) { //other peripheral of this module as destination
                         destination.remove(0, 2);
@@ -441,6 +441,7 @@ void OutputGenerator::writePins(QXmlStreamWriter& writer) {
          writeAttributeElement(writer, "name", pinName);
          writeAttributeElement(writer, "direction", (*i).getDirection().c_str());
          writeAttributeElement(writer, "io_standard", "LVCMOS33");
+         writeAttributeElement(writer, "user_constraints", (*i).getConstraints().c_str());
 
          writer.writeEndElement();
     }

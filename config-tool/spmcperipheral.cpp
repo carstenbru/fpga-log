@@ -256,6 +256,10 @@ void SpmcPeripheral::readModuleXML() {
                         bool hide = (hideStr.toString().compare("TRUE") == 0);
                         port->setHideFromUser(hide);
                     }
+                    QStringRef constraints = attributes.value("constraints");
+                    if (!constraints.isEmpty()) {
+                        port->setConstraints(constraints.toString().toStdString());
+                    }
                 }
                 reader.skipCurrentElement();
             }
@@ -324,6 +328,7 @@ PeripheralPort::PeripheralPort(QXmlStreamReader& in, SpmcPeripheral* parent) {
     direction = in.attributes().value("direction").toString().toStdString();
 
     widthRef = in.attributes().value("widthRef").toString().toStdString();
+    constraints = in.attributes().value("constraints").toString().toStdString();
     if (!widthRef.empty()) {
         QObject::connect(parent->getParameter(widthRef), SIGNAL(valueChanged(std::string)), this, SLOT(newWidth(std::string)));
     }
@@ -377,6 +382,8 @@ QXmlStreamWriter& operator<<(QXmlStreamWriter& out, PeripheralPort& port) {
     out.writeAttribute("direction", port.direction.c_str());
     if (!port.widthRef.empty())
         out.writeAttribute("widthRef", port.widthRef.c_str());
+    if (!port.constraints.empty())
+        out.writeAttribute("constraints", port.constraints.c_str());
 
     for (list<CParameter*>::iterator i = port.lines.begin(); i != port.lines.end(); i++) {
         out << **i;

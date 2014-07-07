@@ -146,7 +146,6 @@ void MainWindow::flash() {
             if (!newOutputGenerator())
                 return;
             if (dialog.result() == QMessageBox::Yes) {
-                outputGenerator->generateConfigFiles();
                 outputGenerator->synthesizeSystem();
 
                 bitfileGenerated = true;
