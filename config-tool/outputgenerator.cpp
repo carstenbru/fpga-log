@@ -5,10 +5,11 @@
 #include <sstream>
 #include <fstream>
 #include <QCoreApplication>
+#include <QDirIterator>
 #include "cobject.h"
 
 using namespace std;
-
+#include <iostream>
 OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     dataLogger(dataLogger),
     directory(directory),
@@ -18,10 +19,30 @@ OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     busy(false),
     error(false)
 {
+    cout << directory << endl;
     process.setWorkingDirectory(directory.c_str());
     connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(newChildStdOut()));
     connect(&process, SIGNAL(readyReadStandardError()), this, SLOT(newChildErrOut()));
     connect(&process, SIGNAL(finished(int)), this, SLOT(processFinished()));
+
+    copyProjectTemplate();
+}
+
+void OutputGenerator::copyProjectTemplate() {
+    string path = "../config-tool-files/template/";
+    QDirIterator dirIter(QString(path.c_str()), QDirIterator::Subdirectories);
+    while (dirIter.hasNext()) {
+        dirIter.next();
+        if (QFileInfo(dirIter.filePath()).isFile()) {
+              //  files.push_back(dirIter.filePath().toStdString());
+            QString newPath = dirIter.filePath();
+            newPath.remove(0, path.length());
+            newPath = (directory + "/").c_str() + newPath;
+
+            QDir().mkpath(QFileInfo(newPath).dir().absolutePath());
+            QFile::copy(dirIter.filePath(), newPath);
+        }
+    }
 }
 
 void OutputGenerator::exec(string cmd) {
@@ -55,7 +76,7 @@ void OutputGenerator::generateConfigFiles() {
     generateSystemXML();
     generateCSource();;
 
-    exec("make jconfig +args=\"--generate fpga-log.xml\"");
+    exec("make jconfig +args=\"--generate system.xml\"");
 }
 
 void OutputGenerator::synthesizeSystem() {
@@ -215,7 +236,7 @@ void OutputGenerator::generateSystemXML() {
     }
 
     ofstream file;
-    file.open(directory + "/fpga-log.xml");
+    file.open(directory + "/system.xml");
     ostream& stream = file;
 
     QString targetNode;

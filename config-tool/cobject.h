@@ -13,6 +13,8 @@ class CObject : public QObject
 
 public:
     CObject(std::string name, DataTypeStruct *dataType, DataLogger* dataLogger);
+    CObject(QXmlStreamReader& in, DataLogger* dataLogger);
+    CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool readStart);
     virtual ~CObject();
 
     std::string getName() { return name; }
@@ -21,6 +23,8 @@ public:
 
     CMethod* getInitMethod() { return initMethod; }
     std::list<SpmcPeripheral*> getPeripherals() { return peripherals; }
+
+    friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CObject& cObject);
 protected:
     std::string name;
     DataTypeStruct* type;

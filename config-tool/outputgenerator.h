@@ -30,6 +30,8 @@ public:
     void synthesizeSystem();
     void flash();
 private:
+    void copyProjectTemplate();
+
     void generateCSource();
     void generateSystemXML();
 

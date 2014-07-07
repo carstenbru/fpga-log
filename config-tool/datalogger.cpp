@@ -202,3 +202,63 @@ int DataLogger::getClk() {
 int DataLogger::getPeriClk() {
     return getClk() / 2;
 }
+
+QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DataLogger& dataLogger) {
+    out.writeStartElement("datalogger");
+
+    out << dataLogger.target << dataLogger.clockPin << dataLogger.clockFreq;
+
+    for (list<DatastreamObject*>::iterator i = dataLogger.datastreamObjects.begin(); i != dataLogger.datastreamObjects.end(); i++) {
+        out << **i;
+    }
+    for (vector<CObject*>::iterator i = dataLogger.otherObjects.begin(); i != dataLogger.otherObjects.end(); i++) {
+        out << **i;
+    }
+
+    out.writeEndElement();
+    return out;
+}
+
+DatastreamObject* DataLogger::getDatastreamObject(std::string name) {
+    for (list<DatastreamObject*>::iterator i = datastreamObjects.begin(); i != datastreamObjects.end(); i++) {
+        if ((*i)->getName().compare(name) == 0)
+            return *i;
+    }
+    return NULL;
+}
+
+QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger) {
+    in.readNextStartElement();
+
+    if (in.name().compare("datalogger") != 0) {
+        cerr << "Fehler: Datei ist kein fpga-log Datenlogger!" << endl;
+        return in;
+    }
+
+    in >> dataLogger.target >> dataLogger.clockPin >> dataLogger.clockFreq;
+
+    map<PortOut*, stringPair> connections;
+
+    while (in.readNextStartElement()) {
+        if (in.name().compare("DatastreamObject") == 0) {
+            DatastreamObject* dso = new DatastreamObject(in, &dataLogger, connections);
+            dataLogger.datastreamObjects.push_back(dso);
+            QObject::connect(dso, SIGNAL(connectionsChanged()), &dataLogger, SLOT(moduleConnectionsChanged()));
+        } else if (in.name().compare("CObject") == 0) {
+            dataLogger.otherObjects.push_back(new CObject(in, &dataLogger));
+        } else
+            in.skipCurrentElement();
+    }
+
+    for (map<PortOut*, stringPair>::iterator i = connections.begin(); i != connections.end(); i++) {
+        PortOut* p = i->first;
+        Port* dest = dataLogger.getDatastreamObject(i->second.first)->getPort(i->second.second);
+        p->connectPort(dest);
+    }
+
+    emit dataLogger.datastreamModulesChanged();
+    emit dataLogger.otherModulesChanged();
+    emit dataLogger.connectionsChanged();
+
+    return in;
+}

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <string>
 #include <map>
+#include <QXmlStreamWriter>
 
 class DataType;
 
@@ -13,6 +14,8 @@ class CParameter : public QObject {
 public:
     CParameter(std::string name, DataType* dataType, bool pointer);
     CParameter(std::string name, DataType* dataType, bool pointer, std::string value);
+    CParameter();
+    CParameter(QXmlStreamReader& in);
     CParameter(const CParameter& other);
 
     bool sameSignature(CParameter& compare);
@@ -28,6 +31,10 @@ public:
     void setValue(std::string value) { this->value = value; emit valueChanged(value); }
     void setName(std::string name) { this->name = name; }
     std::string getValue() { return value; }
+
+    friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CParameter& parameter);
+    friend QXmlStreamReader& operator>>(QXmlStreamReader& in, CParameter& parameter);
+    void loadFromXmlStream(QXmlStreamReader& in);
 private:
     std::string name;
     std::string value;

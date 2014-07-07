@@ -4,6 +4,7 @@
 #include <QObject>
 #include <list>
 #include <vector>
+#include <QXmlStreamWriter>
 #include "datatype.h"
 #include "cobject.h"
 #include "datastreamobject.h"
@@ -34,6 +35,9 @@ public:
 
     static void loadTragetXMLs();
     static std::string getTargetXML(std::string target) { return targetXMLs.at(target); }
+
+    friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DataLogger& dataLogger);
+    friend QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger);
 private:
     template <typename T>
     bool containsObjectName(T searchList, std::string name);
@@ -43,6 +47,8 @@ private:
     void addInstancesToList(T searchList, std::list<CObject*>& destList,  DataTypeStruct* dataType);
     template <typename T>
     bool deleteObject(T& searchList, CObject* object);
+
+    DatastreamObject* getDatastreamObject(std::string name);
 
     static std::string readTargetNameFromFile(std::string fileName);
 

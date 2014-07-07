@@ -4,9 +4,18 @@ using namespace std;
 
 CMethod::CMethod(std::string name, CParameter returnType, string headerFile) :
     name(name),
-    returnType(returnType),
-    headerFile(headerFile)
+    headerFile(headerFile),
+    returnType(returnType)
 {
+}
+
+CMethod::CMethod(QXmlStreamReader& in) {
+    name = in.attributes().value("name").toString().toStdString();
+    headerFile = in.attributes().value("headerFile").toString().toStdString();
+    in >> returnType;
+    while (in.readNextStartElement()) {
+        parameters.push_back(CParameter(in));
+    }
 }
 
 CMethod::~CMethod() {
@@ -39,3 +48,17 @@ CParameter* CMethod::getParameter(std::string name) {
     return NULL;
 }
 
+QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CMethod& cMethod) {
+    out.writeStartElement("CMethod");
+
+    out.writeAttribute("name", cMethod.name.c_str());
+    out.writeAttribute("headerFile", cMethod.headerFile.c_str());
+    out << cMethod.returnType;
+
+    for (list<CParameter>::iterator i = cMethod.parameters.begin(); i != cMethod.parameters.end(); i++) {
+        out << *i;
+    }
+
+    out.writeEndElement();
+    return out;
+}

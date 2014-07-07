@@ -16,8 +16,9 @@ class DatastreamView : public QObject
 {
     Q_OBJECT
 public:
-    explicit DatastreamView(QGraphicsView* view, DataLogger* dataLogger);
+    explicit DatastreamView(QGraphicsView* view);
 
+    void setDataLogger(DataLogger* dataLogger);
 private:
     void generateModuleGui(DatastreamObject* datastreamObject);
     void deleteAllModuleGuis();

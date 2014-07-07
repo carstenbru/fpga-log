@@ -4,19 +4,22 @@
 
 using namespace std;
 
-DatastreamView::DatastreamView(QGraphicsView* view, DataLogger* dataLogger) :
+DatastreamView::DatastreamView(QGraphicsView* view) :
     view(view),
-    dataLogger(dataLogger)
+    dataLogger(NULL)
 {
     view->setScene(new QGraphicsScene(QRectF(0, 0, 5300, 3005))); //TODO scene size
 
     connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(moveDatastreamModules()));
     connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(moveDatastreamModules()));
 
+    redrawModules();
+}
+
+void DatastreamView::setDataLogger(DataLogger* dataLogger) {
+    this->dataLogger = dataLogger;
     connect(dataLogger, SIGNAL(datastreamModulesChanged()), this, SLOT(redrawModules()));
     connect(dataLogger, SIGNAL(connectionsChanged()), this, SLOT(redrawModules()));
-
-    redrawModules();
 }
 
 void DatastreamObject::setPosition(QPoint pos) {
@@ -115,16 +118,18 @@ void DatastreamView::setModulePositions() {
 void DatastreamView::redrawModules() {
     deleteAllModuleGuis();
 
-    std::list<DatastreamObject*> modules = dataLogger->getDatastreamModules();
+    if (dataLogger != NULL) {
+        std::list<DatastreamObject*> modules = dataLogger->getDatastreamModules();
 
-    std::list<DatastreamObject*>::iterator i;
-    for (i = modules.begin(); i != modules.end(); i++) {
-        generateModuleGui(*i);
+        std::list<DatastreamObject*>::iterator i;
+        for (i = modules.begin(); i != modules.end(); i++) {
+            generateModuleGui(*i);
+        }
+
+        moveDatastreamModules();
+
+        redrawStreams();
     }
-
-    moveDatastreamModules();
-
-    redrawStreams();
 }
 
 void DatastreamView::redrawStreams() {

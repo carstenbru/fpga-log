@@ -10,13 +10,16 @@
 #include "cparameter.h"
 
 class CObject;
+class SpmcPeripheral;
 
 class PeripheralPort : public QObject {
     Q_OBJECT
 
 public:
     PeripheralPort(std::string name);
+    PeripheralPort(std::string name, CParameter* widthRef);
     PeripheralPort(std::string name, int width);
+    PeripheralPort(QXmlStreamReader& in, SpmcPeripheral* parent);
     ~PeripheralPort();
 
     void setDirection(std::string direction);
@@ -24,10 +27,13 @@ public:
     std::string getName() { return name; }
     std::string getDirection() { return direction; }
     void setHideFromUser(bool hide);
+
+    friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, PeripheralPort& port);
 private:
     std::string name;
     std::string direction;
-    int width;
+
+    std::string widthRef;
 
     std::list<CParameter*> lines;
 public slots:
@@ -38,6 +44,7 @@ class SpmcPeripheral
 {
 public:
     SpmcPeripheral(std::string name, DataType* dataType, CObject* parentObject, DataLogger *dataLogger);
+    SpmcPeripheral(QXmlStreamReader& in, CObject* parentObject, DataLogger *dataLogger);
     ~SpmcPeripheral();
 
     std::list<CParameter*> getParameters() { return parameters; }
@@ -50,6 +57,8 @@ public:
     DataType* getDataType() { return dataType; }
 
     static void loadPeripheralXMLs();
+
+    friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, SpmcPeripheral& peripheral);
 private:
     std::string getFileName();
     void readParameterElement(QXmlStreamReader& reader);
@@ -58,6 +67,8 @@ private:
     void readModuleXML();
 
     static std::string readModuleNameFromFile(std::string fileName);
+
+    void saveToXml(QXmlStreamWriter& out);
 
     std::string name;
     DataLogger* dataLogger;

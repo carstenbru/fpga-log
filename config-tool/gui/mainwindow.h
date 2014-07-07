@@ -24,26 +24,35 @@ public:
 
     virtual void show();
 private:
-    void newOutputGenerator();
+    bool newOutputGenerator();
+    void refreshWindowTitle();
+    bool checkAndAskSave();
 
     Ui::MainWindow *ui;
 
     DatastreamView* datastreamView;
 
-    DataLogger dataLogger;
-    DataLoggerOtherModel otherModel;
-
-    OutputGenerator* outputGenerator;
-
+    DataLogger* dataLogger;
+    std::string dataLoggerPath;
     bool dataLoggerSaved;
     bool bitfileGenerated;
+
+    OutputGenerator* outputGenerator;
+    DataLoggerOtherModel otherModel;
 public slots:
+    void closeEvent(QCloseEvent* event);
+
     void newObject();
     void showConfigDialog(CObject& object);
     void targetConfig();
     void generate();
     void synthesize();
     void flash();
+
+    void newLogger();
+    void open();
+    void save();
+    void saveAs();
 private slots:
     void otherObjectConfig(QModelIndex index);
     void outputGeneratorFinished(bool errorOccured);

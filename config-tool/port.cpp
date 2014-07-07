@@ -1,4 +1,7 @@
 #include "port.h"
+#include "datastreamobject.h"
+
+using namespace std;
 
 int ControlPortIn::connectPort(Port *port) {
     ControlPortOut* d = dynamic_cast<ControlPortOut*>(port);
@@ -43,4 +46,65 @@ int DataPortOut::connectPort(Port *port) {
 void PortOut::disconnectPort() {
     destination = NULL;
     emit disconnected(this);
+}
+
+void Port::saveToXml(QXmlStreamWriter& out, std::string type) {
+    out.writeStartElement(type.c_str());
+    out.writeAttribute("name", name.c_str());
+    out.writeEndElement();
+}
+
+void PortOut::saveToXml(QXmlStreamWriter& out, std::string type) {
+    out.writeStartElement(type.c_str());
+    out.writeAttribute("name", getName().c_str());
+    out.writeAttribute("multiPort", multiPort ? "true" : "false");
+    if (isConnected()) {
+        out.writeAttribute("destinationModule", destination->getParent()->getName().c_str());
+        out.writeAttribute("destinationPort", destination->getName().c_str());
+    }
+    out.writeEndElement();
+}
+
+Port::Port(QXmlStreamReader& in, DatastreamObject* parent) :
+    parent(parent)
+{
+    name = in.attributes().value("name").toString().toStdString();
+    in.skipCurrentElement();
+}
+
+PortOut::PortOut(QXmlStreamReader& in, DatastreamObject* parent, map<PortOut*, stringPair>& connections) :
+    Port(in.attributes().value("name").toString().toStdString(), parent)
+{
+    destination = NULL;
+    multiPort = (in.attributes().value("multiPort").toString().compare("true") == 0);
+
+    string destModule = in.attributes().value("destinationModule").toString().toStdString();
+    if (!destModule.empty()) {
+        stringPair p;
+        p.first = destModule;
+        p.second = in.attributes().value("destinationPort").toString().toStdString();
+        connections[this] = p;
+    }
+
+    in.skipCurrentElement();
+}
+
+QXmlStreamWriter& operator<<(QXmlStreamWriter& out, ControlPortIn& port) {
+    port.saveToXml(out, "ControlPortIn");
+    return out;
+}
+
+QXmlStreamWriter& operator<<(QXmlStreamWriter& out, ControlPortOut& port) {
+    port.saveToXml(out, "ControlPortOut");
+    return out;
+}
+
+QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DataPortIn& port) {
+    port.saveToXml(out, "DataPortIn");
+    return out;
+}
+
+QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DataPortOut& port) {
+    port.saveToXml(out, "DataPortOut");
+    return out;
 }

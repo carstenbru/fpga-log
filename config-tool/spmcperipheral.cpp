@@ -20,6 +20,35 @@ SpmcPeripheral::SpmcPeripheral(string name, DataType *type, CObject* parentObjec
     readModuleXML();
 }
 
+SpmcPeripheral::SpmcPeripheral(QXmlStreamReader& in, CObject* parentObject, DataLogger *dataLogger) :
+    dataLogger(dataLogger),
+    parentObject(parentObject)
+{
+    name = in.attributes().value("name").toString().toStdString();
+    dataType = DataType::getType(in.attributes().value("dataType").toString().toStdString());
+
+    //create a dummy object to force loading datatypes (e.g. integer with specific range)
+    //from spmc peripheral xml
+    //this object will be deleted when leaving this constructor
+    SpmcPeripheral("dummy", dataType, parentObject, dataLogger);
+
+    while (in.readNextStartElement()) {
+        if (in.name().compare("parameter") == 0) {
+            parameters.push_back(new CParameter(in));
+        } else if (in.name().compare("portGroup") == 0) {
+            string name = in.attributes().value("name").toString().toStdString();
+            list<PeripheralPort*> portGroup;
+            while (in.readNextStartElement()) {
+                if (in.name().compare("peripheralPort") == 0) {
+                    portGroup.push_back(new PeripheralPort(in, this));
+                } else
+                    in.skipCurrentElement();
+            }
+            ports[name] = portGroup;
+        }
+    }
+}
+
 SpmcPeripheral::~SpmcPeripheral() {
     for (list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
         delete *i;
@@ -145,7 +174,7 @@ void SpmcPeripheral::readPortsElement(QXmlStreamReader& reader, std::string dire
                     symbol.erase(symbol.length() - 1, symbol.length());
                     CParameter* p = getParameter(symbol);
                     p->setCritical(true);
-                    port = new PeripheralPort(portName,  atoi(p->getValue().c_str()));
+                    port = new PeripheralPort(portName,  p);
                     QObject::connect(p, SIGNAL(valueChanged(std::string)), port, SLOT(newWidth(std::string)));
                 } else
                     port = new PeripheralPort(portName, portWidth);
@@ -243,19 +272,64 @@ std::string SpmcPeripheral::getParentName() {
     return parentObject->getName();
 }
 
+void SpmcPeripheral::saveToXml(QXmlStreamWriter& out) {
+    out.writeStartElement("SpmcPeripheral");
+
+    out.writeAttribute("name", name.c_str());
+    out.writeAttribute("dataType", dataType->getName().c_str());
+    for (list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
+        out << **i;
+    }
+    for (map<string, list<PeripheralPort*> >::iterator i = ports.begin(); i != ports.end(); i++) {
+        out.writeStartElement("portGroup");
+
+        out.writeAttribute("name", i->first.c_str());
+        for (list<PeripheralPort*>::iterator portsIt = i->second.begin(); portsIt != i->second.end(); portsIt++) {
+            out << **portsIt;
+        }
+
+        out.writeEndElement();
+    }
+
+    out.writeEndElement();
+}
+
+QXmlStreamWriter& operator<<(QXmlStreamWriter& out, SpmcPeripheral& peripheral) {
+    peripheral.saveToXml(out);
+    return out;
+}
+
 PeripheralPort::PeripheralPort(std::string name) :
-    name(name),
-    width(1)
+    name(name)
 {
     lines.push_back(new CParameter(name, DataTypePin::getPinType(), false));
 }
 
+PeripheralPort::PeripheralPort(std::string name, CParameter* widthRef) :
+    PeripheralPort(name, atoi(widthRef->getValue().c_str()))
+{
+    this->widthRef = widthRef->getName();
+}
+
 PeripheralPort::PeripheralPort(std::string name, int width) :
-    name(name),
-    width(width)
+    name(name)
 {
     for (int i = 0; i < width; i++) {
         lines.push_back(new CParameter(name + "_" + to_string(i), DataTypePin::getPinType(), false));
+    }
+}
+
+PeripheralPort::PeripheralPort(QXmlStreamReader& in, SpmcPeripheral* parent) {
+    name = in.attributes().value("name").toString().toStdString();
+    direction = in.attributes().value("direction").toString().toStdString();
+
+    widthRef = in.attributes().value("widthRef").toString().toStdString();
+    if (!widthRef.empty()) {
+        QObject::connect(parent->getParameter(widthRef), SIGNAL(valueChanged(std::string)), this, SLOT(newWidth(std::string)));
+    }
+
+    while (in.readNextStartElement()) {
+        lines.push_back(new CParameter(in));
     }
 }
 
@@ -278,6 +352,7 @@ void PeripheralPort::setDirection(std::string direction) {
 
 void PeripheralPort::newWidth(std::string widthVal) {
     int newWidth = atoi(widthVal.c_str());
+    int width = lines.size();
 
     if (newWidth < width) {
         int i = width - newWidth;
@@ -293,4 +368,21 @@ void PeripheralPort::newWidth(std::string widthVal) {
         }
     }
     width = newWidth;
+}
+
+QXmlStreamWriter& operator<<(QXmlStreamWriter& out, PeripheralPort& port) {
+    out.writeStartElement("peripheralPort");
+
+    out.writeAttribute("name", port.name.c_str());
+    out.writeAttribute("direction", port.direction.c_str());
+    if (!port.widthRef.empty())
+        out.writeAttribute("widthRef", port.widthRef.c_str());
+
+    for (list<CParameter*>::iterator i = port.lines.begin(); i != port.lines.end(); i++) {
+        out << **i;
+    }
+
+    out.writeEndElement();
+
+    return out;
 }

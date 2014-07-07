@@ -11,6 +11,29 @@ DatastreamObject::DatastreamObject(string name, DataTypeStruct *type, DataLogger
     findPorts();
 }
 
+DatastreamObject::DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger,  std::map<PortOut*, stringPair>& connections) :
+    CObject(in, dataLogger, true)
+{
+    while (in.readNextStartElement()) {
+        if (in.name().compare("x") == 0) {
+            position.setX(in.attributes().value("value").toString().toInt());
+            in.skipCurrentElement();
+        } else if (in.name().compare("y") == 0) {
+            position.setY(in.attributes().value("value").toString().toInt());
+            in.skipCurrentElement();
+        } else if (in.name().compare("ControlPortIn") == 0) {
+            addPort(new ControlPortIn(in, this));
+        } else if (in.name().compare("ControlPortOut") == 0) {
+            addPort(new ControlPortOut(in, this, connections));
+        } else if (in.name().compare("DataPortIn") == 0) {
+            addPort(new DataPortIn(in, this));
+        } else if (in.name().compare("DataPortOut") == 0) {
+            addPort(new DataPortOut(in, this, connections));
+        } else
+            in.skipCurrentElement();
+    }
+}
+
 DatastreamObject::~DatastreamObject() {
     for (std::list<ControlPortIn*>::iterator i = controlInPorts.begin(); i != controlInPorts.end(); i++) {
         delete *i;
@@ -136,4 +159,53 @@ void DatastreamObject::portDisconnected(Port* port) {
     if (!reorderUnconnectedPort(controlOutPorts, port))
         reorderUnconnectedPort(dataOutPorts, port);
     emit connectionsChanged();
+}
+
+Port* DatastreamObject::getPort(std::string name) {
+    for (list<ControlPortIn*>::iterator i = controlInPorts.begin(); i != controlInPorts.end(); i++) {
+        if ((*i)->getName().compare(name) == 0)
+            return *i;
+    }
+    for (list<ControlPortOut*>::iterator i = controlOutPorts.begin(); i != controlOutPorts.end(); i++) {
+        if ((*i)->getName().compare(name) == 0)
+            return *i;
+    }
+    for (list<DataPortIn*>::iterator i = dataInPorts.begin(); i != dataInPorts.end(); i++) {
+        if ((*i)->getName().compare(name) == 0)
+            return *i;
+    }
+    for (list<DataPortOut*>::iterator i = dataOutPorts.begin(); i != dataOutPorts.end(); i++) {
+        if ((*i)->getName().compare(name) == 0)
+            return *i;
+    }
+    return NULL;
+}
+
+QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DatastreamObject& dObject) {
+    out.writeStartElement("DatastreamObject");
+
+    out << (CObject&) dObject;
+
+    out.writeStartElement("x");
+    out.writeAttribute("value", to_string(dObject.position.x()).c_str());
+    out.writeEndElement();
+    out.writeStartElement("y");
+    out.writeAttribute("value", to_string(dObject.position.y()).c_str());
+    out.writeEndElement();
+
+    for (list<ControlPortIn*>::iterator i = dObject.controlInPorts.begin(); i != dObject.controlInPorts.end(); i++) {
+        out << **i;
+    }
+    for (list<ControlPortOut*>::iterator i = dObject.controlOutPorts.begin(); i != dObject.controlOutPorts.end(); i++) {
+        out << **i;
+    }
+    for (list<DataPortIn*>::iterator i = dObject.dataInPorts.begin(); i != dObject.dataInPorts.end(); i++) {
+        out << **i;
+    }
+    for (list<DataPortOut*>::iterator i = dObject.dataOutPorts.begin(); i != dObject.dataOutPorts.end(); i++) {
+        out << **i;
+    }
+
+    out.writeEndElement();
+    return out;
 }

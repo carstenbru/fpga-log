@@ -6,6 +6,7 @@
 #include <iostream>
 #include <QProcessEnvironment>
 #include <QMessageBox>
+#include <QFileDialog>
 #include "consoleredirector.h"
 #include "targetconfigdialog.h"
 #include "datalogger.h"
@@ -15,45 +16,44 @@ using namespace std;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    otherModel(&dataLogger),
-    outputGenerator(NULL),
+    dataLogger(NULL),
     dataLoggerSaved(true),
-    bitfileGenerated(false)
+    bitfileGenerated(false),
+    outputGenerator(NULL),
+    otherModel()
 {
     ui->setupUi(this);
     new ConsoleRedirector(cout, ui->textBrowser, "Black");
     new ConsoleRedirector(cerr, ui->textBrowser, "Red");
 
+    connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionNewObject, SIGNAL(triggered()), this, SLOT(newObject()));
     connect(ui->actionTarget, SIGNAL(triggered()), this, SLOT(targetConfig()));
     connect(ui->actionGenerate, SIGNAL(triggered()), this, SLOT(generate()));
     connect(ui->actionSynthesize, SIGNAL(triggered()), this, SLOT(synthesize()));
     connect(ui->actionFlash, SIGNAL(triggered()), this, SLOT(flash()));
 
+    connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newLogger()));
+    connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
+    connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(save()));
+    connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAs()));
+
     ui->listView->setModel(&otherModel);
     connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(otherObjectConfig(QModelIndex)));
-
-    connect(&dataLogger, SIGNAL(connectionsChanged()), this, SLOT(dataLoggerChanged()));
-    connect(&dataLogger, SIGNAL(datastreamModulesChanged()), this, SLOT(dataLoggerChanged()));
-    connect(&dataLogger, SIGNAL(otherModulesChanged()), this, SLOT(dataLoggerChanged()));
 }
 
 void MainWindow::show() {
     QMainWindow::show();
 
-    datastreamView = new DatastreamView(ui->graphicsView, &dataLogger);
+    datastreamView = new DatastreamView(ui->graphicsView);
     connect(datastreamView, SIGNAL(requestConfigDialog(CObject&)), this, SLOT(showConfigDialog(CObject&)));
+
+    newLogger();
 
     string spmc_root = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();
     if (spmc_root.empty()) {
         cerr << "SpartanMC root nicht gesetzt. Bitte setzen sie die $SPARTANMC_ROOT Umgebungsvariable." << endl;
     }
-
-//    dataLogger.newObject(DataTypeStruct::getType("device_hct99_t")); //TODO remove
-//    dataLogger.newObject(DataTypeStruct::getType("dm_timer_t"));
-//    dataLogger.newObject(DataTypeStruct::getType("sink_uart_t"));
-//    dataLogger.newObject(DataTypeStruct::getType("formatter_simple_t"));
-//    dataLogger.newObject(DataTypeStruct::getType("control_protocol_ascii_t"));
 }
 
 MainWindow::~MainWindow()
@@ -67,14 +67,14 @@ void MainWindow::newObject() {
     if (dialog.exec() == QDialog::Accepted) {
         DataTypeStruct* dataType = dialog.getSelectedDataType();
         if (dataType != NULL) {
-            dataLogger.newObject(dataType);
+            dataLogger->newObject(dataType);
         }
      }
 }
 
 void MainWindow::otherObjectConfig(QModelIndex index) {
     string objectName = index.data(Qt::UserRole + 1).toString().toStdString();
-    vector<CObject*> objects = dataLogger.getOtherObjects();
+    vector<CObject*> objects = dataLogger->getOtherObjects();
     vector<CObject*>::iterator i;
     for (i = objects.begin(); i != objects.end(); i++) {
         if ((*i)->getName().compare(objectName) == 0)
@@ -85,42 +85,50 @@ void MainWindow::otherObjectConfig(QModelIndex index) {
 }
 
 void MainWindow::showConfigDialog(CObject& object) {
-    ConfigObjectDialog dialog(this, &object, &dataLogger);
+    ConfigObjectDialog dialog(this, &object, dataLogger);
     if (dialog.exec() == QDialog::Rejected) {
-        dataLogger.deleteObject(&object);
+        dataLogger->deleteObject(&object);
     }
     dataLoggerChanged();
 }
 
 void MainWindow::targetConfig() {
-    TargetConfigDialog dialog(this, &dataLogger);
+    TargetConfigDialog dialog(this, dataLogger);
     dialog.exec();
     dataLoggerChanged();
 }
 
-void MainWindow::newOutputGenerator() {
+bool MainWindow::newOutputGenerator() {
+    if (dataLoggerPath.empty()) {
+        saveAs();
+        if (dataLoggerPath.empty())
+            return false;
+    }
+
     ui->actionSynthesize->setEnabled(false);
     ui->actionGenerate->setEnabled(false);
     ui->actionFlash->setEnabled(false);
 
-    outputGenerator = new OutputGenerator(&dataLogger, "../test/"); //TODO
+    outputGenerator = new OutputGenerator(dataLogger, QFileInfo(dataLoggerPath.c_str()).dir().absolutePath().toStdString());
     connect(outputGenerator, SIGNAL(finished(bool)), this, SLOT(outputGeneratorFinished(bool)));
+    return true;
 }
 
 void MainWindow::generate() {
     if (outputGenerator == NULL) {
-        newOutputGenerator();
-        outputGenerator->generateConfigFiles();
+        if (newOutputGenerator())
+            outputGenerator->generateConfigFiles();
     }
 }
 
 void MainWindow::synthesize() {
     if (outputGenerator == NULL) {
-        newOutputGenerator();
-        outputGenerator->generateConfigFiles();
-        outputGenerator->synthesizeSystem();
+        if (newOutputGenerator()) {
+            outputGenerator->generateConfigFiles();
+            outputGenerator->synthesizeSystem();
 
-        bitfileGenerated = true;
+            bitfileGenerated = true;
+        }
     }
 }
 
@@ -135,15 +143,18 @@ void MainWindow::flash() {
             dialog.exec();
             if (dialog.result() == QMessageBox::Abort)
                 return;
-            newOutputGenerator();
+            if (!newOutputGenerator())
+                return;
             if (dialog.result() == QMessageBox::Yes) {
                 outputGenerator->generateConfigFiles();
                 outputGenerator->synthesizeSystem();
 
                 bitfileGenerated = true;
             }
-        } else
-            newOutputGenerator();
+        } else {
+            if (!newOutputGenerator())
+                return;
+        }
         outputGenerator->flash();
     }
 }
@@ -166,5 +177,130 @@ void MainWindow::outputGeneratorFinished(bool errorOccured) {
 void MainWindow::dataLoggerChanged() {
     dataLoggerSaved = false;
     bitfileGenerated = false;
-    setWindowTitle("fpga-log*");
+    refreshWindowTitle();
+}
+
+void MainWindow::refreshWindowTitle() {
+    string title;
+    if (!dataLoggerSaved) {
+        title += "*";
+    }
+    if (!dataLoggerPath.empty()) {
+        title += dataLoggerPath + " - ";
+    }
+    title += "fpga-log";
+    setWindowTitle(title.c_str());
+}
+
+bool MainWindow::checkAndAskSave() {
+    if (!dataLoggerSaved) {
+        QMessageBox dialog(QMessageBox::Warning,
+                           "Datenlogger nicht gespeichert",
+                           "Der Datenlogger wurde nicht gespeichert.\nSoll der Datenlogger zuerst gespeichert werden?",
+                           QMessageBox::Yes | QMessageBox::No | QMessageBox::Abort);
+        dialog.setWindowIcon(QIcon::fromTheme("document-save"));
+        dialog.exec();
+        if (dialog.result() == QMessageBox::Abort)
+            return false;
+        if (dialog.result() == QMessageBox::Yes) {
+            save();
+        }
+    }
+    return true;
+}
+
+void MainWindow::newLogger() {
+    if (checkAndAskSave()) {
+        dataLoggerPath = "";
+        dataLoggerSaved = true;
+        bitfileGenerated = false;
+        refreshWindowTitle();
+
+        if (dataLogger != NULL)
+            delete dataLogger;
+
+        dataLogger = new DataLogger();
+
+        connect(dataLogger, SIGNAL(connectionsChanged()), this, SLOT(dataLoggerChanged()));
+        connect(dataLogger, SIGNAL(datastreamModulesChanged()), this, SLOT(dataLoggerChanged()));
+        connect(dataLogger, SIGNAL(otherModulesChanged()), this, SLOT(dataLoggerChanged()));
+
+        datastreamView->setDataLogger(dataLogger);
+        datastreamView->redrawModules();
+        otherModel.setDataLogger(dataLogger);
+    }
+}
+
+void MainWindow::open() {
+    newLogger();
+
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                                    "Öffnen",
+                                                    QDir::currentPath() +
+                                                    "/../projects/",
+                                                    "fpga-log XML (*.xml)");
+    if (!fileName.isEmpty()) {
+        dataLoggerPath = fileName.toStdString();
+
+        QFile file(fileName);
+        file.open(QIODevice::ReadOnly);
+
+        if (file.isOpen()) {
+            QXmlStreamReader reader(&file);
+            reader >> *dataLogger;
+
+            file.close();
+            dataLoggerSaved = true;
+            refreshWindowTitle();
+            cout << "Datei " + dataLoggerPath + " geladen!" << endl;
+        } else {
+            cerr << "Fehler: Datei konnte nicht geöffnet werden." << endl;
+        }
+    }
+}
+
+void MainWindow::save() {
+    if (dataLoggerPath.empty()) {
+        saveAs();
+        return;
+    }
+
+    QFile file(dataLoggerPath.c_str());
+    file.open(QIODevice::WriteOnly);
+
+    if (file.isOpen()) {
+        QXmlStreamWriter writer(&file);
+        writer.setAutoFormatting(true);
+
+        writer.writeStartDocument();
+        writer << *dataLogger;
+        writer.writeEndDocument();
+
+        file.close();
+
+        dataLoggerSaved = true;
+        refreshWindowTitle();
+        cout << "Datenlogger unter " + dataLoggerPath + " gespeichert!" << endl;
+    } else {
+        cerr << "Fehler: Zieldatei konnte nicht geschrieben werden." << endl;
+    }
+}
+
+void MainWindow::saveAs() {
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    "Speichern unter",
+                                                    QDir::currentPath() +
+                                                    "/../projects/",
+                                                    "fpga-log XML (*.xml)");
+    if (!fileName.isEmpty()) {
+        dataLoggerPath = fileName.toStdString();
+        save();
+    }
+}
+
+void MainWindow::closeEvent(QCloseEvent* event) {
+    if (checkAndAskSave())
+        QMainWindow::closeEvent(event);
+    else
+        event->ignore();
 }

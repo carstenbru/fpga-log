@@ -14,6 +14,7 @@ class DatastreamObject : public CObject
 
 public:
     DatastreamObject(std::string name, DataTypeStruct *type, DataLogger* dataLogger);
+    DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger, std::map<PortOut *, stringPair> &connections);
     ~DatastreamObject();
 
     std::list<ControlPortIn*> getControlInPorts() { return controlInPorts; }
@@ -21,9 +22,12 @@ public:
     std::list<DataPortIn*> getDataInPorts() { return dataInPorts; }
     std::list<DataPortOut*> getDataOutPorts() { return dataOutPorts; }
     std::list<PortOut*> getOutPorts(port_type type);
+    Port* getPort(std::string name);
 
     void setPosition(QPoint pos);
     QPoint getPosition();
+
+    friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DatastreamObject& dObject);
 private:
     void findPorts();
     template <typename T>
