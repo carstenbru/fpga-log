@@ -195,7 +195,7 @@ QWidget* DataTypePin::getConfigWidget(DataLogger*, CParameter* param, QObject* r
     QObject::connect(groupBox, SIGNAL(currentIndexChanged(QString)), pinBox, SLOT(setPinItems(QString)));
 
     if (receiver != NULL) {
-        QObject::connect(pinBox, SIGNAL(currentIndexChanged(QString)), receiver, slot);
+        QObject::connect(pinBox, SIGNAL(pinChanged()), receiver, slot);
     }
 
     return widget;
@@ -215,11 +215,16 @@ std::string DataTypePin::getConfigData(QWidget* widget) {
 }
 
 Pin* DataTypePin::getPin(std::string group, std::string pin) {
-    list<Pin>& pinsInGroup = pins.at(group);
-    for (list<Pin>::iterator i = pinsInGroup.begin(); i != pinsInGroup.end(); i++) {
-        if ((*i).getName().compare(pin) == 0)
-            return &*i;
+    try {
+        list<Pin>& pinsInGroup = pins.at(group);
+        for (list<Pin>::iterator i = pinsInGroup.begin(); i != pinsInGroup.end(); i++) {
+            if ((*i).getName().compare(pin) == 0)
+                return &*i;
+        }
+    } catch (exception) {
+
     }
+
     return NULL;
 }
 
@@ -228,6 +233,7 @@ string Pin::getGroupFromFullName(string fullName) {
     if (d < fullName.length()) {
         fullName.erase(d, fullName.length());
     }
+
     return fullName;
 }
 
@@ -236,5 +242,6 @@ string Pin::getPinFromFullName(string fullName) {
     if (d < fullName.length()) {
         fullName.erase(0, d + 1);
     }
+
     return fullName;
 }

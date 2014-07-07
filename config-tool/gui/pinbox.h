@@ -9,11 +9,12 @@ class PinBox : public QComboBox
 
 public:
     explicit PinBox(QWidget *parent = 0);
-
 signals:
-
+    void pinChanged();
 public slots:
     void setPinItems(const QString& pinGroup);
+private slots:
+    void indexChanged();
 };
 
 #endif // PINBOX_H

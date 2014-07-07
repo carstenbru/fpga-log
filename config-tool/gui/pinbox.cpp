@@ -8,6 +8,8 @@ PinBox::PinBox(QWidget *parent) :
     QComboBox(parent)
 {
     setSizeAdjustPolicy(QComboBox::AdjustToContents);
+
+    connect(this, SIGNAL(currentIndexChanged(QString)), this, SLOT(indexChanged()));
 }
 
 void PinBox::setPinItems(const QString& pinGroup) {
@@ -20,4 +22,9 @@ void PinBox::setPinItems(const QString& pinGroup) {
     } catch (exception) {
 
     }
+}
+
+void PinBox::indexChanged() {
+    if (count())
+        emit pinChanged();
 }
