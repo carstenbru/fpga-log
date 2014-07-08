@@ -29,9 +29,8 @@ void control_protocol_ascii_init(
 }
 
 void control_protocol_ascii_set_special_chars(
-		control_protocol_ascii_t* const control_protocol_ascii,
-		unsigned char start_char, unsigned char separator, unsigned char end_char,
-		unsigned char out_sel_char) {
+		control_protocol_ascii_t* const control_protocol_ascii, char start_char,
+		char separator, char end_char, char out_sel_char) {
 	control_protocol_ascii->start_char = start_char;
 	control_protocol_ascii->separator = separator;
 	control_protocol_ascii->end_char = end_char;

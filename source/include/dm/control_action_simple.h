@@ -73,6 +73,6 @@ void control_action_simple_add_paramter(
  * @param value									the value of the new parameter
  */
 void control_action_simple_add_paramter_exp(
-		control_action_simple_t* const control_action_simple, int type, int value);
+		control_action_simple_t* const control_action_simple, char type, int value);
 
 #endif

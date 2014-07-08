@@ -95,8 +95,8 @@ typedef enum {
 typedef struct {
 	hct99_command command_code; /**< hct-99 command code */
 	unsigned int x; /**< x-parameter */
-	unsigned int y; /**< x-parameter */
-	unsigned int z; /**< x-parameter */
+	unsigned int y; /**< y-parameter */
+	unsigned int z; /**< z-parameter */
 } hct99_command_t;
 
 /**

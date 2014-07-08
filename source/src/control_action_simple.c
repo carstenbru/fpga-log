@@ -52,7 +52,7 @@ void control_action_simple_add_paramter(
 }
 
 void control_action_simple_add_paramter_exp(
-		control_action_simple_t* const control_action_simple, int type, int value) {
+		control_action_simple_t* const control_action_simple, char type, int value) {
 	control_parameter_t p = { type, value };
 	control_action_simple_add_paramter(control_action_simple, &p);
 }

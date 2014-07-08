@@ -23,10 +23,10 @@
 typedef struct {
 	control_protocol_t super; /**< super-"class": control_protocol_t */
 
-	unsigned char start_char; /**< command start char */
-	unsigned char separator; /**< parameter separator char */
-	unsigned char end_char; /**< command end char */
-	unsigned char out_select_char; /**< control output select char */
+	char start_char; /**< command start char */
+	char separator; /**< parameter separator char */
+	char end_char; /**< command end char */
+	char out_select_char; /**< control output select char */
 
 	unsigned int output;
 	int state;
@@ -56,8 +56,7 @@ void control_protocol_ascii_init(
  * @param out_sel_char						control output selection parameter character
  */
 void control_protocol_ascii_set_special_chars(
-		control_protocol_ascii_t* const control_protocol_ascii,
-		unsigned char start_char, unsigned char separator, unsigned char end_char,
-		unsigned char out_sel_char);
+		control_protocol_ascii_t* const control_protocol_ascii, char start_char,
+		char separator, char end_char, char out_sel_char);
 
 #endif
