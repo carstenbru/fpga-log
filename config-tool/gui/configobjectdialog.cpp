@@ -4,6 +4,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QFormLayout>
+#include <QInputDialog>
 #include "spmcperipheral.h"
 
 using namespace std;
@@ -12,7 +13,8 @@ ConfigObjectDialog::ConfigObjectDialog(QWidget *parent, CObject *object, DataLog
     QDialog(parent),
     ui(new Ui::ConfigObjectDialog),
     object(object),
-    dataLogger(dataLogger)
+    dataLogger(dataLogger),
+    signalMapper(NULL)
 {
     ui->setupUi(this);
 
@@ -25,6 +27,8 @@ ConfigObjectDialog::ConfigObjectDialog(QWidget *parent, CObject *object, DataLog
 
 ConfigObjectDialog::~ConfigObjectDialog() {
     delete ui;
+    if (signalMapper != NULL)
+        signalMapper->deleteLater();
 }
 
 void ConfigObjectDialog::setupUi() {
@@ -41,6 +45,7 @@ void ConfigObjectDialog::setupUi() {
     addNameGroup(layout);
     addHardwareParametersGroup(layout);
     addReqParametersGroup(layout);
+    addAdvancedConfigGroup(layout);
 }
 
 void ConfigObjectDialog::addGroup(QLayout* parentLayout, string title, QLayout *groupLayout) {
@@ -133,6 +138,34 @@ void ConfigObjectDialog::addReqParametersGroup(QLayout *parent) {
     addGroup(parent, "benötigte Parameter", layout);
 }
 
+void ConfigObjectDialog::addAdvancedConfigGroup(QLayout *parent) {
+    if (!getAdvancedConfigMethods().empty()) {
+        QVBoxLayout* layout = new QVBoxLayout();
+        QPushButton* addBtn = new QPushButton(QIcon::fromTheme("list-add"), QString::fromUtf8("Hinzufügen"));
+        connect(addBtn, SIGNAL(clicked()), this, SLOT(addAdvancedConfig()));
+        layout->addWidget(addBtn);
+        addGroup(parent, "erweiterte Konfiguration", layout);
+
+        signalMapper = new QSignalMapper(this);
+        connect(signalMapper, SIGNAL(mapped(int)), object, SLOT(removeAdvancedConfig(int)));
+
+        list<CMethod*> methods = object->getAdvancedConfig();
+        int id = 0;
+        for (list<CMethod*>::iterator i = methods.begin(); i != methods.end(); i++) {
+            QPushButton* delBtn = new QPushButton(QIcon::fromTheme("list-remove"), QString::fromUtf8("Entfernen"));
+            signalMapper->setMapping(delBtn, id++);
+            connect(delBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+
+            QFormLayout* methodGroupLayout = new QFormLayout();
+            methodGroupLayout->addRow(delBtn);
+
+            string name = (*i)->getName();
+            addParameters(methodGroupLayout, (*i)->getMethodParameterPointers());
+            addGroup(layout, name, methodGroupLayout);
+        }
+    }
+}
+
 void ConfigObjectDialog::nameEdited() {
     dataLogger->changeObjectName(object, objectName->text().toStdString());
 }
@@ -147,4 +180,31 @@ void ConfigObjectDialog::storeParams() {
 void ConfigObjectDialog::reload() {
     storeParams();
     ui->scrollArea->widget()->deleteLater();
+    signalMapper->deleteLater();
+}
+
+QStringList ConfigObjectDialog::getAdvancedConfigMethods() {
+    list<CMethod*> methods = object->getType()->getMethods();
+    QStringList items;
+    for (list<CMethod*>::iterator i = methods.begin(); i != methods.end(); i++) {
+        CMethod* m = *i;
+        if (!m->getHideFromUser())
+            items.append(m->getName().c_str());
+    }
+    return items;
+}
+
+void ConfigObjectDialog::addAdvancedConfig() {
+    QInputDialog dialog(this);
+    dialog.setOption(QInputDialog::UseListViewForComboBoxItems);
+    dialog.setWindowIcon(QIcon::fromTheme("list-add"));
+    dialog.setWindowTitle(QString::fromUtf8("Hinzufügen"));
+    dialog.setLabelText(QString::fromUtf8("verfügbare Methoden:"));
+
+    QStringList items = getAdvancedConfigMethods();
+    dialog.setComboBoxItems(items);
+    if (dialog.exec() == QDialog::Accepted) {
+        object->addAdvancedConfig(dialog.textValue().toStdString());
+        reload();
+    }
 }

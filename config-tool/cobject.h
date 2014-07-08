@@ -17,11 +17,14 @@ public:
     CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool readStart);
     virtual ~CObject();
 
+    void addAdvancedConfig(std::string methodName);
+
     std::string getName() { return name; }
     void setName(std::string name) { this->name = name; }
     DataTypeStruct* getType() { return type; }
 
     CMethod* getInitMethod() { return initMethod; }
+    std::list<CMethod*> getAdvancedConfig() { return advancedConfig; }
     std::list<SpmcPeripheral*> getPeripherals() { return peripherals; }
 
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CObject& cObject);
@@ -31,6 +34,12 @@ protected:
 
     CMethod* initMethod;
     std::list<SpmcPeripheral*> peripherals;
+
+    std::list<CMethod*> advancedConfig;
+public slots:
+    void removeAdvancedConfig(int methodId);
+signals:
+    void advancedConfigRemoved();
 };
 
 #endif // COBJECT_H

@@ -100,8 +100,17 @@ private:
 
 class DataTypeString : public DataType {
 public:
-    DataTypeString(std::string name);
+    DataTypeString(std::string name) : DataType(name) {}
     virtual ~DataTypeString() {}
+
+    virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
+    virtual std::string getConfigData(QWidget* widget);
+};
+
+class DataTypeChar : public DataType {
+public:
+    DataTypeChar(std::string name) : DataType(name) {}
+    virtual ~DataTypeChar() {}
 
     virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);

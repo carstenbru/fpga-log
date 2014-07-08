@@ -29,7 +29,7 @@ public:
 
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DatastreamObject& dObject);
 private:
-    void findPorts();
+    void findPorts(bool addPorts);
     template <typename T>
     bool reorderUnconnectedPort(std::list<T*>& ports, Port* port);
 

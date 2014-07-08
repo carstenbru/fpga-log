@@ -18,8 +18,12 @@ public:
 
     std::string getName() { return name; }
     std::list<CParameter>* getParameters() { return &parameters; }
+    std::list<CParameter*> getMethodParameterPointers();
     CParameter* getParameter(std::string name);
     std::string getHeaderName() { return headerFile; }
+
+    void setHideFromUser(bool hide) { hideFromUser = hide; }
+    bool getHideFromUser() { return hideFromUser; }
 
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CMethod& cMethod);
 private:
@@ -28,6 +32,8 @@ private:
 
     CParameter returnType;
     std::list<CParameter> parameters;
+
+    bool hideFromUser;
 };
 
 #endif // CMETHOD_H

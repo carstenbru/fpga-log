@@ -151,6 +151,8 @@ void HeaderParser::parseFileForMethods(string filename) {
                             try {
                                 DataType* rt = DataType::getType(returnType);
                                 CMethod* method = new CMethod(method_name, CParameter("return", rt, pointer), filename);
+                                if (method_name.compare("init") == 0)
+                                    method->setHideFromUser(true);
 
                                 string parameters;
                                 while (parameters.rfind(");") ==  string::npos) {

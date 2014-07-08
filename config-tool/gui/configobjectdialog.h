@@ -7,6 +7,7 @@
 #include <map>
 #include <list>
 #include <string>
+#include <QSignalMapper>
 #include "cobject.h"
 #include "datalogger.h"
 
@@ -28,6 +29,9 @@ private:
     void addParameters(QFormLayout *parent, std::list<CParameter *> parameters);
     void addHardwareParametersGroup(QLayout *parent);
     void addReqParametersGroup(QLayout *parent);
+    void addAdvancedConfigGroup(QLayout *parent);
+
+    QStringList getAdvancedConfigMethods();
 
     Ui::ConfigObjectDialog *ui;
 
@@ -36,11 +40,15 @@ private:
     QLineEdit* objectName;
 
     std::map<CParameter*, QWidget*> paramWidgets;
+
+    QSignalMapper* signalMapper;
 private slots:
     void nameEdited();
     void storeParams();
     void setupUi();
     void reload();
+
+    void addAdvancedConfig();
 };
 
 #endif // CONFIGOBJECTDIALOG_H

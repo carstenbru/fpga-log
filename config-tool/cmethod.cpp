@@ -5,7 +5,8 @@ using namespace std;
 CMethod::CMethod(std::string name, CParameter returnType, string headerFile) :
     name(name),
     headerFile(headerFile),
-    returnType(returnType)
+    returnType(returnType),
+    hideFromUser(false)
 {
 }
 
@@ -19,10 +20,6 @@ CMethod::CMethod(QXmlStreamReader& in) {
 }
 
 CMethod::~CMethod() {
-//    delete returnType;
-//    for (list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
-//        delete *i;
-//    }
 }
 
 bool CMethod::sameSignature(CMethod &compare) {
@@ -46,6 +43,14 @@ CParameter* CMethod::getParameter(std::string name) {
             return &*i;
     }
     return NULL;
+}
+
+list<CParameter*> CMethod::getMethodParameterPointers() {
+    list<CParameter*> res;
+    for (list<CParameter>::iterator i = ++parameters.begin(); i != parameters.end(); i++) {
+        res.push_back(&*i);
+    }
+    return res;
 }
 
 QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CMethod& cMethod) {

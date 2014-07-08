@@ -50,6 +50,16 @@ void MainWindow::show() {
 
     newLogger();
 
+    dataLoggerPath = "/home/carsten/Uni/ba/fpga-log/projects/test/fpga-log.xml"; //TODO remove
+    QFile file(dataLoggerPath.c_str());
+    file.open(QIODevice::ReadOnly);
+    QXmlStreamReader reader(&file);
+    reader >> *dataLogger;
+    file.close();
+    dataLoggerSaved = true;
+    refreshWindowTitle();
+
+
     string spmc_root = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();
     if (spmc_root.empty()) {
         cerr << "SpartanMC root nicht gesetzt. Bitte setzen sie die $SPARTANMC_ROOT Umgebungsvariable." << endl;

@@ -62,6 +62,7 @@ private:
     static std::map<std::string, std::string> targetXMLs;
 private slots:
     void moduleConnectionsChanged();
+public slots:
     void parameterChanged();
 signals:
     void datastreamModulesChanged();

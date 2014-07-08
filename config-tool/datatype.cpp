@@ -141,11 +141,6 @@ std::string DataTypeEnumeration::getConfigData(QWidget* widget) {
     return cbox->currentText().toStdString();
 }
 
-DataTypeString::DataTypeString(std::string name) :
-    DataType(name)
-{
-}
-
 QWidget* DataTypeString::getConfigWidget(DataLogger*, CParameter *param) {
     QLineEdit* lEdit = new QLineEdit();
     lEdit->setText(param->getValue().c_str());
@@ -155,6 +150,22 @@ QWidget* DataTypeString::getConfigWidget(DataLogger*, CParameter *param) {
 std::string DataTypeString::getConfigData(QWidget* widget) {
     QLineEdit* lEdit = dynamic_cast<QLineEdit*>(widget);
     return lEdit->text().toStdString();
+}
+
+QWidget* DataTypeChar::getConfigWidget(DataLogger*, CParameter *param) {
+    QLineEdit* lEdit = new QLineEdit();
+    lEdit->setText(param->getValue().c_str());
+    lEdit->setMaxLength(1);
+    return lEdit;
+}
+
+std::string DataTypeChar::getConfigData(QWidget* widget) {
+    QLineEdit* lEdit = dynamic_cast<QLineEdit*>(widget);
+    string res = lEdit->text().toStdString();
+    if (res.empty())
+        return " ";
+    else
+        return res;
 }
 
 DataTypePin::DataTypePin(std::string name) :
