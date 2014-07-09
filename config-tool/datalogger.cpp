@@ -128,9 +128,10 @@ bool DataLogger::changeObjectName(CObject* object, std::string newName) {
         cerr << "Modulname bereits vergeben" << endl;
         return false;
     }
-    //emit datastreamModulesChanged(); //TODO seg fault with this signal in mouse move event of MoveableButton
-    emit otherModulesChanged();
     object->setName(newName);
+
+    emit datastreamModulesChanged();
+    emit otherModulesChanged();
     return true;
 }
 

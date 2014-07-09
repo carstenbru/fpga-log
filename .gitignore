@@ -12,3 +12,5 @@ jconfig.log
 
 *.user
 /build-*
+
+/projects

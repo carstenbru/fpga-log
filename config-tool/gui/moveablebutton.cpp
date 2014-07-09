@@ -26,6 +26,6 @@ void MoveableButton::mouseReleaseEvent(QMouseEvent *e) {
     if ((e->buttons() == Qt::NoButton) && (isClick)) {
         isClick = false;
         emit clicked();
-    }
-    QPushButton::mouseReleaseEvent(e);
+    } else
+        QPushButton::mouseReleaseEvent(e);
 }

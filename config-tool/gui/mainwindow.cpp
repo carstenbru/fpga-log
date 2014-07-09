@@ -225,8 +225,10 @@ void MainWindow::newLogger() {
         bitfileGenerated = false;
         refreshWindowTitle();
 
-        if (dataLogger != NULL)
+        if (dataLogger != NULL) {
+            datastreamView->setDataLogger(NULL);
             delete dataLogger;
+        }
 
         dataLogger = new DataLogger();
 
