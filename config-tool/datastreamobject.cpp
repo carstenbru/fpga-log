@@ -38,16 +38,20 @@ DatastreamObject::DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger,
 
 DatastreamObject::~DatastreamObject() {
     for (std::list<ControlPortIn*>::iterator i = controlInPorts.begin(); i != controlInPorts.end(); i++) {
-        delete *i;
+        (*i)->disconnectPort();
+        (*i)->deleteLater();
     }
     for (std::list<ControlPortOut*>::iterator i = controlOutPorts.begin(); i != controlOutPorts.end(); i++) {
-        delete *i;
+        (*i)->disconnectPort();
+        (*i)->deleteLater();
     }
     for (std::list<DataPortIn*>::iterator i = dataInPorts.begin(); i != dataInPorts.end(); i++) {
-        delete *i;
+        (*i)->disconnectPort();
+        (*i)->deleteLater();
     }
     for (std::list<DataPortOut*>::iterator i = dataOutPorts.begin(); i != dataOutPorts.end(); i++) {
-        delete *i;
+        (*i)->disconnectPort();
+        (*i)->deleteLater();
     }
 }
 

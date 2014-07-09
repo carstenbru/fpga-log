@@ -16,6 +16,7 @@ int ControlPortOut::connectPort(Port *port) {
     ControlPortIn* d = dynamic_cast<ControlPortIn*>(port);
     if (d != NULL) {
         destination = d;
+        connect(port, SIGNAL(disconnectFromDest()), this, SLOT(destDisconnected()));
         emit connected();
         return 1;
     } else {
@@ -36,6 +37,7 @@ int DataPortOut::connectPort(Port *port) {
     DataPortIn* d = dynamic_cast<DataPortIn*>(port);
     if (d != NULL) {
         destination = d;
+        connect(port, SIGNAL(disconnectFromDest()), this, SLOT(destDisconnected()));
         emit connected();
         return 1;
     } else {
@@ -46,6 +48,11 @@ int DataPortOut::connectPort(Port *port) {
 void PortOut::disconnectPort() {
     destination = NULL;
     emit disconnected(this);
+}
+
+void PortOut::destDisconnected() {
+    disconnect(destination, SIGNAL(disconnectFromDest()), this, SLOT(destDisconnected()));
+    disconnectPort();
 }
 
 void Port::saveToXml(QXmlStreamWriter& out, std::string type) {

@@ -24,10 +24,10 @@ class Port : public QObject
 public:
     Port(std::string name, DatastreamObject* parent) : name(name), parent(parent) {}
     Port(QXmlStreamReader& in, DatastreamObject* parent);
-    virtual ~Port() {}
+    virtual ~Port() { disconnectPort(); }
 
     virtual int connectPort(Port* port) = 0;
-    virtual void disconnectPort() {}
+    virtual void disconnectPort() { emit disconnectFromDest(); }
     std::string getName() { return name; }
 
     DatastreamObject* getParent() { return parent; }
@@ -40,6 +40,8 @@ protected:
 signals:
     void connected();
     void disconnected(Port* port);
+
+    void disconnectFromDest();
 };
 
 class ControlPortIn : public Port
@@ -64,6 +66,8 @@ public:
 
 class PortOut : public Port
 {
+    Q_OBJECT
+
 public:
     PortOut(std::string name, DatastreamObject* parent) : Port(name, parent), destination(NULL), multiPort(false) {}
     PortOut(std::string name, DatastreamObject* parent, bool multiPort) : Port(name, parent), destination(NULL), multiPort(multiPort) {}
@@ -80,6 +84,8 @@ protected:
     Port* destination;
 
     bool multiPort;
+private slots:
+    void destDisconnected();
 };
 
 class ControlPortOut : public PortOut
