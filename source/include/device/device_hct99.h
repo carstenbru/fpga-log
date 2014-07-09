@@ -19,15 +19,15 @@
  * @brief enumeration of the different control commands of the HCT-99
  */
 typedef enum {
-	//measure/output commands
+	/* measure/output commands */
 	HCT99_COMMAND_MEASURE_SINGLE_CHANNEL = 'F', /**< start measurement of result (single channel) */
 	HCT99_COMMAND_MEASURE_COLOR_VALUE = 'G', /**< start measurement/output of color value */
 	HCT99_COMMAND_MEASURE_TRANSMISSION_REFLECTION = 'K', /**< start measurement/output transmission/reflection */
 	HCT99_COMMAND_MEASURE_SPECIAL_CALCULATION = 'L', /**< start measurement/output special calculation */
-	//measurement parameter commands
+	/* measurement parameter commands */
 	HCT99_COMMAND_RANGE = 'H', /**< measurement range */
 	HCT99_COMMAND_AUTORANGE = 'I', /**< autorange */
-	HCT99_COMMAND_MEASUREMENT_TIME = 'M', /**< measurement (integration) time, could also be used for M2/M3 commands */
+	HCT99_COMMAND_MEASUREMENT_TIME = 'M', /**< measurement (integration) time - could also be used for M2/M3 commands */
 	HCT99_COMMAND_MEASUREMENT_TIME_SAVE = 'A', /**< save measurement time parameters (representation of M2 command) */
 	HCT99_COMMAND_MEASUREMENT_TIME_LOAD = 'B', /**< load measurement time parameters (representation of M3 command) */
 	HCT99_COMMAND_OFFSET = 'm', /**< offset */
@@ -36,13 +36,13 @@ typedef enum {
 	HCT99_COMMAND_ZERO_ADJUST = 'J', /**< zero adjust */
 	HCT99_COMMAND_SAVE_PARAMS_EEPROM = 'N', /**< save parameters in eeprom */
 	HCT99_COMMAND_LOAD_PARAMS_EEPROM = 'O', /**< load parameters from eeprom */
-	//miscellaneous commands
+	/* miscellaneous commands */
 	HCT99_COMMAND_SPECIAL_DEV_CODE = 's', /**< special device code */
 	HCT99_COMMAND_FIRMWARE_VERSION = 'P', /**< firmware version */
 	HCT99_COMMAND_FIRMWARE_TYPE = 'Q', /**< firmware type */
 	HCT99_COMMAND_HARDWARE_TYPE = 'S', /**< hardware type */
 	HCT99_COMMAND_CAL_DATA_TEXT_INFO = 'n' /**< output of calibration data text info */
-} hct99_command;
+} hct99_command_cpt;
 
 /**
  * @brief enumeration of the different error commands of the HCT-99, see HCT-99 manual for description
@@ -93,7 +93,7 @@ typedef enum {
  * @brief struct describing a HCT-99 command
  */
 typedef struct {
-	hct99_command command_code; /**< hct-99 command code */
+	hct99_command_cpt command_code; /**< hct-99 command code */
 	unsigned int x; /**< x-parameter */
 	unsigned int y; /**< y-parameter */
 	unsigned int z; /**< z-parameter */

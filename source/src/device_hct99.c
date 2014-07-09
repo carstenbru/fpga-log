@@ -211,7 +211,7 @@ static void device_hct99_new_control_message(void* const _hct99,
 		unsigned int count, const control_parameter_t* parameters) {
 	device_hct99_t* hct99 = (device_hct99_t*) _hct99;
 
-	hct99_command command = 0;
+	hct99_command_cpt command = 0;
 	unsigned int x = 0;
 	unsigned int y = 0;
 	unsigned int z = 0;

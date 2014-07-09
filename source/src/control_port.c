@@ -8,9 +8,11 @@
 #include <fpga-log/control_port.h>
 
 /**
- * @brief control_port measure dummy function
+ * @brief control_port new message dummy function
  *
- * @param parent	not used
+ * @param parent			not used
+ * @param count 			not used
+ * @param	parameters	not used
  */
 static void control_port_new_control_message_dummy(void* const parent,
 		unsigned int count, const control_parameter_t* parameters) {

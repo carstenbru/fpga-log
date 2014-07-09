@@ -14,6 +14,17 @@
 #define DEVICE_PWM_START_FREQUENCY 100
 
 /**
+ * @brief enumeration of the different control parameters of the PWM device
+ */
+typedef enum {
+	PWM_PARAMETER_CHANNEL = 'c', /**< channel */
+	PWM_PARAMETER_FREQUENCY = 'f', /**< frequency */
+	PWM_PARAMETER_DUTY = 'd', /**< duty-cycle */
+	PWM_PARAMETER_PHASE = 'p', /**< phase to reference signal */
+	PWM_PARAMETER_BANK = 'b' /**< bank (only needed for configuring multiple channels at once) */
+} pwm_parameter_cpt;
+
+/**
  * @brief struct describing a pwm device
  */
 typedef struct {

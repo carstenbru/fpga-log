@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     DataLogger::loadTragetXMLs();
     SpmcPeripheral::loadPeripheralXMLs();
 
-    new DataType("void"); //TODO move
+    new DataType("void");
     DataTypeEnumeration* boolType = new DataTypeEnumeration("bool");
     boolType->addValue("FALSE");
     boolType->addValue("TRUE");

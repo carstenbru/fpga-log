@@ -13,6 +13,8 @@ std::map<std::string, DataTypeStruct*> DataTypeStruct::types;
 
 DataTypePin DataTypePin::pinType("pin");
 
+DataTypeEnumeration DataTypeEnumeration::controlParameterType("parameter_type_t");
+
 DataType::DataType(std::string name) :
     name(name),
     headerFile("")
@@ -127,6 +129,20 @@ DataTypeEnumeration::DataTypeEnumeration(std::string name) :
 DataTypeEnumeration::DataTypeEnumeration(std::string name, string headerFile) :
     DataType(name, headerFile)
 {
+}
+
+void DataTypeEnumeration::addValue(std::string value) {
+    values.push_back(value);
+    if (hasSuffix("_cpt")) {
+        controlParameterType.values.push_back(value);
+    }
+}
+
+void DataTypeEnumeration::addValues(std::list<std::string> valueList) {
+    values.insert(values.end(), valueList.begin(), valueList.end());
+    if (hasSuffix("_cpt")) {
+        controlParameterType.values.insert(controlParameterType.values.end(), valueList.begin(), valueList.end());
+    }
 }
 
 QWidget* DataTypeEnumeration::getConfigWidget(DataLogger*, CParameter *param) {

@@ -209,7 +209,8 @@ void OutputGenerator::writeConnectPorts(ostream& stream) {
 void OutputGenerator::writeHeaderIncludes(std::ostream& stream) {
     stream << "#include \"logger_config.h\"" << endl;
     stream << "#include <system/peripherals.h>" << endl;
-    stream << "#include <fpga-log/pc_compatibility.h>" << endl << endl;
+    stream << "#include <fpga-log/pc_compatibility.h>" << endl;
+    stream << "#include <fpga-log/control_port.h>" << endl << endl;
     for (set<string>::iterator i = usedHeaders.begin(); i != usedHeaders.end(); i++) {
         string s = *i;
         s.erase(0, s.find("include") + 8);

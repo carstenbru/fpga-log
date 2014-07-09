@@ -82,7 +82,7 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                     bool comment = false;
                     while ((*i).compare("}") != 0) {
                         if (!comment) {
-                          if ((*i).compare("/**<") == 0)
+                          if (((*i).substr(0,2).compare("/*") == 0) || ((*i).compare("=") == 0))
                               comment = true;
                           else {
                               string value = *i;
@@ -91,7 +91,7 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                               values.push_back(value);
                           }
                         } else {
-                            if ((*i).compare("*/") == 0)
+                            if (((*i).compare("*/") == 0) || ((*i).at((*i).length()-1) == ','))
                                 comment = false;
                         }
                         if (++i == tokens.end())
@@ -207,7 +207,6 @@ void HeaderParser::parseMethodParameter(CMethod* method, std::string parameter) 
 
     if (pointer && (type.compare("char") == 0)) {
         type = "string";
-        cout << name << endl;
     }
 
     try {

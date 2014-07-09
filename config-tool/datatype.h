@@ -88,8 +88,8 @@ public:
     DataTypeEnumeration(std::string name, std::string headerFile);
     virtual ~DataTypeEnumeration() {}
 
-    void addValue(std::string value) { values.push_back(value); }
-    void addValues(std::list<std::string> valueList) { values.insert(values.end(), valueList.begin(), valueList.end()); }
+    void addValue(std::string value);
+    void addValues(std::list<std::string> valueList);
 
     virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
@@ -98,6 +98,8 @@ public:
     QComboBox* getConfigBox(CParameter *param);
 private:
     std::list<std::string> values;
+
+    static DataTypeEnumeration controlParameterType;
 };
 
 class DataTypeString : public DataType {
