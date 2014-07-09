@@ -121,6 +121,45 @@ std::string DataTypeNumber::getConfigData(QWidget* widget) {
     return std::to_string(sbox->value());
 }
 
+DataTypeFloat::DataTypeFloat(std::string name, double min, double max, int decimals, bool outputAsInt) :
+    DataType(name),
+    min(min),
+    max(max),
+    decimals(decimals),
+    outputAsInt(outputAsInt)
+{
+}
+
+QWidget* DataTypeFloat::getConfigWidget(DataLogger* dataLogger, CParameter *param) {
+    QDoubleSpinBox* sbox = new QDoubleSpinBox();
+    sbox->setMinimum(min);
+    sbox->setMaximum(max);
+    sbox->setDecimals(decimals);
+    sbox->setSingleStep(0.1f);
+    double value;
+    if (outputAsInt) {
+        value = atoi(param->getValue().c_str()) / exp10(decimals);
+    } else {
+        value = atof(param->getValue().c_str());
+    }
+    sbox->setValue(value);
+
+    if (param->getCritical()) {
+        QObject::connect(sbox, SIGNAL(valueChanged(int)), dataLogger, SLOT(parameterChanged()));
+    }
+
+    return sbox;
+}
+
+std::string DataTypeFloat::getConfigData(QWidget* widget) {
+    QDoubleSpinBox* sbox = dynamic_cast<QDoubleSpinBox*>(widget);
+    if (outputAsInt) {
+        return std::to_string((int)(sbox->value() * exp10(decimals)));
+    } else {
+        return std::to_string(sbox->value());
+    }
+}
+
 DataTypeEnumeration::DataTypeEnumeration(std::string name) :
     DataType(name)
 {

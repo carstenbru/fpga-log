@@ -34,6 +34,8 @@ void control_action_simple_init(
 	control_action_simple->super.execute = control_action_simple_execute;
 
 	control_action_simple->configured_commands = 0;
+
+	control_action_simple_add_command(control_action_simple);
 }
 
 void control_action_simple_add_command(

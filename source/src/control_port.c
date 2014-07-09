@@ -20,3 +20,9 @@ static void control_port_new_control_message_dummy(void* const parent,
 
 const control_port_t control_port_dummy = { 0,
 		control_port_new_control_message_dummy };
+
+void control_parameter_init(control_parameter_t* const control_parameter,
+		parameter_type_t type, int value) {
+	control_parameter->type = type;
+	control_parameter->value = value;
+}

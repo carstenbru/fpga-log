@@ -100,7 +100,6 @@ void connect_ports(void) {
 }
 
 void advanced_config(void) {
-	control_action_simple_add_command(&c_action);
 	control_action_simple_add_paramter_exp(&c_action, 'G', 0);
 	control_action_simple_add_paramter_exp(&c_action, 'x', 1);
 	control_action_simple_add_paramter_exp(&c_action, 'y', 6);

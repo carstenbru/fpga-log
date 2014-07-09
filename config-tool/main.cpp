@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <iostream>
 #include <QProcessEnvironment>
+#include <cmath>
 #include "headerparser.h"
 
 using namespace std;
@@ -22,6 +23,7 @@ int main(int argc, char *argv[])
     new DataTypeNumber("unsigned char", 0, 511);
     new DataTypeNumber("uint36_t", 0, 68719476735);
     new DataTypeNumber("peripheral_int", -2147483648, 2147483647);
+    new DataTypeFloat("coefficient_t", -9.9999, 9.9999, 4, true);
 
     HeaderParser hp = HeaderParser();
     string spmc_root = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();

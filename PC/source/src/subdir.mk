@@ -29,6 +29,7 @@ C_SRCS += \
 ../source/src/formatter_simple.c \
 ../source/src/lshrsi3.c \
 ../source/src/print_long.c \
+../source/src/simple_float.c \
 ../source/src/sink_sd_card.c \
 ../source/src/sink_uart.c \
 ../source/src/udivsi3.c 
@@ -59,6 +60,7 @@ OBJS += \
 ./source/src/formatter_simple.o \
 ./source/src/lshrsi3.o \
 ./source/src/print_long.o \
+./source/src/simple_float.o \
 ./source/src/sink_sd_card.o \
 ./source/src/sink_uart.o \
 ./source/src/udivsi3.o 
@@ -89,6 +91,7 @@ C_DEPS += \
 ./source/src/formatter_simple.d \
 ./source/src/lshrsi3.d \
 ./source/src/print_long.d \
+./source/src/simple_float.d \
 ./source/src/sink_sd_card.d \
 ./source/src/sink_uart.d \
 ./source/src/udivsi3.d 

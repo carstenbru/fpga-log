@@ -74,6 +74,16 @@ typedef struct {
 } control_parameter_t;
 
 /**
+ * @brief control parameter init function
+ *
+ * @param control_parameter	pointer to the control parameter
+ * @param parameter_type_t	type of the parameter
+ * @param value							value of the parameter
+ */
+void control_parameter_init(control_parameter_t* const control_parameter,
+		parameter_type_t type, int value);
+
+/**
  * @brief struct defining a control destination
  */
 typedef struct {

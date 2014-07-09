@@ -182,10 +182,14 @@ void device_hct99_set_misc_out(device_hct99_t* const hct99,
  *
  * The device will be stored in a queue until the device is ready to execute it.
  *
- * @param hct99			pointer to the HCT-99 device
- * @param command		the command to execute
+ * @param hct99					pointer to the HCT-99 device
+ * @param command_code	hct-99 command code
+ * @param x							x-parameter
+ * @param y							y-parameter
+ * @param z							z-parameter
  */
 void device_hct99_execute_command(device_hct99_t* const hct99,
-		hct99_command_t command);
+		hct99_command_cpt command_code, unsigned int x, unsigned int y,
+		unsigned int z);
 
 #endif

@@ -82,6 +82,21 @@ private:
     long max;
 };
 
+class DataTypeFloat : public DataType {
+public:
+    DataTypeFloat(std::string name, double min, double max, int decimals, bool outputAsInt);
+    virtual ~DataTypeFloat() {}
+
+    virtual QWidget* getConfigWidget(DataLogger*dataLogger, CParameter* param);
+    virtual std::string getConfigData(QWidget* widget);
+    virtual std::string getDefaultValue() { return std::to_string((min < 0) ? 0 : min); }
+private:
+    double min;
+    double max;
+    int decimals;
+    bool outputAsInt;
+};
+
 class DataTypeEnumeration : public DataType {
 public:
     DataTypeEnumeration(std::string name);

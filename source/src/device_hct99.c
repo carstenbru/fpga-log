@@ -253,8 +253,7 @@ static void device_hct99_new_control_message(void* const _hct99,
 	}
 
 	if (command) {  //check if a command was set
-		hct99_command_t c = { command, x, y, z };
-		device_hct99_execute_command(hct99, c);
+		device_hct99_execute_command(hct99, command, x, y, z);
 	} else {
 		hct99->err_name = HCT99_ERROR_MISSING_COMMAND_CODE;
 		datastream_source_generate_software_timestamp((datastream_source_t*) hct99);
@@ -289,10 +288,12 @@ static void device_hct99_send_paramters(device_hct99_t* const hct99,
 }
 
 void device_hct99_execute_command(device_hct99_t* const hct99,
-		hct99_command_t command) {
+		hct99_command_cpt command_code, unsigned int x, unsigned int y,
+		unsigned int z) {
 	if (hct99->command_fifo_elements < HCT99_COMMAND_FIFO_SIZE) {
 		int i = hct99->command_fifo_top + hct99->command_fifo_elements++;
 		i %= HCT99_COMMAND_FIFO_SIZE;
+		hct99_command_t command = { command_code, x, y, z };
 		hct99->command_fifo[i] = command;
 	} else {
 		hct99->err_name = HCT99_ERROR_COMMAND_FIFO_FULL;

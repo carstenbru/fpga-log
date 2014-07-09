@@ -8,12 +8,24 @@
 #ifndef SIMPLE_FLOAT_H_
 #define SIMPLE_FLOAT_H_
 
+typedef int coefficient_t;
+
 /**
  * @brief simple floating point data structure (base 10)
  */
 typedef struct {
-	int coefficient; /**< coefficient of the floating point number as fixed point number with 4 decimal places */
+	coefficient_t coefficient; /**< coefficient of the floating point number as fixed point number with 4 decimal places */
 	int exponent; /**< exponent of the floating point number to base 10 */
 } simple_float_b10_t;
+
+/**
+ * @brief simple float init function
+ *
+ * @param simple_float_b10	pointer to the simple float struct
+ * @param coefficient				coefficient of the float
+ * @param exponent					exponent of the float
+ */
+void simple_float_b10_init(simple_float_b10_t* const simple_float_b10,
+		coefficient_t coefficient, int exponent);
 
 #endif
