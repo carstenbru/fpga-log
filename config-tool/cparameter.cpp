@@ -54,6 +54,10 @@ bool CParameter::sameSignature(CParameter &compare) {
     return ((dataType == compare.dataType) && (pointer == compare.pointer));
 }
 
+std::string CParameter::getCValue() {
+    return dataType->getCValue(value);
+}
+
 void CParameter::loadFromXmlStream(QXmlStreamReader& in) {
     const QXmlStreamAttributes& a = in.attributes();
     name = a.value("name").toString().toStdString();

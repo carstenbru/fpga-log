@@ -34,7 +34,6 @@ void OutputGenerator::copyProjectTemplate() {
     while (dirIter.hasNext()) {
         dirIter.next();
         if (QFileInfo(dirIter.filePath()).isFile()) {
-              //  files.push_back(dirIter.filePath().toStdString());
             QString newPath = dirIter.filePath();
             newPath.remove(0, path.length());
             newPath = (directory + "/").c_str() + newPath;
@@ -156,6 +155,8 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
                 if ((*i).getDataType()->hasSuffix("_regs_t")) {
                     value = object->getName() + "_" + (*i).getName();
                     transform(value.begin(), value.end(), value.begin(), ::toupper);
+                } else {
+                    value = (*i).getCValue();
                 }
             }
 
@@ -223,8 +224,44 @@ void OutputGenerator::writePreamble(std::ostream& stream) {
     stream << " */" << endl;
 }
 
+void OutputGenerator::writeMethod(std::ostream& stream, CObject* object, CMethod* method, map<string, CObject *>& objects) {
+    usedHeaders.insert(method->getHeaderName());
+    list<CParameter>* params = method->getParameters();
+    stream << "  " << object->getType()->getCleanedName() << "_"
+              << method->getName() << "(&" << object->getName();
+    for (list<CParameter>::iterator i = ++params->begin(); i != params->end(); i++) {
+        stream << ", ";
+
+        try {
+            objects.at((*i).getValue());
+            stream << "&";
+        } catch (exception) {
+        }
+        string value  = (*i).getCValue();
+
+        if (value.empty()) {
+            error = true;
+            cerr << "FEHLER: Parameter " << (*i).getName() << " von Objekt " << object->getName() << " nicht gesetzt!" << endl;
+        }
+
+        stream << value;
+    }
+    stream << ");" << endl;
+}
+
 void OutputGenerator::writeAdvancedConfig(std::ostream& stream) {
     stream << "void advanced_config(void) {" << endl;
+
+    map<string, CObject*> objects = dataLogger->getObjectsMap();
+
+    for (map<string, CObject *>::iterator i = objects.begin(); i != objects.end(); i++) {
+        CObject* object = i->second;
+        list<CMethod*> methods = object->getAdvancedConfig();
+        for (list<CMethod*>::iterator mIt = methods.begin(); mIt != methods.end(); mIt++) {
+            writeMethod(stream, object, *mIt, objects);
+        }
+    }
+
     stream << "}" << endl;
 }
 

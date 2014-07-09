@@ -2,7 +2,7 @@
 #include "datalogger.h"
 
 using namespace std;
-
+#include <iostream>
 CObject::CObject(std::string name, DataTypeStruct* dataType, DataLogger* dataLogger) :
     name(name),
     type(dataType),

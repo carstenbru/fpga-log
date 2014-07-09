@@ -22,11 +22,13 @@ public:
     std::string getCleanedName();
     std::string getDisplayName() { return getCleanedName(); }
     bool hasPrefix(std::string prefix) { return (name.find(prefix) == 0); }
-    bool hasSuffix(std::string suffix) { return (name.rfind(suffix) == (name.length() - suffix.length())); }
+    bool hasSuffix(std::string suffix);
 
     virtual QWidget* getConfigWidget(DataLogger*, CParameter*);
     virtual std::string getConfigData(QWidget*) { return ""; }
     virtual std::string getDefaultValue() { return ""; }
+
+    virtual std::string getCValue(std::string value) { return value; }
 
     static DataType* getType(std::string name) { return types.at(name); }
     static std::map<std::string, DataType*> getTypes() { return types; }
@@ -105,6 +107,8 @@ public:
 
     virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
+
+    virtual std::string getCValue(std::string value) { return "\"" + value + "\""; }
 };
 
 class DataTypeChar : public DataType {
@@ -114,6 +118,9 @@ public:
 
     virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
+    virtual std::string getDefaultValue() { return " "; }
+
+    virtual std::string getCValue(std::string value) { return "'" + value + "'"; }
 };
 
 class Pin {

@@ -204,6 +204,12 @@ void HeaderParser::parseMethodParameter(CMethod* method, std::string parameter) 
         pointer = true;
         type.erase(type.length() - 1, 1);
     }
+
+    if (pointer && (type.compare("char") == 0)) {
+        type = "string";
+        cout << name << endl;
+    }
+
     try {
         method->addParameter(CParameter(name, DataType::getType(type), pointer));
     } catch (exception e) {

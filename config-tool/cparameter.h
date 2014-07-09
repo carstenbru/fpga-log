@@ -31,6 +31,7 @@ public:
     void setValue(std::string value) { this->value = value; emit valueChanged(value); }
     void setName(std::string name) { this->name = name; }
     std::string getValue() { return value; }
+    std::string getCValue();
 
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CParameter& parameter);
     friend QXmlStreamReader& operator>>(QXmlStreamReader& in, CParameter& parameter);

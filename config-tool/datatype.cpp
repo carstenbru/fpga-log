@@ -27,6 +27,12 @@ DataType::DataType(std::string name, std::string headerFile) :
     types[name] = this;
 }
 
+bool DataType::hasSuffix(std::string suffix) {
+    if (suffix.length() > name.length())
+        return false;
+    return (name.rfind(suffix) == (name.length() - suffix.length()));
+}
+
 std::string DataType::getCleanedName() {
     std::string s = name;
     size_t i = s.rfind("_t");
