@@ -1,5 +1,6 @@
 module spmc_timestamp_gen #(
             parameter SOURCES = 2,        //number of timestamp capture sources
+            parameter PIN_SOURCES = 2,        //number of timestamp capture pin sources
             parameter CLOCK_FREQUENCY = 16000000, //input clock frequency
             parameter BASE_ADR = 10'h0) ( 
         //*** Connections to SpartanMC Core (do not change) ***
@@ -14,7 +15,8 @@ module spmc_timestamp_gen #(
         input wire              reset,          //Reset-Signal (could be external)
 
         //*** io interface ***
-        input wire [SOURCES-1:0] source
+        input wire [SOURCES-1:0] internal_source,
+        input wire [PIN_SOURCES-1:0] pin_source
 );
   //register addresses of the module
   parameter LPT_LOW = 3'b000; //low precision timestamp low register
@@ -24,6 +26,9 @@ module spmc_timestamp_gen #(
   parameter TSR = 3'b100; //timestamp source register
   parameter CONTROL_ADR = 3'b101; //control register
   parameter STATUS_ADR = 3'b110; //status register
+  
+  wire [SOURCES+PIN_SOURCES-1:0] source;
+  assign source = { pin_source, internal_source };
 
   wire select;
   // Address decoder generates the select sinal out of the upper part of the peripheral address.

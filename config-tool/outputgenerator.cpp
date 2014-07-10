@@ -15,6 +15,7 @@ OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     directory(directory),
     usedIdCounter(0),
     usedTimestampSources(0),
+    usedTimestampPinSources(0),
     process(this),
     busy(false),
     error(false)
@@ -311,9 +312,11 @@ void OutputGenerator::generateSystemXML() {
             stream << "<attribute id=\"value\">" << (1000000000.0f / dataLogger->getClk()) << "</attribute>" << endl;
         } else if (line.compare("TIMESTAMP_GEN_SOURCES_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << usedTimestampSources << "</attribute>" << endl;
+        } else if (line.compare("TIMESTAMP_GEN_PIN_SOURCES_ATTRIBUTE") == 0) {
+            stream << "<attribute id=\"value\">" << usedTimestampPinSources << "</attribute>" << endl;
         } else if (line.compare("FPGA_PINS") == 0) {
             stream << pins.toStdString() << endl;
-        } else if (line.compare("TIMESTAMP_GEN_CONNECTIONS") == 0) {
+        } else if (line.compare("TIMESTAMP_GEN_PIN_CONNECTIONS") == 0) {
             stream << timestampConnections.toStdString() << endl;
         } else {
             stream << line << endl;
@@ -400,7 +403,7 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
                         destination.remove(0, slash);
                         destination = destName.c_str() + destination;
                     } else if (destination.compare("TIMESTAMP_GEN") == 0) { //timestamp generator source
-                        destination = "SUBSYSTEM/TIMESTAMP_GEN/#PORT.source";
+                        destination = "SUBSYSTEM/TIMESTAMP_GEN/#PORT.internal_source";
                         string param = (*portIt)->getName();
                         peripheral->getParentObject()->getInitMethod()->getParameter(param)->setValue(to_string(usedTimestampSources++));
                     }
@@ -497,14 +500,14 @@ void OutputGenerator::writeTimestampPins(QXmlStreamWriter& writer) {
     for (map<string, CObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
         map<string, CParameter*> timestampPins = i->second->getTimestampPins();
         for (map<string, CParameter*>::iterator itp = timestampPins.begin(); itp != timestampPins.end(); itp++) {
-            i->second->getInitMethod()->getParameter(itp->first)->setValue(to_string(usedTimestampSources));
+            i->second->getInitMethod()->getParameter(itp->first)->setValue(to_string(usedTimestampSources+usedTimestampPinSources));
 
             QString destination = itp->second->getValue().c_str();
             destination.replace(":", "_");
             usedPins.push_back(FpgaPin(destination.toStdString(), "INPUT", "PULLDOWN"));
             destination = "#PIN." + destination;
 
-            writeConnection(writer, destination.toStdString(), usedTimestampSources++);
+            writeConnection(writer, destination.toStdString(), usedTimestampPinSources++);
         }
     }
 }

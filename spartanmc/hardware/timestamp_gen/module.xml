@@ -20,12 +20,16 @@ XML module description
 		<parameter name="SOURCES" type="int" value="2" >
 		  <range min="1" max="262144"/>
 		</parameter>
+		<parameter name="PIN_SOURCES" type="int" value="2" >
+		  <range min="1" max="262144"/>
+		</parameter>
 		<parameter name="CLOCK_FREQUENCY" type="int" value="16000000" >
 		  <range min="1" max="68719476736"/>
 		</parameter>
 	</parameters>
 	
 	<ports group="Timestamp capture sources" direction="input">
-          <port name="source" width="${SOURCES}"/>
+          <port name="internal_source" width="${SOURCES}"/>
+	  <port name="pin_source" width="${PIN_SOURCES}"/>
         </ports>
 </module>

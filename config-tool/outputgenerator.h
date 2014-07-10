@@ -74,6 +74,7 @@ private:
     int usedIdCounter;
     std::list<FpgaPin> usedPins;
     int usedTimestampSources;
+    int usedTimestampPinSources;
 
     QProcess process;
     std::list<std::string> pending;

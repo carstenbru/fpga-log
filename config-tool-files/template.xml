@@ -309,6 +309,10 @@ PERI_CLOCK_ATTRIBUTE
                     <attribute id="name" xml:space="preserve">SOURCES</attribute>
 TIMESTAMP_GEN_SOURCES_ATTRIBUTE
                 </parameter>
+		<parameter id="#PARAM.PIN_SOURCES">
+                    <attribute id="name" xml:space="preserve">SOURCES</attribute>
+TIMESTAMP_GEN_PIN_SOURCES_ATTRIBUTE
+                </parameter>
                 <port id="#PORT.access_peri">
                     <attribute id="name" xml:space="preserve">access_peri</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
@@ -357,10 +361,6 @@ TIMESTAMP_GEN_SOURCES_ATTRIBUTE
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
                 </port>
-                <port id="#PORT.source">
-                    <attribute id="name" xml:space="preserve">source</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                </port>
                 <port id="#PORT.wr_peri">
                     <attribute id="name" xml:space="preserve">wr_peri</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
@@ -369,10 +369,10 @@ TIMESTAMP_GEN_SOURCES_ATTRIBUTE
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
                 </port>
-		<port id="#PORT.source">
-                    <attribute id="name" xml:space="preserve">source</attribute>
+		<port id="#PORT.pin_source">
+                    <attribute id="name" xml:space="preserve">pin_source</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
-TIMESTAMP_GEN_CONNECTIONS
+TIMESTAMP_GEN_PIN_CONNECTIONS
                 </port>
 	      </peripheral>
 FPGA-LOG_PERIPHERALS
