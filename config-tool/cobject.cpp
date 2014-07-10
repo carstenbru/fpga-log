@@ -83,8 +83,10 @@ void CObject::readTimestampPinsFromModuleXml() {
     reader.readNextStartElement();
     while (reader.readNextStartElement()) {
         if (reader.name().compare("timestamp_pin") == 0) {
-            timestampPins[reader.attributes().value("parameter").toString().toStdString()] =
+            string refParam = reader.attributes().value("parameter").toString().toStdString();
+            timestampPins[refParam] =
                     new CParameter(reader.attributes().value("name").toString().toStdString(), DataTypePin::getPinType());
+            initMethod->getParameter(refParam)->setHideFromUser(true);
         }
         reader.skipCurrentElement();
     }

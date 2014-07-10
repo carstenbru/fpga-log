@@ -56,6 +56,8 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
         for (tokenizer<char_separator<char>, istreambuf_iterator<char> >::iterator i = tokens.begin(); i != tokens.end(); i++) {
             if ((*i).compare("typedef") == 0) {
                 i++;
+                if ((*i).compare("volatile") == 0)
+                    i++;
                 if ((*i).compare("struct") == 0) {
                     string superType;
                     bool hasSuper = false;

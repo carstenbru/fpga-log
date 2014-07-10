@@ -134,7 +134,6 @@ void MainWindow::generate() {
 void MainWindow::synthesize() {
     if (outputGenerator == NULL) {
         if (newOutputGenerator()) {
-            outputGenerator->generateConfigFiles();
             outputGenerator->synthesizeSystem();
 
             bitfileGenerated = true;
