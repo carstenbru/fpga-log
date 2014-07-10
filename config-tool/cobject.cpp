@@ -1,5 +1,6 @@
 #include "cobject.h"
 #include "datalogger.h"
+#include <QFile>
 
 using namespace std;
 
@@ -20,6 +21,8 @@ CObject::CObject(std::string name, DataTypeStruct* dataType, DataLogger* dataLog
             }
         }
         connect(this, SIGNAL(advancedConfigRemoved()), dataLogger, SLOT(parameterChanged()));
+
+        readTimestampPinsFromModuleXml();
     }
 }
 
@@ -47,6 +50,11 @@ CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool readStart) {
                 initMethod = new CMethod(in);
             else
                 advancedConfig.push_back(new CMethod(in));
+        } else if (in.name().compare("timestamp_pin") == 0) {
+            string parameter = in.attributes().value("name").toString().toStdString();
+            in.readNextStartElement();
+            timestampPins[parameter] = new CParameter(in);
+            in.skipCurrentElement();
         } else
             in.skipCurrentElement();
     }
@@ -57,6 +65,28 @@ CObject::~CObject() {
     delete initMethod;
     for (list<SpmcPeripheral*>::iterator i = peripherals.begin(); i != peripherals.end(); i++) {
         delete *i;
+    }
+    for (map<std::string, CParameter*>::iterator i = timestampPins.begin(); i != timestampPins.end(); i++) {
+        delete i->second;
+    }
+}
+
+void CObject::readTimestampPinsFromModuleXml() {
+    string moduleXmlFile = "../config-tool-files/modules/";
+    moduleXmlFile += type->getCleanedName();
+    moduleXmlFile += ".xml";
+    QFile file(QString(moduleXmlFile.c_str()));
+    if (!file.open(QIODevice::ReadOnly)) {
+        return;
+    }
+    QXmlStreamReader reader(&file);
+    reader.readNextStartElement();
+    while (reader.readNextStartElement()) {
+        if (reader.name().compare("timestamp_pin") == 0) {
+            timestampPins[reader.attributes().value("parameter").toString().toStdString()] =
+                    new CParameter(reader.attributes().value("name").toString().toStdString(), DataTypePin::getPinType());
+        }
+        reader.skipCurrentElement();
     }
 }
 
@@ -75,6 +105,15 @@ QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CObject& cObject) {
         out << **i;
     }
 
+    for (map<string, CParameter*>::iterator i = cObject.timestampPins.begin(); i != cObject.timestampPins.end(); i++) {
+        out.writeStartElement("timestamp_pin");
+        out.writeAttribute("name", i->first.c_str());
+
+        out << *(i->second);
+
+        out.writeEndElement();
+    }
+
     out.writeEndElement();
     return out;
 }
@@ -90,4 +129,12 @@ void CObject::removeAdvancedConfig(int methodId) {
     advancedConfig.erase(i);
     emit advancedConfigRemoved();
     delete method;
+}
+
+list<CParameter*> CObject::getTimestampPinParameters() {
+    list<CParameter*> res;
+    for (map<string, CParameter*>::iterator i = timestampPins.begin(); i != timestampPins.end(); i++) {
+        res.push_back(i->second);
+    }
+    return res;
 }

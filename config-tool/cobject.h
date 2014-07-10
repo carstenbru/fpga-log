@@ -26,14 +26,19 @@ public:
     CMethod* getInitMethod() { return initMethod; }
     std::list<CMethod*> getAdvancedConfig() { return advancedConfig; }
     std::list<SpmcPeripheral*> getPeripherals() { return peripherals; }
+    std::map<std::string, CParameter*> getTimestampPins() { return timestampPins; }
+    std::list<CParameter*> getTimestampPinParameters();
 
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CObject& cObject);
 protected:
+    void readTimestampPinsFromModuleXml();
+
     std::string name;
     DataTypeStruct* type;
 
     CMethod* initMethod;
     std::list<SpmcPeripheral*> peripherals;
+    std::map<std::string, CParameter*> timestampPins;
 
     std::list<CMethod*> advancedConfig;
 public slots:

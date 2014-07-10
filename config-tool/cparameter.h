@@ -12,7 +12,7 @@ class CParameter : public QObject {
     Q_OBJECT
 
 public:
-    CParameter(std::string name, DataType* dataType, bool pointer);
+    CParameter(std::string name, DataType* dataType, bool pointer = false);
     CParameter(std::string name, DataType* dataType, bool pointer, std::string value);
     CParameter();
     CParameter(QXmlStreamReader& in);

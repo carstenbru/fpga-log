@@ -9,7 +9,7 @@
 #include "cobject.h"
 
 using namespace std;
-#include <iostream>
+
 OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     dataLogger(dataLogger),
     directory(directory),
@@ -287,6 +287,11 @@ void OutputGenerator::generateSystemXML() {
     peripheralsWriter.setAutoFormatting(true);
     writePeripherals(peripheralsWriter);
 
+    QString timestampConnections;
+    QXmlStreamWriter timestampConnectionsWriter(&timestampConnections);
+    timestampConnectionsWriter.setAutoFormatting(true);
+    writeTimestampPins(timestampConnectionsWriter);
+
     QString pins;
     QXmlStreamWriter pinsWriter(&pins);
     pinsWriter.setAutoFormatting(true);
@@ -308,6 +313,8 @@ void OutputGenerator::generateSystemXML() {
             stream << "<attribute id=\"value\">" << usedTimestampSources << "</attribute>" << endl;
         } else if (line.compare("FPGA_PINS") == 0) {
             stream << pins.toStdString() << endl;
+        } else if (line.compare("TIMESTAMP_GEN_CONNECTIONS") == 0) {
+            stream << timestampConnections.toStdString() << endl;
         } else {
             stream << line << endl;
         }
@@ -482,6 +489,23 @@ void OutputGenerator::writePins(QXmlStreamWriter& writer) {
          writeAttributeElement(writer, "user_constraints", (*i).getConstraints().c_str());
 
          writer.writeEndElement();
+    }
+}
+
+void OutputGenerator::writeTimestampPins(QXmlStreamWriter& writer) {
+    map<string, CObject*> objects = dataLogger->getObjectsMap();
+    for (map<string, CObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
+        map<string, CParameter*> timestampPins = i->second->getTimestampPins();
+        for (map<string, CParameter*>::iterator itp = timestampPins.begin(); itp != timestampPins.end(); itp++) {
+            i->second->getInitMethod()->getParameter(itp->first)->setValue(to_string(usedTimestampSources));
+
+            QString destination = itp->second->getValue().c_str();
+            destination.replace(":", "_");
+            usedPins.push_back(FpgaPin(destination.toStdString(), "INPUT", "PULLDOWN"));
+            destination = "#PIN." + destination;
+
+            writeConnection(writer, destination.toStdString(), usedTimestampSources++);
+        }
     }
 }
 

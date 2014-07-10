@@ -369,6 +369,11 @@ TIMESTAMP_GEN_SOURCES_ATTRIBUTE
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
                 </port>
+		<port id="#PORT.source">
+                    <attribute id="name" xml:space="preserve">source</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+TIMESTAMP_GEN_CONNECTIONS
+                </port>
 	      </peripheral>
 FPGA-LOG_PERIPHERALS
         </processor_module>

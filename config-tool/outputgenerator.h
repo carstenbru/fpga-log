@@ -58,6 +58,7 @@ private:
     void writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* peripheral);
     void writePeripherals(QXmlStreamWriter& writer);
     void writeSpmcConnections(QXmlStreamWriter& writer);
+    void writeTimestampPins(QXmlStreamWriter& writer);
 
     void writeClkPin(QXmlStreamWriter& writer);
     void writePins(QXmlStreamWriter& writer);

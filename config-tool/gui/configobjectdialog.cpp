@@ -99,17 +99,24 @@ void ConfigObjectDialog::addHardwareParametersGroup(QLayout *parent) {
     QWidget* widget = new QWidget();
     QFormLayout* paramsLayout = new QFormLayout();
     widget->setLayout(paramsLayout);
+    QVBoxLayout* pinLayout = new QVBoxLayout();
     for (list<SpmcPeripheral*>::iterator i = peripherals.begin(); i != peripherals.end(); i++) {
         if (!((*i)->getParameters().empty())) {
             addParameters(paramsLayout, (*i)->getParameters());
         }
         map<string, list<PeripheralPort*> > ports = (*i)->getPorts();
-        QVBoxLayout* pinLayout = new QVBoxLayout();
+
         for (map<string, list<PeripheralPort*> >::iterator i = ports.begin(); i != ports.end(); i++) {
             addPortsGroup(pinLayout, i->first, i->second);
         }
-        addGroup(layout, "Pins", pinLayout);
     }
+    addGroup(layout, "Pins", pinLayout);
+
+    QWidget* tpWidget = new QWidget();
+    QFormLayout* tpLayout = new QFormLayout();
+    tpWidget->setLayout(tpLayout);
+    addParameters(tpLayout, object->getTimestampPinParameters());
+    pinLayout->addWidget(tpWidget);
 
     if (!paramsLayout->isEmpty()) {
         layout->insertWidget(0, widget);
