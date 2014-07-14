@@ -119,14 +119,14 @@ typedef struct {
 /**
  * @brief ads1115 device init function
  *
- * Initializes the pwm device, should be called before using the device.
+ * Initializes the ads1115 device, should be called before using the device.
  *
  * @param ads1115			pointer to the ads1115 device
  * @param i2c_master	pointer to a i2c-master peripheral
  * @param	mux					input multiplexer configuration
  * @param	pga					gain configuration
  * @param mode				device mode configuration
- * @pram data_rate		data rate configuration
+ * @param data_rate		data rate configuration
  */
 void device_ads1115_init(device_ads1115_t* const ads1115,
 		i2c_master_regs_t* const i2c_master, const int rdy_id, ads1115_mux mux,

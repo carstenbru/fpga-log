@@ -299,7 +299,7 @@ void device_hct99_execute_command(device_hct99_t* const hct99,
 		hct99->err_name = HCT99_ERROR_COMMAND_FIFO_FULL;
 		datastream_source_generate_software_timestamp((datastream_source_t*) hct99);
 	}
-}  //TODO really execute the command!
+}
 
 static void device_hct99_send_command(device_hct99_t* const hct99) {
 	hct99_command_t* command = &hct99->command_fifo[hct99->command_fifo_top++];
