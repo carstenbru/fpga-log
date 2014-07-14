@@ -405,7 +405,7 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
                     } else if (destination.compare("TIMESTAMP_GEN") == 0) { //timestamp generator source
                         destination = "SUBSYSTEM/TIMESTAMP_GEN/#PORT.internal_source";
                         string param = (*portIt)->getName();
-                        peripheral->getParentObject()->getInitMethod()->getParameter(param)->setValue(to_string(usedTimestampSources++));
+                        peripheral->getParentObject()->getInitMethod()->getParameter(param)->setValue(to_string(++usedTimestampSources));
                     }
                     writeConnection(writer, destination.toStdString(), lsb++);
                 }
@@ -500,7 +500,7 @@ void OutputGenerator::writeTimestampPins(QXmlStreamWriter& writer) {
     for (map<string, CObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
         map<string, CParameter*> timestampPins = i->second->getTimestampPins();
         for (map<string, CParameter*>::iterator itp = timestampPins.begin(); itp != timestampPins.end(); itp++) {
-            i->second->getInitMethod()->getParameter(itp->first)->setValue(to_string(usedTimestampSources+usedTimestampPinSources));
+            i->second->getInitMethod()->getParameter(itp->first)->setValue(to_string(usedTimestampSources+usedTimestampPinSources+1));
 
             QString destination = itp->second->getValue().c_str();
             destination.replace(":", "_");

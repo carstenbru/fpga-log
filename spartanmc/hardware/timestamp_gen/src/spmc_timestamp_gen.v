@@ -127,7 +127,7 @@ module spmc_timestamp_gen #(
     capture = 1'b0;
     for (i = 0; i < SOURCES; i = i + 1) begin
       if(source_change[i]) begin
-        tsr_tmp = i;
+        tsr_tmp = i+1;
         capture = 1'b1;
       end
     end
