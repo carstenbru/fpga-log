@@ -3,7 +3,7 @@
     <parameter name="SPI_SS" hide="TRUE" />
     <parameter name="BITS_PRO_FRAME" value="16" hide="TRUE" />
     
-    <port group="global" name="intr" hide="TRUE" />
+    <port group="global" name="intr" destination="TIMESTAMP_GEN" parameter="id" hide="TRUE" />
     <port group="global" name="mosi" hide="TRUE" />
   </peripheral>
 </module>
