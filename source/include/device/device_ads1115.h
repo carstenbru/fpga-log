@@ -17,6 +17,7 @@
 #define ADS1115_ADDRESS 144
 #define ADS1115_DEFAULT_CONFIG 0
 #define ADS1115_I2C_CLOCK 400000
+#define ADS1115_I2C_RETRIES 3
 
 /**
  * @brief enumeration of the different input multiplexer configurations of the ADS1115 device

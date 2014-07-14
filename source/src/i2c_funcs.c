@@ -58,3 +58,14 @@ int i2c_read(i2c_master_regs_t* i2c, int address, int count,
 
 	return 1;
 }
+
+int i2c_action_w_retry(i2c_master_regs_t* i2c, int address, int count,
+		unsigned char* data,
+		int (*i2c_func)(i2c_master_regs_t* i2c, int address, int count,
+				unsigned char* data), int retries) {
+	while (retries--) {
+		if (i2c_func(i2c, address, count, data))
+			return 1;
+	}
+	return 0;
+}

@@ -249,10 +249,14 @@
             <peripheral id="#44DA">
                 <attribute id="module_type" xml:space="preserve">timestamp_gen</attribute>
                 <attribute id="name" xml:space="preserve">timestamp_gen</attribute>
-                <attribute id="signature" xml:space="preserve">C5B3D862FAD1FE3C251B3A6A79A25AC4</attribute>
+                <attribute id="signature" xml:space="preserve">5850D95F4C07821B913B073527821257</attribute>
                 <parameter id="#PARAM.CLOCK_FREQUENCY">
                     <attribute id="name" xml:space="preserve">CLOCK_FREQUENCY</attribute>
                     <attribute id="value" xml:space="preserve">16000000</attribute>
+                </parameter>
+                <parameter id="#PARAM.PIN_SOURCES">
+                    <attribute id="name" xml:space="preserve">PIN_SOURCES</attribute>
+                    <attribute id="value" xml:space="preserve">0</attribute>
                 </parameter>
                 <parameter id="#PARAM.SOURCES">
                     <attribute id="name" xml:space="preserve">SOURCES</attribute>
@@ -298,16 +302,8 @@
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
                 </port>
-                <port id="#PORT.reset">
-                    <attribute id="name" xml:space="preserve">reset</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#9567">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9F94/#PORT.reset</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
-                </port>
-                <port id="#PORT.source">
-                    <attribute id="name" xml:space="preserve">source</attribute>
+                <port id="#PORT.internal_source">
+                    <attribute id="name" xml:space="preserve">internal_source</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
                     <connection id="#1E83">
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#83BC/#PORT.intr</attribute>
@@ -316,6 +312,18 @@
                     <connection id="#DE9D">
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9C14/#PORT.intr</attribute>
                         <attribute id="lsb_index" xml:space="preserve">1</attribute>
+                    </connection>
+                </port>
+                <port id="#PORT.pin_source">
+                    <attribute id="name" xml:space="preserve">pin_source</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                </port>
+                <port id="#PORT.reset">
+                    <attribute id="name" xml:space="preserve">reset</attribute>
+                    <attribute id="route_external" xml:space="preserve">0</attribute>
+                    <connection id="#9567">
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#9F94/#PORT.reset</attribute>
+                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
                 </port>
                 <port id="#PORT.wr_peri">
@@ -549,7 +557,7 @@
                     <attribute id="name" xml:space="preserve">intr</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
                     <connection id="#1E83">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#44DA/#PORT.source</attribute>
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#44DA/#PORT.internal_source</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
                 </port>
@@ -660,7 +668,7 @@
                     <attribute id="name" xml:space="preserve">intr</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
                     <connection id="#DE9D">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#44DA/#PORT.source</attribute>
+                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#7AB8/#44DA/#PORT.internal_source</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
                 </port>

@@ -104,9 +104,11 @@ void device_ads1115_init(device_ads1115_t* const ads1115,
 
 	//configure ALERT/RDY pin as result ready pin like mentioned on page 20 of ADS1115 datasheet
 	unsigned char data_lo[3] = { ADS1115_REGISTER_LO_TRESH, 0, 0 };
-	i2c_write(i2c_master, ADS1115_ADDRESS, 3, data_lo);
+	i2c_action_w_retry(i2c_master, ADS1115_ADDRESS, 3, data_lo, i2c_write,
+	ADS1115_I2C_RETRIES);
 	unsigned char data_hi[3] = { ADS1115_REGISTER_HI_TRESH, 128, 0 };
-	i2c_write(i2c_master, ADS1115_ADDRESS, 3, data_hi);
+	i2c_action_w_retry(i2c_master, ADS1115_ADDRESS, 3, data_hi, i2c_write,
+	ADS1115_I2C_RETRIES);
 
 	device_ads1115_send_configuration_register(ads1115);
 }
@@ -155,11 +157,16 @@ static void device_ads1115_send_configuration_register(
 		device_ads1115_t* const ads1115) {
 	unsigned char data_config[3] = { ADS1115_REGISTER_CONFIG, ads1115->config_reg
 			>> 8, ads1115->config_reg };
-	i2c_write(ads1115->i2c_master, ADS1115_ADDRESS, 3, data_config);
+	i2c_action_w_retry(ads1115->i2c_master, ADS1115_ADDRESS, 3, data_config,
+			i2c_write, ADS1115_I2C_RETRIES);
 
 	//set pointer register to conversion register for faster result reading
 	unsigned char pointer_reg = ADS1115_REGISTER_CONVERSION;
-	i2c_write(ads1115->i2c_master, ADS1115_ADDRESS, 1, &pointer_reg);
+	i2c_action_w_retry(ads1115->i2c_master, ADS1115_ADDRESS, 1, &pointer_reg,
+			i2c_write, ADS1115_I2C_RETRIES);
+
+	//reset single conversion start bit
+	ads1115->config_reg &= ~(1 << ADS1115_CONVERSION_START_SHIFT);
 }
 
 static void device_ads1115_control_message(void* const _ads1115,

@@ -18,10 +18,10 @@ XML module description
 	<parameters>
 		<!--<parameter name="BASE_ADR" type="hex" value="0x10" />-->
 		<parameter name="SOURCES" type="int" value="2" >
-		  <range min="1" max="262144"/>
+		  <range min="0" max="262144"/>
 		</parameter>
 		<parameter name="PIN_SOURCES" type="int" value="2" >
-		  <range min="1" max="262144"/>
+		  <range min="0" max="262144"/>
 		</parameter>
 		<parameter name="CLOCK_FREQUENCY" type="int" value="16000000" >
 		  <range min="1" max="68719476736"/>
