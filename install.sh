@@ -23,7 +23,7 @@ then
   fi
   if  ! grep -q "DEPS_fpga-log:=" $SPARTANMC_ROOT/spartanmc/lib_obj/Makefile ;
   then
-    sed -i '/^DEPS_startup_loader:=/a\DEPS_fpga-log:=peri/uart_light_receive_nb.o peri/uart_light_send.o' $SPARTANMC_ROOT/spartanmc/lib_obj/Makefile
+    sed -i '/^DEPS_startup_loader:=/a\DEPS_fpga-log:=peri/uart_light_receive_nb.o peri/uart_light_send.o peri/spi_activate.o peri/spi_deactivate.o peri/spi_set_div.o peri/spi_enable.o' $SPARTANMC_ROOT/spartanmc/lib_obj/Makefile
   fi
   
   if  ! grep -q "_CFLAGS+=-spmc-force-cc-branches=yes" $SPARTANMC_ROOT/spartanmc/lib_obj/objbuild.mk ;

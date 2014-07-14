@@ -1,0 +1,9 @@
+<module name="device_max31855">
+  <peripheral name="spi_master" >
+    <parameter name="SPI_SS" hide="TRUE" />
+    <parameter name="BITS_PRO_FRAME" value="16" hide="TRUE" />
+    
+    <port group="global" name="intr" hide="TRUE" />
+    <port group="global" name="mosi" hide="TRUE" />
+  </peripheral>
+</module>

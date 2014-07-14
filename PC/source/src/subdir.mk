@@ -19,6 +19,7 @@ C_SRCS += \
 ../source/src/datastream_source.c \
 ../source/src/device_ads1115.c \
 ../source/src/device_hct99.c \
+../source/src/device_max31855.c \
 ../source/src/device_pwm.c \
 ../source/src/device_uart_raw.c \
 ../source/src/dm_filter.c \
@@ -52,6 +53,7 @@ OBJS += \
 ./source/src/datastream_source.o \
 ./source/src/device_ads1115.o \
 ./source/src/device_hct99.o \
+./source/src/device_max31855.o \
 ./source/src/device_pwm.o \
 ./source/src/device_uart_raw.o \
 ./source/src/dm_filter.o \
@@ -85,6 +87,7 @@ C_DEPS += \
 ./source/src/datastream_source.d \
 ./source/src/device_ads1115.d \
 ./source/src/device_hct99.d \
+./source/src/device_max31855.d \
 ./source/src/device_pwm.d \
 ./source/src/device_uart_raw.d \
 ./source/src/dm_filter.d \
