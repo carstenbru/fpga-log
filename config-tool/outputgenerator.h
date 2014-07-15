@@ -7,6 +7,7 @@
 #include <set>
 #include <QObject>
 #include <QProcess>
+#include <sstream>
 
 class FpgaPin {
 public:
@@ -63,6 +64,8 @@ private:
     void writeClkPin(QXmlStreamWriter& writer);
     void writePins(QXmlStreamWriter& writer);
 
+    void definePeripheralForSimulation(std::string name, DataType* dataType);
+
     void exec(std::string cmd);
 
     DataLogger* dataLogger;
@@ -81,6 +84,12 @@ private:
     bool busy;
 
     bool error;
+
+    int pcPeripheralIdCounter;
+    std::stringstream pcPeripheralsStream;
+    std::stringstream pcTimestampCaptureStream;
+    int pcPeripheralCompareCounter;
+    int pcPeripheralTimerCounter;
 private slots:
     void newChildStdOut();
     void newChildErrOut();

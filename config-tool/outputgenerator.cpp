@@ -18,7 +18,10 @@ OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     usedTimestampPinSources(0),
     process(this),
     busy(false),
-    error(false)
+    error(false),
+    pcPeripheralIdCounter(0),
+    pcPeripheralCompareCounter(0),
+    pcPeripheralTimerCounter(0)
 {
     cout << directory << endl;
     process.setWorkingDirectory(directory.c_str());
@@ -76,7 +79,7 @@ void OutputGenerator::generateConfigFiles() {
     generateSystemXML();
     generateCSource();;
 
-    exec("make jconfig +args=\"--generate system.xml\"");
+    exec("make jconfig +args=\"--generate system.xml\""); //TODO uncomment!!
 }
 
 void OutputGenerator::synthesizeSystem() {
@@ -108,6 +111,21 @@ void OutputGenerator::generateCSource() {
     stream << endl << tmpFile.str();
 
     file.close();
+
+    file.open(directory + "/firmware/include/pc_peripherals.h");
+    writePreamble(file);
+    file << endl << "#ifndef PERIPHERALS_SIM_H_" << endl << "#define PERIPHERALS_SIM_H_" << endl << endl;
+    file << "#define PIPE_COUNT " << pcPeripheralIdCounter << endl << endl;
+    file << "#define TIMER_COUNT " << pcPeripheralTimerCounter << endl;
+    file << "#define COMPARE_COUNT " << pcPeripheralCompareCounter << endl << endl;
+    file << pcPeripheralsStream.str() << endl;
+    file << "#define TIMESTAMP_CAPTURE_SIGNALS_COUNT " << usedTimestampSources << endl;
+    string tscs = pcTimestampCaptureStream.str();
+    tscs.erase(0, 2);
+    file << "#define TIMESTAMP_CAPTURE_SIGNALS {" << tscs << "}" << endl;
+    file << endl << "#endif" << endl;
+    file.close();
+
     cout << "C-Konfigurationsdatei erfolgreich geschrieben." << endl;
 }
 
@@ -156,6 +174,7 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
                 if ((*i).getDataType()->hasSuffix("_regs_t")) {
                     value = object->getName() + "_" + (*i).getName();
                     transform(value.begin(), value.end(), value.begin(), ::toupper);
+                    definePeripheralForSimulation(value, (*i).getDataType());
                 } else {
                     value = (*i).getCValue();
                 }
@@ -298,7 +317,6 @@ void OutputGenerator::generateSystemXML() {
     pinsWriter.setAutoFormatting(true);
     writePins(pinsWriter);
 
-    usedTimestampSources = max(1, usedTimestampSources);
     while (!templateFile.eof()) {
         string line;
         getline(templateFile, line);
@@ -311,7 +329,7 @@ void OutputGenerator::generateSystemXML() {
         } else if (line.compare("CLOCK_PERIOD_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << (1000000000.0f / dataLogger->getClk()) << "</attribute>" << endl;
         } else if (line.compare("TIMESTAMP_GEN_SOURCES_ATTRIBUTE") == 0) {
-            stream << "<attribute id=\"value\">" << usedTimestampSources << "</attribute>" << endl;
+            stream << "<attribute id=\"value\">" << max(1, usedTimestampSources) << "</attribute>" << endl;
         } else if (line.compare("TIMESTAMP_GEN_PIN_SOURCES_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << usedTimestampPinSources << "</attribute>" << endl;
         } else if (line.compare("FPGA_PINS") == 0) {
@@ -406,6 +424,7 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
                         destination = "SUBSYSTEM/TIMESTAMP_GEN/#PORT.internal_source";
                         string param = (*portIt)->getName();
                         peripheral->getParentObject()->getInitMethod()->getParameter(param)->setValue(to_string(++usedTimestampSources));
+                        pcTimestampCaptureStream << ", " << peripheralNameUpper;
                     }
                     writeConnection(writer, destination.toStdString(), lsb++);
                 }
@@ -509,6 +528,18 @@ void OutputGenerator::writeTimestampPins(QXmlStreamWriter& writer) {
 
             writeConnection(writer, destination.toStdString(), usedTimestampPinSources++);
         }
+    }
+}
+
+void OutputGenerator::definePeripheralForSimulation(std::string name, DataType* dataType) {
+    if (dataType->getName().compare("sdcard_regs_t") == 0) {
+        pcPeripheralsStream << "#define " << name << " " << "\"/dev/sde\"" << endl;
+    } else if (dataType->getName().compare("compare_regs_t") == 0) {
+        pcPeripheralsStream << "#define " << name << " " << pcPeripheralCompareCounter++ << endl;
+    } else if (dataType->getName().compare("timer_regs_t") == 0) {
+        pcPeripheralsStream << "#define " << name << " " << pcPeripheralTimerCounter++ << endl;
+    } else {
+        pcPeripheralsStream << "#define " << name << " " << pcPeripheralIdCounter++ << endl;
     }
 }
 
