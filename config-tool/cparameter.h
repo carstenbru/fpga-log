@@ -28,6 +28,8 @@ public:
     void setCritical(bool critical) { this->critical = critical; }
     bool getCritical() { return critical; }
 
+    bool isPointer() { return pointer; }
+
     void setValue(std::string value) { this->value = value; emit valueChanged(value); }
     void setName(std::string name) { this->name = name; }
     std::string getValue() { return value; }

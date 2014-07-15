@@ -5,6 +5,8 @@
 jconfig.log
 /testsystem/build
 /testsystem/system
+/testsystem/system.xml
+/testsystem/flash.sh
 
 *.o
 *.d

@@ -166,7 +166,8 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
             string value  = (*i).getValue();
             try {
                 CObject* paramObject = objects.at(value);
-                tmpStream << "&";
+                if ((*i).isPointer())
+                  tmpStream << "&";
                 if (!initDone[value]) {
                     writeObjectInit(stream, paramObject, objects, initDone);
                 }

@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datalogger>
+    <parameter name="Zielplattform" value="papilio-pro" hideFromUser="false" critical="false" dataType="target" pointer="false"/>
+    <parameter name="Clock Pin" value="CLK:32" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
+    <parameter name="Taktfrequenz" value="32000000" hideFromUser="false" critical="false" dataType="peripheral_int" pointer="false"/>
+    <DatastreamObject>
+        <CObject name="sink_uart_0" type="sink_uart_t">
+            <CMethod name="init" headerFile="../source/include/sink/sink_uart.h">
+                <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+                <parameter name="sink_uart" value="" hideFromUser="false" critical="false" dataType="sink_uart_t" pointer="true"/>
+                <parameter name="formatter" value="formatter_simple_0" hideFromUser="false" critical="false" dataType="formatter_t" pointer="true"/>
+                <parameter name="protocol" value="control_protocol_ascii_0" hideFromUser="false" critical="false" dataType="control_protocol_t" pointer="true"/>
+                <parameter name="uart_light" value="" hideFromUser="false" critical="false" dataType="uart_light_regs_t" pointer="true"/>
+            </CMethod>
+            <SpmcPeripheral name="uart_light" dataType="uart_light_regs_t">
+                <parameter name="CLOCK_FREQUENCY" value="25000000" hideFromUser="true" critical="false" dataType="peripheral_int" pointer="false"/>
+                <parameter name="FIFO_RX_DEPTH" value="64" hideFromUser="false" critical="false" dataType="uart_light_regs_t_FIFO_RX_DEPTH" pointer="false"/>
+                <parameter name="FIFO_TX_DEPTH" value="8" hideFromUser="false" critical="false" dataType="uart_light_regs_t_FIFO_TX_DEPTH" pointer="false"/>
+                <parameter name="BAUDRATE" value="115200" hideFromUser="false" critical="false" dataType="uart_light_regs_t_BAUDRATE" pointer="false"/>
+                <parameter name="INTERRUPT_SUPPORTED" value="FALSE" hideFromUser="true" critical="false" dataType="bool" pointer="false"/>
+                <portGroup name="Controller">
+                    <peripheralPort name="intr" direction="OUTPUT">
+                        <parameter name="intr" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+                <portGroup name="Receiver">
+                    <peripheralPort name="rx" direction="INPUT" constraints="PULLUP">
+                        <parameter name="rx" value="USBUART:RX" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+                <portGroup name="Transmitter">
+                    <peripheralPort name="tx" direction="OUTPUT">
+                        <parameter name="tx" value="USBUART:TX" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+            </SpmcPeripheral>
+        </CObject>
+        <x value="30"/>
+        <y value="71"/>
+        <ControlPortOut name="control_out" multiPort="true" destinationModule="device_pwm_0" destinationPort="control_in"/>
+        <ControlPortOut name="control_out" multiPort="true"/>
+        <ControlPortOut name="control_out" multiPort="true"/>
+        <ControlPortOut name="control_out" multiPort="true"/>
+        <ControlPortOut name="control_out" multiPort="true"/>
+        <ControlPortOut name="control_out" multiPort="true"/>
+        <ControlPortOut name="control_out" multiPort="true"/>
+        <ControlPortOut name="control_out" multiPort="true"/>
+        <DataPortIn name="data_in"/>
+    </DatastreamObject>
+    <DatastreamObject>
+        <CObject name="device_hct99_0" type="device_hct99_t">
+            <CMethod name="init" headerFile="../source/include/device/device_hct99.h">
+                <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+                <parameter name="hct99" value="" hideFromUser="false" critical="false" dataType="device_hct99_t" pointer="true"/>
+                <parameter name="uart_light" value="" hideFromUser="false" critical="false" dataType="uart_light_regs_t" pointer="true"/>
+                <parameter name="id" value="0" hideFromUser="true" critical="false" dataType="int" pointer="false"/>
+            </CMethod>
+            <SpmcPeripheral name="uart_light" dataType="uart_light_regs_t">
+                <parameter name="CLOCK_FREQUENCY" value="25000000" hideFromUser="true" critical="false" dataType="peripheral_int" pointer="false"/>
+                <parameter name="FIFO_RX_DEPTH" value="8" hideFromUser="true" critical="false" dataType="uart_light_regs_t_FIFO_RX_DEPTH" pointer="false"/>
+                <parameter name="FIFO_TX_DEPTH" value="8" hideFromUser="true" critical="false" dataType="uart_light_regs_t_FIFO_TX_DEPTH" pointer="false"/>
+                <parameter name="BAUDRATE" value="19200" hideFromUser="true" critical="false" dataType="uart_light_regs_t_BAUDRATE" pointer="false"/>
+                <parameter name="INTERRUPT_SUPPORTED" value="TRUE" hideFromUser="true" critical="false" dataType="bool" pointer="false"/>
+                <portGroup name="Controller">
+                    <peripheralPort name="intr" direction="OUTPUT">
+                        <parameter name="id" value="TIMESTAMP_GEN" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+                <portGroup name="Receiver">
+                    <peripheralPort name="rx" direction="INPUT" constraints="PULLUP">
+                        <parameter name="rx" value="PORTC:C00" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+                <portGroup name="Transmitter">
+                    <peripheralPort name="tx" direction="OUTPUT">
+                        <parameter name="tx" value="PORTC:C01" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+            </SpmcPeripheral>
+        </CObject>
+        <x value="588"/>
+        <y value="98"/>
+        <ControlPortIn name="control_in"/>
+        <DataPortOut name="data_out" multiPort="false" destinationModule="dm_splitter_data_0" destinationPort="data_in"/>
+        <DataPortOut name="error_out" multiPort="false" destinationModule="dm_splitter_data_0" destinationPort="data_in"/>
+        <DataPortOut name="misc_out" multiPort="false" destinationModule="dm_splitter_data_0" destinationPort="data_in"/>
+    </DatastreamObject>
+    <DatastreamObject>
+        <CObject name="device_pwm_0" type="device_pwm_t">
+            <CMethod name="init" headerFile="../source/include/device/device_pwm.h">
+                <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+                <parameter name="_pwm_device" value="" hideFromUser="false" critical="false" dataType="device_pwm_t" pointer="true"/>
+                <parameter name="pwm_regs" value="" hideFromUser="false" critical="false" dataType="pwm_regs_t" pointer="true"/>
+            </CMethod>
+            <SpmcPeripheral name="pwm_regs" dataType="pwm_regs_t">
+                <parameter name="CHANNELS" value="3" hideFromUser="false" critical="true" dataType="pwm_regs_t_CHANNELS" pointer="false"/>
+                <portGroup name="PWM channels">
+                    <peripheralPort name="pwm" direction="OUTPUT" widthRef="CHANNELS">
+                        <parameter name="pwm_0" value="PORTA:A15" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="pwm_1" value="PORTA:A14" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="pwm_2" value="PORTA:A13" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+            </SpmcPeripheral>
+        </CObject>
+        <x value="204"/>
+        <y value="121"/>
+        <ControlPortIn name="control_in"/>
+    </DatastreamObject>
+    <DatastreamObject>
+        <CObject name="dm_timer_0" type="dm_timer_t">
+            <CMethod name="init" headerFile="../source/include/dm/dm_timer.h">
+                <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+                <parameter name="timer" value="" hideFromUser="false" critical="false" dataType="dm_timer_t" pointer="true"/>
+                <parameter name="interval" value="1000" hideFromUser="false" critical="false" dataType="uint36_t" pointer="false"/>
+                <parameter name="control_action" value="control_action_simple_0" hideFromUser="false" critical="false" dataType="control_action_t" pointer="true"/>
+                <parameter name="timer_regs" value="" hideFromUser="false" critical="false" dataType="timer_regs_t" pointer="true"/>
+                <parameter name="compare_regs" value="" hideFromUser="false" critical="false" dataType="compare_regs_t" pointer="true"/>
+            </CMethod>
+            <SpmcPeripheral name="timer_regs" dataType="timer_regs_t">
+                <portGroup name="global">
+                    <peripheralPort name="clk_i" direction="INPUT">
+                        <parameter name="clk_i" value="SUBSYSTEM/TIMER_2000HZ_COMPARE/#PORT.pin_out" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                    <peripheralPort name="timer_out" direction="OUTPUT">
+                        <parameter name="timer_out_0" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_1" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_2" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_3" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_4" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_5" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_6" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_7" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_8" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_9" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_10" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_11" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_12" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_13" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_14" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_15" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_16" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_17" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+            </SpmcPeripheral>
+            <SpmcPeripheral name="compare_regs" dataType="compare_regs_t">
+                <portGroup name="global">
+                    <peripheralPort name="intr" direction="OUTPUT">
+                        <parameter name="intr" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                    <peripheralPort name="pin_out" direction="OUTPUT">
+                        <parameter name="pin_out" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                    <peripheralPort name="timer_data" direction="INPUT">
+                        <parameter name="timer_data_0" value="./timer_regs/#PORT.timer_out" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_1" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_2" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_3" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_4" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_5" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_6" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_7" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_8" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_9" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_10" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_11" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_12" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_13" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_14" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_15" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_16" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_17" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+            </SpmcPeripheral>
+        </CObject>
+        <x value="401"/>
+        <y value="309"/>
+        <ControlPortOut name="control_out" multiPort="false" destinationModule="device_hct99_0" destinationPort="control_in"/>
+    </DatastreamObject>
+    <DatastreamObject>
+        <CObject name="dm_trigger_0" type="dm_trigger_t">
+            <CMethod name="init" headerFile="../source/include/dm/dm_trigger.h">
+                <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+                <parameter name="trigger" value="" hideFromUser="false" critical="false" dataType="dm_trigger_t" pointer="true"/>
+                <parameter name="control_action" value="control_action_simple_1" hideFromUser="false" critical="false" dataType="control_action_t" pointer="true"/>
+            </CMethod>
+            <CMethod name="set_condition" headerFile="../source/include/dm/dm_trigger.h">
+                <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+                <parameter name="trigger" value="" hideFromUser="false" critical="false" dataType="dm_trigger_t" pointer="true"/>
+                <parameter name="condition" value="datastream_condition_compare_float_0" hideFromUser="false" critical="false" dataType="datastream_condition_t" pointer="true"/>
+            </CMethod>
+        </CObject>
+        <x value="29"/>
+        <y value="231"/>
+        <ControlPortOut name="control_out" multiPort="false" destinationModule="device_hct99_0" destinationPort="control_in"/>
+        <DataPortIn name="data_in"/>
+    </DatastreamObject>
+    <DatastreamObject>
+        <CObject name="dm_filter_0" type="dm_filter_t">
+            <CMethod name="init" headerFile="../source/include/dm/dm_filter.h">
+                <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+                <parameter name="filter" value="" hideFromUser="false" critical="false" dataType="dm_filter_t" pointer="true"/>
+                <parameter name="mode" value="FILTER_MODE_PASS" hideFromUser="false" critical="false" dataType="dm_filter_mode" pointer="false"/>
+                <parameter name="condition" value="datastream_condition_compare_val_name_0" hideFromUser="false" critical="false" dataType="datastream_condition_t" pointer="true"/>
+            </CMethod>
+        </CObject>
+        <x value="204"/>
+        <y value="198"/>
+        <DataPortIn name="data_in"/>
+        <DataPortOut name="data_out" multiPort="false" destinationModule="dm_trigger_0" destinationPort="data_in"/>
+    </DatastreamObject>
+    <DatastreamObject>
+        <CObject name="sink_sd_card_0" type="sink_sd_card_t">
+            <CMethod name="init" headerFile="../source/include/sink/sink_sd_card.h">
+                <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+                <parameter name="sink_sd_card" value="" hideFromUser="false" critical="false" dataType="sink_sd_card_t" pointer="true"/>
+                <parameter name="formatter" value="formatter_simple_1" hideFromUser="false" critical="false" dataType="formatter_t" pointer="true"/>
+                <parameter name="sd_card" value="" hideFromUser="false" critical="false" dataType="sdcard_regs_t" pointer="true"/>
+            </CMethod>
+            <SpmcPeripheral name="sd_card" dataType="sdcard_regs_t">
+                <parameter name="CLOCK_FREQUENCY" value="16000000" hideFromUser="true" critical="false" dataType="peripheral_int" pointer="false"/>
+                <portGroup name="SD card">
+                    <peripheralPort name="sd_miso" direction="INPUT">
+                        <parameter name="sd_miso" value="PORTC:C12" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                    <peripheralPort name="sd_mosi" direction="OUTPUT">
+                        <parameter name="sd_mosi" value="PORTC:C14" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                    <peripheralPort name="sd_clk" direction="OUTPUT">
+                        <parameter name="sd_clk" value="PORTC:C13" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                    <peripheralPort name="sd_cs" direction="OUTPUT">
+                        <parameter name="sd_cs" value="PORTC:C15" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+            </SpmcPeripheral>
+        </CObject>
+        <x value="30"/>
+        <y value="21"/>
+        <DataPortIn name="data_in"/>
+    </DatastreamObject>
+    <DatastreamObject>
+        <CObject name="dm_splitter_data_0" type="dm_splitter_data_t">
+            <CMethod name="init" headerFile="../source/include/dm/dm_splitter_data.h">
+                <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+                <parameter name="splitter" value="" hideFromUser="false" critical="false" dataType="dm_splitter_data_t" pointer="true"/>
+            </CMethod>
+        </CObject>
+        <x value="389"/>
+        <y value="21"/>
+        <DataPortIn name="data_in"/>
+        <DataPortOut name="data_out" multiPort="true" destinationModule="sink_sd_card_0" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="true" destinationModule="sink_uart_0" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="true" destinationModule="dm_filter_0" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="true"/>
+        <DataPortOut name="data_out" multiPort="true"/>
+        <DataPortOut name="data_out" multiPort="true"/>
+        <DataPortOut name="data_out" multiPort="true"/>
+        <DataPortOut name="data_out" multiPort="true"/>
+    </DatastreamObject>
+    <CObject name="formatter_simple_0" type="formatter_simple_t">
+        <CMethod name="init" headerFile="../source/include/sink/formatter/formatter_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="formatter" value="" hideFromUser="false" critical="false" dataType="formatter_simple_t" pointer="true"/>
+        </CMethod>
+    </CObject>
+    <CObject name="control_protocol_ascii_0" type="control_protocol_ascii_t">
+        <CMethod name="init" headerFile="../source/include/sink/control_protocol_ascii.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="control_protocol_ascii" value="" hideFromUser="false" critical="false" dataType="control_protocol_ascii_t" pointer="true"/>
+        </CMethod>
+    </CObject>
+    <CObject name="control_action_simple_0" type="control_action_simple_t">
+        <CMethod name="init" headerFile="../source/include/dm/control_action_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="control_action_simple" value="" hideFromUser="false" critical="false" dataType="control_action_simple_t" pointer="true"/>
+        </CMethod>
+        <CMethod name="add_paramter_exp" headerFile="../source/include/dm/control_action_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="control_action_simple" value="" hideFromUser="false" critical="false" dataType="control_action_simple_t" pointer="true"/>
+            <parameter name="type" value="HCT99_COMMAND_MEASURE_COLOR_VALUE" hideFromUser="false" critical="false" dataType="parameter_type_t" pointer="false"/>
+            <parameter name="value" value="0" hideFromUser="false" critical="false" dataType="int" pointer="false"/>
+        </CMethod>
+        <CMethod name="add_paramter_exp" headerFile="../source/include/dm/control_action_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="control_action_simple" value="" hideFromUser="false" critical="false" dataType="control_action_simple_t" pointer="true"/>
+            <parameter name="type" value="PARAMETER_x" hideFromUser="false" critical="false" dataType="parameter_type_t" pointer="false"/>
+            <parameter name="value" value="1" hideFromUser="false" critical="false" dataType="int" pointer="false"/>
+        </CMethod>
+        <CMethod name="add_paramter_exp" headerFile="../source/include/dm/control_action_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="control_action_simple" value="" hideFromUser="false" critical="false" dataType="control_action_simple_t" pointer="true"/>
+            <parameter name="type" value="PARAMETER_y" hideFromUser="false" critical="false" dataType="parameter_type_t" pointer="false"/>
+            <parameter name="value" value="6" hideFromUser="false" critical="false" dataType="int" pointer="false"/>
+        </CMethod>
+    </CObject>
+    <CObject name="formatter_simple_1" type="formatter_simple_t">
+        <CMethod name="init" headerFile="../source/include/sink/formatter/formatter_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="formatter" value="" hideFromUser="false" critical="false" dataType="formatter_simple_t" pointer="true"/>
+        </CMethod>
+    </CObject>
+    <CObject name="datastream_condition_compare_float_0" type="datastream_condition_compare_float_t">
+        <CMethod name="init" headerFile="../source/include/dm/datastream_condition_compare_float.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="cond" value="" hideFromUser="false" critical="false" dataType="datastream_condition_compare_float_t" pointer="true"/>
+            <parameter name="compare_func" value="greater_float" hideFromUser="false" critical="false" dataType="int:const simple_float_b10_t val, const simple_float_b10_t ref" pointer="true"/>
+            <parameter name="value" value="simple_float_b10_0" hideFromUser="false" critical="false" dataType="simple_float_b10_t" pointer="false"/>
+        </CMethod>
+    </CObject>
+    <CObject name="control_action_simple_1" type="control_action_simple_t">
+        <CMethod name="init" headerFile="../source/include/dm/control_action_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="control_action_simple" value="" hideFromUser="false" critical="false" dataType="control_action_simple_t" pointer="true"/>
+        </CMethod>
+        <CMethod name="add_paramter_exp" headerFile="../source/include/dm/control_action_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="control_action_simple" value="" hideFromUser="false" critical="false" dataType="control_action_simple_t" pointer="true"/>
+            <parameter name="type" value="HCT99_COMMAND_MEASURE_COLOR_VALUE" hideFromUser="false" critical="false" dataType="parameter_type_t" pointer="false"/>
+            <parameter name="value" value="0" hideFromUser="false" critical="false" dataType="int" pointer="false"/>
+        </CMethod>
+        <CMethod name="add_paramter_exp" headerFile="../source/include/dm/control_action_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="control_action_simple" value="" hideFromUser="false" critical="false" dataType="control_action_simple_t" pointer="true"/>
+            <parameter name="type" value="PARAMETER_x" hideFromUser="false" critical="false" dataType="parameter_type_t" pointer="false"/>
+            <parameter name="value" value="0" hideFromUser="false" critical="false" dataType="int" pointer="false"/>
+        </CMethod>
+        <CMethod name="add_paramter_exp" headerFile="../source/include/dm/control_action_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="control_action_simple" value="" hideFromUser="false" critical="false" dataType="control_action_simple_t" pointer="true"/>
+            <parameter name="type" value="PARAMETER_y" hideFromUser="false" critical="false" dataType="parameter_type_t" pointer="false"/>
+            <parameter name="value" value="1" hideFromUser="false" critical="false" dataType="int" pointer="false"/>
+        </CMethod>
+        <CMethod name="add_command" headerFile="../source/include/dm/control_action_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="control_action_simple" value="" hideFromUser="false" critical="false" dataType="control_action_simple_t" pointer="true"/>
+        </CMethod>
+        <CMethod name="add_paramter_exp" headerFile="../source/include/dm/control_action_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="control_action_simple" value="" hideFromUser="false" critical="false" dataType="control_action_simple_t" pointer="true"/>
+            <parameter name="type" value="HCT99_COMMAND_MEASURE_COLOR_VALUE" hideFromUser="false" critical="false" dataType="parameter_type_t" pointer="false"/>
+            <parameter name="value" value="0" hideFromUser="false" critical="false" dataType="int" pointer="false"/>
+        </CMethod>
+        <CMethod name="add_paramter_exp" headerFile="../source/include/dm/control_action_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="control_action_simple" value="" hideFromUser="false" critical="false" dataType="control_action_simple_t" pointer="true"/>
+            <parameter name="type" value="PARAMETER_x" hideFromUser="false" critical="false" dataType="parameter_type_t" pointer="false"/>
+            <parameter name="value" value="0" hideFromUser="false" critical="false" dataType="int" pointer="false"/>
+        </CMethod>
+        <CMethod name="add_paramter_exp" headerFile="../source/include/dm/control_action_simple.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="control_action_simple" value="" hideFromUser="false" critical="false" dataType="control_action_simple_t" pointer="true"/>
+            <parameter name="type" value="PARAMETER_y" hideFromUser="false" critical="false" dataType="parameter_type_t" pointer="false"/>
+            <parameter name="value" value="2" hideFromUser="false" critical="false" dataType="int" pointer="false"/>
+        </CMethod>
+    </CObject>
+    <CObject name="simple_float_b10_0" type="simple_float_b10_t">
+        <CMethod name="init" headerFile="../source/include/simple_float.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="simple_float_b10" value="" hideFromUser="false" critical="false" dataType="simple_float_b10_t" pointer="true"/>
+            <parameter name="coefficient" value="30000" hideFromUser="false" critical="false" dataType="coefficient_t" pointer="false"/>
+            <parameter name="exponent" value="3" hideFromUser="false" critical="false" dataType="int" pointer="false"/>
+        </CMethod>
+    </CObject>
+    <CObject name="datastream_condition_compare_val_name_0" type="datastream_condition_compare_val_name_t">
+        <CMethod name="init" headerFile="../source/include/dm/datastream_condition_compare_val_name.h">
+            <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+            <parameter name="cond" value="" hideFromUser="false" critical="false" dataType="datastream_condition_compare_val_name_t" pointer="true"/>
+            <parameter name="mode" value="RESULT_MODE_EQUAL" hideFromUser="false" critical="false" dataType="datastream_condition_compare_val_name_result_mode" pointer="false"/>
+            <parameter name="value" value="Tc" hideFromUser="false" critical="false" dataType="string" pointer="true"/>
+        </CMethod>
+    </CObject>
+</datalogger>
