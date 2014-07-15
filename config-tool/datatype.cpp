@@ -10,6 +10,7 @@ using namespace std;
 
 std::map<std::string, DataType*> DataType::types;
 std::map<std::string, DataTypeStruct*> DataTypeStruct::types;
+std::map<std::string, DataTypeFunction*> DataTypeFunction::types;
 
 DataTypePin DataTypePin::pinType("pin");
 
@@ -316,4 +317,42 @@ string Pin::getPinFromFullName(string fullName) {
     }
 
     return fullName;
+}
+
+DataTypeFunction::DataTypeFunction(std::string name) :
+    DataType(name)
+{
+    types[name] = this;
+}
+
+QWidget* DataTypeFunction::getConfigWidget(DataLogger*, CParameter* param) {
+    QComboBox* cbox = new QComboBox();
+    for (list<string>::iterator i = functionNames.begin(); i != functionNames.end(); i++) {
+        cbox->addItem(QString((*i).c_str()));
+    }
+    cbox->setCurrentIndex(cbox->findText(QString(param->getValue().c_str())));
+    return cbox;
+}
+
+std::string DataTypeFunction::getConfigData(QWidget* widget) {
+    QComboBox* cbox = dynamic_cast<QComboBox*>(widget);
+    return cbox->currentText().toStdString();
+}
+
+void DataTypeFunction::addFunction(std::string name, std::string signature) {
+    DataTypeFunction* dtf;
+    try {
+        dtf = types.at(signature);
+    } catch (exception) {
+        dtf = new DataTypeFunction(signature);
+    }
+    dtf->functionNames.push_back(name);
+}
+
+DataType* DataTypeFunction::getType(std::string signature) {
+    try {
+        return DataType::getType(signature);
+    } catch (exception) {
+        return new DataTypeFunction(signature);
+    }
 }

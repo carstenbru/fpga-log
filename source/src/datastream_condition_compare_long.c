@@ -26,7 +26,7 @@ static int datastream_condition_compare_long_is_fullfilled(
 void datastream_condition_compare_long_init(
 		datastream_condition_compare_long_t* const cond,
 		int (*compare_func)(const long int val, const long int ref),
-		const long int value) {
+		const long value) {
 	cond->super.is_fulfilled = datastream_condition_compare_long_is_fullfilled;
 
 	cond->compare_func = compare_func;
@@ -34,7 +34,7 @@ void datastream_condition_compare_long_init(
 }
 
 void datastream_condition_compare_long_set_compare_value(
-		datastream_condition_compare_long_t* const cond, const long int value) {
+		datastream_condition_compare_long_t* const cond, const long value) {
 	cond->compare_value = value;
 }
 

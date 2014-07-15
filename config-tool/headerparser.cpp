@@ -3,8 +3,6 @@
 #include <fstream>
 #include <QDirIterator>
 
-#include <boost/tokenizer.hpp>
-
 using namespace std;
 using namespace boost;
 
@@ -137,6 +135,18 @@ void HeaderParser::parseFileForMethods(string filename) {
                 else {
                     type = *(++i);
                 }
+
+                string parameters = type + " ";
+                i++;
+                while (parameters.rfind(");") ==  string::npos) {
+                    parameters.append(*i).append(" ");
+
+                    if (++i == tokens.end())
+                        return;
+                }
+                parameters.erase(parameters.rfind(')'), parameters.length());
+
+                bool wasMethod = false;
                 if (type.back() == '*') {
                     type.erase(type.length() - 1, 1);
                     try {
@@ -156,17 +166,8 @@ void HeaderParser::parseFileForMethods(string filename) {
                                 if (method_name.compare("init") == 0)
                                     method->setHideFromUser(true);
 
-                                string parameters;
-                                while (parameters.rfind(");") ==  string::npos) {
-                                    parameters.append(*i).append(" ");
-
-                                    if (++i == tokens.end())
-                                        return;
-                                }
-                                parameters.erase(0, parameters.find('(') + 1);
-                                parameters.erase(parameters.rfind(')'), parameters.length());
-
                                 try {
+                                    wasMethod = true;
                                     parseMethodParameters(method, parameters);
                                     dt->addMethod(method);
                                 } catch (exception e) {
@@ -178,6 +179,9 @@ void HeaderParser::parseFileForMethods(string filename) {
                     } catch (exception) {
                         cerr << "unknown type: " << type << endl;
                     }
+                }
+                if (!wasMethod) {
+                    DataTypeFunction::addFunction(method_name, returnType + ":" + parameters);
                 }
             }
             returnType = *i;
@@ -223,7 +227,31 @@ void HeaderParser::parseMethodParameters(CMethod* method, std::string parameters
     char_separator<char> s(",");
     tokenizer<char_separator<char> > tokens(parameters, s);
     for (tokenizer<char_separator<char> >::iterator i = tokens.begin(); i != tokens.end(); i++) {
-        parseMethodParameter(method, *i);
+        string parameter = *i;
+        parameter.erase(0, parameter.find_first_not_of(" "));
+        size_t op = parameter.find("(");
+        if (op != string::npos) {
+            string signature = parameter;
+            signature.erase(op-1, signature.length());
+
+            string name = parameter;
+            name.erase(0, op+2);
+            name.erase(name.find(")"), name.length());
+
+            parameter.erase(0, parameter.find(")")+2);
+
+            while (parameter.back() != ')') {
+                if (++i == tokens.end()) {
+                    return;
+                }
+                parameter += "," + *i;
+            }
+            parameter.erase(parameter.length() - 1, parameter.length());
+            signature += ":" + parameter;
+            method->addParameter(CParameter(name, DataTypeFunction::getType(signature), true));
+        } else {
+            parseMethodParameter(method, parameter);
+        }
     }
 }
 

@@ -4,6 +4,7 @@
 #include <map>
 #include <list>
 #include <string>
+#include <boost/tokenizer.hpp>
 #include "datatype.h"
 
 class HeaderParser

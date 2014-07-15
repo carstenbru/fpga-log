@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
     new DataTypeChar("char");
     new DataTypeString("string");
     new DataTypeNumber("int", -131072, 131071);
+    new DataTypeNumber("long", -2147483648, 2147483647);
     new DataTypeNumber("unsigned int", 0, 262143);
     new DataTypeNumber("unsigned char", 0, 511);
     new DataTypeNumber("uint36_t", 0, 68719476735);

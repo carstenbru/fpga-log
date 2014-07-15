@@ -177,4 +177,20 @@ private:
     std::map<std::string, std::list<Pin> > pins;
 };
 
+class DataTypeFunction : public DataType {
+public:
+    DataTypeFunction(std::string name);
+    virtual ~DataTypeFunction() {}
+
+    virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
+    virtual std::string getConfigData(QWidget* widget);
+
+    static void addFunction(std::string name, std::string signature);
+    static DataType* getType(std::string signature);
+private:
+    std::list<std::string> functionNames;
+
+    static std::map<std::string, DataTypeFunction*> types;
+};
+
 #endif // DATATYPE_H

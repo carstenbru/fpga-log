@@ -37,10 +37,10 @@ typedef struct {
  * @param compare_func	compare function which compares new value with the reference value
  * @param value					new compare value
  */
-void datastream_condition_compare_compare_long_init(
+void datastream_condition_compare_long_init(
 		datastream_condition_compare_long_t* const cond,
 		int (*compare_func)(const long int val, const long int ref),
-		const long int value);
+		const long value);
 
 /**
  * @brief sets a new compare value of the condition
@@ -48,8 +48,8 @@ void datastream_condition_compare_compare_long_init(
  * @param cond	the condition to modify
  * @param value	the new value
  */
-void datastream_condition_compare_compare_long_set_compare_value(
-		datastream_condition_compare_long_t* const cond, const long int value);
+void datastream_condition_compare_long_set_compare_value(
+		datastream_condition_compare_long_t* const cond, const long value);
 
 /*
  * different compare functions
