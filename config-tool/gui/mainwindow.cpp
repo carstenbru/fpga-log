@@ -235,7 +235,7 @@ void MainWindow::open() {
     newLogger();
 
     QString fileName = QFileDialog::getOpenFileName(this,
-                                                    "Öffnen",
+                                                    QString::fromUtf8("Öffnen"),
                                                     QDir::currentPath() +
                                                     "/../projects/",
                                                     "fpga-log XML (*.xml)");
