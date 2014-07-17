@@ -2,5 +2,6 @@
     <qresource prefix="/icons">
         <file alias="control_arrow">icons/control_arrow.png</file>
         <file alias="data_arrow">icons/data_arrow.png</file>
+        <file alias="logo">icons/logo.png</file>
     </qresource>
 </RCC>

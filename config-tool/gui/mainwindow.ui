@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1007</width>
-    <height>613</height>
+    <width>1005</width>
+    <height>611</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>fpga-log</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../icons.qrc">
+    <normaloff>:/icons/logo</normaloff>:/icons/logo</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -70,7 +74,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1007</width>
+     <width>1005</width>
      <height>21</height>
     </rect>
    </property>
@@ -247,6 +251,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
