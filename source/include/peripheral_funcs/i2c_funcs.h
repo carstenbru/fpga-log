@@ -13,8 +13,8 @@
 /**
  * @brief enables a i2c master and sets clock divider
  *
- * @param i2c_master_regs_t the i2c-master to enable
- * @param prescaler					clock prescaler value
+ * @param i2c					the i2c-master to enable
+ * @param prescaler		clock prescaler value
  */
 void i2c_init(i2c_master_regs_t* i2c, int prescaler);
 

@@ -19,6 +19,7 @@
 file_pipe_t pipes[PIPE_COUNT];
 unsigned char fifo_first[PIPE_COUNT];
 unsigned int fifo_first_valid[PIPE_COUNT];
+int fifo_irq_enabled[PIPE_COUNT];
 
 io_descr_t stdio_descr = { };
 
@@ -47,6 +48,10 @@ void pipes_init(void) {
 		mkfifo(buffer, S_IRWXU | S_IRWXG);
 		pipes[i].out = open(buffer, O_RDWR);
 	}
+}
+
+void fifo_enable_irq(unsigned int fifo) {
+	fifo_irq_enabled[fifo];
 }
 
 int fifo_read(unsigned int fifo, unsigned char* data) {
@@ -86,13 +91,15 @@ unsigned int timestamp_gen_not_empty(timestamp_gen_regs_t* timestamp_gen) {
 		return 1;
 	}
 	for (i = 0; i < TIMESTAMP_CAPTURE_SIGNALS_COUNT; i++) {
-		if (!fifo_first_valid[i] && read(pipes[i].in, &b, 1) == 1) {
-			fifo_first_valid[i] = 1;
-			fifo_first[i] = b;
+		if (fifo_irq_enabled[i]) {
+			if (!fifo_first_valid[i] && read(pipes[i].in, &b, 1) == 1) {
+				fifo_first_valid[i] = 1;
+				fifo_first[i] = b;
 
-			timestamp_gen_set_timestamp(timestamp_gen, i);
+				timestamp_gen_set_timestamp(timestamp_gen, i);
 
-			return 1;
+				return 1;
+			}
 		}
 	}
 	return 0;

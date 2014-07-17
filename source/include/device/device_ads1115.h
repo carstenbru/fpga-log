@@ -123,6 +123,7 @@ typedef struct {
  *
  * @param ads1115			pointer to the ads1115 device
  * @param i2c_master	pointer to a i2c-master peripheral
+ * @param	rdy_id			id of the ready pin in the timestamp generator
  * @param	mux					input multiplexer configuration
  * @param	pga					gain configuration
  * @param mode				device mode configuration

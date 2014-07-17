@@ -76,6 +76,13 @@ extern spmc_timer_t sim_timers[TIMER_COUNT];
 extern spmc_compare_t sim_compares[COMPARE_COUNT];
 
 /**
+ * @brief enables the (virtual) interrupt on a fifo
+ *
+ * @param fifo	number of the fifo to enable irq
+ */
+void fifo_enable_irq(unsigned int fifo);
+
+/**
  * @brief fifo/pipe read function
  *
  * @param fifo 	number of the fifo to read

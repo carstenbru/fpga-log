@@ -8,6 +8,7 @@
 #include <fpga-log/device/device_max31855.h>
 #include <fpga-log/sys_init.h>
 #include <spi.h>
+#include <fpga-log/peripheral_funcs/spi_funcs.h>
 
 const char* max31855_fault_names[3] = MAX31855_FAULT_NAMES;
 
@@ -95,12 +96,12 @@ static void device_max31855_control_message(void* const _max31855,
 	while (count--) {
 		if (parameters->type == MAX31855_PARAMETER_READ) {
 			device_max31855_t* max31855 = (device_max31855_t*) _max31855;
-			if (max31855->spi_master->spi_control & SPI_MASTER_CTRL_TRANS_EMPTY) {
+			if (spi_trans_finished(max31855->spi_master)) {
 				datastream_source_generate_software_timestamp(
 						(datastream_source_t*) _max31855);
 
 				spi_activate(max31855->spi_master, 1);
-				max31855->spi_master->spi_data_out = 0;  //start reading by write to data_out register
+				spi_write(max31855->spi_master, 0);  //start reading by write to data_out register
 			}
 		}
 		parameters++;
@@ -114,31 +115,30 @@ static void device_max31855_send_data(void* const _max31855,
 		const unsigned int id, const timestamp_t* const timestamp) {
 	device_max31855_t* max31855 = (device_max31855_t*) _max31855;
 
-	while (!(max31855->spi_master->spi_control & SPI_MASTER_CTRL_TRANS_EMPTY))
+	while (!(spi_trans_finished(max31855->spi_master)))
 		;
-	int data = max31855->spi_master->spi_data_in;
+	int data = spi_read_data_in(max31855->spi_master);
 	//start reading by write to data_out register
 	//do this right now so peripheral will be very likely already finished when the data is needed
 	//e.g. for 16MHz CPU clock and 4MHz SPI clock reading will need 64 clock cycles
-	max31855->spi_master->spi_data_out = 0;
+	spi_write(max31855->spi_master, 0);
 
 	int fault = data & 1;
 	int val = data >> 2;
 	data = val & 8191;
 	if (data != val)
-		val = -data;
+		val -= 16384;
 	data_package_t package = { id, MAX31855_THERMOCOUPLE_TEMP_NAME, DATA_TYPE_INT,
 			&val, timestamp };
 	max31855->data_out->new_data(max31855->data_out->parent, &package);
 
-	while (!(max31855->spi_master->spi_control & SPI_MASTER_CTRL_TRANS_EMPTY))
+	while (!(spi_trans_finished(max31855->spi_master)))
 		;
 	if (max31855->internal_temp_out != &data_port_dummy) {
-		data = max31855->spi_master->spi_data_in;
+		data = spi_read_data_in(max31855->spi_master);
 		val = data >> 4;
-		data = val & 2047;
-		if (data != val)
-			val = -data;
+		if ((val & 2047) != val)
+			val -= 4096;
 
 		data_package_t int_temp_package = { id, MAX31855_INTERNAL_TEMP_NAME,
 				DATA_TYPE_INT, &val, timestamp };
@@ -147,11 +147,21 @@ static void device_max31855_send_data(void* const _max31855,
 	}
 
 	if (fault) {
-		fault = max31855->spi_master->spi_data_in & 7;
-		if (fault == 2)
+		fault = data & 7;
+		switch (fault) {
+		case 1:
+			fault = 0;
+			break;
+		case 2:
 			fault = 1;
-		if (fault == 4)
+			break;
+		case 4:
 			fault = 2;
+			break;
+		default:
+			spi_deactivate(max31855->spi_master);
+			return;
+		}
 		data_package_t fault_package = { id, max31855_fault_names[fault],
 				DATA_TYPE_INT, &fault, timestamp };
 		max31855->error_out->new_data(max31855->error_out->parent, &fault_package);

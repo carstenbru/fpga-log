@@ -29,7 +29,6 @@ C_SRCS += \
 ../source/src/dm_trigger.c \
 ../source/src/formatter.c \
 ../source/src/formatter_simple.c \
-../source/src/i2c_funcs.c \
 ../source/src/lshrsi3.c \
 ../source/src/print_long.c \
 ../source/src/simple_float.c \
@@ -63,7 +62,6 @@ OBJS += \
 ./source/src/dm_trigger.o \
 ./source/src/formatter.o \
 ./source/src/formatter_simple.o \
-./source/src/i2c_funcs.o \
 ./source/src/lshrsi3.o \
 ./source/src/print_long.o \
 ./source/src/simple_float.o \
@@ -97,7 +95,6 @@ C_DEPS += \
 ./source/src/dm_trigger.d \
 ./source/src/formatter.d \
 ./source/src/formatter_simple.d \
-./source/src/i2c_funcs.d \
 ./source/src/lshrsi3.d \
 ./source/src/print_long.d \
 ./source/src/simple_float.d \

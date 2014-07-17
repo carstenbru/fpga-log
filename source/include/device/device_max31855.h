@@ -17,7 +17,7 @@
 #define MAX31855_MAX_SPI_CLK 5000000
 #define MAX31855_THERMOCOUPLE_TEMP_NAME "thermocouple temperature"
 #define MAX31855_INTERNAL_TEMP_NAME "internal temperature"
-#define MAX31855_FAULT_NAMES { "SCV Fault", "SCG Fault", "OC Fault" }
+#define MAX31855_FAULT_NAMES { "OC Fault", "SCG Fault", "SCV Fault" }
 
 /**
  * @brief enumeration of the different control parameters of the MAX31855 device

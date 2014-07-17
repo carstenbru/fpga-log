@@ -1,5 +1,5 @@
 /**
- * @file i2c_funcs.h
+ * @file src/i2c_funcs.c
  * @brief functions to control SpartanMC's i2c-master peripheral
  *
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)

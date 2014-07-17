@@ -32,4 +32,5 @@ void uart_light_send(uart_light_regs_t *uart, unsigned char value) {
 }
 
 void uart_light_enable_rxint(uart_light_regs_t* uart) {
+	fifo_enable_irq((int_ptr) uart);
 }
