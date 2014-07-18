@@ -34,13 +34,11 @@ ConfigObjectDialog::~ConfigObjectDialog() {
 void ConfigObjectDialog::setupUi() {
     paramWidgets.clear();
 
-    QWidget * contents = new QWidget;
+    QWidget * contents = new QWidget();
     QVBoxLayout* layout = new QVBoxLayout();
     layout->setAlignment(Qt::AlignTop);
     contents->setLayout(layout);
     ui->scrollArea->setWidget(contents);
-
-    connect(contents, SIGNAL(destroyed()), this, SLOT(setupUi()));
 
     addNameGroup(layout);
     addHardwareParametersGroup(layout);
@@ -186,8 +184,8 @@ void ConfigObjectDialog::storeParams() {
 
 void ConfigObjectDialog::reload() {
     storeParams();
-    ui->scrollArea->widget()->deleteLater();
     signalMapper->deleteLater();
+    setupUi();
 }
 
 QStringList ConfigObjectDialog::getAdvancedConfigMethods() {
