@@ -27,7 +27,9 @@ module spmc_timestamp_gen #(
   parameter CONTROL_ADR = 3'b101; //control register
   parameter STATUS_ADR = 3'b110; //status register
   
-  wire [SOURCES+PIN_SOURCES-1:0] source;
+  parameter SOURCES_SUM = SOURCES + PIN_SOURCES;
+  
+  wire [SOURCES_SUM-1:0] source;
   assign source = { pin_source, internal_source };
 
   wire select;
@@ -54,8 +56,8 @@ module spmc_timestamp_gen #(
   reg [1:0] fifo_top_read_state;
   
   //timestamp capture line registers
-  reg [SOURCES-1:0] source_last;
-  wire [SOURCES-1:0] source_change;
+  reg [SOURCES_SUM-1:0] source_last;
+  wire [SOURCES_SUM-1:0] source_change;
   reg capture;
   reg [17:0] tsr_tmp;
   reg [1:0] capture_state;
@@ -114,7 +116,7 @@ module spmc_timestamp_gen #(
   //store last levels of input signals
   always @(posedge clk_peri) begin
     if (reset) begin
-      source_last <= {(SOURCES){1'b1}};
+      source_last <= {(SOURCES_SUM){1'b1}};
     end else begin
       if (capture_ready)
         source_last <= source;
@@ -125,7 +127,7 @@ module spmc_timestamp_gen #(
   integer i;
   always @(*) begin
     capture = 1'b0;
-    for (i = 0; i < SOURCES; i = i + 1) begin
+    for (i = 0; i < SOURCES_SUM; i = i + 1) begin
       if(source_change[i]) begin
         tsr_tmp = i+1;
         capture = 1'b1;

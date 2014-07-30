@@ -155,7 +155,7 @@ TARGET_NODE
                 </parameter>
                 <parameter id="#PARAM.RAMBLOCKS">
                     <attribute id="name" xml:space="preserve">RAMBLOCKS</attribute>
-                    <attribute id="value" xml:space="preserve">14</attribute>
+                    <attribute id="value" xml:space="preserve">8</attribute>
                 </parameter>
                 <parameter id="#PARAM.RESET_VECTOR">
                     <attribute id="name" xml:space="preserve">RESET_VECTOR</attribute>
