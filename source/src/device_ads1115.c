@@ -191,6 +191,8 @@ static void device_ads1115_send_data(void* const _ads1115,
 	unsigned char data[2];
 	i2c_read(ads1115->i2c_master, ADS1115_ADDRESS, 2, data);
 	int value = (data[0] << 8) + data[1];
+	if ((value & 32767) != value)
+		value -= 65536;  //convert 16.bit k2-komplement
 	data_package_t package = { id, ads1115->val_name, DATA_TYPE_INT, &value,
 			timestamp };
 	ads1115->data_out->new_data(ads1115->data_out->parent, &package);

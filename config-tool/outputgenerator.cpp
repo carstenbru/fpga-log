@@ -311,6 +311,7 @@ void OutputGenerator::generateSystemXML() {
     QString timestampConnections;
     QXmlStreamWriter timestampConnectionsWriter(&timestampConnections);
     timestampConnectionsWriter.setAutoFormatting(true);
+    usedTimestampSources = max(1, usedTimestampSources);
     writeTimestampPins(timestampConnectionsWriter);
 
     QString pins;
@@ -330,9 +331,9 @@ void OutputGenerator::generateSystemXML() {
         } else if (line.compare("CLOCK_PERIOD_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << (1000000000.0f / dataLogger->getClk()) << "</attribute>" << endl;
         } else if (line.compare("TIMESTAMP_GEN_SOURCES_ATTRIBUTE") == 0) {
-            stream << "<attribute id=\"value\">" << max(1, usedTimestampSources) << "</attribute>" << endl;
+            stream << "<attribute id=\"value\">" << usedTimestampSources << "</attribute>" << endl;
         } else if (line.compare("TIMESTAMP_GEN_PIN_SOURCES_ATTRIBUTE") == 0) {
-            stream << "<attribute id=\"value\">" << usedTimestampPinSources << "</attribute>" << endl;
+            stream << "<attribute id=\"value\">" << max(1, usedTimestampPinSources) << "</attribute>" << endl;
         } else if (line.compare("FPGA_PINS") == 0) {
             stream << pins.toStdString() << endl;
         } else if (line.compare("TIMESTAMP_GEN_PIN_CONNECTIONS") == 0) {
@@ -524,7 +525,7 @@ void OutputGenerator::writeTimestampPins(QXmlStreamWriter& writer) {
 
             QString destination = itp->second->getValue().c_str();
             destination.replace(":", "_");
-            usedPins.push_back(FpgaPin(destination.toStdString(), "INPUT", "PULLDOWN"));
+            usedPins.push_back(FpgaPin(destination.toStdString(), "INPUT", "PULLUP"));
             destination = "#PIN." + destination;
 
             writeConnection(writer, destination.toStdString(), usedTimestampPinSources++);

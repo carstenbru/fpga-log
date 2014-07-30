@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <datalogger>
-    <parameter name="Zielplattform" value="papilio-pro" hideFromUser="false" critical="false" dataType="target" pointer="false"/>
+    <parameter name="Zielplattform" value="papilio-500k" hideFromUser="false" critical="false" dataType="target" pointer="false"/>
     <parameter name="Clock Pin" value="CLK:32" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
     <parameter name="Taktfrequenz" value="32000000" hideFromUser="false" critical="false" dataType="peripheral_int" pointer="false"/>
     <DatastreamObject>
@@ -53,7 +53,7 @@
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
                 <parameter name="hct99" value="" hideFromUser="false" critical="false" dataType="device_hct99_t" pointer="true"/>
                 <parameter name="uart_light" value="" hideFromUser="false" critical="false" dataType="uart_light_regs_t" pointer="true"/>
-                <parameter name="id" value="0" hideFromUser="true" critical="false" dataType="int" pointer="false"/>
+                <parameter name="id" value="1" hideFromUser="true" critical="false" dataType="int" pointer="false"/>
             </CMethod>
             <SpmcPeripheral name="uart_light" dataType="uart_light_regs_t">
                 <parameter name="CLOCK_FREQUENCY" value="25000000" hideFromUser="true" critical="false" dataType="peripheral_int" pointer="false"/>

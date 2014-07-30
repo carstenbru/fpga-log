@@ -48,9 +48,9 @@ int i2c_read(i2c_master_regs_t* i2c, int address, int count,
 
 	while (count--) {
 		if (count)
-			i2c->command = I2C_RD | I2C_ACK;
+			i2c->command = I2C_RD; //I2C ack flag is inverted and not as described in manual!
 		else
-			i2c->command = I2C_RD | I2C_STO | I2C_ACK;
+			i2c->command = I2C_RD | I2C_STO; //I2C ack flag is inverted and not as described in manual!
 		while (i2c->status & I2C_TIP)
 			;
 		*data++ = i2c->rx;
