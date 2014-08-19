@@ -15,11 +15,9 @@
  * @brief initializes the system
  *
  * @param periperhal_clock			the peripheral clock of the system
- * @param timer_2000hz_compare	2000Hz timer compare peripheral
  * @param tsgen									timestamp generator peripheral
  */
-void sys_init(unsigned long int periperhal_clock,
-		compare_regs_t* timer_2000hz_compare, timestamp_gen_regs_t* tsgen);
+void sys_init(unsigned long int periperhal_clock, timestamp_gen_regs_t* tsgen);
 
 /**
  * @brief returns the peripheral clock of the system

@@ -1,0 +1,26 @@
+<!--
+
+XML module description
+
+-->
+
+<module xmlns="http://www.mr.inf.tu-dresden.de/spartanmc/module" name="clk_div" text="clock divider" type="gluelogic" category="Clock">
+  
+	<description>
+		The clock divider module can be used to divide a clock by a fixed value.
+	</description>
+	
+	<interface toplevel="clk_div" />
+	
+	<parameters>
+		<!--<parameter name="BASE_ADR" type="hex" value="0x10" />-->
+		<parameter name="DIVISION" type="int" value="8000" />
+	</parameters>
+	
+	<ports direction="input">
+          <port name="clk_i"/>
+        </ports>
+	<ports direction="output">
+          <port name="clk_o"/>
+        </ports>
+</module>

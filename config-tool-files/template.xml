@@ -10,130 +10,24 @@ TARGET_NODE
         <processor_module id="SUBSYSTEM">
             <attribute id="firmware" xml:space="preserve">./firmware</attribute>
             <attribute id="name" xml:space="preserve">subsystem</attribute>
-            <peripheral id="TIMER_2000HZ_COMPARE">
-                <attribute id="module_type" xml:space="preserve">compare</attribute>
-                <attribute id="name" xml:space="preserve">timer_2000hz_compare</attribute>
-                <port id="#PORT.access_peri">
-                    <attribute id="name" xml:space="preserve">access_peri</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#4045">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.access_peri</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
-                </port>
-                <port id="#PORT.addr_peri">
-                    <attribute id="name" xml:space="preserve">addr_peri</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#1170">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.addr_peri</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
-                </port>
-                <port id="#PORT.clk_peri">
-                    <attribute id="name" xml:space="preserve">clk_peri</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#9AAE">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.clk_peri</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
-                </port>
-                <port id="#PORT.di_peri">
-                    <attribute id="name" xml:space="preserve">di_peri</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#B303">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.di_peri</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
-                </port>
-                <port id="#PORT.do_peri">
-                    <attribute id="name" xml:space="preserve">do_peri</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#E496">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.do_peri</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
-                </port>
-                <port id="#PORT.intr">
-                    <attribute id="name" xml:space="preserve">intr</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                </port>
-                <port id="#PORT.pin_out">
-                    <attribute id="name" xml:space="preserve">pin_out</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#80F1">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/TIMER_2000HZ/#PORT.reset_i</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
-                </port>
-                <port id="#PORT.reset">
-                    <attribute id="name" xml:space="preserve">reset</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#EA6F">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.reset</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
-                </port>
-                <port id="#PORT.timer_data">
-                    <attribute id="name" xml:space="preserve">timer_data</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#BD67">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/TIMER_2000HZ/#PORT.count_o</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
-                </port>
-                <port id="#PORT.wr_peri">
-                    <attribute id="name" xml:space="preserve">wr_peri</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#DE19">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.wr_peri</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
-                </port>
-            </peripheral>
-            <gluelogic id="TIMER_2000HZ">
-                <attribute id="module_type" xml:space="preserve">generic_counter</attribute>
-                <attribute id="name" xml:space="preserve">timer_2000hz</attribute>
-                <parameter id="#PARAM.WIDTH">
-                    <attribute id="name" xml:space="preserve">WIDTH</attribute>
-                    <attribute id="value" xml:space="preserve">18</attribute>
+            
+	    <gluelogic id="REFERENCE_2000HZ">
+                <attribute id="module_type" xml:space="preserve">clk_div</attribute>
+                <attribute id="name" xml:space="preserve">reference_2000hz</attribute>
+                <parameter id="#PARAM.DIVISION">
+                    <attribute id="name" xml:space="preserve">DIVISION</attribute>
+                    <attribute id="value" xml:space="preserve">8000</attribute>
                 </parameter>
                 <port id="#PORT.clk_i">
                     <attribute id="name" xml:space="preserve">clk_i</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#948F">
+                    <connection id="#36BE">
                         <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/SPARTANMC/#PORT.clk_peri</attribute>
                         <attribute id="lsb_index" xml:space="preserve">0</attribute>
                     </connection>
                 </port>
-                <port id="#PORT.count_o">
-                    <attribute id="name" xml:space="preserve">count_o</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#BD67">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/TIMER_2000HZ_COMPARE/#PORT.timer_data</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
-                </port>
-                <port id="#PORT.en_i">
-                    <attribute id="name" xml:space="preserve">en_i</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#1F7D">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/VCC_GND/#PORT.VCC</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
-                </port>
-                <port id="#PORT.overflow_o">
-                    <attribute id="name" xml:space="preserve">overflow_o</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                </port>
-                <port id="#PORT.reset_i">
-                    <attribute id="name" xml:space="preserve">reset_i</attribute>
-                    <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#80F1">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SUBSYSTEM/TIMER_2000HZ_COMPARE/#PORT.pin_out</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
-                </port>
             </gluelogic>
+	    
             <processor id="SPARTANMC">
                 <attribute id="module_type" xml:space="preserve">spartanmc</attribute>
                 <attribute id="name" xml:space="preserve">spartanmc_0</attribute>

@@ -108,78 +108,6 @@
         <ControlPortIn name="control_in"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="dm_timer_0" type="dm_timer_t">
-            <CMethod name="init" headerFile="../source/include/dm/dm_timer.h">
-                <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
-                <parameter name="timer" value="" hideFromUser="false" critical="false" dataType="dm_timer_t" pointer="true"/>
-                <parameter name="interval" value="1000" hideFromUser="false" critical="false" dataType="uint36_t" pointer="false"/>
-                <parameter name="control_action" value="control_action_simple_0" hideFromUser="false" critical="false" dataType="control_action_t" pointer="true"/>
-                <parameter name="timer_regs" value="" hideFromUser="false" critical="false" dataType="timer_regs_t" pointer="true"/>
-                <parameter name="compare_regs" value="" hideFromUser="false" critical="false" dataType="compare_regs_t" pointer="true"/>
-            </CMethod>
-            <SpmcPeripheral name="timer_regs" dataType="timer_regs_t">
-                <portGroup name="global">
-                    <peripheralPort name="clk_i" direction="INPUT">
-                        <parameter name="clk_i" value="SUBSYSTEM/TIMER_2000HZ_COMPARE/#PORT.pin_out" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                    </peripheralPort>
-                    <peripheralPort name="timer_out" direction="OUTPUT">
-                        <parameter name="timer_out_0" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_1" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_2" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_3" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_4" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_5" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_6" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_7" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_8" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_9" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_10" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_11" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_12" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_13" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_14" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_15" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_16" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_out_17" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                    </peripheralPort>
-                </portGroup>
-            </SpmcPeripheral>
-            <SpmcPeripheral name="compare_regs" dataType="compare_regs_t">
-                <portGroup name="global">
-                    <peripheralPort name="intr" direction="OUTPUT">
-                        <parameter name="intr" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                    </peripheralPort>
-                    <peripheralPort name="pin_out" direction="OUTPUT">
-                        <parameter name="pin_out" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                    </peripheralPort>
-                    <peripheralPort name="timer_data" direction="INPUT">
-                        <parameter name="timer_data_0" value="./timer_regs/#PORT.timer_out" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_1" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_2" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_3" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_4" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_5" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_6" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_7" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_8" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_9" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_10" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_11" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_12" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_13" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_14" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_15" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_16" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                        <parameter name="timer_data_17" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                    </peripheralPort>
-                </portGroup>
-            </SpmcPeripheral>
-        </CObject>
-        <x value="401"/>
-        <y value="309"/>
-        <ControlPortOut name="control_out" multiPort="false" destinationModule="device_hct99_0" destinationPort="control_in"/>
-    </DatastreamObject>
-    <DatastreamObject>
         <CObject name="dm_trigger_0" type="dm_trigger_t">
             <CMethod name="init" headerFile="../source/include/dm/dm_trigger.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
@@ -259,6 +187,78 @@
         <DataPortOut name="data_out" multiPort="true"/>
         <DataPortOut name="data_out" multiPort="true"/>
         <DataPortOut name="data_out" multiPort="true"/>
+    </DatastreamObject>
+    <DatastreamObject>
+        <CObject name="dm_timer_0" type="dm_timer_t">
+            <CMethod name="init" headerFile="../source/include/dm/dm_timer.h">
+                <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
+                <parameter name="timer" value="" hideFromUser="false" critical="false" dataType="dm_timer_t" pointer="true"/>
+                <parameter name="interval" value="1000" hideFromUser="false" critical="false" dataType="uint36_t" pointer="false"/>
+                <parameter name="control_action" value="control_action_simple_0" hideFromUser="false" critical="false" dataType="control_action_t" pointer="true"/>
+                <parameter name="timer_regs" value="" hideFromUser="false" critical="false" dataType="timer_regs_t" pointer="true"/>
+                <parameter name="compare_regs" value="" hideFromUser="false" critical="false" dataType="compare_regs_t" pointer="true"/>
+            </CMethod>
+            <SpmcPeripheral name="timer_regs" dataType="timer_regs_t">
+                <portGroup name="global">
+                    <peripheralPort name="clk_i" direction="INPUT">
+                        <parameter name="clk_i" value="SUBSYSTEM/REFERENCE_2000HZ/#PORT.clk_o" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                    <peripheralPort name="timer_out" direction="OUTPUT">
+                        <parameter name="timer_out_0" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_1" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_2" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_3" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_4" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_5" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_6" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_7" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_8" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_9" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_10" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_11" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_12" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_13" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_14" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_15" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_16" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_out_17" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+            </SpmcPeripheral>
+            <SpmcPeripheral name="compare_regs" dataType="compare_regs_t">
+                <portGroup name="global">
+                    <peripheralPort name="intr" direction="OUTPUT">
+                        <parameter name="intr" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                    <peripheralPort name="pin_out" direction="OUTPUT">
+                        <parameter name="pin_out" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                    <peripheralPort name="timer_data" direction="INPUT">
+                        <parameter name="timer_data_0" value="./timer_regs/#PORT.timer_out" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_1" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_2" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_3" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_4" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_5" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_6" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_7" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_8" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_9" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_10" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_11" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_12" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_13" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_14" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_15" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_16" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                        <parameter name="timer_data_17" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+            </SpmcPeripheral>
+        </CObject>
+        <x value="394"/>
+        <y value="317"/>
+        <ControlPortOut name="control_out" multiPort="false" destinationModule="device_hct99_0" destinationPort="control_in"/>
     </DatastreamObject>
     <CObject name="formatter_simple_0" type="formatter_simple_t">
         <CMethod name="init" headerFile="../source/include/sink/formatter/formatter_simple.h">

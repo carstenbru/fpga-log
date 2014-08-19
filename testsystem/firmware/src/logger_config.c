@@ -64,12 +64,12 @@ void connect_ports(void) {
   device_hct99_set_data_out(&device_hct99_0, dm_splitter_data_get_data_in(&dm_splitter_data_0));
   device_hct99_set_error_out(&device_hct99_0, dm_splitter_data_get_data_in(&dm_splitter_data_0));
   device_hct99_set_misc_out(&device_hct99_0, dm_splitter_data_get_data_in(&dm_splitter_data_0));
-  dm_timer_set_control_out(&dm_timer_0, device_hct99_get_control_in(&device_hct99_0));
   dm_trigger_set_control_out(&dm_trigger_0, device_hct99_get_control_in(&device_hct99_0));
   dm_filter_set_data_out(&dm_filter_0, dm_trigger_get_data_in(&dm_trigger_0));
   dm_splitter_data_add_data_out(&dm_splitter_data_0, sink_sd_card_get_data_in(&sink_sd_card_0));
   dm_splitter_data_add_data_out(&dm_splitter_data_0, sink_uart_get_data_in(&sink_uart_0));
   dm_splitter_data_add_data_out(&dm_splitter_data_0, dm_filter_get_data_in(&dm_filter_0));
+  dm_timer_set_control_out(&dm_timer_0, device_hct99_get_control_in(&device_hct99_0));
 }
 
 void advanced_config(void) {

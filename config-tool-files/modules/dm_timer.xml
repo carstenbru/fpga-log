@@ -1,6 +1,6 @@
 <module name="dm_timer">
   <peripheral name="timer_regs" >
-    <port group="global" name="clk_i" destination="SUBSYSTEM/TIMER_2000HZ_COMPARE/#PORT.pin_out" hide="TRUE" />
+    <port group="global" name="clk_i" destination="SUBSYSTEM/REFERENCE_2000HZ/#PORT.clk_o" hide="TRUE" />
     <port group="global" name="timer_out" hide="TRUE" />
   </peripheral>
   <peripheral name="compare_regs" >
