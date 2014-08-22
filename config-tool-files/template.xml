@@ -16,7 +16,7 @@ TARGET_NODE
                 <attribute id="name" xml:space="preserve">reference_2000hz</attribute>
                 <parameter id="#PARAM.DIVISION">
                     <attribute id="name" xml:space="preserve">DIVISION</attribute>
-                    <attribute id="value" xml:space="preserve">8000</attribute>
+2000HZ_DIV_VALUE_ATTRIBUTE
                 </parameter>
                 <port id="#PORT.clk_i">
                     <attribute id="name" xml:space="preserve">clk_i</attribute>

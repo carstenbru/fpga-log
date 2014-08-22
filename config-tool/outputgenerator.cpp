@@ -338,6 +338,8 @@ void OutputGenerator::generateSystemXML() {
             stream << pins.toStdString() << endl;
         } else if (line.compare("TIMESTAMP_GEN_PIN_CONNECTIONS") == 0) {
             stream << timestampConnections.toStdString() << endl;
+        } else if (line.compare("2000HZ_DIV_VALUE_ATTRIBUTE") == 0) {
+            stream << "<attribute id=\"value\">" << (dataLogger->getPeriClk() / 2000) << "</attribute>" << endl;
         } else {
             stream << line << endl;
         }

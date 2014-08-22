@@ -1,7 +1,7 @@
 #!/bin/sh
 
 SPMC_SOC_KIT=spmc-soc-kit-beta
-LIB_DEPS="peri/uart_light_receive_nb.o peri/uart_light_send.o peri/spi_activate.o peri/spi_deactivate.o peri/spi_set_div.o peri/spi_enable.o"
+LIB_DEPS="peri/uart_light_receive_nb.o peri/uart_light_send.o peri/spi_activate.o peri/spi_deactivate.o peri/spi_set_div.o peri/spi_enable.o peri/spi_set_cpha.o"
 
 fpga_log_dir=$(pwd)
 

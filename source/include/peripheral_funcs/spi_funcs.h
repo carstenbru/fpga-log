@@ -11,7 +11,7 @@
 #include <peripherals/spi_master.h>
 
 /**
- * @brief returns the trans_empty flag of the spi peripheral and with that weather the trasaction is finished
+ * @brief returns the trans_empty flag of the spi peripheral and with that whether the transaction is finished
  *
  * @param spi	the spi-master
  * @return the trans_empty flag
