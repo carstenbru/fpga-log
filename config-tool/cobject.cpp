@@ -52,6 +52,7 @@ CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool readStart) {
                 advancedConfig.push_back(new CMethod(in));
         } else if (in.name().compare("timestamp_pin") == 0) {
             string parameter = in.attributes().value("name").toString().toStdString();
+            timestampPinsInvert[parameter] = (in.attributes().value("inverted").toString().compare("true") == 0);
             in.readNextStartElement();
             timestampPins[parameter] = new CParameter(in);
             in.skipCurrentElement();
@@ -87,6 +88,13 @@ void CObject::readTimestampPinsFromModuleXml() {
             timestampPins[refParam] =
                     new CParameter(reader.attributes().value("name").toString().toStdString(), DataTypePin::getPinType());
             initMethod->getParameter(refParam)->setHideFromUser(true);
+
+            QStringRef invStr = reader.attributes().value("invert");
+            bool invert = false;
+            if (!invStr.isEmpty()) {
+                invert = (invStr.toString().compare("TRUE") == 0);
+            }
+            timestampPinsInvert[refParam] = invert;
         }
         reader.skipCurrentElement();
     }
@@ -110,6 +118,7 @@ QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CObject& cObject) {
     for (map<string, CParameter*>::iterator i = cObject.timestampPins.begin(); i != cObject.timestampPins.end(); i++) {
         out.writeStartElement("timestamp_pin");
         out.writeAttribute("name", i->first.c_str());
+        out.writeAttribute("inverted", cObject.timestampPinsInvert[i->first] ? "true" : "false");
 
         out << *(i->second);
 

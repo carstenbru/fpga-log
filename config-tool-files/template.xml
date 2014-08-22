@@ -204,8 +204,12 @@ PERI_CLOCK_ATTRIBUTE
 TIMESTAMP_GEN_SOURCES_ATTRIBUTE
                 </parameter>
 		<parameter id="#PARAM.PIN_SOURCES">
-                    <attribute id="name" xml:space="preserve">SOURCES</attribute>
+                    <attribute id="name" xml:space="preserve">PIN_SOURCES</attribute>
 TIMESTAMP_GEN_PIN_SOURCES_ATTRIBUTE
+                </parameter>
+		<parameter id="#PARAM.INVERTED_SOURCES_MASK">
+                    <attribute id="name" xml:space="preserve">INVERTED_SOURCES_MASK</attribute>
+TIMESTAMP_GEN_INVERTED_SOURCES_MASK_ATTRIBUTE
                 </parameter>
                 <port id="#PORT.access_peri">
                     <attribute id="name" xml:space="preserve">access_peri</attribute>

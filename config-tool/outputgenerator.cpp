@@ -21,7 +21,8 @@ OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     error(false),
     pcPeripheralIdCounter(0),
     pcPeripheralCompareCounter(0),
-    pcPeripheralTimerCounter(0)
+    pcPeripheralTimerCounter(0),
+    timestampInvertMask(0)
 {
     cout << directory << endl;
     process.setWorkingDirectory(directory.c_str());
@@ -334,6 +335,8 @@ void OutputGenerator::generateSystemXML() {
             stream << "<attribute id=\"value\">" << usedTimestampSources << "</attribute>" << endl;
         } else if (line.compare("TIMESTAMP_GEN_PIN_SOURCES_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << max(1, usedTimestampPinSources) << "</attribute>" << endl;
+        } else if (line.compare("TIMESTAMP_GEN_INVERTED_SOURCES_MASK_ATTRIBUTE") == 0) {
+            stream << "<attribute id=\"value\">" << timestampInvertMask << "</attribute>" << endl;
         } else if (line.compare("FPGA_PINS") == 0) {
             stream << pins.toStdString() << endl;
         } else if (line.compare("TIMESTAMP_GEN_PIN_CONNECTIONS") == 0) {
@@ -524,13 +527,14 @@ void OutputGenerator::writeTimestampPins(QXmlStreamWriter& writer) {
         map<string, CParameter*> timestampPins = i->second->getTimestampPins();
         for (map<string, CParameter*>::iterator itp = timestampPins.begin(); itp != timestampPins.end(); itp++) {
             i->second->getInitMethod()->getParameter(itp->first)->setValue(to_string(usedTimestampSources+usedTimestampPinSources+1));
+            timestampInvertMask |= (i->second->getTimestampPinInvert(itp->first)) << (usedTimestampSources+usedTimestampPinSources);
 
             QString destination = itp->second->getValue().c_str();
             destination.replace(":", "_");
             usedPins.push_back(FpgaPin(destination.toStdString(), "INPUT", "PULLUP"));
             destination = "#PIN." + destination;
 
-            writeConnection(writer, destination.toStdString(), usedTimestampPinSources++);
+            writeConnection(writer, destination.toStdString(), usedTimestampPinSources++);  
         }
     }
 }

@@ -90,6 +90,8 @@ private:
     std::stringstream pcTimestampCaptureStream;
     int pcPeripheralCompareCounter;
     int pcPeripheralTimerCounter;
+
+    long timestampInvertMask;
 private slots:
     void newChildStdOut();
     void newChildErrOut();

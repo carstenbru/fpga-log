@@ -1,6 +1,7 @@
 module spmc_timestamp_gen #(
             parameter SOURCES = 2,        //number of timestamp capture sources
             parameter PIN_SOURCES = 2,        //number of timestamp capture pin sources
+            parameter INVERTED_SOURCES_MASK = 0,  //mask if sources to invert (so trigger on a negative edge instead of a positive edge)
             parameter CLOCK_FREQUENCY = 16000000, //input clock frequency
             parameter BASE_ADR = 10'h0) ( 
         //*** Connections to SpartanMC Core (do not change) ***
@@ -29,8 +30,10 @@ module spmc_timestamp_gen #(
   
   parameter SOURCES_SUM = SOURCES + PIN_SOURCES;
   
+  wire [SOURCES_SUM-1:0] source_inv;
+  assign source_inv = INVERTED_SOURCES_MASK;
   wire [SOURCES_SUM-1:0] source;
-  assign source = { pin_source, internal_source };
+  assign source = ({ pin_source, internal_source } ^ source_inv);
 
   wire select;
   // Address decoder generates the select sinal out of the upper part of the peripheral address.

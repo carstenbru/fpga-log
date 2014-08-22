@@ -28,6 +28,7 @@ public:
     std::list<SpmcPeripheral*> getPeripherals() { return peripherals; }
     std::map<std::string, CParameter*> getTimestampPins() { return timestampPins; }
     std::list<CParameter*> getTimestampPinParameters();
+    bool getTimestampPinInvert(std::string pin) { return timestampPinsInvert.at(pin); }
 
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CObject& cObject);
 protected:
@@ -39,6 +40,7 @@ protected:
     CMethod* initMethod;
     std::list<SpmcPeripheral*> peripherals;
     std::map<std::string, CParameter*> timestampPins;
+    std::map<std::string, bool> timestampPinsInvert;
 
     std::list<CMethod*> advancedConfig;
 public slots:

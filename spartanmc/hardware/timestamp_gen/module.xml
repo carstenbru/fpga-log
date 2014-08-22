@@ -23,6 +23,7 @@ XML module description
 		<parameter name="PIN_SOURCES" type="int" value="2" >
 		  <range min="0" max="262144"/>
 		</parameter>
+		<parameter name="INVERTED_SOURCES_MASK" type="int" value="0" />
 		<parameter name="CLOCK_FREQUENCY" type="int" value="16000000" >
 		  <range min="1" max="68719476736"/>
 		</parameter>
