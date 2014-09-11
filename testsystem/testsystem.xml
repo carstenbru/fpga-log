@@ -4,7 +4,7 @@
     <parameter name="Clock Pin" value="CLK:32" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
     <parameter name="Taktfrequenz" value="32000000" hideFromUser="false" critical="false" dataType="peripheral_int" pointer="false"/>
     <DatastreamObject>
-        <CObject name="sink_uart_0" type="sink_uart_t">
+        <CObject name="uart" type="sink_uart_t">
             <CMethod name="init" headerFile="../source/include/sink/sink_uart.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
                 <parameter name="sink_uart" value="" hideFromUser="false" critical="false" dataType="sink_uart_t" pointer="true"/>
@@ -48,7 +48,7 @@
         <DataPortIn name="data_in"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="sink_sd_card_0" type="sink_sd_card_t">
+        <CObject name="sd_card" type="sink_sd_card_t">
             <CMethod name="init" headerFile="../source/include/sink/sink_sd_card.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
                 <parameter name="sink_sd_card" value="" hideFromUser="false" critical="false" dataType="sink_sd_card_t" pointer="true"/>
@@ -78,13 +78,13 @@
         <DataPortIn name="data_in"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="device_ads1115_0" type="device_ads1115_t">
+        <CObject name="ads1115" type="device_ads1115_t">
             <CMethod name="init" headerFile="../source/include/device/device_ads1115.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
                 <parameter name="ads1115" value="" hideFromUser="false" critical="false" dataType="device_ads1115_t" pointer="true"/>
                 <parameter name="i2c_master" value="" hideFromUser="false" critical="false" dataType="i2c_master_regs_t" pointer="true"/>
                 <parameter name="rdy_id" value="3" hideFromUser="true" critical="false" dataType="int" pointer="false"/>
-                <parameter name="mux" value="ADS1115_MUX_SE_CH1" hideFromUser="false" critical="false" dataType="ads1115_mux" pointer="false"/>
+                <parameter name="mux" value="ADS1115_MUX_SE_CH0" hideFromUser="false" critical="false" dataType="ads1115_mux" pointer="false"/>
                 <parameter name="pga" value="ADS1115_PGA_2_048V" hideFromUser="false" critical="false" dataType="ads1115_pga" pointer="false"/>
                 <parameter name="mode" value="ADS1115_MODE_SINGLE_SHOT" hideFromUser="false" critical="false" dataType="ads1115_mode" pointer="false"/>
                 <parameter name="data_rate" value="ADS1115_DR_8SPS" hideFromUser="false" critical="false" dataType="ads1115_data_rate" pointer="false"/>
@@ -114,10 +114,10 @@
         <x value="1038"/>
         <y value="62"/>
         <ControlPortIn name="control_in"/>
-        <DataPortOut name="data_out" multiPort="false" destinationModule="dm_splitter_data_0" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="false" destinationModule="splitter_0" destinationPort="data_in"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="dm_timer_0" type="dm_timer_t">
+        <CObject name="timer" type="dm_timer_t">
             <CMethod name="init" headerFile="../source/include/dm/dm_timer.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
                 <parameter name="timer" value="" hideFromUser="false" critical="false" dataType="dm_timer_t" pointer="true"/>
@@ -186,10 +186,10 @@
         </CObject>
         <x value="841"/>
         <y value="165"/>
-        <ControlPortOut name="control_out" multiPort="false" destinationModule="device_ads1115_0" destinationPort="control_in"/>
+        <ControlPortOut name="control_out" multiPort="false" destinationModule="ads1115" destinationPort="control_in"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="dm_filter_0" type="dm_filter_t">
+        <CObject name="filter" type="dm_filter_t">
             <CMethod name="init" headerFile="../source/include/dm/dm_filter.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
                 <parameter name="filter" value="" hideFromUser="false" critical="false" dataType="dm_filter_t" pointer="true"/>
@@ -200,10 +200,10 @@
         <x value="587"/>
         <y value="201"/>
         <DataPortIn name="data_in"/>
-        <DataPortOut name="data_out" multiPort="false" destinationModule="dm_splitter_data_1" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="false" destinationModule="splitter_1" destinationPort="data_in"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="dm_splitter_data_0" type="dm_splitter_data_t">
+        <CObject name="splitter_0" type="dm_splitter_data_t">
             <CMethod name="init" headerFile="../source/include/dm/dm_splitter_data.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
                 <parameter name="splitter" value="" hideFromUser="false" critical="false" dataType="dm_splitter_data_t" pointer="true"/>
@@ -212,8 +212,8 @@
         <x value="840"/>
         <y value="8"/>
         <DataPortIn name="data_in"/>
-        <DataPortOut name="data_out" multiPort="true" destinationModule="sink_uart_0" destinationPort="data_in"/>
-        <DataPortOut name="data_out" multiPort="true" destinationModule="dm_filter_0" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="true" destinationModule="uart" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="true" destinationModule="filter" destinationPort="data_in"/>
         <DataPortOut name="data_out" multiPort="true"/>
         <DataPortOut name="data_out" multiPort="true"/>
         <DataPortOut name="data_out" multiPort="true"/>
@@ -222,7 +222,7 @@
         <DataPortOut name="data_out" multiPort="true"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="dm_splitter_data_1" type="dm_splitter_data_t">
+        <CObject name="splitter_1" type="dm_splitter_data_t">
             <CMethod name="init" headerFile="../source/include/dm/dm_splitter_data.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
                 <parameter name="splitter" value="" hideFromUser="false" critical="false" dataType="dm_splitter_data_t" pointer="true"/>
@@ -231,9 +231,9 @@
         <x value="312"/>
         <y value="201"/>
         <DataPortIn name="data_in"/>
-        <DataPortOut name="data_out" multiPort="true" destinationModule="sink_sd_card_0" destinationPort="data_in"/>
-        <DataPortOut name="data_out" multiPort="true" destinationModule="dm_trigger_0" destinationPort="data_in"/>
-        <DataPortOut name="data_out" multiPort="true" destinationModule="dm_trigger_1" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="true" destinationModule="sd_card" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="true" destinationModule="trigger_hct" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="true" destinationModule="trigger_temp" destinationPort="data_in"/>
         <DataPortOut name="data_out" multiPort="true"/>
         <DataPortOut name="data_out" multiPort="true"/>
         <DataPortOut name="data_out" multiPort="true"/>
@@ -241,7 +241,7 @@
         <DataPortOut name="data_out" multiPort="true"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="dm_trigger_0" type="dm_trigger_t">
+        <CObject name="trigger_hct" type="dm_trigger_t">
             <CMethod name="init" headerFile="../source/include/dm/dm_trigger.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
                 <parameter name="trigger" value="" hideFromUser="false" critical="false" dataType="dm_trigger_t" pointer="true"/>
@@ -250,11 +250,11 @@
         </CObject>
         <x value="79"/>
         <y value="330"/>
-        <ControlPortOut name="control_out" multiPort="false" destinationModule="device_hct99_0" destinationPort="control_in"/>
+        <ControlPortOut name="control_out" multiPort="false" destinationModule="hct99" destinationPort="control_in"/>
         <DataPortIn name="data_in"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="device_hct99_0" type="device_hct99_t">
+        <CObject name="hct99" type="device_hct99_t">
             <CMethod name="init" headerFile="../source/include/device/device_hct99.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
                 <parameter name="hct99" value="" hideFromUser="false" critical="false" dataType="device_hct99_t" pointer="true"/>
@@ -351,12 +351,12 @@
         <x value="842"/>
         <y value="230"/>
         <ControlPortIn name="control_in"/>
-        <DataPortOut name="data_out" multiPort="false" destinationModule="dm_splitter_data_2" destinationPort="data_in"/>
-        <DataPortOut name="error_out" multiPort="false" destinationModule="sink_uart_0" destinationPort="data_in"/>
-        <DataPortOut name="misc_out" multiPort="false" destinationModule="sink_uart_0" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="false" destinationModule="splitter_2" destinationPort="data_in"/>
+        <DataPortOut name="error_out" multiPort="false" destinationModule="uart" destinationPort="data_in"/>
+        <DataPortOut name="misc_out" multiPort="false" destinationModule="uart" destinationPort="data_in"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="device_max31855_0" type="device_max31855_t">
+        <CObject name="max31855" type="device_max31855_t">
             <CMethod name="init" headerFile="../source/include/device/device_max31855.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
                 <parameter name="max31855" value="" hideFromUser="false" critical="false" dataType="device_max31855_t" pointer="true"/>
@@ -388,12 +388,12 @@
         <x value="842"/>
         <y value="436"/>
         <ControlPortIn name="control_in"/>
-        <DataPortOut name="data_out" multiPort="false" destinationModule="dm_splitter_data_2" destinationPort="data_in"/>
-        <DataPortOut name="internal_temp_out" multiPort="false" destinationModule="sink_uart_0" destinationPort="data_in"/>
-        <DataPortOut name="error_out" multiPort="false" destinationModule="sink_uart_0" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="false" destinationModule="splitter_2" destinationPort="data_in"/>
+        <DataPortOut name="internal_temp_out" multiPort="false" destinationModule="uart" destinationPort="data_in"/>
+        <DataPortOut name="error_out" multiPort="false" destinationModule="uart" destinationPort="data_in"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="dm_splitter_data_2" type="dm_splitter_data_t">
+        <CObject name="splitter_2" type="dm_splitter_data_t">
             <CMethod name="init" headerFile="../source/include/dm/dm_splitter_data.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
                 <parameter name="splitter" value="" hideFromUser="false" critical="false" dataType="dm_splitter_data_t" pointer="true"/>
@@ -402,8 +402,8 @@
         <x value="538"/>
         <y value="44"/>
         <DataPortIn name="data_in"/>
-        <DataPortOut name="data_out" multiPort="true" destinationModule="sink_uart_0" destinationPort="data_in"/>
-        <DataPortOut name="data_out" multiPort="true" destinationModule="sink_sd_card_0" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="true" destinationModule="uart" destinationPort="data_in"/>
+        <DataPortOut name="data_out" multiPort="true" destinationModule="sd_card" destinationPort="data_in"/>
         <DataPortOut name="data_out" multiPort="true"/>
         <DataPortOut name="data_out" multiPort="true"/>
         <DataPortOut name="data_out" multiPort="true"/>
@@ -412,7 +412,7 @@
         <DataPortOut name="data_out" multiPort="true"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="dm_trigger_1" type="dm_trigger_t">
+        <CObject name="trigger_temp" type="dm_trigger_t">
             <CMethod name="init" headerFile="../source/include/dm/dm_trigger.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
                 <parameter name="trigger" value="" hideFromUser="false" critical="false" dataType="dm_trigger_t" pointer="true"/>
@@ -421,7 +421,7 @@
         </CObject>
         <x value="111"/>
         <y value="536"/>
-        <ControlPortOut name="control_out" multiPort="false" destinationModule="device_max31855_0" destinationPort="control_in"/>
+        <ControlPortOut name="control_out" multiPort="false" destinationModule="max31855" destinationPort="control_in"/>
         <DataPortIn name="data_in"/>
     </DatastreamObject>
     <CObject name="formatter_simple_0" type="formatter_simple_t">
