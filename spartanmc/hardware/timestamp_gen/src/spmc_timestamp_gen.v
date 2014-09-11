@@ -30,10 +30,12 @@ module spmc_timestamp_gen #(
   
   parameter SOURCES_SUM = SOURCES + PIN_SOURCES;
   
+  reg [PIN_SOURCES-1:0] pin_source_sync;
+  
   wire [SOURCES_SUM-1:0] source_inv;
   assign source_inv = INVERTED_SOURCES_MASK;
   wire [SOURCES_SUM-1:0] source;
-  assign source = ({ pin_source, internal_source } ^ source_inv);
+  assign source = ({ pin_source_sync, internal_source } ^ source_inv);
 
   wire select;
   // Address decoder generates the select sinal out of the upper part of the peripheral address.
@@ -81,6 +83,11 @@ module spmc_timestamp_gen #(
   assign fifo_n_empty = (fifo_ts_read != fifo_ts_write);
   
   assign capture_ready = capture_state == 2'b11;
+  
+  //synchronize external pin sources to clk_peri
+  always @(posedge clk_peri) begin
+    pin_source_sync <= pin_source;
+  end
   
   //SpartanMC peripheral interface write logic
   always @(posedge clk_peri) begin
