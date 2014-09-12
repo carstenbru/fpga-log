@@ -13,8 +13,9 @@ then
   rm $SPARTANMC_ROOT/spartanmc/include/fpga-log 2> /dev/null
   ln -s $fpga_log_dir/source/include $SPARTANMC_ROOT/spartanmc/include/fpga-log
   
-  #remove uart_light, it will be replaced with patched version later
+  #remove uart_light and timer_compare, they will be replaced with patched versions later
   rm -rf $SPARTANMC_ROOT/spartanmc/hardware/uart_light
+  rm -rf $SPARTANMC_ROOT/spartanmc/hardware/timer_compare
   
   #link new peripherals
   ln -sf $fpga_log_dir/spartanmc/include/peripherals/* $SPARTANMC_ROOT/spartanmc/include/peripherals/
