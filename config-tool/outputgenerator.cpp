@@ -384,6 +384,8 @@ void OutputGenerator::writeParameter(QXmlStreamWriter& writer, CParameter* param
 void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* peripheral) {
     writer.writeStartElement("peripheral");
     string peripheralName = peripheral->getCompleteName().c_str();
+    std::transform(peripheralName.begin(), peripheralName.end(), peripheralName.begin(), ::tolower);
+
     string peripheralNameUpper = peripheralName;
     transform(peripheralNameUpper.begin(), peripheralNameUpper.end(), peripheralNameUpper.begin(), ::toupper);
     writer.writeAttribute("id", peripheralNameUpper.c_str());
