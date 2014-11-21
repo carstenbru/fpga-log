@@ -56,7 +56,7 @@ void datastream_condition_compare_long_set_compare_value(
  */
 int smaller_long(const long int val, const long int ref);
 int greater_long(const long int val, const long int ref);
-int equal_long(const int long val, const long int ref);
+int equal_long(const long int val, const long int ref);
 int not_equal_long(const long int val, const long int ref);
 int smaller_equal_long(const long int val, const long int ref);
 int greater_equal_long(const long int val, const long int ref);
