@@ -41,13 +41,7 @@ void dm_timer_init(dm_timer_t* const timer, const uint36_t interval,
 }
 
 void dm_timer_set_interval(dm_timer_t* const timer, uint36_t interval) {
-	int prescale = 0;
-	while ((interval > 262144) && (prescale < 8)) {
-		prescale++;
-		interval >>= 1;
-	}
-
-	timer_set_interval(timer->timer, prescale, --interval);
+	timer_set_interval_ms(timer->timer, interval);
 }
 
 void dm_timer_set_control_out(dm_timer_t* const timer,

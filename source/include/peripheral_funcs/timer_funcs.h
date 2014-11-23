@@ -9,6 +9,7 @@
 #define TIMER_H_
 
 #include <peripherals/timer.h>
+#include <stdint.h>
 
 /**
  * @brief starts the timer (sets timer and prescaler enable bits)
@@ -26,5 +27,13 @@ void timer_enable(timer_regs_t* const timer);
  */
 void timer_set_interval(timer_regs_t* const timer, const unsigned int prescaler,
 		const unsigned int limit);
+
+/**
+ * @brief sets the timer interval
+ *
+ * @param timer			pointer to the timer
+ * @param interval	the new interval of the timer in ms (max 25bit)
+ */
+void timer_set_interval_ms(timer_regs_t* const timer, uint36_t interval);
 
 #endif
