@@ -22,7 +22,8 @@ static void dm_event_timer_update(void* const _event_timer);
 static void dm_event_timer_clear_event_list(dm_event_timer_t* const event_timer);
 
 void dm_event_timer_init(dm_event_timer_t* const event_timer,
-		timer_regs_t* const timer_regs, compare_regs_t* const compare_regs) {
+		dm_event_timer_mode mode, timer_regs_t* const timer_regs,
+		compare_regs_t* const compare_regs) {
 	datastream_object_init(&event_timer->super);  //call parents init function
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
@@ -33,6 +34,10 @@ void dm_event_timer_init(dm_event_timer_t* const event_timer,
 
 	event_timer->timer = timer_regs;
 	event_timer->compare = compare_regs;
+
+	event_timer->mode = mode;
+
+	event_timer->peridic_next = 0;
 
 	dm_event_timer_clear_event_list(event_timer);
 
@@ -101,17 +106,33 @@ static void dm_event_timer_update(void* const _event_timer) {
 	dm_event_timer_t* event_timer = (dm_event_timer_t*) _event_timer;
 
 	if (compare_check_and_reset_flag(event_timer->compare)) {
-		int pos = event_timer->first_event;
+		int pos;
+		if (event_timer->mode != EVENT_TIMER_PERIODIC) {
+			pos = event_timer->first_event;
+		} else {
+			pos = event_timer->peridic_next;
+		}
+
 		if (pos != -1) {
 			//execute control action
 			event_timer->event_list[pos].control_action->execute(
 					event_timer->event_list[pos].control_action,
 					event_timer->control_out);
 
-			event_timer->first_event = event_timer->event_list[pos].next;  //remove event from list
-			event_timer->event_list[pos].control_action = 0;
-			timer_set_interval_ms(event_timer->timer,
-					event_timer->event_list[event_timer->first_event].delay);
+			int pos_next = event_timer->event_list[pos].next;
+			if (event_timer->mode != EVENT_TIMER_PERIODIC) {
+				event_timer->first_event = pos_next;  //remove event from list
+				event_timer->event_list[pos].control_action = 0;
+			} else {
+				if (pos_next == -1) {
+					pos_next = event_timer->first_event;
+				}
+				event_timer->peridic_next = pos_next;
+			}
+
+			if (pos_next != -1)
+				timer_set_interval_ms(event_timer->timer,
+						event_timer->event_list[pos_next].delay);
 		}
 	}
 }

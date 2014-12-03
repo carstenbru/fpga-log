@@ -19,6 +19,10 @@
 
 #define DM_EVENT_TIMER_MAX_EVENTS 8
 
+typedef enum {
+	EVENT_TIMER_NORMAL, EVENT_TIMER_PERIODIC,
+} dm_event_timer_mode;
+
 typedef struct {
 	uint36_t delay;
 	control_action_t* control_action;
@@ -37,8 +41,11 @@ typedef struct {
 	timer_regs_t* timer; /**< pointer to the timer peripheral */
 	compare_regs_t* compare; /**< pointer to the compare peripheral */
 
-	event_timer_event_t event_list[DM_EVENT_TIMER_MAX_EVENTS];
-	int first_event;
+	event_timer_event_t event_list[DM_EVENT_TIMER_MAX_EVENTS]; /**< event list */
+	int first_event; /**< first element of event list */
+
+	dm_event_timer_mode mode; /**< event timer mode (normal, periodic, ...) */
+	int peridic_next; /**< next element of event list in periodic mode */
 } dm_event_timer_t;
 
 /**
@@ -47,11 +54,13 @@ typedef struct {
  * Initializes the timer, should be called before using the module.
  *
  * @param	event_timer			pointer to the timer
+ * @param mode 						mode of the event timer
  * @param timer_regs 			pointer to a timer peripheral
  * @param compare_regs		pointer to a compare peripheral
  */
 void dm_event_timer_init(dm_event_timer_t* const event_timer,
-		timer_regs_t* const timer_regs, compare_regs_t* const compare_regs);
+		dm_event_timer_mode mode, timer_regs_t* const timer_regs,
+		compare_regs_t* const compare_regs);
 
 /**
  * @brief connects the control output port of a event timer to a given destination
