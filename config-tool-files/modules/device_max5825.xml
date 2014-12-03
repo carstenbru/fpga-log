@@ -1,0 +1,13 @@
+<module name="device_max5825">
+  <peripheral name="i2c_master" >
+    <parameter name="CONTROL" hide="TRUE" />
+    <parameter name="TX" hide="TRUE" />
+    <parameter name="RX" hide="TRUE" />
+    <parameter name="COMMAND" hide="TRUE" />
+    <parameter name="STATUS" hide="TRUE" />
+    
+    <port group="global" name="intr" destination="TIMESTAMP_GEN" parameter="id" hide="TRUE" />
+    <port group="global" name="scl" constraints="PULLUP" />
+    <port group="global" name="sda" constraints="PULLUP" />
+  </peripheral>
+</module>
