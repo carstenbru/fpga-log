@@ -20,8 +20,8 @@
 static void dm_timer_update(void* const _timer);
 
 void dm_timer_init(dm_timer_t* const timer, const uint36_t interval,
-		control_action_t* const control_action, timer_regs_t* const timer_regs,
-		compare_regs_t* const compare_regs) {
+		const uint36_t delay, control_action_t* const control_action,
+		timer_regs_t* const timer_regs, compare_regs_t* const compare_regs) {
 	datastream_object_init(&timer->super);  //call parents init function
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
@@ -34,8 +34,16 @@ void dm_timer_init(dm_timer_t* const timer, const uint36_t interval,
 	timer->timer = timer_regs;
 	timer->compare = compare_regs;
 
+	timer->interval = interval;
+
 	timer_enable(timer_regs);
-	dm_timer_set_interval(timer, interval);
+	if (delay == 0) {
+		dm_timer_set_interval(timer, interval);
+		timer->start_delay = 0;
+	} else {
+		dm_timer_set_interval(timer, delay);
+		timer->start_delay = 1;
+	}
 
 	compare_init_mode_set(compare_regs, 0);
 }
@@ -53,6 +61,11 @@ static void dm_timer_update(void* const _timer) {
 	dm_timer_t* timer = (dm_timer_t*) _timer;
 
 	if (compare_check_and_reset_flag(timer->compare)) {
+		if (timer->start_delay) {
+			dm_timer_set_interval(timer, timer->interval);
+			timer->start_delay = 0;
+		}
+
 		timer->control_action->execute(timer->control_action, timer->control_out);
 	}
 }

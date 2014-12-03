@@ -28,6 +28,9 @@ typedef struct {
 
 	timer_regs_t* timer; /**< pointer to the timer peripheral */
 	compare_regs_t* compare; /**< pointer to the compare peripheral */
+
+	unsigned char start_delay; /**< start delay in progress */
+	uint36_t interval; /**< timer interval */
 } dm_timer_t;
 
 /**
@@ -40,13 +43,14 @@ typedef struct {
  *
  * @param	timer						pointer to the timer
  * @param	interval				the interval of the timer in ms (max 25bit)
+ * @param delay						delay at startup in ms (max 25bit)
  * @param control_action	the control_action which is executed by the timer
  * @param timer_regs 			pointer to a timer peripheral
  * @param compare_regs		pointer to a compare peripheral
  */
 void dm_timer_init(dm_timer_t* const timer, const uint36_t interval,
-		control_action_t* const control_action, timer_regs_t* const timer_regs,
-		compare_regs_t* const compare_regs);
+		const uint36_t delay, control_action_t* const control_action,
+		timer_regs_t* const timer_regs, compare_regs_t* const compare_regs);
 
 /**
  * @brief sets the timer interval
