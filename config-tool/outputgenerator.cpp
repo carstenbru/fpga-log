@@ -80,7 +80,7 @@ void OutputGenerator::generateConfigFiles() {
     generateSystemXML();
     generateCSource();;
 
-    exec("make jconfig +args=\"--generate system.xml\""); //TODO uncomment!!
+    exec("make jconfig +args=\"--generate system.xml\"");
 }
 
 void OutputGenerator::synthesizeSystem() {
@@ -250,8 +250,11 @@ void OutputGenerator::writePreamble(std::ostream& stream) {
 void OutputGenerator::writeMethod(std::ostream& stream, CObject* object, CMethod* method, map<string, CObject *>& objects) {
     usedHeaders.insert(method->getHeaderName());
     list<CParameter>* params = method->getParameters();
-    stream << "  " << object->getType()->getCleanedName() << "_"
-              << method->getName() << "(&" << object->getName();
+    string methodName = method->getCompleteName();
+    if (methodName.empty()) {
+        methodName = object->getType()->getCleanedName() + "_" + method->getName();
+    }
+    stream << "  " << methodName << "(&" << object->getName();
     for (list<CParameter>::iterator i = ++params->begin(); i != params->end(); i++) {
         stream << ", ";
 

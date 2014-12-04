@@ -2,7 +2,8 @@
 
 using namespace std;
 
-CMethod::CMethod(std::string name, CParameter returnType, string headerFile) :
+CMethod::CMethod(std::string completeName, std::string name, CParameter returnType, string headerFile) :
+    completeName(completeName),
     name(name),
     headerFile(headerFile),
     returnType(returnType),
@@ -11,6 +12,7 @@ CMethod::CMethod(std::string name, CParameter returnType, string headerFile) :
 }
 
 CMethod::CMethod(QXmlStreamReader& in) {
+    completeName = in.attributes().value("completeName").toString().toStdString();
     name = in.attributes().value("name").toString().toStdString();
     headerFile = in.attributes().value("headerFile").toString().toStdString();
     in >> returnType;
@@ -56,6 +58,7 @@ list<CParameter*> CMethod::getMethodParameterPointers() {
 QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CMethod& cMethod) {
     out.writeStartElement("CMethod");
 
+    out.writeAttribute("completeName", cMethod.completeName.c_str());
     out.writeAttribute("name", cMethod.name.c_str());
     out.writeAttribute("headerFile", cMethod.headerFile.c_str());
     out << cMethod.returnType;

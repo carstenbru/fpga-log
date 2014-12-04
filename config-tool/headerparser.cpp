@@ -151,6 +151,7 @@ void HeaderParser::parseFileForMethods(string filename) {
                     type.erase(type.length() - 1, 1);
                     try {
                         DataTypeStruct* dt = DataTypeStruct::getType(type);
+                        string fullName = method_name;
                         if (method_name.find(dt->getCleanedName()) == 0) {
                             method_name.erase(0, dt->getCleanedName().length() + 1);
 
@@ -162,14 +163,17 @@ void HeaderParser::parseFileForMethods(string filename) {
 
                             try {
                                 DataType* rt = DataType::getType(returnType);
-                                CMethod* method = new CMethod(method_name, CParameter("return", rt, pointer), filename);
-                                if (method_name.compare("init") == 0)
+                                CMethod* method = new CMethod(fullName, method_name, CParameter("return", rt, pointer), filename);
+                                bool inherit = true;
+                                if (method_name.compare("init") == 0) {
                                     method->setHideFromUser(true);
+                                    inherit = false;
+                                }
 
                                 try {
                                     wasMethod = true;
                                     parseMethodParameters(method, parameters);
-                                    dt->addMethod(method);
+                                    dt->addMethod(method, inherit);
                                 } catch (exception e) {
                                 }
                             } catch (exception) {

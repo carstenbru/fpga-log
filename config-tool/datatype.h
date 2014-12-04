@@ -53,7 +53,7 @@ public:
 
     void setSuperType(DataTypeStruct* super) { this->super = super; }
     void addChild(DataTypeStruct* child) { childs.push_back(child); }
-    void addMethod(CMethod* method) { methods.push_back(method); }
+    void addMethod(CMethod* method, bool inherit);
 
     virtual QWidget* getConfigWidget(DataLogger* dataLogger, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);

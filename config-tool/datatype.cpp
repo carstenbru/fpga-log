@@ -79,6 +79,16 @@ CMethod* DataTypeStruct::getMethod(std::string methodName) {
     return NULL;
 }
 
+void DataTypeStruct::addMethod(CMethod* method, bool inherit) {
+    methods.push_back(method);
+
+    if (inherit) {
+        for (list<DataTypeStruct*>::iterator i = childs.begin(); i != childs.end(); i++) {
+            (*i)->addMethod(method, inherit);
+        }
+    }
+}
+
 QWidget* DataTypeStruct::getConfigWidget(DataLogger* dataLogger, CParameter *param) {
     QComboBox* cbox = new QComboBox();
     list<CObject*> instances = dataLogger->getInstances(this);

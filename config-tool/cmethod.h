@@ -8,8 +8,8 @@
 class CMethod
 {
 public:
-    CMethod(std::string name, CParameter returnType, std::string headerFile);
-    CMethod(std::string name, CParameter returnType) : CMethod(name, returnType, "") {}
+    CMethod(std::string completeName, std::string name, CParameter returnType, std::string headerFile);
+    CMethod(std::string name, CParameter returnType) : CMethod("", name, returnType, "") {}
     CMethod(QXmlStreamReader& in);
     ~CMethod();
 
@@ -17,6 +17,7 @@ public:
     bool sameSignature(CMethod& compare);
 
     std::string getName() { return name; }
+    std::string getCompleteName() { return completeName; }
     std::list<CParameter>* getParameters() { return &parameters; }
     std::list<CParameter*> getMethodParameterPointers();
     CParameter* getParameter(std::string name);
@@ -27,6 +28,8 @@ public:
 
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CMethod& cMethod);
 private:
+    std::string completeName;
+
     std::string name;
     std::string headerFile;
 
