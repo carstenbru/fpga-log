@@ -56,7 +56,7 @@ void sink_uart_init(sink_uart_t* const sink_uart, formatter_t* const formatter,
 	sink_uart->uart_light = uart_light;
 
 	sink_uart->formatter = formatter;
-	formatter_set_write_dest(sink_uart->formatter,
+	_formatter_set_write_dest(sink_uart->formatter,
 			(void (*)(void *param, unsigned char byte)) uart_light_send,
 			sink_uart->uart_light);
 

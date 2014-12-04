@@ -44,7 +44,7 @@ typedef struct {
  * @param	write_byte	function which will be called to write bytes
  * @param	param				parameter which will be passed to write_byte function
  */
-void formatter_set_write_dest(formatter_t* const formatter,
+void _formatter_set_write_dest(formatter_t* const formatter,
 		void (*write_byte)(void* const param, const unsigned char byte),
 		void* const param);
 

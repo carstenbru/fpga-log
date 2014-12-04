@@ -10,6 +10,10 @@
 
 #include <fpga-log/dm/control_action_simple.h>
 
+//TODO remove multi-command capabilities here and add a "control_action_multi" which holds multiple control actions
+//			and calls all of them? would be more generic and reduce memory usage for simple actions
+//			but more objects would be needed for more complex operations...
+
 /**
  * @brief execute function of the simple control action
  *

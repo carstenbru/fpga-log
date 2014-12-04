@@ -64,7 +64,7 @@ void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
 	sink_sd_card->sd_card_regs = sd_card;
 
 	sink_sd_card->formatter = formatter;
-	formatter_set_write_dest(formatter, sink_sd_write_byte, sink_sd_card);
+	_formatter_set_write_dest(formatter, sink_sd_write_byte, sink_sd_card);
 
 	char dev_path[3] = { sink_sd_card->pdrv + '0', ':', 0 };
 	f_mount(&sink_sd_card->fatFs, dev_path, 0);
