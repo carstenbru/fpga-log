@@ -15,11 +15,27 @@ static int function_gen_ramp_next_val(void* _function_gen_ramp) {
 	function_gen_ramp_t* function_gen_ramp =
 			(function_gen_ramp_t*) _function_gen_ramp;
 
-	unsigned long calc;
+	int ret;
+	long calc;
 	calc = (function_gen_ramp->end_val - function_gen_ramp->start_val);
-	calc *= function_gen_ramp->cur_sample;
-	calc /= cast_to_ulong(function_gen_ramp->samples);
-	int ret = function_gen_ramp->start_val + calc;  //TODO overflow/long int problems?
+
+	if (function_gen_ramp->mode == FUNCTION_GEN_RAMP_MODE_SINGLE) {
+		calc *= function_gen_ramp->cur_sample;
+		calc /= function_gen_ramp->samples;
+		ret = function_gen_ramp->start_val + calc;
+	} else {
+		if (function_gen_ramp->cur_sample < function_gen_ramp->samples / 2) {
+			calc *= function_gen_ramp->cur_sample * 2;
+			calc /= function_gen_ramp->samples;
+			ret = function_gen_ramp->start_val + calc;
+		} else {
+			calc = -calc;
+			calc *= (function_gen_ramp->cur_sample - function_gen_ramp->samples / 2) * 2;
+			calc /= function_gen_ramp->samples;
+			ret = function_gen_ramp->end_val + calc;
+		}
+	}
+	//TODO overflow/long int problems?
 
 	function_gen_ramp->cur_sample++;
 	if (function_gen_ramp->cur_sample > function_gen_ramp->samples)
@@ -28,8 +44,11 @@ static int function_gen_ramp_next_val(void* _function_gen_ramp) {
 }
 
 void function_gen_ramp_init(function_gen_ramp_t* const function_gen_ramp,
-		int start_val, int end_val, unsigned int samples) {
+		int start_val, int end_val, unsigned int samples,
+		function_gen_ramp_mode mode) {
 	function_gen_ramp->super.next_val = function_gen_ramp_next_val;
+
+	function_gen_ramp->mode = mode;
 
 	function_gen_ramp->start_val = start_val;
 	function_gen_ramp->end_val = end_val;
