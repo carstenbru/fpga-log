@@ -67,3 +67,6 @@ void spi_write(spi_master_regs_t* spi, int data) {
 
 	write((&pipes[(int_ptr) spi])->out, &buffer, i);
 }
+
+void spi_set_cpah(spi_t* spi_master,  unsigned int cpah) {
+}

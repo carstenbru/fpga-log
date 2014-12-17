@@ -23,3 +23,13 @@ void timer_set_interval(timer_regs_t* const timer, const unsigned int prescaler,
 	sim_timers[(int_ptr) timer].prescaler = prescaler;
 	sim_timers[(int_ptr) timer].limit = limit;
 }
+
+void timer_set_interval_ms(timer_regs_t* const timer, uint36_t interval) {
+	int prescale = 0;
+	while ((interval > 262144) && (prescale < 8)) {
+		prescale++;
+		interval >>= 1;
+	}
+
+	timer_set_interval(timer, prescale, --interval);
+}

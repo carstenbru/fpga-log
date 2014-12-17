@@ -51,7 +51,7 @@ void pipes_init(void) {
 }
 
 void fifo_enable_irq(unsigned int fifo) {
-	fifo_irq_enabled[fifo];
+	fifo_irq_enabled[fifo] = 1;
 }
 
 int fifo_read(unsigned int fifo, unsigned char* data) {
@@ -96,7 +96,7 @@ unsigned int timestamp_gen_not_empty(timestamp_gen_regs_t* timestamp_gen) {
 				fifo_first_valid[i] = 1;
 				fifo_first[i] = b;
 
-				timestamp_gen_set_timestamp(timestamp_gen, i);
+				timestamp_gen_set_timestamp(timestamp_gen, i+1);
 
 				return 1;
 			}

@@ -5,6 +5,8 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../source/src/FatFs.c \
+../source/src/ashrsi3.c \
+../source/src/control_action_function.c \
 ../source/src/control_action_simple.c \
 ../source/src/control_port.c \
 ../source/src/control_protocol.c \
@@ -21,10 +23,13 @@ C_SRCS += \
 ../source/src/device_PANdrvie.c \
 ../source/src/device_ads1115.c \
 ../source/src/device_ads1299.c \
+../source/src/device_gps_nmea.c \
 ../source/src/device_hct99.c \
 ../source/src/device_max31855.c \
+../source/src/device_max5825.c \
 ../source/src/device_pwm.c \
 ../source/src/device_uart_raw.c \
+../source/src/divsi3.c \
 ../source/src/dm_event_timer.c \
 ../source/src/dm_filter.c \
 ../source/src/dm_splitter_control.c \
@@ -33,7 +38,9 @@ C_SRCS += \
 ../source/src/dm_trigger.c \
 ../source/src/formatter.c \
 ../source/src/formatter_openBCI.c \
+../source/src/formatter_raw.c \
 ../source/src/formatter_simple.c \
+../source/src/function_gen_ramp.c \
 ../source/src/lshrsi3.c \
 ../source/src/print_long.c \
 ../source/src/simple_float.c \
@@ -43,6 +50,8 @@ C_SRCS += \
 
 OBJS += \
 ./source/src/FatFs.o \
+./source/src/ashrsi3.o \
+./source/src/control_action_function.o \
 ./source/src/control_action_simple.o \
 ./source/src/control_port.o \
 ./source/src/control_protocol.o \
@@ -59,10 +68,13 @@ OBJS += \
 ./source/src/device_PANdrvie.o \
 ./source/src/device_ads1115.o \
 ./source/src/device_ads1299.o \
+./source/src/device_gps_nmea.o \
 ./source/src/device_hct99.o \
 ./source/src/device_max31855.o \
+./source/src/device_max5825.o \
 ./source/src/device_pwm.o \
 ./source/src/device_uart_raw.o \
+./source/src/divsi3.o \
 ./source/src/dm_event_timer.o \
 ./source/src/dm_filter.o \
 ./source/src/dm_splitter_control.o \
@@ -71,7 +83,9 @@ OBJS += \
 ./source/src/dm_trigger.o \
 ./source/src/formatter.o \
 ./source/src/formatter_openBCI.o \
+./source/src/formatter_raw.o \
 ./source/src/formatter_simple.o \
+./source/src/function_gen_ramp.o \
 ./source/src/lshrsi3.o \
 ./source/src/print_long.o \
 ./source/src/simple_float.o \
@@ -81,6 +95,8 @@ OBJS += \
 
 C_DEPS += \
 ./source/src/FatFs.d \
+./source/src/ashrsi3.d \
+./source/src/control_action_function.d \
 ./source/src/control_action_simple.d \
 ./source/src/control_port.d \
 ./source/src/control_protocol.d \
@@ -97,10 +113,13 @@ C_DEPS += \
 ./source/src/device_PANdrvie.d \
 ./source/src/device_ads1115.d \
 ./source/src/device_ads1299.d \
+./source/src/device_gps_nmea.d \
 ./source/src/device_hct99.d \
 ./source/src/device_max31855.d \
+./source/src/device_max5825.d \
 ./source/src/device_pwm.d \
 ./source/src/device_uart_raw.d \
+./source/src/divsi3.d \
 ./source/src/dm_event_timer.d \
 ./source/src/dm_filter.d \
 ./source/src/dm_splitter_control.d \
@@ -109,7 +128,9 @@ C_DEPS += \
 ./source/src/dm_trigger.d \
 ./source/src/formatter.d \
 ./source/src/formatter_openBCI.d \
+./source/src/formatter_raw.d \
 ./source/src/formatter_simple.d \
+./source/src/function_gen_ramp.d \
 ./source/src/lshrsi3.d \
 ./source/src/print_long.d \
 ./source/src/simple_float.d \
