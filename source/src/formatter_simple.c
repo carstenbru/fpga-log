@@ -56,15 +56,20 @@ static void formatter_simple_format(void* const formatter,
 	}
 	case (DATA_TYPE_SIMPLE_FLOAT): {
 		simple_float_b10_t* f = (simple_float_b10_t*) package->data;
-		int i = f->coefficient;
+		long i = f->coefficient;
 		if (i < 0)
 			i = -i;
-		printf("  %d.%d", f->coefficient / 10000, i % 10000);
-		printf("E%d", f->exponent);
+		printf("%d.%04d", f->coefficient / cast_to_ulong(10000), i % cast_to_ulong(10000));
+		if (f->exponent)
+			printf("E%d", f->exponent);
+		break;
+	}
+	case (DATA_TYPE_CHAR): {
+		putchar(*((unsigned char*) package->data));
 		break;
 	}
 	default:
-		printf("unsupported data type in stream!");
+		printf("unsupported data type in stream!\n");
 	}
 	putchar('\n');
 }
