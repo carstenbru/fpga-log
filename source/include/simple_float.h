@@ -8,7 +8,7 @@
 #ifndef SIMPLE_FLOAT_H_
 #define SIMPLE_FLOAT_H_
 
-typedef int coefficient_t;
+typedef long coefficient_t;
 
 /**
  * @brief simple floating point data structure (base 10)
