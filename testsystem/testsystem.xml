@@ -48,41 +48,6 @@
         <DataPortIn name="data_in"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="device_gps_nmea_0" type="device_gps_nmea_t">
-            <CMethod completeName="device_gps_nmea_init" name="init" headerFile="../source/include/device/device_gps_nmea.h">
-                <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
-                <parameter name="gps_nmea" value="" hideFromUser="false" critical="false" dataType="device_gps_nmea_t" pointer="true"/>
-                <parameter name="uart_light" value="" hideFromUser="false" critical="false" dataType="uart_light_regs_t" pointer="true"/>
-                <parameter name="id" value="1" hideFromUser="true" critical="false" dataType="int" pointer="false"/>
-            </CMethod>
-            <SpmcPeripheral name="uart_light" dataType="uart_light_regs_t">
-                <parameter name="CLOCK_FREQUENCY" value="25000000" hideFromUser="true" critical="false" dataType="peripheral_int" pointer="false"/>
-                <parameter name="FIFO_RX_DEPTH" value="8" hideFromUser="true" critical="false" dataType="uart_light_regs_t_FIFO_RX_DEPTH" pointer="false"/>
-                <parameter name="FIFO_TX_DEPTH" value="8" hideFromUser="true" critical="false" dataType="uart_light_regs_t_FIFO_TX_DEPTH" pointer="false"/>
-                <parameter name="BAUDRATE" value="9600" hideFromUser="false" critical="false" dataType="uart_light_regs_t_BAUDRATE" pointer="false"/>
-                <parameter name="INTERRUPT_SUPPORTED" value="TRUE" hideFromUser="true" critical="false" dataType="bool" pointer="false"/>
-                <portGroup name="Controller">
-                    <peripheralPort name="intr" direction="OUTPUT">
-                        <parameter name="id" value="TIMESTAMP_GEN" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                    </peripheralPort>
-                </portGroup>
-                <portGroup name="Receiver">
-                    <peripheralPort name="rx" direction="INPUT" constraints="PULLUP">
-                        <parameter name="rx" value="PORTA:A15" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
-                    </peripheralPort>
-                </portGroup>
-                <portGroup name="Transmitter">
-                    <peripheralPort name="tx" direction="OUTPUT">
-                        <parameter name="tx" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
-                    </peripheralPort>
-                </portGroup>
-            </SpmcPeripheral>
-        </CObject>
-        <x value="562"/>
-        <y value="58"/>
-        <DataPortOut name="raw_data_out" multiPort="false" destinationModule="dm_splitter_data_0" destinationPort="data_in"/>
-    </DatastreamObject>
-    <DatastreamObject>
         <CObject name="sink_uart_1" type="sink_uart_t">
             <CMethod completeName="sink_uart_init" name="init" headerFile="../source/include/sink/sink_uart.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
@@ -127,23 +92,40 @@
         <DataPortIn name="data_in"/>
     </DatastreamObject>
     <DatastreamObject>
-        <CObject name="dm_splitter_data_0" type="dm_splitter_data_t">
-            <CMethod completeName="dm_splitter_data_init" name="init" headerFile="../source/include/dm/dm_splitter_data.h">
+        <CObject name="device_gps_nmea_0" type="device_gps_nmea_t">
+            <CMethod completeName="device_gps_nmea_init" name="init" headerFile="../source/include/device/device_gps_nmea.h">
                 <parameter name="return" value="" hideFromUser="false" critical="false" dataType="void" pointer="false"/>
-                <parameter name="splitter" value="" hideFromUser="false" critical="false" dataType="dm_splitter_data_t" pointer="true"/>
+                <parameter name="gps_nmea" value="" hideFromUser="false" critical="false" dataType="device_gps_nmea_t" pointer="true"/>
+                <parameter name="uart_light" value="" hideFromUser="false" critical="false" dataType="uart_light_regs_t" pointer="true"/>
+                <parameter name="id" value="1" hideFromUser="true" critical="false" dataType="int" pointer="false"/>
             </CMethod>
+            <SpmcPeripheral name="uart_light" dataType="uart_light_regs_t">
+                <parameter name="CLOCK_FREQUENCY" value="25000000" hideFromUser="true" critical="false" dataType="peripheral_int" pointer="false"/>
+                <parameter name="FIFO_RX_DEPTH" value="8" hideFromUser="true" critical="false" dataType="uart_light_regs_t_FIFO_RX_DEPTH" pointer="false"/>
+                <parameter name="FIFO_TX_DEPTH" value="8" hideFromUser="true" critical="false" dataType="uart_light_regs_t_FIFO_TX_DEPTH" pointer="false"/>
+                <parameter name="BAUDRATE" value="9600" hideFromUser="false" critical="false" dataType="uart_light_regs_t_BAUDRATE" pointer="false"/>
+                <parameter name="INTERRUPT_SUPPORTED" value="TRUE" hideFromUser="true" critical="false" dataType="bool" pointer="false"/>
+                <portGroup name="Controller">
+                    <peripheralPort name="intr" direction="OUTPUT">
+                        <parameter name="id" value="TIMESTAMP_GEN" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+                <portGroup name="Receiver">
+                    <peripheralPort name="rx" direction="INPUT" constraints="PULLUP">
+                        <parameter name="rx" value="PORTA:A15" hideFromUser="false" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+                <portGroup name="Transmitter">
+                    <peripheralPort name="tx" direction="OUTPUT">
+                        <parameter name="tx" value="" hideFromUser="true" critical="false" dataType="pin" pointer="false"/>
+                    </peripheralPort>
+                </portGroup>
+            </SpmcPeripheral>
         </CObject>
-        <x value="344"/>
+        <x value="358"/>
         <y value="58"/>
-        <DataPortIn name="data_in"/>
-        <DataPortOut name="data_out" multiPort="true" destinationModule="sink_uart_0" destinationPort="data_in"/>
-        <DataPortOut name="data_out" multiPort="true" destinationModule="sink_uart_1" destinationPort="data_in"/>
-        <DataPortOut name="data_out" multiPort="true"/>
-        <DataPortOut name="data_out" multiPort="true"/>
-        <DataPortOut name="data_out" multiPort="true"/>
-        <DataPortOut name="data_out" multiPort="true"/>
-        <DataPortOut name="data_out" multiPort="true"/>
-        <DataPortOut name="data_out" multiPort="true"/>
+        <DataPortOut name="raw_data_out" multiPort="false" destinationModule="sink_uart_0" destinationPort="data_in"/>
+        <DataPortOut name="parsed_data_out" multiPort="false" destinationModule="sink_uart_1" destinationPort="data_in"/>
     </DatastreamObject>
     <CObject name="control_protocol_ascii_0" type="control_protocol_ascii_t">
         <CMethod completeName="control_protocol_ascii_init" name="init" headerFile="../source/include/sink/control_protocol_ascii.h">

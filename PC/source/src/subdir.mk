@@ -46,7 +46,8 @@ C_SRCS += \
 ../source/src/simple_float.c \
 ../source/src/sink_sd_card.c \
 ../source/src/sink_uart.c \
-../source/src/udivsi3.c 
+../source/src/udivsi3.c \
+../source/src/umodsi3.c 
 
 OBJS += \
 ./source/src/FatFs.o \
@@ -91,7 +92,8 @@ OBJS += \
 ./source/src/simple_float.o \
 ./source/src/sink_sd_card.o \
 ./source/src/sink_uart.o \
-./source/src/udivsi3.o 
+./source/src/udivsi3.o \
+./source/src/umodsi3.o 
 
 C_DEPS += \
 ./source/src/FatFs.d \
@@ -136,7 +138,8 @@ C_DEPS += \
 ./source/src/simple_float.d \
 ./source/src/sink_sd_card.d \
 ./source/src/sink_uart.d \
-./source/src/udivsi3.d 
+./source/src/udivsi3.d \
+./source/src/umodsi3.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
