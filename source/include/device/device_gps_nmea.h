@@ -12,6 +12,12 @@
 
 #include <fpga-log/datastream_source.h>
 #include <fpga-log/data_port.h>
+#include <fpga-log/simple_float.h>
+
+#define NMEA_RMC_NAMES { "time", "status", "latitude", "N/S" , "longitude", "E/W", "speed", "course", "date", "magnetic variation", "variation E/W", "mode"}
+#define NMEA_GGA_NAMES { "time", "latitude", "N/S" , "longitude", "E/W", "fix indicator", "satellites", "HDOP", "altitude", "units", "geoid seperation", "units 2", "age of diff. corr.", "ref. station ID"}
+#define NMEA_VTG_NAMES { "course", "reference", "course" , "reference", "speed", "units", "speed", "units", "mode"}
+#define NMEA_UNKNOWN "unknown"
 
 /** 
  * @brief struct describing a gps device
@@ -20,6 +26,15 @@ typedef struct {
 	datastream_source_t super; /**< super-"class": datastream_source_t*/
 
 	const data_port_t* raw_data_out; /**< raw data output destination */
+	const data_port_t* parsed_data_out; /**< parsed data output destination */
+
+	unsigned char parse_status;
+	unsigned char cur_sentence[3]; /**< current received NMEA sentence type */
+	data_package_t parse_package; /**< currently parsed package */
+	int parse_int;
+	unsigned char parse_byte;
+	unsigned char parsed_digits;
+	simple_float_b10_t parse_float;
 
 	uart_light_regs_t* uart_light; /**< pointer to UART hardware registers */
 } device_gps_nmea_t;
@@ -41,6 +56,15 @@ void device_gps_nmea_init(device_gps_nmea_t* const gps_nmea,
  * @param	data_in		the new data destination
  */
 void device_gps_nmea_set_raw_data_out(device_gps_nmea_t* const gps_nmea,
+		const data_port_t* const data_in);
+
+/**
+ * @brief connects the parsed data output port of a gps device to a given destination
+ *
+ * @param	gps_nmea	pointer to the gps device
+ * @param	data_in		the new data destination
+ */
+void device_gps_nmea_set_parsed_data_out(device_gps_nmea_t* const gps_nmea,
 		const data_port_t* const data_in);
 
 #endif 
