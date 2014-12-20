@@ -38,6 +38,6 @@ static void formatter_raw_format(void* const formatter,
 		break;
 	}
 	default:
-		printf("unsupported data type in stream!");
+		printf("unsupported data type in stream!\n");
 	}
 }
