@@ -17,17 +17,18 @@ typedef enum {
 	DATA_TYPE_INT, /**< single integer value */
 	DATA_TYPE_BYTE, /**< single byte value */
 	DATA_TYPE_LONG, /**< long integer value */
-	DATA_TYPE_SIMPLE_FLOAT /**< simple float value, see @ref simple_float_b10_t */
+	DATA_TYPE_SIMPLE_FLOAT, /**< simple float value, see @ref simple_float_b10_t */
+	DATA_TYPE_CHAR, /** (printable) character value */
 } data_type;
 
 /**
  * @brief struct holding incoming data
  */
 typedef struct {
-	const int source_id; /**< the id of the data source, e.g. to show in logs */
+	int source_id; /**< the id of the data source, e.g. to show in logs */
 	const char* val_name; /**< the name of the value (as string) to differ between multiple values from one source (e.g. channels) */
-	const data_type type; /**< the type of the data value, should be a value of enumeration @ref data_type */
-	const void* const data; /**< pointer to the actual data */
+	data_type type; /**< the type of the data value, should be a value of enumeration @ref data_type */
+	const void* data; /**< pointer to the actual data */
 	const timestamp_t* timestamp; /**< timestamp of the data */
 } data_package_t;
 
