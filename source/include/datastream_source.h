@@ -55,7 +55,7 @@ int datastream_source_init(datastream_source_t* const source,
  *
  * @param source
  */
-void datastream_source_generate_software_timestamp(datastream_source_t* const source);
+void _datastream_source_generate_software_timestamp(datastream_source_t* const source);
 
 /**
  * @brief	calls the send_data functions of all datastream sources with pending data

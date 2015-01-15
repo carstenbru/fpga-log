@@ -97,7 +97,7 @@ static void device_max31855_control_message(void* const _max31855,
 		if (parameters->type == MAX31855_PARAMETER_READ) {
 			device_max31855_t* max31855 = (device_max31855_t*) _max31855;
 			if (spi_trans_finished(max31855->spi_master)) {
-				datastream_source_generate_software_timestamp(
+				_datastream_source_generate_software_timestamp(
 						(datastream_source_t*) _max31855);
 
 				spi_activate(max31855->spi_master, 1);

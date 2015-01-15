@@ -40,7 +40,7 @@ int datastream_source_init(datastream_source_t* const source,
 		return 0;
 }
 
-void datastream_source_generate_software_timestamp(
+void _datastream_source_generate_software_timestamp(
 		datastream_source_t* const source) {
 	TIMESTAMP_GEN_GENERATE_SOFTWARE_TIMESTAMP(get_timestamp_gen(), source->id);
 }

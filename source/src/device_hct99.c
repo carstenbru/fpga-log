@@ -256,7 +256,7 @@ static void device_hct99_new_control_message(void* const _hct99,
 		device_hct99_execute_command(hct99, command, x, y, z);
 	} else {
 		hct99->err_name = HCT99_ERROR_MISSING_COMMAND_CODE;
-		datastream_source_generate_software_timestamp((datastream_source_t*) hct99);
+		_datastream_source_generate_software_timestamp((datastream_source_t*) hct99);
 	}
 }
 
@@ -270,7 +270,7 @@ static void device_hct99_send_paramters(device_hct99_t* const hct99,
 				uart_light_send(hct99->uart_light, val + '0');
 			} else {
 				hct99->err_name = HCT99_ERROR_PARAM_OUT_OF_RANGE;
-				datastream_source_generate_software_timestamp(
+				_datastream_source_generate_software_timestamp(
 						(datastream_source_t*) hct99);
 			}
 		} else {
@@ -280,7 +280,7 @@ static void device_hct99_send_paramters(device_hct99_t* const hct99,
 				uart_light_send(hct99->uart_light, (val % 10) + '0');
 			} else {
 				hct99->err_name = HCT99_ERROR_PARAM_OUT_OF_RANGE;
-				datastream_source_generate_software_timestamp(
+				_datastream_source_generate_software_timestamp(
 						(datastream_source_t*) hct99);
 			}
 		}
@@ -297,7 +297,7 @@ void device_hct99_execute_command(device_hct99_t* const hct99,
 		hct99->command_fifo[i] = command;
 	} else {
 		hct99->err_name = HCT99_ERROR_COMMAND_FIFO_FULL;
-		datastream_source_generate_software_timestamp((datastream_source_t*) hct99);
+		_datastream_source_generate_software_timestamp((datastream_source_t*) hct99);
 	}
 }
 

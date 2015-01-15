@@ -9,6 +9,8 @@
 #include <fpga-log/peripheral_funcs/uart_light_funcs.h>
 #include <fpga-log/long_int.h>
 
+//TODO fix error on "course" field being reported when not present...just on real hardware
+//TODO time gets negative -> overflow? perhaps only a print (formatter_simple) problem, %d is used but can be too small
 //TODO implement more NMEA sentence types
 //TODO options to enable/disable output of specific data fields?
 const char* nmea_rmc_names[12] = NMEA_RMC_NAMES;

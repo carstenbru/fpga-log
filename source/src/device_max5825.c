@@ -137,7 +137,7 @@ static void device_max5825_send_command(device_max5825_t* const max5825,
 			i2c_write,
 			MAX5825_I2C_RETRIES)) {
 		max5825->error_command = *command;
-		datastream_source_generate_software_timestamp(
+		_datastream_source_generate_software_timestamp(
 				(datastream_source_t*) max5825);
 	}
 }
