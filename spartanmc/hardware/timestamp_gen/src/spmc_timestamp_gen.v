@@ -74,6 +74,11 @@ module spmc_timestamp_gen #(
   reg [35:0] lpt_counter;
   reg [35:0] hpt_counter;
   
+  //counter write register
+  reg [35:0] lpt_counter_write;
+  reg [35:0] hpt_counter_write;
+  reg counter_write_req;
+  
   wire [17:0] dat_out;
   //SpartanMC peripheral interface read logic
   assign dat_out = (addr_peri[2:0] == STATUS_ADR) ? {17'd0, fifo_n_empty} : fifo_top[addr_peri[2:0]];
@@ -93,17 +98,30 @@ module spmc_timestamp_gen #(
   always @(posedge clk_peri) begin
     if (reset) begin
       fifo_ts_read <= 7'd0;
+      counter_write_req <= 1'b0;
     end else begin
-      if (select & wr_peri & (addr_peri[2:0] == CONTROL_ADR)) begin
-        if (do_peri[17]) begin
-	  fifo_ts_read <= fifo_ts_write; //clear fifo
-	end else
-	if (do_peri[16] && fifo_n_empty) begin
-	  fifo_ts_read <= fifo_ts_read + 1; //next fifo element
-	end
+      if (select & wr_peri) begin
+        case (addr_peri[2:0])
+          CONTROL_ADR: begin
+            if (do_peri[17]) begin
+	      fifo_ts_read <= fifo_ts_write; //clear fifo
+	    end else
+	    if (do_peri[16] && fifo_n_empty) begin
+	      fifo_ts_read <= fifo_ts_read + 1; //next fifo element
+	    end
 	
-	sw_source_change <= do_peri[15:0];
+	    sw_source_change <= do_peri[15:0];
+	  end
+	  3'b000: lpt_counter_write[17:0] = do_peri[17:0];
+	  3'b001: lpt_counter_write[35:18] = do_peri[17:0];
+	  3'b010: hpt_counter_write[17:0] = do_peri[17:0];
+	  3'b011: begin
+	      hpt_counter_write[35:18] = do_peri[17:0]; 
+	      counter_write_req <= 1'b1;
+	    end
+        endcase
       end else
+        counter_write_req <= 1'b0;
         if (capture_ready)
           sw_source_change <= 16'd0;
     end
@@ -115,11 +133,16 @@ module spmc_timestamp_gen #(
       hpt_counter <= 18'd0; //reset counters to 0
       lpt_counter <= 18'd0;
     end else begin
-      if (hpt_counter == CLOCK_FREQUENCY-1) begin
-	hpt_counter <= 18'd0; //reset high precision counter if max value reached
-	lpt_counter <= lpt_counter + 1; //increment low precision counter
-      end else
-	hpt_counter <= hpt_counter + 1; //otherwise increment high precision counter
+      if (counter_write_req == 1'b1)begin
+        hpt_counter <= hpt_counter_write;
+        lpt_counter <= lpt_counter_write;
+      end else begin
+        if (hpt_counter == CLOCK_FREQUENCY-1) begin
+	  hpt_counter <= 18'd0; //reset high precision counter if max value reached
+	  lpt_counter <= lpt_counter + 1; //increment low precision counter
+        end else
+	  hpt_counter <= hpt_counter + 1; //otherwise increment high precision counter
+      end
     end
   end
   
