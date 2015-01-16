@@ -59,7 +59,8 @@ static void formatter_simple_format(void* const formatter,
 		long i = f->coefficient;
 		if (i < 0)
 			i = -i;
-		printf("%d.%04d", f->coefficient / cast_to_ulong(10000), i % cast_to_ulong(10000));
+		print_long(f->coefficient / cast_to_ulong(10000), 1, 12);
+		printf(".%04d" , i % cast_to_ulong(10000));
 		if (f->exponent)
 			printf("E%d", f->exponent);
 		break;
