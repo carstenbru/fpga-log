@@ -8,6 +8,7 @@
 #include <fpga-log/device/device_gps_nmea.h>
 #include <fpga-log/peripheral_funcs/uart_light_funcs.h>
 #include <fpga-log/long_int.h>
+#include <fpga-log/sys_init.h>
 
 //TODO fix error on "course" field being reported when not present...just on real hardware
 //TODO time gets negative -> overflow? perhaps only a print (formatter_simple) problem, %d is used but can be too small
@@ -17,6 +18,8 @@ const char* nmea_rmc_names[12] = NMEA_RMC_NAMES;
 const char* nmea_gga_names[14] = NMEA_GGA_NAMES;
 const char* nmea_vtg_names[9] = NMEA_VTG_NAMES;
 const char* nmea_unknown = NMEA_UNKNOWN;
+const unsigned int time_multiplicators[8] =
+		{ 36000, 3600, 600, 60, 10, 1, 10, 1 };
 
 /**
  * @brief gps device send data function
@@ -29,7 +32,8 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 		const unsigned int id, const timestamp_t* const timestamp);
 
 void device_gps_nmea_init(device_gps_nmea_t* const gps_nmea,
-		uart_light_regs_t* const uart_light, const int id) {
+		uart_light_regs_t* const uart_light, device_gps_sync_mode sync_logger_time,
+		const int id) {
 	datastream_source_init(&gps_nmea->super, id);  //call parents init function
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
@@ -39,6 +43,7 @@ void device_gps_nmea_init(device_gps_nmea_t* const gps_nmea,
 	gps_nmea->raw_data_out = &data_port_dummy;
 	gps_nmea->parsed_data_out = &data_port_dummy;
 
+	gps_nmea->sync_logger_time = sync_logger_time;
 	gps_nmea->uart_light = uart_light;
 
 	uart_light_enable_rxint(uart_light);
@@ -59,22 +64,24 @@ void device_gps_nmea_set_parsed_data_out(device_gps_nmea_t* const gps_nmea,
 
 static void device_gps_nmea_reset_parse_data(device_gps_nmea_t* const gps_nmea) {
 	gps_nmea->parse_package.type = DATA_TYPE_INT;  //reset everything
-	gps_nmea->parse_int = 0;
-	gps_nmea->parse_package.data = &gps_nmea->parse_int;
+	gps_nmea->parse_uint = 0;
+	gps_nmea->parse_package.data = &gps_nmea->parse_uint;
 	gps_nmea->parsed_digits = 0;
 }
 
 static void device_gps_nmea_set_val_type(device_gps_nmea_t* const gps_nmea) {
-	if (gps_nmea->cur_sentence[0] == 'R' && gps_nmea->cur_sentence[1] == 'M'
-			&& gps_nmea->cur_sentence[2] == 'C') {
+	if ((gps_nmea->cur_sentence[0] == 'R') & (gps_nmea->cur_sentence[1] == 'M')
+			& (gps_nmea->cur_sentence[2] == 'C')) {
 		gps_nmea->parse_package.val_name =
 				nmea_rmc_names[gps_nmea->parse_status - 8];
-	} else if (gps_nmea->cur_sentence[0] == 'G'
-			&& gps_nmea->cur_sentence[1] == 'G' && gps_nmea->cur_sentence[2] == 'A') {
+	} else if ((gps_nmea->cur_sentence[0] == 'G')
+			& (gps_nmea->cur_sentence[1] == 'G')
+			& (gps_nmea->cur_sentence[2] == 'A')) {
 		gps_nmea->parse_package.val_name =
 				nmea_gga_names[gps_nmea->parse_status - 8];
-	} else if (gps_nmea->cur_sentence[0] == 'V'
-			&& gps_nmea->cur_sentence[1] == 'T' && gps_nmea->cur_sentence[2] == 'G') {
+	} else if ((gps_nmea->cur_sentence[0] == 'V')
+			& (gps_nmea->cur_sentence[1] == 'T')
+			& (gps_nmea->cur_sentence[2] == 'G')) {
 		gps_nmea->parse_package.val_name =
 				nmea_vtg_names[gps_nmea->parse_status - 8];
 	} else {
@@ -92,7 +99,8 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 		data_package_t package = { id, "byte", DATA_TYPE_BYTE, &byte, timestamp };
 		gps_nmea->raw_data_out->new_data(gps_nmea->raw_data_out->parent, &package);
 
-		if (gps_nmea->parsed_data_out != &data_port_dummy) {  //parse only if data out assigned
+		if ((gps_nmea->parsed_data_out != &data_port_dummy)
+				|| (gps_nmea->sync_logger_time == GPS_SYNC_TIME)) {  //parse only if data out assigned or sync activated
 			if (byte == '$') {  //start of a NMEA sentence
 				gps_nmea->parse_status = 1;
 				device_gps_nmea_reset_parse_data(gps_nmea);
@@ -104,43 +112,81 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 				gps_nmea->parse_status++;
 			} else if (byte == ',' || byte == '*' || byte == '\r') {  //end of value markers
 				gps_nmea->parse_status++;
-				gps_nmea->parse_package.timestamp = timestamp;
-				device_gps_nmea_set_val_type(gps_nmea);
 
-				if (gps_nmea->parse_package.type == DATA_TYPE_SIMPLE_FLOAT) {
-					unsigned char i;
-					for (i = 0; i < (4 - gps_nmea->parsed_digits); i++) {
-						gps_nmea->parse_int *= 10;
+				if (gps_nmea->parsed_data_out != &data_port_dummy) {
+					gps_nmea->parse_package.timestamp = timestamp;
+					device_gps_nmea_set_val_type(gps_nmea);
+
+					if (gps_nmea->parse_package.type == DATA_TYPE_SIMPLE_FLOAT) {
+						unsigned char i;
+						for (i = 0; i < (4 - gps_nmea->parsed_digits); i++) {
+							gps_nmea->parse_uint *= 10;
+						}
+						gps_nmea->parse_float.coefficient += cast_to_ulong(
+								gps_nmea->parse_uint);
 					}
-					gps_nmea->parse_float.coefficient += cast_to_ulong(
-							gps_nmea->parse_int);
+
+					if ((gps_nmea->parse_package.type != DATA_TYPE_INT)
+							|| gps_nmea->parsed_digits) {
+						if (gps_nmea->parse_package.val_name != nmea_unknown)
+							gps_nmea->parsed_data_out->new_data(
+									gps_nmea->parsed_data_out->parent, &gps_nmea->parse_package);
+					}
+					device_gps_nmea_reset_parse_data(gps_nmea);
 				}
 
-				if ((gps_nmea->parse_package.type != DATA_TYPE_INT)
-						|| gps_nmea->parsed_digits) {
-					gps_nmea->parsed_data_out->new_data(gps_nmea->parsed_data_out->parent,
-							&gps_nmea->parse_package);
+				if (byte == '*') {
+					gps_nmea->parse_status = 1;
 				}
-
-				device_gps_nmea_reset_parse_data(gps_nmea);
 			} else {
 				char digit = byte - '0';
-				if (digit >= 0 && digit <= 9) {  //normal digit
-					gps_nmea->parse_int *= 10;
-					gps_nmea->parse_int += digit;
-					gps_nmea->parsed_digits++;
-				} else {
-					gps_nmea->parsed_digits = 0;
-					if (byte == '.') {  //fixed point value -> treat as float with exponent 0
-						gps_nmea->parse_float.coefficient = mul34_17(
-								cast_to_ulong(gps_nmea->parse_int), 10000);
-						gps_nmea->parse_int = 0;
-						gps_nmea->parse_package.type = DATA_TYPE_SIMPLE_FLOAT;
-						gps_nmea->parse_package.data = &gps_nmea->parse_float;
-					} else if (byte != ' ') {  //single character
-						gps_nmea->parse_package.type = DATA_TYPE_CHAR;
-						gps_nmea->parse_byte = byte;
-						gps_nmea->parse_package.data = &gps_nmea->parse_byte;
+				if (gps_nmea->parsed_data_out != &data_port_dummy) {
+					if (digit >= 0 && digit <= 9) {  //normal digit
+						gps_nmea->parse_uint *= 10;
+						gps_nmea->parse_uint += digit;
+						gps_nmea->parsed_digits++;
+					} else {
+						gps_nmea->parsed_digits = 0;
+						if (byte == '.') {  //fixed point value -> treat as float with exponent 0
+							gps_nmea->parse_float.coefficient = mul34_17(
+									cast_to_ulong(gps_nmea->parse_uint), 10000);
+							gps_nmea->parse_uint = 0;
+							gps_nmea->parse_package.type = DATA_TYPE_SIMPLE_FLOAT;
+							gps_nmea->parse_package.data = &gps_nmea->parse_float;
+						} else if (byte != ' ') {  //single character
+							gps_nmea->parse_package.type = DATA_TYPE_CHAR;
+							gps_nmea->parse_byte = byte;
+							gps_nmea->parse_package.data = &gps_nmea->parse_byte;
+						}
+					}
+				}
+				if (gps_nmea->sync_logger_time == GPS_SYNC_TIME) {
+					if (gps_nmea->parse_status == 7) {  //first data field in a sentence
+						if ((gps_nmea->cur_sentence[0] == 'G')
+								& (gps_nmea->cur_sentence[1] == 'G')
+								& (gps_nmea->cur_sentence[2] == 'A')) {
+							if (digit >= 0 && digit <= 9) {
+								if (gps_nmea->time_parse_position == 0) {
+									gps_nmea->time_parsed = 0;
+								}
+								gps_nmea->time_parsed += digit
+										* time_multiplicators[gps_nmea->time_parse_position];
+								if (gps_nmea->time_parse_position == 5) {  //seconds finished
+									gps_nmea->time_parsed_sec = gps_nmea->time_parsed;
+									gps_nmea->time_parsed = 0;
+								}
+								if (gps_nmea->time_parse_position == 7) {
+									timestamp_gen_regs_t* timestamp_gen = get_timestamp_gen();
+									timestamp_gen->timestamp.lpt = gps_nmea->time_parsed_sec;
+									unsigned long int lpt = mul34_17(get_peri_clock(), gps_nmea->time_parsed);
+									lpt /= 10;
+									timestamp_gen->timestamp.hpt = lpt;
+								}
+							}
+							gps_nmea->time_parse_position++;
+						}
+					} else {
+						gps_nmea->time_parse_position = 0;
 					}
 				}
 			}

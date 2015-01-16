@@ -19,6 +19,12 @@
 #define NMEA_VTG_NAMES { "course", "reference", "course" , "reference", "speed", "units", "speed", "units", "mode"}
 #define NMEA_UNKNOWN "unknown"
 
+typedef enum {
+	GPS_SYNC_DISABLE = 0, /**< no synchronization */
+	GPS_SYNC_TIME = 1 /**< synchronize data logger time to GPS time and not date **/
+	//TODO add sync mode with date also used for logger time
+} device_gps_sync_mode;
+
 /** 
  * @brief struct describing a gps device
  */
@@ -28,13 +34,19 @@ typedef struct {
 	const data_port_t* raw_data_out; /**< raw data output destination */
 	const data_port_t* parsed_data_out; /**< parsed data output destination */
 
+	device_gps_sync_mode sync_logger_time; /**< sync mode */
+
 	unsigned char parse_status;
 	unsigned char cur_sentence[3]; /**< current received NMEA sentence type */
 	data_package_t parse_package; /**< currently parsed package */
-	int parse_int;
+	unsigned int parse_uint;
 	unsigned char parse_byte;
 	unsigned char parsed_digits;
 	simple_float_b10_t parse_float;
+
+	unsigned char time_parse_position;
+	unsigned int time_parsed;
+	unsigned int time_parsed_sec;
 
 	uart_light_regs_t* uart_light; /**< pointer to UART hardware registers */
 } device_gps_nmea_t;
@@ -47,7 +59,7 @@ typedef struct {
  * @param id		id of the new device (for log output, etc)
  */
 void device_gps_nmea_init(device_gps_nmea_t* const gps_nmea,
-		uart_light_regs_t* const uart_light, const int id);
+		uart_light_regs_t* const uart_light, device_gps_sync_mode sync_logger_time, const int id);
 
 /**
  * @brief connects the raw data output port of a gps device to a given destination
