@@ -14,11 +14,15 @@ module spmc_sd_card(
         input wire sd_miso,
         output wire sd_mosi,
         output wire sd_clk,
-        output wire sd_cs
+        output wire sd_cs,
+        
+        output wire ts_dummy
 );
 
   parameter BASE_ADR = 10'h0;
   parameter CLOCK_FREQUENCY = 16000000;
+  
+  assign ts_dummy = 1'b1;
 
   wire select;
   // Address decoder generates the select sinal out of the upper part of the peripheral address.

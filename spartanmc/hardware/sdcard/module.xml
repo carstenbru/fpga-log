@@ -24,4 +24,7 @@ XML module description
 	  <port name="sd_clk" direction="output"/>
 	  <port name="sd_cs" direction="output"/>
         </ports>
+	<ports group="timestamp_dummy">
+	  <port name="ts_dummy" direction="output"/>
+        </ports>
 </module>

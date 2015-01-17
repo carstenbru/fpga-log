@@ -13,7 +13,7 @@
 #include <fpga-log/FatFs/ff.h>
 #include <fpga-log/FatFs/diskio.h>
 
-#include <fpga-log/datastream_object.h>
+#include <fpga-log/datastream_source.h>
 #include <fpga-log/data_port.h>
 #include <fpga-log/sink/formatter/formatter.h>
 
@@ -27,13 +27,20 @@
  */
 #define SDCARED_FILE_NAME "log_%d.txt"
 
+#define SDCARD_FATFS_ERROR_CODES {"SD card error", "int error", "sd card not ready", "file not found", "path not found","invalid path","access denied",\
+	"file already exists","invalid object","card write protected","invalid drive","not enabled","no filesystem found", "mkfs error","SD timeout",\
+	"locked file","not enough core","too many open files","invalid parameter"}
+
+#define SDCARD_SD_ERROR_CODES {"SD init error", "SD read error", "SD write error"}
+
 /**
  * @brief struct describing a sd card sink
  */
 typedef struct {
-	datastream_object_t super; /**< super-"class": datastream_object_t*/
+	datastream_source_t super; /**< super-"class": datastream_source_t*/
 
 	data_port_t data_in; /**< data port, this can be set at a data output to direct the data stream to this device */
+	const data_port_t* error_out; /**< error output destination */
 
 	formatter_t* formatter; /**< output log formatter */
 
@@ -41,6 +48,11 @@ typedef struct {
 	DSTATUS status; /**< sd card status */
 	FATFS fatFs; /**< FatFs volume */
 	FIL file; /**< FatFs file */
+
+	FRESULT fatFS_error_code; /**< last FatFs error code */
+	unsigned char sd_error_code; /**< last SD card error code */
+	unsigned int packages_written; /**< amount of packages written since last f_sync */
+	unsigned int sync_interval; /**< amount of packages until f_sync should be called */
 
 	sdcard_regs_t* sd_card_regs; /**< pointer to SD-card hardware registers */
 } sink_sd_card_t;
@@ -50,12 +62,23 @@ typedef struct {
  *
  * initializes the sd card sink, should be called before using the sink
  *
- * @param	sink_sd_card	pointer to the sd card sink
- * @param	formatter			pointer to a output log formatter
- * @param	sd_card				pounter to the SD-card peripheral
+ * @param	sink_sd_card						pointer to the sd card sink
+ * @param	formatter								pointer to a output log formatter
+ * @param	sd_card							 		pounter to the SD-card peripheral
+ * @param sync_interval_packages	amount of packages until f_sync should be called
  */
 void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
-		formatter_t* const formatter, sdcard_regs_t* const sd_card);
+		formatter_t* const formatter, sdcard_regs_t* const sd_card,
+		unsigned int sync_interval_packages, int id);
+
+/**
+ * @brief connects the error output port of a sd card to a given destination
+ *
+ * @param	sink_sd_card	pointer to the sd card sink
+ * @param	data_in		the new data destination
+ */
+void sink_sd_card_set_error_out(sink_sd_card_t* const sink_sd_card,
+		const data_port_t* const data_in);
 
 /**
  * @brief returns the sd card sink data input

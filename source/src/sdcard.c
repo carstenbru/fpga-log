@@ -19,13 +19,13 @@ static sdcard_busy_wait(sdcard_regs_t* const sdcard) {
 		;
 }
 
-init_code sdcard_init(sdcard_regs_t* const sdcard) {
+int sdcard_init(sdcard_regs_t* const sdcard) {
 	sdcard->trans_type = TRANS_TYPE_INIT_SD;
 	sdcard->trans_ctrl = TRANS_START;
 
 	sdcard_busy_wait(sdcard);
 
-	return sdcard->trans_error & 3;
+	return sdcard->trans_error;
 }
 
 /**
@@ -42,7 +42,7 @@ static void sdcard_set_address(sdcard_regs_t* const sdcard,
 	sdcard->sd_addr_31_24 = address >> 24;
 }
 
-write_code sdcard_block_write(sdcard_regs_t* const sdcard,
+int sdcard_block_write(sdcard_regs_t* const sdcard,
 		unsigned long address, const unsigned char* block) {
 	int i;
 	for (i = 0; i < SD_BLOCK_SIZE; i++) {  //write data to peripheral fifo
@@ -53,18 +53,18 @@ write_code sdcard_block_write(sdcard_regs_t* const sdcard,
 	sdcard->trans_ctrl = TRANS_START;
 
 	sdcard_busy_wait(sdcard);
-	return sdcard->trans_error >> 4;
+	return sdcard->trans_error;
 }
 
-read_code sdcard_block_read(sdcard_regs_t* const sdcard, unsigned long address,
+int sdcard_block_read(sdcard_regs_t* const sdcard, unsigned long address,
 		unsigned char* block) {
 	sdcard_set_address(sdcard, address);
 	sdcard->trans_type = TRANS_TYPE_RW_READ_SD_BLOCK;
 	sdcard->trans_ctrl = TRANS_START;
 
 	sdcard_busy_wait(sdcard);
-	if ((sdcard->trans_error >> 2) != READ_NO_ERROR)
-		return (sdcard->trans_error >> 2);
+	if (sdcard->trans_error != SD_NO_ERROR)
+		return (sdcard->trans_error);
 
 	/*
 	 * dummy read:
@@ -79,5 +79,5 @@ read_code sdcard_block_read(sdcard_regs_t* const sdcard, unsigned long address,
 	}
 	sdcard->rx_fifo_control = FIFO_FORCE_EMPTY;  //clear last pending read in peripheral, refers to the dummy read
 
-	return READ_NO_ERROR;
+	return SD_NO_ERROR;
 }

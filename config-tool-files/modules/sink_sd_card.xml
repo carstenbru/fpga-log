@@ -1,0 +1,5 @@
+<module name="sink_sd_card">
+  <peripheral name="sd_card" >
+    <port group="timestamp_dummy" name="ts_dummy" destination="TIMESTAMP_GEN" parameter="id" hide="TRUE" />
+  </peripheral>
+</module>
