@@ -16,16 +16,12 @@
 #include <fpga-log/datastream_source.h>
 #include <fpga-log/data_port.h>
 #include <fpga-log/sink/formatter/formatter.h>
+#include <fpga-log/sink/sd_file.h>
 
 /**
  * @brief defines the maximal usable file name length of the log file
  */
 #define SDCARD_MAX_FILE_NAME_LENGTH 16
-
-/**
- * @brief defines the name of the log file, %d can be used as number of log file
- */
-#define SDCARED_FILE_NAME "log_%d.txt"
 
 #define SDCARD_FATFS_ERROR_CODES {"SD card error", "int error", "sd card not ready", "file not found", "path not found","invalid path","access denied",\
 	"file already exists","invalid object","card write protected","invalid drive","not enabled","no filesystem found", "mkfs error","SD timeout",\
@@ -33,26 +29,28 @@
 
 #define SDCARD_SD_ERROR_CODES {"SD init error", "SD read error", "SD write error"}
 
+#define SDCARD_DATA_IN_MAX 4
+
 /**
  * @brief struct describing a sd card sink
  */
 typedef struct {
 	datastream_source_t super; /**< super-"class": datastream_source_t*/
 
-	data_port_t data_in; /**< data port, this can be set at a data output to direct the data stream to this device */
+	data_port_t data_in[SDCARD_DATA_IN_MAX]; /**< data port, this can be set at a data output to direct the data stream to this device */
 	const data_port_t* error_out; /**< error output destination */
-
-	formatter_t* formatter; /**< output log formatter */
 
 	BYTE pdrv; /**< pdrv ID used by FatFs */
 	DSTATUS status; /**< sd card status */
 	FATFS fatFs; /**< FatFs volume */
-	FIL file; /**< FatFs file */
+
+	sd_file_t* files[SDCARD_DATA_IN_MAX]; /**< pointers to file objects */
 
 	FRESULT fatFS_error_code; /**< last FatFs error code */
 	unsigned char sd_error_code; /**< last SD card error code */
-	unsigned int packages_written; /**< amount of packages written since last f_sync */
 	unsigned int sync_interval; /**< amount of packages until f_sync should be called */
+
+	unsigned int write_file_dest; /**< indicator for write_byte function which file should be used */
 
 	sdcard_regs_t* sd_card_regs; /**< pointer to SD-card hardware registers */
 } sink_sd_card_t;
@@ -66,10 +64,11 @@ typedef struct {
  * @param	formatter								pointer to a output log formatter
  * @param	sd_card							 		pounter to the SD-card peripheral
  * @param sync_interval_packages	amount of packages until f_sync should be called
+ * @param file										the file where the data should be stored
  */
 void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
-		formatter_t* const formatter, sdcard_regs_t* const sd_card,
-		unsigned int sync_interval_packages, int id);
+		sdcard_regs_t* const sd_card, unsigned int sync_interval_packages,
+		sd_file_t* file, int id);
 
 /**
  * @brief connects the error output port of a sd card to a given destination
@@ -86,7 +85,13 @@ void sink_sd_card_set_error_out(sink_sd_card_t* const sink_sd_card,
  * @param sink_sd_card	pointer to the sd card sink
  * @return the data input port
  */
-data_port_t* sink_sd_card_get_data_in(sink_sd_card_t* const sink_sd_card);
+data_port_t* sink_sd_card_get_data_in_0(sink_sd_card_t* const sink_sd_card);
+data_port_t* sink_sd_card_get_data_in_1(sink_sd_card_t* const sink_sd_card);
+data_port_t* sink_sd_card_get_data_in_2(sink_sd_card_t* const sink_sd_card);
+data_port_t* sink_sd_card_get_data_in_3(sink_sd_card_t* const sink_sd_card);
+
+void sink_sd_card_set_file_for_input_port(sink_sd_card_t* const sink_sd_card,
+		sd_file_t* file, unsigned int port_number);
 
 /**
  * gets the sd card sink struct from FatFs pdrev id

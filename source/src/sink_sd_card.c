@@ -35,8 +35,17 @@ static void sink_sd_card_update(void* const _sink_sd_card);
  *
  * @param	sink_sd_card	pointer to the sd card sink
  * @param	package				the incoming data package
+ * @param which					the number of the input port
  */
 static void sink_sd_card_new_data(void* const sink_sd_card,
+		const data_package_t* const package, int in_port);
+static void sink_sd_card_new_data_0(void* const sink_sd_card,
+		const data_package_t* const package);
+static void sink_sd_card_new_data_1(void* const sink_sd_card,
+		const data_package_t* const package);
+static void sink_sd_card_new_data_2(void* const sink_sd_card,
+		const data_package_t* const package);
+static void sink_sd_card_new_data_3(void* const sink_sd_card,
 		const data_package_t* const package);
 
 /**
@@ -66,9 +75,19 @@ static void sink_sd_card_send_data(void* const _sink_sd_card,
 static void sink_sd_card_check_return_code(sink_sd_card_t* const sink,
 		FRESULT code);
 
+/**
+ * @brief opens a file on the sdcard
+ *
+ * if the file already exists it appends "_x" to the name (e.g. LOG.txt will become LOG_0.txt, LOG_1.txt, ...)
+ *
+ * @param sink_sd_card
+ * @param file
+ */
+void sink_sd_card_open_file(sink_sd_card_t* const sink_sd_card, sd_file_t* file);
+
 void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
-		formatter_t* const formatter, sdcard_regs_t* const sd_card,
-		unsigned int sync_interval_packages, int id) {
+		sdcard_regs_t* const sd_card, unsigned int sync_interval_packages,
+		sd_file_t* file, int id) {
 	datastream_source_init(&sink_sd_card->super, id);  //call parents init function
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
@@ -76,14 +95,25 @@ void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
 	sink_sd_card->super.super.update = sink_sd_card_update;
 	sink_sd_card->super.send_data = sink_sd_card_send_data;
 
+	unsigned int i;
+
 	sink_sd_card->error_out = &data_port_dummy;
-	sink_sd_card->data_in = data_port_dummy;
-	sink_sd_card->data_in.parent = (void*) sink_sd_card;
-	sink_sd_card->data_in.new_data = sink_sd_card_new_data;
+
+	for (i = 0; i < SDCARD_DATA_IN_MAX; i++) {
+		sink_sd_card->data_in[i] = data_port_dummy;
+		sink_sd_card->data_in[i].parent = (void*) sink_sd_card;
+
+		sink_sd_card->files[i] = file;
+	}
+	sink_sd_card->data_in[0].new_data = sink_sd_card_new_data_0;
+	sink_sd_card->data_in[1].new_data = sink_sd_card_new_data_1;
+	sink_sd_card->data_in[2].new_data = sink_sd_card_new_data_2;
+	sink_sd_card->data_in[3].new_data = sink_sd_card_new_data_3;
 
 	sink_sd_card->fatFS_error_code = FR_OK;
 	sink_sd_card->sd_error_code = SD_NO_ERROR;
 	sink_sd_card->sync_interval = sync_interval_packages;
+	sink_sd_card->write_file_dest = 0;
 
 	sink_sd_card->pdrv = used_volumes;
 	sink_sd_card->status = STA_NOINIT;
@@ -91,30 +121,55 @@ void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
 
 	sink_sd_card->sd_card_regs = sd_card;
 
-	sink_sd_card->formatter = formatter;
-	_formatter_set_write_dest(formatter, sink_sd_write_byte, sink_sd_card);
+	_formatter_set_write_dest(file->formatter, sink_sd_write_byte, sink_sd_card);
 
 	char dev_path[3] = { sink_sd_card->pdrv + '0', ':', 0 };
 	sink_sd_card_check_return_code(sink_sd_card,
 			f_mount(&sink_sd_card->fatFs, dev_path, 0));
 
-	io_descr_t old_stdio = stdio_descr;
-	unsigned char buf[SDCARD_MAX_FILE_NAME_LENGTH + 1];
-	unsigned int i;
-	for (i = 0; i < SDCARD_MAX_FILE_NAME_LENGTH + 1; i++)
-		buf[i] = 0;
-	i = 0;
-	stdio_descr.send_byte = put_buf;
+	sink_sd_card_open_file(sink_sd_card, file);
+}
+
+void sink_sd_card_open_file(sink_sd_card_t* const sink_sd_card, sd_file_t* file) {
 	FRESULT open_code;
-	do {
-		unsigned char* p = buf;
-		stdio_descr.base_adr = &p;
-		printf(SDCARED_FILE_NAME, i);
-		i++;
-	} while ((open_code = f_open(&sink_sd_card->file, (char*) buf,
-	FA_WRITE | FA_CREATE_NEW)) == FR_EXIST);
+	if ((open_code = f_open(&file->file, file->filename,
+	FA_WRITE | FA_CREATE_NEW)) == FR_EXIST) {  //try to open file, if it already exists go on with appending a number
+		unsigned int i;
+		unsigned char format_string[SDCARD_MAX_FILE_NAME_LENGTH + 1];  //generate format string
+		unsigned char buf[SDCARD_MAX_FILE_NAME_LENGTH + 1];  //filename buffer
+		for (i = 0; i < SDCARD_MAX_FILE_NAME_LENGTH + 1; i++) {  //clear filename and format strings
+			buf[i] = 0;
+			format_string[i] = 0;
+		}
+
+		unsigned char* c = file->filename;
+		for (i = 0; i < SDCARD_MAX_FILE_NAME_LENGTH; i++) {
+			if (*c == '.') {  //search for the file extension
+				format_string[i++] = '_';
+				format_string[i++] = '%';
+				format_string[i++] = 'd';
+			}
+			format_string[i] = *c;  //copy string
+			if (*c == 0)  //end of string
+				break;
+			c++;
+		}
+
+		io_descr_t old_stdio = stdio_descr;  //redirect stdio for printf call
+		stdio_descr.send_byte = put_buf;
+
+		i = 0;
+		do {  //generate file with appended "_x" and try to open it until it works
+			unsigned char* p = buf;
+			stdio_descr.base_adr = &p;
+			printf(format_string, i);
+			i++;
+		} while ((open_code = f_open(&file->file, (char*) buf,
+		FA_WRITE | FA_CREATE_NEW)) == FR_EXIST);
+
+		stdio_descr = old_stdio;
+	}
 	sink_sd_card_check_return_code(sink_sd_card, open_code);
-	stdio_descr = old_stdio;
 }
 
 void sink_sd_card_set_error_out(sink_sd_card_t* const sink_sd_card,
@@ -122,15 +177,25 @@ void sink_sd_card_set_error_out(sink_sd_card_t* const sink_sd_card,
 	sink_sd_card->error_out = data_in;
 }
 
-data_port_t* sink_sd_card_get_data_in(sink_sd_card_t* const sink_sd_card) {
-	return &sink_sd_card->data_in;
+data_port_t* sink_sd_card_get_data_in_0(sink_sd_card_t* const sink_sd_card) {
+	return &sink_sd_card->data_in[0];
+}
+data_port_t* sink_sd_card_get_data_in_1(sink_sd_card_t* const sink_sd_card) {
+	return &sink_sd_card->data_in[1];
+}
+data_port_t* sink_sd_card_get_data_in_2(sink_sd_card_t* const sink_sd_card) {
+	return &sink_sd_card->data_in[2];
+}
+data_port_t* sink_sd_card_get_data_in_3(sink_sd_card_t* const sink_sd_card) {
+	return &sink_sd_card->data_in[3];
 }
 
 static void sink_sd_write_byte(void *param, unsigned char byte) {
 	sink_sd_card_t* sink = (sink_sd_card_t*) param;
 
 	UINT bw;
-	sink_sd_card_check_return_code(sink, f_write(&sink->file, &byte, 1, &bw));
+	sink_sd_card_check_return_code(sink,
+			f_write(&sink->files[sink->write_file_dest]->file, &byte, 1, &bw));
 }
 
 static void sink_sd_card_update(void* const _sink_sd_card) {
@@ -140,9 +205,13 @@ static void sink_sd_card_update(void* const _sink_sd_card) {
 	//still reported if fatFS does no hardware access anymore due to the previous error
 	sink->sd_error_code |= sink->sd_card_regs->trans_error;
 
-	if (sink->packages_written >= sink->sync_interval) {
-		sink_sd_card_check_return_code(sink, f_sync(&sink->file));
-		sink->packages_written = 0;
+	unsigned int i;
+	for (i = 0; i < SDCARD_DATA_IN_MAX; i++) {
+		sd_file_t* file = sink->files[i];
+		if (file->packages_written >= sink->sync_interval) {
+			sink_sd_card_check_return_code(sink, f_sync(&file->file));
+			file->packages_written = 0;
+		}
 	}
 
 	if ((sink->sd_error_code != SD_NO_ERROR)
@@ -152,11 +221,33 @@ static void sink_sd_card_update(void* const _sink_sd_card) {
 }
 
 static void sink_sd_card_new_data(void* const sink_sd_card,
-		const data_package_t* const package) {
+		const data_package_t* const package, int in_port) {
 	sink_sd_card_t* sink = (sink_sd_card_t*) sink_sd_card;
 
-	sink->packages_written++;
-	sink->formatter->format((void*) (sink->formatter), package);
+	sink->write_file_dest = in_port;
+	sd_file_t* file = sink->files[in_port];
+	file->packages_written++;
+	file->formatter->format((void*) (file->formatter), package);
+}
+
+static void sink_sd_card_new_data_0(void* const sink_sd_card,
+		const data_package_t* const package) {
+	sink_sd_card_new_data(sink_sd_card, package, 0);
+}
+
+static void sink_sd_card_new_data_1(void* const sink_sd_card,
+		const data_package_t* const package) {
+	sink_sd_card_new_data(sink_sd_card, package, 1);
+}
+
+static void sink_sd_card_new_data_2(void* const sink_sd_card,
+		const data_package_t* const package) {
+	sink_sd_card_new_data(sink_sd_card, package, 2);
+}
+
+static void sink_sd_card_new_data_3(void* const sink_sd_card,
+		const data_package_t* const package) {
+	sink_sd_card_new_data(sink_sd_card, package, 3);
 }
 
 static void put_buf(void* const param, const unsigned char byte) {
@@ -204,5 +295,15 @@ static void sink_sd_card_check_return_code(sink_sd_card_t* const sink,
 		if (sink->fatFS_error_code == FR_OK) {  //do not overwrite previous errors
 			sink->fatFS_error_code = code;
 		}
+	}
+}
+
+void sink_sd_card_set_file_for_input_port(sink_sd_card_t* const sink_sd_card,
+		sd_file_t* file, unsigned int port_number) {
+	if (port_number < SDCARD_DATA_IN_MAX) {
+		sink_sd_card->files[port_number] = file;
+		_formatter_set_write_dest(file->formatter, sink_sd_write_byte,
+				sink_sd_card);
+		sink_sd_card_open_file(sink_sd_card, file);
 	}
 }
