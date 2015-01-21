@@ -8,7 +8,8 @@ using namespace boost;
 
 std::map<std::string, std::string> HeaderParser::defines;
 
-HeaderParser::HeaderParser()
+HeaderParser::HeaderParser(bool globalFiles) :
+    globalFiles(globalFiles)
 {
 }
 
@@ -72,7 +73,7 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                     }
                     string name = *++i;
                     name.erase(name.find(';'), name.length());
-                    DataTypeStruct* d = new DataTypeStruct(name, filename);
+                    DataTypeStruct* d = new DataTypeStruct(name, filename, globalFiles);
                     if (hasSuper)
                         inheritanceMap[d] = superType;
                 } else if ((*i).compare("enum") == 0) {
@@ -99,7 +100,7 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                     }
                     string name = *++i;
                     name.erase(name.find(';'), name.length());
-                    DataTypeEnumeration* d = new DataTypeEnumeration(name, filename);
+                    DataTypeEnumeration* d = new DataTypeEnumeration(name, filename, globalFiles);
                     d->addValues(values);
                 }
             } else if ((*i).compare("#define") == 0) {
@@ -185,7 +186,7 @@ void HeaderParser::parseFileForMethods(string filename) {
                     }
                 }
                 if (!wasMethod) {
-                    DataTypeFunction::addFunction(method_name, returnType + ":" + parameters);
+                    DataTypeFunction::addFunction(method_name, returnType + ":" + parameters, globalFiles);
                 }
             }
             returnType = *i;

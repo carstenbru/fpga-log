@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <map>
 #include <QModelIndex>
+#include <string>
 #include "cobject.h"
 #include "datastreamview.h"
 #include "datatype.h"
@@ -27,6 +28,8 @@ private:
     bool newOutputGenerator();
     void refreshWindowTitle();
     bool checkAndAskSave();
+    void setDataLoggerPath(std::string newPath);
+    void reparseLocalHeaders(std::string path);
 
     Ui::MainWindow *ui;
 

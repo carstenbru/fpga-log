@@ -12,22 +12,32 @@ std::map<std::string, DataType*> DataType::types;
 std::map<std::string, DataTypeStruct*> DataTypeStruct::types;
 std::map<std::string, DataTypeFunction*> DataTypeFunction::types;
 
-DataTypePin DataTypePin::pinType("pin");
+DataTypePin DataTypePin::pinType("pin", true);
 
-DataTypeEnumeration DataTypeEnumeration::controlParameterType("parameter_type_t");
+DataTypeEnumeration DataTypeEnumeration::controlParameterType("parameter_type_t", true);
 
-DataType::DataType(std::string name) :
+DataType::DataType(std::string name, bool globalType) :
     name(name),
-    headerFile("")
+    headerFile(""),
+    globalType(globalType)
 {
     types[name] = this;
 }
 
-DataType::DataType(std::string name, std::string headerFile) :
+DataType::DataType(std::string name, std::string headerFile, bool globalType) :
     name(name),
-    headerFile(headerFile)
+    headerFile(headerFile),
+    globalType(globalType)
 {
     types[name] = this;
+}
+
+void DataType::removeLocalTypes() {
+    for (std::map<std::string, DataType*>::iterator i = types.begin(); i != types.end(); i++) {
+        if (!(i->second->globalType)) {
+            delete i->second;
+        }
+    }
 }
 
 bool DataType::hasSuffix(std::string suffix) {
@@ -49,8 +59,8 @@ QWidget* DataType::getConfigWidget(DataLogger*, CParameter*) {
     return NULL;
 }
 
-DataTypeStruct::DataTypeStruct(std::string name, string headerFile) :
-    DataType(name, headerFile),
+DataTypeStruct::DataTypeStruct(std::string name, string headerFile, bool globalType) :
+    DataType(name, headerFile, globalType),
     super(NULL)
 {
     types[name] = this;
@@ -104,8 +114,8 @@ std::string DataTypeStruct::getConfigData(QWidget* widget) {
     return cbox->currentText().toStdString();
 }
 
-DataTypeNumber::DataTypeNumber(std::string name, long min, long max) :
-    DataType(name),
+DataTypeNumber::DataTypeNumber(std::string name, long min, long max, bool globalType) :
+    DataType(name, globalType),
     min(min),
     max(max)
 {
@@ -132,8 +142,8 @@ std::string DataTypeNumber::getConfigData(QWidget* widget) {
     return std::to_string(sbox->value());
 }
 
-DataTypeFloat::DataTypeFloat(std::string name, double min, double max, int decimals, bool outputAsInt) :
-    DataType(name),
+DataTypeFloat::DataTypeFloat(std::string name, double min, double max, int decimals, bool outputAsInt, bool globalType) :
+    DataType(name, globalType),
     min(min),
     max(max),
     decimals(decimals),
@@ -171,13 +181,13 @@ std::string DataTypeFloat::getConfigData(QWidget* widget) {
     }
 }
 
-DataTypeEnumeration::DataTypeEnumeration(std::string name) :
-    DataType(name)
+DataTypeEnumeration::DataTypeEnumeration(std::string name, bool globalType) :
+    DataType(name, globalType)
 {
 }
 
-DataTypeEnumeration::DataTypeEnumeration(std::string name, string headerFile) :
-    DataType(name, headerFile)
+DataTypeEnumeration::DataTypeEnumeration(std::string name, string headerFile, bool globalType) :
+    DataType(name, headerFile, globalType)
 {
 }
 
@@ -240,8 +250,8 @@ std::string DataTypeChar::getConfigData(QWidget* widget) {
         return res;
 }
 
-DataTypePin::DataTypePin(std::string name) :
-    DataType(name)
+DataTypePin::DataTypePin(std::string name, bool globalType) :
+    DataType(name, globalType)
 {
 
 }
@@ -329,8 +339,8 @@ string Pin::getPinFromFullName(string fullName) {
     return fullName;
 }
 
-DataTypeFunction::DataTypeFunction(std::string name) :
-    DataType(name)
+DataTypeFunction::DataTypeFunction(std::string name, bool globalType) :
+    DataType(name, globalType)
 {
     types[name] = this;
 }
@@ -349,12 +359,12 @@ std::string DataTypeFunction::getConfigData(QWidget* widget) {
     return cbox->currentText().toStdString();
 }
 
-void DataTypeFunction::addFunction(std::string name, std::string signature) {
+void DataTypeFunction::addFunction(std::string name, std::string signature, bool globalType) {
     DataTypeFunction* dtf;
     try {
         dtf = types.at(signature);
     } catch (exception) {
-        dtf = new DataTypeFunction(signature);
+        dtf = new DataTypeFunction(signature, globalType);
     }
     dtf->functionNames.push_back(name);
 }
@@ -363,6 +373,12 @@ DataType* DataTypeFunction::getType(std::string signature) {
     try {
         return DataType::getType(signature);
     } catch (exception) {
-        return new DataTypeFunction(signature);
+        return new DataTypeFunction(signature, true);
+    }
+}
+
+DataTypeFunction::~DataTypeFunction() {
+    for (list<string>::iterator i = functionNames.begin(); i != functionNames.end(); i++) {
+        types.erase(*i);
     }
 }

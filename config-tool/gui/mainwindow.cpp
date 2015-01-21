@@ -240,7 +240,7 @@ void MainWindow::open() {
                                                     "/../projects/",
                                                     "fpga-log XML (*.xml)");
     if (!fileName.isEmpty()) {
-        dataLoggerPath = fileName.toStdString();
+        setDataLoggerPath(fileName.toStdString());
 
         QFile file(fileName);
         file.open(QIODevice::ReadOnly);
@@ -293,7 +293,7 @@ void MainWindow::saveAs() {
                                                     "/../projects/",
                                                     "fpga-log XML (*.xml)");
     if (!fileName.isEmpty()) {
-        dataLoggerPath = fileName.toStdString();
+        setDataLoggerPath(fileName.toStdString());
         save();
     }
 }
@@ -303,4 +303,23 @@ void MainWindow::closeEvent(QCloseEvent* event) {
         QMainWindow::closeEvent(event);
     else
         event->ignore();
+}
+
+void MainWindow::reparseLocalHeaders(string path) {
+    HeaderParser hp = HeaderParser(false);
+    hp.addFolder(path + "/firmware/include", true);
+    hp.parseFiles();
+}
+
+void MainWindow::setDataLoggerPath(string newPath) {
+    if (dataLoggerPath.compare(newPath) != 0) {
+        DataType::removeLocalTypes();
+
+        dataLoggerPath = newPath;
+
+        if (!newPath.empty()) {
+            newPath = newPath.substr(0, newPath.rfind('/'));
+            reparseLocalHeaders(newPath);
+        }
+    }
 }

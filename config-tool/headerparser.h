@@ -10,7 +10,7 @@
 class HeaderParser
 {
 public:
-    HeaderParser();
+    HeaderParser(bool globalFiles);
 
     void addFolder(std::string path, bool includeSubdirs);
     void parseFiles();
@@ -24,6 +24,7 @@ private:
     void parseMethodParameters(CMethod* method, std::string parameters);
     void parseMethodParameter(CMethod* method, std::string parameter);
 
+    bool globalFiles;
     std::list<std::string> files;
 
     static std::map<std::string, std::string> defines;

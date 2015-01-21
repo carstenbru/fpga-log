@@ -13,9 +13,9 @@ class DataLogger;
 class DataType
 {
 public:
-    DataType(std::string name);
-    DataType(std::string name, std::string headerFile);
-    virtual ~DataType() {}
+    DataType(std::string name, bool globalType);
+    DataType(std::string name, std::string headerFile, bool globalType);
+    virtual ~DataType() {types.erase(name);}
 
     std::string getName() { return name; }
     std::string getHeaderName() { return headerFile; }
@@ -32,17 +32,20 @@ public:
 
     static DataType* getType(std::string name) { return types.at(name); }
     static std::map<std::string, DataType*> getTypes() { return types; }
+    static void removeLocalTypes();
 private:
     std::string name;
     std::string headerFile;
+
+    bool globalType;
 
     static std::map<std::string, DataType*> types;
 };
 
 class DataTypeStruct : public DataType {
 public:
-    DataTypeStruct(std::string name, std::string headerFile);
-    virtual ~DataTypeStruct() {}
+    DataTypeStruct(std::string name, std::string headerFile, bool globalType);
+    virtual ~DataTypeStruct() {types.erase(getName());}
 
     DataTypeStruct* getSuperType() { return super; }
     std::list<DataTypeStruct*> getChilds() { return childs; }
@@ -71,7 +74,7 @@ private:
 
 class DataTypeNumber : public DataType {
 public:
-    DataTypeNumber(std::string name, long min, long max);
+    DataTypeNumber(std::string name, long min, long max, bool globalType);
     virtual ~DataTypeNumber() {}
 
     virtual QWidget* getConfigWidget(DataLogger*dataLogger, CParameter* param);
@@ -84,7 +87,7 @@ private:
 
 class DataTypeFloat : public DataType {
 public:
-    DataTypeFloat(std::string name, double min, double max, int decimals, bool outputAsInt);
+    DataTypeFloat(std::string name, double min, double max, int decimals, bool outputAsInt, bool globalType);
     virtual ~DataTypeFloat() {}
 
     virtual QWidget* getConfigWidget(DataLogger*dataLogger, CParameter* param);
@@ -99,8 +102,8 @@ private:
 
 class DataTypeEnumeration : public DataType {
 public:
-    DataTypeEnumeration(std::string name);
-    DataTypeEnumeration(std::string name, std::string headerFile);
+    DataTypeEnumeration(std::string name, bool globalType);
+    DataTypeEnumeration(std::string name, std::string headerFile, bool globalType);
     virtual ~DataTypeEnumeration() {}
 
     void addValue(std::string value);
@@ -119,7 +122,7 @@ private:
 
 class DataTypeString : public DataType {
 public:
-    DataTypeString(std::string name) : DataType(name) {}
+    DataTypeString(std::string name, bool globalType) : DataType(name, globalType) {}
     virtual ~DataTypeString() {}
 
     virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
@@ -130,7 +133,7 @@ public:
 
 class DataTypeChar : public DataType {
 public:
-    DataTypeChar(std::string name) : DataType(name) {}
+    DataTypeChar(std::string name, bool globalType) : DataType(name, globalType) {}
     virtual ~DataTypeChar() {}
 
     virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
@@ -159,7 +162,7 @@ private:
 
 class DataTypePin : public DataType {
 public:
-    DataTypePin(std::string name);
+    DataTypePin(std::string name, bool globalType);
     virtual ~DataTypePin() {}
 
     virtual QWidget* getConfigWidget(DataLogger*dataLogger, CParameter* param);
@@ -179,13 +182,13 @@ private:
 
 class DataTypeFunction : public DataType {
 public:
-    DataTypeFunction(std::string name);
-    virtual ~DataTypeFunction() {}
+    DataTypeFunction(std::string name, bool globalType);
+    virtual ~DataTypeFunction();
 
     virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
 
-    static void addFunction(std::string name, std::string signature);
+    static void addFunction(std::string name, std::string signature, bool globalType);
     static DataType* getType(std::string signature);
 private:
     std::list<std::string> functionNames;

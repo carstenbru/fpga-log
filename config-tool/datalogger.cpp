@@ -173,7 +173,7 @@ string DataLogger::readTargetNameFromFile(string fileName) {
 }
 
 void DataLogger::loadTragetXMLs() {
-    DataTypeEnumeration* targetType = new DataTypeEnumeration("target");
+    DataTypeEnumeration* targetType = new DataTypeEnumeration("target", true);
 
     string path = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();
     path += "/lib/targets/";

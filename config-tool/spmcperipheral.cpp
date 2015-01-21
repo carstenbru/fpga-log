@@ -130,14 +130,14 @@ void SpmcPeripheral::readParameterElement(QXmlStreamReader& reader) {
                 QXmlStreamAttributes attributes = reader.attributes();
                 int min = attributes.value("min").toString().toInt();
                 int max = attributes.value("max").toString().toInt();
-                new DataTypeNumber(type, min, max);
+                new DataTypeNumber(type, min, max, true);
             }
         } else if (reader.name().toString().compare("choice") == 0) {
             if (dt == NULL) {
                 try {
                     DataType::getType(type);
                 } catch (exception) {
-                    dt = new DataTypeEnumeration(type);
+                    dt = new DataTypeEnumeration(type, true);
                     dt->addValue(reader.attributes().value("value").toString().toStdString());
                 }
             } else
