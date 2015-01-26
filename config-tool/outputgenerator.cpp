@@ -134,7 +134,7 @@ void OutputGenerator::writeVariableDefinitions(std::ostream& stream) {
     map<string, CObject*> objects = dataLogger->getObjectsMap();
 
     for (map<string, CObject *>::iterator i = objects.begin(); i != objects.end(); i++) {
-        usedHeaders.insert(i->second->getType()->getHeaderName());
+        putUsedHeader(i->second->getType()->getHeaderName(), i->second->getType()->isGlobal());
         stream << i->second->getType()->getName() << "\t" << i->first << ";" << endl;
     }
 }
@@ -157,7 +157,7 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
         stringstream tmpStream;
 
         CMethod* init = object->getInitMethod();
-        usedHeaders.insert(init->getHeaderName());
+        putUsedHeader(init->getHeaderName(), object->getType()->isGlobal());
         list<CParameter>* params = init->getParameters();
         tmpStream << "  " << object->getType()->getCleanedName() << "_"
                   << init->getName() << "(&" << object->getName();
@@ -234,9 +234,7 @@ void OutputGenerator::writeHeaderIncludes(std::ostream& stream) {
     stream << "#include <fpga-log/pc_compatibility.h>" << endl;
     stream << "#include <fpga-log/control_port.h>" << endl << endl;
     for (set<string>::iterator i = usedHeaders.begin(); i != usedHeaders.end(); i++) {
-        string s = *i;
-        s.erase(0, s.find("include") + 8);
-        stream << "#include <fpga-log/" << s << ">" << endl;
+        stream << "#include " << *i << endl;
     }
 }
 
@@ -247,8 +245,17 @@ void OutputGenerator::writePreamble(std::ostream& stream) {
     stream << " */" << endl;
 }
 
+void OutputGenerator::putUsedHeader(std::string headerName, bool global) {
+    headerName.erase(0, headerName.find("include") + 8);
+    if (global) {
+        usedHeaders.insert("<fpga-log/" + headerName + ">");
+    } else {
+        usedHeaders.insert("\"" + headerName + "\"");
+    }
+}
+
 void OutputGenerator::writeMethod(std::ostream& stream, CObject* object, CMethod* method, map<string, CObject *>& objects) {
-    usedHeaders.insert(method->getHeaderName());
+    putUsedHeader(method->getHeaderName(), object->getType()->isGlobal());
     list<CParameter>* params = method->getParameters();
     string methodName = method->getCompleteName();
     if (methodName.empty()) {

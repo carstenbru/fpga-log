@@ -47,6 +47,8 @@ private:
     void writePreamble(std::ostream& stream);
     void writeHeaderIncludes(std::ostream& stream);
 
+    void putUsedHeader(std::string headerName, bool global);
+
     void writeObjectInit(std::ostream& stream, CObject* object, std::map<std::string, CObject *> &objects, std::map<std::string, bool>& initDone);
     void writeMethod(std::ostream& stream, CObject *object, CMethod* method, std::map<std::string, CObject *> &objects);
 

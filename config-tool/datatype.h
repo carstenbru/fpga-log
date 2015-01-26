@@ -23,6 +23,7 @@ public:
     std::string getDisplayName() { return getCleanedName(); }
     bool hasPrefix(std::string prefix) { return (name.find(prefix) == 0); }
     bool hasSuffix(std::string suffix);
+    bool isGlobal() {return globalType;}
 
     virtual QWidget* getConfigWidget(DataLogger*, CParameter*);
     virtual std::string getConfigData(QWidget*) { return ""; }
