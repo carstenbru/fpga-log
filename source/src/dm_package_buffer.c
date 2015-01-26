@@ -25,7 +25,7 @@ static void data_package_wrap_pointers(data_package_fifo_t* data_package_fifo) {
 }
 
 void data_package_fifo_put(data_package_fifo_t* data_package_fifo,
-		data_package_t* package) {
+		const data_package_t* const package) {
 	data_package_stored_t* element = data_package_fifo->storage_array
 			+ data_package_fifo->next_write;  //get element to write
 

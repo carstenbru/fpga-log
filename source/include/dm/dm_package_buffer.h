@@ -31,7 +31,7 @@ void _data_package_fifo_init(data_package_fifo_t* data_package_fifo,
 		data_package_stored_t* storage_array, int array_size);
 
 void data_package_fifo_put(data_package_fifo_t* data_package_fifo,
-		data_package_t* package);
+		const data_package_t* const package);
 
 data_package_t* data_package_fifo_get(data_package_fifo_t* data_package_fifo);
 
