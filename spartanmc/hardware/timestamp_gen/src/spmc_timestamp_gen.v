@@ -120,10 +120,11 @@ module spmc_timestamp_gen #(
 	      counter_write_req <= 1'b1;
 	    end
         endcase
-      end else
+      end else begin
         counter_write_req <= 1'b0;
         if (capture_ready)
           sw_source_change <= 16'd0;
+      end
     end
   end
   
