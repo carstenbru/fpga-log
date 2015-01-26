@@ -18,8 +18,8 @@ static int datastream_condition_compare_val_name_is_fullfilled_equal(
 			((datastream_condition_compare_val_name_t*) condition)->compare_value;
 	const char* s2 = package->val_name;
 	while (*s1++ == *s2++) {
-		if (!*s1)
-			return 1;
+		if (!*s1) //end of string
+			return (!*s2); //return 1 if string_2 also ends, otherwise 0
 	}
 	return 0;
 }
