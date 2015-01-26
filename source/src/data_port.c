@@ -16,3 +16,5 @@
 static void data_port_new_data_dummy(void* const parent, const data_package_t* const package) {};
 
 const data_port_t data_port_dummy = {0, data_port_new_data_dummy};
+
+const int data_type_byte_sizes[] = DATA_TYPE_BYTE_SIZES;
