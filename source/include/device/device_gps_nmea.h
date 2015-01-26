@@ -14,7 +14,7 @@
 #include <fpga-log/data_port.h>
 #include <fpga-log/simple_float.h>
 
-#define NMEA_RMC_NAMES { "time", "status", "latitude", "N/S" , "longitude", "E/W", "speed", "course", "date", "magnetic variation", "variation E/W", "mode"}
+#define NMEA_RMC_NAMES { "time", "status", "latitude_rmc", "N/S" , "longitude_rmc", "E/W", "speed", "course", "date", "magnetic variation", "variation E/W", "mode"}
 #define NMEA_GGA_NAMES { "time", "latitude", "N/S" , "longitude", "E/W", "fix indicator", "satellites", "HDOP", "altitude", "units", "geoid seperation", "units 2", "age of diff. corr.", "ref. station ID"}
 #define NMEA_VTG_NAMES { "course", "reference", "course" , "reference", "speed", "units", "speed", "units", "mode"}
 #define NMEA_UNKNOWN "unknown"
