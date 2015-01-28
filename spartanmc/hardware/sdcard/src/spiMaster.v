@@ -89,7 +89,7 @@ output spiCS_n;
 
 // local wires and regs
 wire spiSysClk;
-wire [7:0] spiClkDelayFromInitSD;
+wire [7:0] spiClkDelay;
 wire rstSyncToSpiClk;
 wire [7:0] rxDataFromRWSPIWireData;
 wire rxDataRdySetFromRWSPIWireData;
@@ -104,8 +104,6 @@ wire [7:0] txDataFromRWSDBlock;
 wire txDataWenFromRWSDBlock;
 wire [7:0] txDataFromSendCmd;
 wire txDataWenFromSendCmd;
-wire [7:0] txDataFromInitSD;
-wire txDataWenFromInitSD;
 wire [7:0] dataFromCtrlStsReg;
 wire [7:0] dataFromTxFifo;
 wire [7:0] dataFromRxFifo;
@@ -114,13 +112,6 @@ wire [7:0] spiDirectAccessTxData;
 wire [1:0] readWriteSDBlockReq;
 wire [1:0] SDWriteError;
 wire [1:0] SDReadError;
-wire [1:0] SDInitError;
-wire [7:0] cmdByteFromInitSD;
-wire [7:0] dataByte1FromInitSD;
-wire [7:0] dataByte2FromInitSD;
-wire [7:0] dataByte3FromInitSD;
-wire [7:0] dataByte4FromInitSD;
-wire [7:0] checkSumByteFromInitSD;
 wire [7:0] sendCmdRespByte;
 wire [7:0] cmdByteFromRWSDBlock;
 wire [7:0] dataByte1FromRWSDBlock;
@@ -132,12 +123,13 @@ wire [7:0] txFifoDataOut;
 wire [7:0] rxFifoDataIn;
 wire [31:0] SDAddr;
 wire [7:0] spiClkDelayFromCtrlStsReg;
-wire spiCS_nFromInitSD;
 wire spiCS_nFromRWSDBlock;
 wire spiCS_nFromSpiCtrl;
+wire SDInitReq;
 
 
-assign spiCS_n = spiCS_nFromInitSD & spiCS_nFromRWSDBlock & spiCS_nFromSpiCtrl;
+assign spiCS_n = spiCS_nFromRWSDBlock & spiCS_nFromSpiCtrl;
+assign spiClkDelay = SDInitReq ? `SLOW_SPI_CLK : spiClkDelayFromCtrlStsReg;
 
 // -----------------------------------
 // Instance of Module: wishBoneBI
@@ -181,7 +173,7 @@ ctrlStsRegBI u_ctrlStsRegBI(
   .writeEn(             we_i                  ),
   .SDWriteError(        SDWriteError          ),
   .SDReadError(         SDReadError           ),
-  .SDInitError(         SDInitError           ),
+  .SDInitError(         `INIT_NO_ERROR        ),
   .SDAddr(              SDAddr                ),
   .spiClkDelay(         spiClkDelayFromCtrlStsReg)
 	);
@@ -193,7 +185,6 @@ spiCtrl u_spiCtrl(
   .clk(                 spiSysClk             ),
   .rst(                 rstSyncToSpiClk       ),
   .SDInitReq(           SDInitReq             ),
-  .SDInitRdy(           SDInitRdy             ),
   .readWriteSDBlockReq( readWriteSDBlockReq   ),
   .readWriteSDBlockRdy( readWriteSDBlockRdy   ),
   .rxDataRdy(           rxDataRdyFromSpiTxRxData),
@@ -204,51 +195,6 @@ spiCtrl u_spiCtrl(
   .txDataWen(           txDataWenFromSpiCtrl  ),
   .spiCS_n(             spiCS_nFromSpiCtrl    )
 	);
-
-
-// -----------------------------------
-// Instance of Module: initSD
-// -----------------------------------
-/*initSD u_initSD(
-  .clk(                 spiSysClk             ),
-  .rst(                 rstSyncToSpiClk       ),
-  .SDInitReq(           SDInitReq             ),
-  .SDInitRdy(           SDInitRdy             ),
-  .initError(           SDInitError           ),
-  .sendCmdReq(          sendCmdReqFromInitSD  ),
-  .sendCmdRdy(          sendCmdRdy            ),
-  .cmdByte(             cmdByteFromInitSD     ),
-  .dataByte1(           dataByte1FromInitSD   ),
-  .dataByte2(           dataByte2FromInitSD   ),
-  .dataByte3(           dataByte3FromInitSD   ),
-  .dataByte4(           dataByte4FromInitSD   ),
-  .checkSumByte(        checkSumByteFromInitSD),
-  .respByte(            sendCmdRespByte       ),
-  .respTout(            sendCmdRespTout       ),
-  .spiCS_n(             spiCS_nFromInitSD    ),
-  .spiClkDelayOut(      spiClkDelayFromInitSD ),
-  .spiClkDelayIn(       spiClkDelayFromCtrlStsReg),
-  .txDataFull(          txDataFullFromSpiTxRxData),
-  .txDataEmpty(         txDataEmptyFromRWSPIWireData),
-  .txDataOut(           txDataFromInitSD      ),
-  .txDataWen(           txDataWenFromInitSD   ),
-  .rxDataRdy(           rxDataRdyFromSpiTxRxData),
-  .rxDataRdyClr(        rxDataRdyClrFromInitSD)
-	);*/
-	
-assign spiClkDelayFromInitSD = SDInitReq ? `SLOW_SPI_CLK : spiClkDelayFromCtrlStsReg;
-assign checkSumByteFromInitSD = 8'h00;
-assign cmdByteFromInitSD = 8'h00;
-assign dataByte1FromInitSD = 8'h00;
-assign dataByte2FromInitSD = 8'h00;
-assign dataByte3FromInitSD = 8'h00;
-assign dataByte4FromInitSD = 8'h00;
-assign SDInitError = `INIT_NO_ERROR;
-assign rxDataRdyClrFromInitSD = 1'b0;
-assign SDInitRdy = 1'b0;
-assign sendCmdReqFromInitSD = 1'b0;
-assign spiCS_nFromInitSD = 1'b1;
-assign txDataWenFromInitSD = 1'b0;
 
 // -----------------------------------
 // Instance of Module: readWriteSDBlock
@@ -292,21 +238,14 @@ readWriteSDBlock u_readWriteSDBlock(
 sendCmd u_sendCmd(
   .clk(                 spiSysClk             ),
   .rst(                 rstSyncToSpiClk       ),
-  .sendCmdReq1(         sendCmdReqFromInitSD  ),
-  .sendCmdReq2(         sendCmdReqFromRWSDBlock),
+  .sendCmdReq_in(         sendCmdReqFromRWSDBlock),
   .sendCmdRdy(          sendCmdRdy            ),
-  .cmdByte_1(           cmdByteFromInitSD     ),
-  .cmdByte_2(           cmdByteFromRWSDBlock  ),
-  .dataByte1_1(         dataByte1FromInitSD   ),
-  .dataByte1_2(         dataByte1FromRWSDBlock),
-  .dataByte2_1(         dataByte2FromInitSD   ),
-  .dataByte2_2(         dataByte2FromRWSDBlock),
-  .dataByte3_1(         dataByte3FromInitSD   ),
-  .dataByte3_2(         dataByte3FromRWSDBlock),
-  .dataByte4_1(         dataByte4FromInitSD   ),
-  .dataByte4_2(         dataByte4FromRWSDBlock),
-  .checkSumByte_1(      checkSumByteFromInitSD),
-  .checkSumByte_2(      checkSumByteFromRWSDBlock),
+  .cmdByte_in(           cmdByteFromRWSDBlock  ),
+  .dataByte1_in(         dataByte1FromRWSDBlock),
+  .dataByte2_in(         dataByte2FromRWSDBlock),
+  .dataByte3_in(         dataByte3FromRWSDBlock),
+  .dataByte4_in(         dataByte4FromRWSDBlock),
+  .checkSumByte_in(      checkSumByteFromRWSDBlock),
   .respByte(            sendCmdRespByte       ),
   .respTout(            sendCmdRespTout       ),
   .rxDataIn(            rxDataFromSpiTxRxData ),
@@ -326,8 +265,7 @@ spiTxRxData u_spiTxRxData(
   .rst(                 rstSyncToSpiClk       ),
   .rx1DataRdyClr(       rxDataRdyClrFromRWSDBlock),
   .rx2DataRdyClr(       rxDataRdyClrFromSendCmd),
-  .rx3DataRdyClr(       rxDataRdyClrFromInitSD),
-  .rx4DataRdyClr(       rxDataRdyClrFromSpiCtrl),
+  .rx3DataRdyClr(       rxDataRdyClrFromSpiCtrl),
   .rxDataIn(            rxDataFromRWSPIWireData),
   .rxDataOut(           rxDataFromSpiTxRxData ),
   .rxDataRdy(           rxDataRdyFromSpiTxRxData),
@@ -336,10 +274,8 @@ spiTxRxData u_spiTxRxData(
   .tx1DataWEn(          txDataWenFromRWSDBlock),
   .tx2DataIn(           txDataFromSendCmd     ),
   .tx2DataWEn(          txDataWenFromSendCmd  ),
-  .tx3DataIn(           txDataFromInitSD      ),
-  .tx3DataWEn(          txDataWenFromInitSD   ),
-  .tx4DataIn(           spiDirectAccessTxData ),
-  .tx4DataWEn(          txDataWenFromSpiCtrl  ),
+  .tx3DataIn(           spiDirectAccessTxData ),
+  .tx3DataWEn(          txDataWenFromSpiCtrl  ),
   .txDataFull(          txDataFullFromSpiTxRxData),
   .txDataFullClr(       txDataFullClrFromRWSPIWireData),
   .txDataOut(           txDataToRWSPIWireData )
@@ -350,7 +286,7 @@ spiTxRxData u_spiTxRxData(
 // -----------------------------------
 readWriteSPIWireData u_readWriteSPIWireData(
   .clk(                 spiSysClk             ),
-  .clkDelay(            spiClkDelayFromInitSD           ),
+  .clkDelay(            spiClkDelay           ),
   .rst(                 rstSyncToSpiClk       ),
   .rxDataOut(           rxDataFromRWSPIWireData),
   .rxDataRdySet(        rxDataRdySetFromRWSPIWireData),

@@ -47,12 +47,11 @@
 `include "timescale.v"
 `include "spiMaster_defines.v"
 
-module spiCtrl (clk, readWriteSDBlockRdy, readWriteSDBlockReq, rst, rxDataRdy, rxDataRdyClr, SDInitRdy, SDInitReq, spiCS_n, spiTransCtrl, spiTransSts, spiTransType, txDataWen);
+module spiCtrl (clk, readWriteSDBlockRdy, readWriteSDBlockReq, rst, rxDataRdy, rxDataRdyClr, SDInitReq, spiCS_n, spiTransCtrl, spiTransSts, spiTransType, txDataWen);
 input   clk;
 input   readWriteSDBlockRdy;
 input   rst;
 input   rxDataRdy;
-input   SDInitRdy;
 input   spiTransCtrl;
 input   [1:0]spiTransType;
 output  [1:0]readWriteSDBlockReq;
@@ -68,7 +67,6 @@ reg     [1:0]readWriteSDBlockReq, next_readWriteSDBlockReq;
 wire    rst;
 wire    rxDataRdy;
 reg     rxDataRdyClr, next_rxDataRdyClr;
-wire    SDInitRdy;
 reg     SDInitReq, next_SDInitReq;
 reg     spiCS_n, next_spiCS_n;
 wire    spiTransCtrl;
@@ -96,7 +94,7 @@ reg [2:0]CurrState_spiCtrlSt, NextState_spiCtrlSt;
 // Machine: spiCtrlSt
 
 // NextState logic (combinatorial)
-always @ (spiTransCtrl or rxDataRdy or spiTransType or SDInitRdy or readWriteSDBlockRdy or readWriteSDBlockReq or txDataWen or SDInitReq or rxDataRdyClr or spiTransSts or spiCS_n or CurrState_spiCtrlSt)
+always @ (spiTransCtrl or rxDataRdy or spiTransType or readWriteSDBlockRdy or readWriteSDBlockReq or txDataWen or SDInitReq or rxDataRdyClr or spiTransSts or spiCS_n or CurrState_spiCtrlSt)
 begin
   NextState_spiCtrlSt <= CurrState_spiCtrlSt;
   // Set default values for outputs and signals

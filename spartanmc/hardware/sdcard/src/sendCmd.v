@@ -49,25 +49,18 @@
 `include "timescale.v"
 
 
-module sendCmd (checkSumByte_1, checkSumByte_2, clk, cmdByte_1, cmdByte_2, dataByte1_1, dataByte1_2, dataByte2_1, dataByte2_2, dataByte3_1, dataByte3_2, dataByte4_1, dataByte4_2, respByte, respTout, rst, rxDataIn, rxDataRdy, rxDataRdyClr, sendCmdRdy, sendCmdReq1, sendCmdReq2, txDataEmpty, txDataFull, txDataOut, txDataWen);
-input   [7:0]checkSumByte_1;
-input   [7:0]checkSumByte_2;
+module sendCmd (checkSumByte_in, clk, cmdByte_in, dataByte1_in, dataByte2_in, dataByte3_in, dataByte4_in, respByte, respTout, rst, rxDataIn, rxDataRdy, rxDataRdyClr, sendCmdRdy, sendCmdReq_in, txDataEmpty, txDataFull, txDataOut, txDataWen);
+input   [7:0]checkSumByte_in;
 input   clk;
-input   [7:0]cmdByte_1;
-input   [7:0]cmdByte_2;
-input   [7:0]dataByte1_1;
-input   [7:0]dataByte1_2;
-input   [7:0]dataByte2_1;
-input   [7:0]dataByte2_2;
-input   [7:0]dataByte3_1;
-input   [7:0]dataByte3_2;
-input   [7:0]dataByte4_1;
-input   [7:0]dataByte4_2;
+input   [7:0]cmdByte_in;
+input   [7:0]dataByte1_in;
+input   [7:0]dataByte2_in;
+input   [7:0]dataByte3_in;
+input   [7:0]dataByte4_in;
 input   rst;
 input   [7:0]rxDataIn;
 input   rxDataRdy;
-input   sendCmdReq1;
-input   sendCmdReq2;
+input   sendCmdReq_in;
 input   txDataEmpty;
 input   txDataFull;
 output  [7:0]respByte;
@@ -77,19 +70,13 @@ output  sendCmdRdy;
 output  [7:0]txDataOut;
 output  txDataWen;
 
-wire    [7:0]checkSumByte_1;
-wire    [7:0]checkSumByte_2;
+wire    [7:0]checkSumByte_in;
 wire    clk;
-wire    [7:0]cmdByte_1;
-wire    [7:0]cmdByte_2;
-wire    [7:0]dataByte1_1;
-wire    [7:0]dataByte1_2;
-wire    [7:0]dataByte2_1;
-wire    [7:0]dataByte2_2;
-wire    [7:0]dataByte3_1;
-wire    [7:0]dataByte3_2;
-wire    [7:0]dataByte4_1;
-wire    [7:0]dataByte4_2;
+wire    [7:0]cmdByte_in;
+wire    [7:0]dataByte1_in;
+wire    [7:0]dataByte2_in;
+wire    [7:0]dataByte3_in;
+wire    [7:0]dataByte4_in;
 reg     [7:0]respByte, next_respByte;
 reg     respTout, next_respTout;
 wire    rst;
@@ -97,8 +84,7 @@ wire    [7:0]rxDataIn;
 wire    rxDataRdy;
 reg     rxDataRdyClr, next_rxDataRdyClr;
 reg     sendCmdRdy, next_sendCmdRdy;
-wire    sendCmdReq1;
-wire    sendCmdReq2;
+wire    sendCmdReq_in;
 wire    txDataEmpty;
 wire    txDataFull;
 reg     [7:0]txDataOut, next_txDataOut;
@@ -141,16 +127,16 @@ reg [4:0]CurrState_sndCmdSt, NextState_sndCmdSt;
 
 // Diagram actions (continuous assignments allowed only: assign ...)
 // diagram ACTION
-always @(sendCmdReq1 or sendCmdReq2 ) begin
-sendCmdReq <= sendCmdReq1 | sendCmdReq2;
+always @(sendCmdReq_in) begin
+sendCmdReq <= sendCmdReq_in;
 end
 always @(posedge clk) begin
-cmdByte <= cmdByte_1 | cmdByte_2;
-dataByte1 <= dataByte1_1 | dataByte1_2;
-dataByte2 <= dataByte2_1 | dataByte2_2;
-dataByte3 <= dataByte3_1 | dataByte3_2;
-dataByte4 <= dataByte4_1 | dataByte4_2;
-checkSumByte <= checkSumByte_1 | checkSumByte_2;
+cmdByte <= cmdByte_in;
+dataByte1 <= dataByte1_in;
+dataByte2 <= dataByte2_in;
+dataByte3 <= dataByte3_in;
+dataByte4 <= dataByte4_in;
+checkSumByte <= checkSumByte_in;
 end
 
 
