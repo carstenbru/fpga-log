@@ -202,10 +202,6 @@ static void sink_sd_write_byte(void *param, unsigned char byte) {
 static void sink_sd_card_update(void* const _sink_sd_card) {
 	sink_sd_card_t* sink = (sink_sd_card_t*) _sink_sd_card;
 
-	//set error code here again (it is also set in sdcard peripheral methods) so previous hardware errors are
-	//still reported if fatFS does no hardware access anymore due to the previous error
-	sink->sd_error_code |= sink->sd_card_regs->trans_error;
-
 	unsigned int i;
 	for (i = 0; i < SDCARD_DATA_IN_MAX; i++) {
 		sd_file_t* file = sink->files[i];
@@ -286,7 +282,7 @@ static void sink_sd_card_send_data(void* const _sink_sd_card,
 		}
 	}
 
-	sink->sd_error_code = sink->sd_error_code & 3;  //clear errors except init errors
+	sink->sd_error_code &= 3;  //clear errors except init errors
 	sink->fatFS_error_code = FR_OK;
 }
 
