@@ -30,13 +30,16 @@ typedef enum {
 typedef enum {
 	SD_NO_ERROR = 0,
 	INIT_CMD0_ERROR = 1,
-	INIT_CMD1_ERROR = 2,
+	INIT_ACMD41_ERROR = 2,
+	INIT_CMD58_ERROR = 3,
 	READ_CMD_ERROR = 1 << 2,
 	READ_TOKEN_ERROR = 2 << 2,
 	WRITE_CMD_ERROR = 1 << 4,
 	WRITE_DATA_ERROR = 2 << 3,
 	WRITE_BUSY_ERROR = 3 << 4
 } sd_trans_error_codes;
+
+#define SD_HCS_SET (1 << 3)
 
 typedef struct {
 	volatile unsigned int version;

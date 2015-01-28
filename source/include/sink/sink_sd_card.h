@@ -53,6 +53,7 @@ typedef struct {
 	unsigned int write_file_dest; /**< indicator for write_byte function which file should be used */
 
 	sdcard_regs_t* sd_card_regs; /**< pointer to SD-card hardware registers */
+	unsigned char sdhc_card;
 } sink_sd_card_t;
 
 /**

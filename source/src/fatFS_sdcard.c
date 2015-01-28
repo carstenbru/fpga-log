@@ -23,7 +23,12 @@ DWORD get_fattime(void) {
 DSTATUS disk_initialize(BYTE pdrv) {
 	sink_sd_card_t* sink = sink_sd_card_from_pdrv(pdrv);
 
-	int err_code = sdcard_init(sink->sd_card_regs);
+	int ret_code = sdcard_init(sink->sd_card_regs);
+	int err_code = ret_code & ~SD_HCS_SET;  //clear HCS flag in return value for error code
+
+	if (ret_code & SD_HCS_SET) {
+		sink->sdhc_card = 1;
+	}
 
 	if (err_code == SD_NO_ERROR) {
 		sink->status = 0;
@@ -33,6 +38,7 @@ DSTATUS disk_initialize(BYTE pdrv) {
 
 	sink->sd_error_code |= err_code;
 
+	//sink->sdhc_card = 1; //TODO
 	return sink->status;
 }
 
@@ -49,8 +55,10 @@ DRESULT disk_read(BYTE pdrv, BYTE* buff, DWORD sector, UINT count) {
 
 	int i;
 	for (i = 0; i < count; i++) {
-		res |= sdcard_block_read(sink->sd_card_regs, sector * SD_BLOCK_SIZE, buff);
+		DWORD sec_address = sink->sdhc_card ? sector : sector * SD_BLOCK_SIZE;
+		res |= sdcard_block_read(sink->sd_card_regs, sec_address, buff);
 		buff += SD_BLOCK_SIZE;
+		sector++;
 	}
 
 	sink->sd_error_code |= res;
@@ -67,8 +75,10 @@ DRESULT disk_write(BYTE pdrv, const BYTE* buff, DWORD sector, UINT count) {
 
 	int i;
 	for (i = 0; i < count; i++) {
-		res |= sdcard_block_write(sink->sd_card_regs, sector * SD_BLOCK_SIZE, buff);
+		DWORD sec_address = sink->sdhc_card ? sector : sector * SD_BLOCK_SIZE;
+		res |= sdcard_block_write(sink->sd_card_regs, sec_address, buff);
 		buff += SD_BLOCK_SIZE;
+		sector++;
 	}
 
 	sink->sd_error_code |= res;

@@ -66,6 +66,7 @@ module spiMaster(
   spiDataOut,
   spiCS_n
 );
+parameter SDCARD_CLOCK = 16000000;
 
 //Wishbone bus
 input clk_i;
@@ -208,7 +209,7 @@ spiCtrl u_spiCtrl(
 // -----------------------------------
 // Instance of Module: initSD
 // -----------------------------------
-initSD u_initSD(
+/*initSD u_initSD(
   .clk(                 spiSysClk             ),
   .rst(                 rstSyncToSpiClk       ),
   .SDInitReq(           SDInitReq             ),
@@ -233,7 +234,21 @@ initSD u_initSD(
   .txDataWen(           txDataWenFromInitSD   ),
   .rxDataRdy(           rxDataRdyFromSpiTxRxData),
   .rxDataRdyClr(        rxDataRdyClrFromInitSD)
-	);
+	);*/
+	
+assign spiClkDelayFromInitSD = SDInitReq ? `SLOW_SPI_CLK : spiClkDelayFromCtrlStsReg;
+assign checkSumByteFromInitSD = 8'h00;
+assign cmdByteFromInitSD = 8'h00;
+assign dataByte1FromInitSD = 8'h00;
+assign dataByte2FromInitSD = 8'h00;
+assign dataByte3FromInitSD = 8'h00;
+assign dataByte4FromInitSD = 8'h00;
+assign SDInitError = `INIT_NO_ERROR;
+assign rxDataRdyClrFromInitSD = 1'b0;
+assign SDInitRdy = 1'b0;
+assign sendCmdReqFromInitSD = 1'b0;
+assign spiCS_nFromInitSD = 1'b1;
+assign txDataWenFromInitSD = 1'b0;
 
 // -----------------------------------
 // Instance of Module: readWriteSDBlock

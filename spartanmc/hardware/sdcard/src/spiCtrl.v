@@ -126,6 +126,8 @@ begin
         NextState_spiCtrlSt <= `INIT;
         next_spiTransSts <= `TRANS_BUSY;
         next_SDInitReq <= 1'b1;
+        next_txDataWen <= 1'b1;
+        next_spiCS_n <= 1'b0;
       end
       else if ((spiTransCtrl == `TRANS_START) && (spiTransType == `RW_WRITE_SD_BLOCK))
       begin
@@ -163,14 +165,16 @@ begin
     end
     `INIT:
     begin
-      next_SDInitReq <= 1'b0;
+      next_txDataWen <= 1'b0;
       NextState_spiCtrlSt <= `WT_FIN2;
     end
     `WT_FIN2:
     begin
-      if (SDInitRdy == 1'b1)
+      if (rxDataRdy == 1'b1)
       begin
+        next_SDInitReq <= 1'b0;
         NextState_spiCtrlSt <= `WT_S_CTRL_REQ;
+        next_rxDataRdyClr <= 1'b1;
       end
     end
     `RW:

@@ -110,6 +110,7 @@ void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
 	sink_sd_card->data_in[2].new_data = sink_sd_card_new_data_2;
 	sink_sd_card->data_in[3].new_data = sink_sd_card_new_data_3;
 
+	sink_sd_card->sdhc_card = 0;
 	sink_sd_card->fatFS_error_code = FR_OK;
 	sink_sd_card->sd_error_code = SD_NO_ERROR;
 	sink_sd_card->sync_interval = sync_interval_packages;
@@ -214,7 +215,7 @@ static void sink_sd_card_update(void* const _sink_sd_card) {
 		}
 	}
 
-	if ((sink->sd_error_code != SD_NO_ERROR)
+	if (((sink->sd_error_code & 0b11111100) != SD_NO_ERROR)
 			| (sink->fatFS_error_code != FR_OK)) {
 		_datastream_source_generate_software_timestamp((datastream_source_t*) sink);
 	}
@@ -285,7 +286,7 @@ static void sink_sd_card_send_data(void* const _sink_sd_card,
 		}
 	}
 
-	sink->sd_error_code = SD_NO_ERROR;
+	sink->sd_error_code = sink->sd_error_code & 3;  //clear errors except init errors
 	sink->fatFS_error_code = FR_OK;
 }
 

@@ -58,7 +58,7 @@ module spmc_sd_card(
     .spiCS_n(sd_cs)
   );
   
-  defparam sdcard.u_initSD.SDCARD_CLOCK = CLOCK_FREQUENCY;
+  defparam sdcard.SDCARD_CLOCK = CLOCK_FREQUENCY;
   defparam sdcard.u_readWriteSDBlock.SDCARD_CLOCK = CLOCK_FREQUENCY;
   defparam sdcard.u_ctrlStsRegBI.SDCARD_CLOCK = CLOCK_FREQUENCY;
   

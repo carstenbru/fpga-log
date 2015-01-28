@@ -187,9 +187,9 @@ begin
       next_checkSumByte <= 8'h00;
       if (SDInitReq == 1'b1)
       begin
-        NextState_initSDSt <= `CLK_SEQ_SEND_FF;
-        next_SDInitRdy <= 1'b0;
-        next_loopCnt <= 8'h00;
+        NextState_initSDSt <= `WT_INIT_REQ;
+        //next_SDInitRdy <= 1'b0;
+        //next_loopCnt <= 8'h00;
         next_spiClkDelayOut <= `SLOW_SPI_CLK;
         next_initError <= `INIT_NO_ERROR;
       end
