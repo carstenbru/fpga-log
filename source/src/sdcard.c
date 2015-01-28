@@ -118,10 +118,10 @@ int sdcard_init(sdcard_regs_t* const sdcard) {
  */
 static void sdcard_set_address(sdcard_regs_t* const sdcard,
 		unsigned long int address) {
-	sdcard->sd_addr_7_0 = address;
-	sdcard->sd_addr_15_8 = address >> 8;
-	sdcard->sd_addr_23_16 = address >> 16;
-	sdcard->sd_addr_31_24 = address >> 24;
+	sdcard->sd_addr_7_0 = (unsigned int)address;
+	sdcard->sd_addr_15_8 = (unsigned int)(address >> 8);
+	sdcard->sd_addr_23_16 = (unsigned int)(address >> 16);
+	sdcard->sd_addr_31_24 = (unsigned int)(address >> 24);
 }
 
 int sdcard_block_write(sdcard_regs_t* const sdcard, unsigned long address,

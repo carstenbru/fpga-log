@@ -849,7 +849,7 @@ DWORD clust2sect (	/* !=0: Sector number, 0: Failed - invalid cluster# */
 {
 	clst -= 2;
 	if (clst >= (fs->n_fatent - 2)) return 0;		/* Invalid cluster# */
-	return clst * cast_to_ulong(fs->csize) + fs->database;
+	return mul34_17(clst, fs->csize) + fs->database;
 }
 
 
@@ -2260,7 +2260,7 @@ FRESULT find_volume (	/* FR_OK(0): successful, !=0: any error occurred */
 	/* Determine the FAT sub type */
 	sysect = nrsv + fasize + fs->n_rootdir / (SS(fs) / SZ_DIR);	/* RSV+FAT+DIR */
 	if (tsect < sysect) return FR_NO_FILESYSTEM;		/* (Invalid volume size) */
-	nclst = (tsect - sysect) / fs->csize;				/* Number of clusters */
+	nclst = (tsect - sysect) / cast_to_ulong(fs->csize);				/* Number of clusters */
 	if (!nclst) return FR_NO_FILESYSTEM;				/* (Invalid volume size) */
 	fmt = FS_FAT12;
 	if (nclst >= MIN_FAT16) fmt = FS_FAT16;
