@@ -74,6 +74,8 @@ module spmc_pwm #(
   
   reg [PWM_REG_WIDTH:0] phase_calc_tmp;
   
+  assign di_peri = 18'd0;
+  
   genvar i;
   generate //generate specified number of PWM stages
     for (i = 0; i < CHANNELS; i = i + 1) begin : output_stage_gen_loop
