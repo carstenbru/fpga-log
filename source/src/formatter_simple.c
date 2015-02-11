@@ -19,13 +19,14 @@
 static void formatter_simple_format(void* const formatter,
 		const data_package_t* const package);
 
-void formatter_simple_init(formatter_simple_t* const formatter) {
+void formatter_simple_init(formatter_simple_t* const formatter, formatter_simple_id_option print_source_id) {
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
 	 */
 	formatter->super.format = formatter_simple_format;
 
 	formatter->count = 0;
+	formatter->print_source_id = print_source_id;
 }
 
 static void formatter_simple_format(void* const formatter,
@@ -35,6 +36,10 @@ static void formatter_simple_format(void* const formatter,
 	stdio_descr.send_byte = f->write_byte;
 
 	formatter_simple_t* fs = (formatter_simple_t*) formatter;
+
+	if (fs->print_source_id == FORMATTER_SIMPLE_PRINT_SOURCE_ID) {
+		printf("ID%d\t", package->source_id);
+	}
 
 	print_long(package->timestamp->lpt, 1, 12);
 	stdio_descr.send_byte(stdio_descr.base_adr, '.');
