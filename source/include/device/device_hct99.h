@@ -41,7 +41,8 @@ typedef enum {
 	HCT99_COMMAND_FIRMWARE_VERSION = 'P', /**< firmware version */
 	HCT99_COMMAND_FIRMWARE_TYPE = 'Q', /**< firmware type */
 	HCT99_COMMAND_HARDWARE_TYPE = 'S', /**< hardware type */
-	HCT99_COMMAND_CAL_DATA_TEXT_INFO = 'n' /**< output of calibration data text info */
+	HCT99_COMMAND_CAL_DATA_TEXT_INFO = 'n', /**< output of calibration data text info */
+	HCT99_CPARAMETER_ONLY_WHEN_QUEUE_EMPTY = 'e', /**< send command only if command queue is empty */
 } hct99_command_cpt;
 
 /**

@@ -160,8 +160,15 @@ static void device_hct99_send_data(void* const _hct99, const unsigned int id,
 		}
 		case (HCT99_EXPECT_ERR_CODE): {
 			if (byte == '\n') {
+				hct99->expected_byte = HCT99_EXPECT_NOTHING;
+
+				simple_float_b10_t value_saved = hct99->value;
 				data_package_t package = { id, hct99->val_name, DATA_TYPE_SIMPLE_FLOAT,
-						&hct99->value, timestamp };  //TODO use timestamp of first byte?
+						&value_saved, timestamp };  //TODO use timestamp of first byte?
+
+				//call update function immediately after response receive so a new command can be issued as fast as possible
+				device_hct99_update(hct99);
+
 				hct99->data_out->new_data(hct99->data_out->parent, &package);
 
 				if (hct99->err_code != HCT99_ERROR_CODE_OK) {
@@ -169,7 +176,6 @@ static void device_hct99_send_data(void* const _hct99, const unsigned int id,
 							&hct99->err_code, timestamp };
 					hct99->error_out->new_data(hct99->error_out->parent, &package);
 				}
-				hct99->expected_byte = HCT99_EXPECT_NOTHING;
 			} else {
 				if (IS_DIGIT(byte)) {
 					hct99->err_code *= 10;
@@ -216,6 +222,7 @@ static void device_hct99_new_control_message(void* const _hct99,
 	unsigned int y = 0;
 	unsigned int z = 0;
 	unsigned int val = 0;
+	unsigned int only_when_empty = 0;
 
 	while (count--) {
 		switch (parameters->type) {
@@ -227,6 +234,9 @@ static void device_hct99_new_control_message(void* const _hct99,
 			break;
 		case 'z':
 			z = parameters->value;
+			break;
+		case HCT99_CPARAMETER_ONLY_WHEN_QUEUE_EMPTY:
+			only_when_empty = 1;
 			break;
 		default:
 			command = parameters->type;
@@ -253,10 +263,13 @@ static void device_hct99_new_control_message(void* const _hct99,
 	}
 
 	if (command) {  //check if a command was set
-		device_hct99_execute_command(hct99, command, x, y, z);
+		if ((only_when_empty == 0) || (hct99->command_fifo_elements == 0)) {
+			device_hct99_execute_command(hct99, command, x, y, z);
+		}
 	} else {
 		hct99->err_name = HCT99_ERROR_MISSING_COMMAND_CODE;
-		_datastream_source_generate_software_timestamp((datastream_source_t*) hct99);
+		_datastream_source_generate_software_timestamp(
+				(datastream_source_t*) hct99);
 	}
 }
 
@@ -297,7 +310,8 @@ void device_hct99_execute_command(device_hct99_t* const hct99,
 		hct99->command_fifo[i] = command;
 	} else {
 		hct99->err_name = HCT99_ERROR_COMMAND_FIFO_FULL;
-		_datastream_source_generate_software_timestamp((datastream_source_t*) hct99);
+		_datastream_source_generate_software_timestamp(
+				(datastream_source_t*) hct99);
 	}
 }
 

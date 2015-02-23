@@ -1,6 +1,6 @@
 <module name="device_hct99">
   <peripheral name="uart_light" >
-    <parameter name="FIFO_RX_DEPTH" value="8" hide="TRUE" />
+    <parameter name="FIFO_RX_DEPTH" value="32" hide="TRUE" />
     <parameter name="FIFO_TX_DEPTH" value="8" hide="TRUE" />
     <parameter name="BAUDRATE" value="19200" hide="TRUE" />
     <parameter name="INTERRUPT_SUPPORTED" value="TRUE" hide="TRUE" />
