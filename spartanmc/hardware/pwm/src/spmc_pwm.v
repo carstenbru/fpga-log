@@ -4,7 +4,7 @@ module spmc_pwm #(
         //*** Connections to SpartanMC Core (do not change) ***
         input wire              clk_peri,       //System-Clock
         input wire      [17:0]  do_peri,        //Data Bus  from MC
-        output          [17:0]  di_peri,        //Data Bus  to MC
+        output wire     [17:0]  di_peri,        //Data Bus  to MC
         input wire      [9:0]   addr_peri,      //Address Bus from MC
         input wire              access_peri,    //Peripheral Access Signal
         input wire              wr_peri,        //Write Enable Signal
