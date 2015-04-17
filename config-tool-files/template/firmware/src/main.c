@@ -18,7 +18,7 @@
  * @brief main function
  */
 int main() {
-	sys_init(16000000, TIMESTAMP_GEN);
+	sys_init(16000000, (timestamp_gen_regs_t*)TIMESTAMP_GEN);
 
 	init_objects();
 	connect_ports();

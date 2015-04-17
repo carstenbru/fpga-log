@@ -152,6 +152,19 @@ void OutputGenerator::writeInitFunction(ostream& stream) {
     stream << "}" << endl;
 }
 
+void writeCast(std::ostream& stream, CParameter* signatureParameter) {
+    stream << "(" << signatureParameter->getDataType()->getName();
+    if (signatureParameter->isPointer())
+        stream << "*";
+    stream << ")";
+}
+
+void writeCastIfNeccessary(std::ostream& stream, CParameter* signatureParameter, DataType* actualType) {
+    if (!signatureParameter->getDataType()->equals(actualType)) {
+        writeCast(stream, signatureParameter);
+    }
+}
+
 void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std::map<string, CObject *>& objects, map<string, bool>& initDone) {
     if (!initDone[object->getName()]) {
         stringstream tmpStream;
@@ -167,6 +180,7 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
             string value  = (*i).getValue();
             try {
                 CObject* paramObject = objects.at(value);
+                writeCastIfNeccessary(tmpStream,  &(*i), paramObject->getType());
                 if ((*i).isPointer())
                   tmpStream << "&";
                 if (!initDone[value]) {
@@ -174,6 +188,7 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
                 }
             } catch (exception) {
                 if ((*i).getDataType()->hasSuffix("_regs_t")) {
+                    writeCast(tmpStream, &(*i));
                     value = object->getName() + "_" + (*i).getName();
                     transform(value.begin(), value.end(), value.begin(), ::toupper);
                     definePeripheralForSimulation(value, (*i).getDataType());

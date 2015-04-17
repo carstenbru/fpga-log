@@ -24,6 +24,7 @@ public:
     bool hasPrefix(std::string prefix) { return (name.find(prefix) == 0); }
     bool hasSuffix(std::string suffix);
     bool isGlobal() {return globalType;}
+    bool equals(DataType* dataType) {return name.compare(dataType->name) == 0;}
 
     virtual QWidget* getConfigWidget(DataLogger*, CParameter*);
     virtual std::string getConfigData(QWidget*) { return ""; }

@@ -98,7 +98,7 @@
                 <parameter name="gps_nmea" value="" hideFromUser="false" critical="false" dataType="device_gps_nmea_t" pointer="true"/>
                 <parameter name="uart_light" value="" hideFromUser="false" critical="false" dataType="uart_light_regs_t" pointer="true"/>
                 <parameter name="sync_logger_time" value="GPS_SYNC_DISABLE" hideFromUser="false" critical="false" dataType="device_gps_sync_mode" pointer="false"/>
-                <parameter name="id" value="0" hideFromUser="true" critical="false" dataType="int" pointer="false"/>
+                <parameter name="id" value="1" hideFromUser="true" critical="false" dataType="int" pointer="false"/>
             </CMethod>
             <SpmcPeripheral name="uart_light" dataType="uart_light_regs_t">
                 <parameter name="CLOCK_FREQUENCY" value="25000000" hideFromUser="true" critical="false" dataType="peripheral_int" pointer="false"/>
