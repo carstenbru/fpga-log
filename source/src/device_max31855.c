@@ -66,9 +66,9 @@ void device_max31855_init(device_max31855_t* const max31855,
 		clk >>= 1;
 		prescaler++;
 	}
-	spi_set_div(spi_master, prescaler);
+	spi_set_div((spi_t*)spi_master, prescaler);
 	//CPOL = 0, CPAH = 0 is default
-	spi_enable(spi_master);
+	spi_enable((spi_t*)spi_master);
 }
 
 control_port_t* device_max31855_get_control_in(
@@ -100,7 +100,7 @@ static void device_max31855_control_message(void* const _max31855,
 				_datastream_source_generate_software_timestamp(
 						(datastream_source_t*) _max31855);
 
-				spi_activate(max31855->spi_master, 1);
+				spi_activate((spi_t*)max31855->spi_master, 1);
 				spi_write(max31855->spi_master, 0);  //start reading by write to data_out register
 			}
 		}
@@ -159,7 +159,7 @@ static void device_max31855_send_data(void* const _max31855,
 			fault = 2;
 			break;
 		default:
-			spi_deactivate(max31855->spi_master);
+			spi_deactivate((spi_t*)max31855->spi_master);
 			return;
 		}
 		data_package_t fault_package = { id, max31855_fault_names[fault],
@@ -167,5 +167,5 @@ static void device_max31855_send_data(void* const _max31855,
 		max31855->error_out->new_data(max31855->error_out->parent, &fault_package);
 	}
 
-	spi_deactivate(max31855->spi_master);
+	spi_deactivate((spi_t*)max31855->spi_master);
 }

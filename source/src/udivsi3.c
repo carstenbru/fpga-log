@@ -5,6 +5,8 @@
  * from: http://knowledgefrontier.blogspot.com/2009/04/integer-division-algorithm-in-c.html
  */
 
+#include "fpga-log/long_int.h"
+
 #define DIV_SIZE sizeof(unsigned long int)*9-1
 
 unsigned long int __attribute__((optimize("Os"))) __udivsi3(unsigned long int a,

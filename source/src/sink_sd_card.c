@@ -136,14 +136,14 @@ void sink_sd_card_open_file(sink_sd_card_t* const sink_sd_card, sd_file_t* file)
 	if ((open_code = f_open(&file->file, file->filename,
 	FA_WRITE | FA_CREATE_NEW)) == FR_EXIST) {  //try to open file, if it already exists go on with appending a number
 		unsigned int i;
-		unsigned char format_string[SDCARD_MAX_FILE_NAME_LENGTH + 1];  //generate format string
-		unsigned char buf[SDCARD_MAX_FILE_NAME_LENGTH + 1];  //filename buffer
+		char format_string[SDCARD_MAX_FILE_NAME_LENGTH + 1];  //generate format string
+		char buf[SDCARD_MAX_FILE_NAME_LENGTH + 1];  //filename buffer
 		for (i = 0; i < SDCARD_MAX_FILE_NAME_LENGTH + 1; i++) {  //clear filename and format strings
 			buf[i] = 0;
 			format_string[i] = 0;
 		}
 
-		unsigned char* c = file->filename;
+		const char* c = file->filename;
 		for (i = 0; i < SDCARD_MAX_FILE_NAME_LENGTH; i++) {
 			if (*c == '.') {  //search for the file extension
 				format_string[i++] = '_';
@@ -161,7 +161,7 @@ void sink_sd_card_open_file(sink_sd_card_t* const sink_sd_card, sd_file_t* file)
 
 		i = 0;
 		do {  //generate file with appended "_x" and try to open it until it works
-			unsigned char* p = buf;
+			char* p = buf;
 			stdio_descr.base_adr = &p;
 			printf(format_string, i);
 			i++;

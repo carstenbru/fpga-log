@@ -21,7 +21,7 @@ void datastream_sources_send_data(void) {
 			source = datastream_source_list[timestamp_gen->tsr];
 			if (source != 0) {
 				source->send_data(source, timestamp_gen->tsr,
-						&timestamp_gen->timestamp);
+						(const timestamp_t* const)&timestamp_gen->timestamp);
 			}
 		}
 		timestamp_gen->control = TIMESTAMP_GEN_NEXT_VAL;

@@ -11,9 +11,9 @@
 void print_long(unsigned long int val, unsigned int minwidth,
 		unsigned int maxwidth) {
 	unsigned long int old;
-	unsigned char buf[13];
+	char buf[13];
 	buf[12] = 0;
-	unsigned char* p = &buf[12];
+	char* p = &buf[12];
 	while (val || minwidth) {
 		old = val;
 		val /= 10;

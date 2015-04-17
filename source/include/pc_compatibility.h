@@ -100,6 +100,8 @@ int fifo_read(unsigned int fifo, unsigned char* data);
  */
 int fifo_write(unsigned int fifo, unsigned char data);
 
+int sprintf ( char * str, const char * format, ... );
+
 #else
 #define TIMESTAMP_GEN_NOT_EMPTY(tsgen) (tsgen->status)
 #define TIMESTAMP_GEN_GENERATE_SOFTWARE_TIMESTAMP(tsgen, id) (tsgen->control = id)

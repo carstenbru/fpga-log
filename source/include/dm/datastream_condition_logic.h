@@ -31,7 +31,7 @@ typedef struct {
 } datastream_condition_logic_t;
 
 void datastream_condition_logic_init(datastream_condition_logic_t* const cond,
-		const datastream_condition_t* first, datastream_condition_t* second,
+		datastream_condition_t* first, datastream_condition_t* second,
 		datastream_condition_logic_operator operator);
 
 #endif

@@ -32,7 +32,7 @@ static int datastream_condition_logic_is_fullfilled_OR(void* const condition,
 }
 
 void datastream_condition_logic_init(datastream_condition_logic_t* const cond,
-		const datastream_condition_t* first, datastream_condition_t* second,
+		datastream_condition_t* first, datastream_condition_t* second,
 		datastream_condition_logic_operator operator) {
 	switch (operator) {
 	case OPERATOR_AND:

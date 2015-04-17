@@ -16,7 +16,7 @@ typedef struct {
 
 	FIL file; /**< FatFs file */
 
-	char* filename; /**< the name of the file */
+	const char* filename; /**< the name of the file */
 	unsigned int packages_written; /**< amount of packages written since last f_sync */
 } sd_file_t;
 

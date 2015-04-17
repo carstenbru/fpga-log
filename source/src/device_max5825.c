@@ -12,7 +12,7 @@
 //TODO readback/verification possibilities
 //TODO watchdog features?
 
-unsigned char* max5825_not_responding = MAX5825_NOT_RESPONDING;
+char* max5825_not_responding = MAX5825_NOT_RESPONDING;
 
 static void device_max5825_send_data(void* const _max5825,
 		const unsigned int id, const timestamp_t* const timestamp);

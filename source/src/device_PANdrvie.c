@@ -13,6 +13,7 @@
 
 #include <fpga-log/device/device_PANdrvie.h>
 #include <fpga-log/peripheral_funcs/uart_light_funcs.h>
+#include <fpga-log/long_int.h>
 #include <stdio.h>
 
 const char* pan_drive_error_codes[6] = PAN_DRIVE_ERROR_CODES;
@@ -84,7 +85,7 @@ static void device_PANdrive_send_data(void* const _pan_drive,
 			pan_drive->received_value = 0;
 			pan_drive->reply_command_code = byte;
 
-			char* val_name = "successfully executed";
+			const char* val_name = "successfully executed";
 			if (pan_drive->received_status <= 6) {
 				val_name = pan_drive_error_codes[pan_drive->received_status - 1];
 			}
@@ -94,7 +95,7 @@ static void device_PANdrive_send_data(void* const _pan_drive,
 			break;
 		}
 		case 7: {
-			unsigned char buffer[32];
+			char buffer[32];
 			pan_drive->buf = buffer;
 			stdio_descr.base_adr = pan_drive;
 			stdio_descr.send_byte = device_PANdrive_buffer_printf;

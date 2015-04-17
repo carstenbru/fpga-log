@@ -34,7 +34,7 @@ static void formatter_open_bci_format(void* const formatter,
 		write_byte(param, count >> 24);
 
 		//send samples
-		char* samples = package->data;
+		const char* samples = package->data;
 		samples += 4; //skip status register value
 		int i;
 		for (i = 0; i < 24; i += 3) {

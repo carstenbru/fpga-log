@@ -97,7 +97,7 @@ typedef struct {
 	i2c_master_regs_t* i2c_master; /**< pointer to I2C-master hardware registers */
 
 	unsigned char i2c_address; /**< address of the DAC at the I2C-Bus */
-	unsigned char error_command;
+	char error_command;
 } device_max5825_t;
 
 void device_max5825_init(device_max5825_t* const max5825,

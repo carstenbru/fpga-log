@@ -154,7 +154,7 @@ typedef struct {
 	int reply_command_code;
 	long received_value;
 
-	unsigned char* buf;
+	char* buf;
 } device_PANdrive_t;
 
 void device_PANdrive_init(device_PANdrive_t* const pan_drive,

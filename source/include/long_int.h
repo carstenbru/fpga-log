@@ -43,3 +43,7 @@ unsigned long int mul34_17(unsigned long int a_34, unsigned int b_17);
  */
 void print_long(unsigned long int val, unsigned int minwidth,
 		unsigned int maxwidth);
+
+unsigned long int __udivsi3(unsigned long int a, unsigned long int b);
+unsigned long __umodsi3(unsigned long a, unsigned long b);
+long int __divsi3(long int a, long int b);
