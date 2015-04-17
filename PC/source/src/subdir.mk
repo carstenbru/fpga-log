@@ -18,6 +18,7 @@ C_SRCS += \
 ../source/src/datastream_condition_compare_int.c \
 ../source/src/datastream_condition_compare_long.c \
 ../source/src/datastream_condition_compare_val_name.c \
+../source/src/datastream_condition_logic.c \
 ../source/src/datastream_object.c \
 ../source/src/datastream_source.c \
 ../source/src/device_PANdrvie.c \
@@ -32,6 +33,7 @@ C_SRCS += \
 ../source/src/divsi3.c \
 ../source/src/dm_event_timer.c \
 ../source/src/dm_filter.c \
+../source/src/dm_package_buffer.c \
 ../source/src/dm_splitter_control.c \
 ../source/src/dm_splitter_data.c \
 ../source/src/dm_timer.c \
@@ -43,6 +45,7 @@ C_SRCS += \
 ../source/src/function_gen_ramp.c \
 ../source/src/lshrsi3.c \
 ../source/src/print_long.c \
+../source/src/sd_file.c \
 ../source/src/simple_float.c \
 ../source/src/sink_sd_card.c \
 ../source/src/sink_uart.c \
@@ -64,6 +67,7 @@ OBJS += \
 ./source/src/datastream_condition_compare_int.o \
 ./source/src/datastream_condition_compare_long.o \
 ./source/src/datastream_condition_compare_val_name.o \
+./source/src/datastream_condition_logic.o \
 ./source/src/datastream_object.o \
 ./source/src/datastream_source.o \
 ./source/src/device_PANdrvie.o \
@@ -78,6 +82,7 @@ OBJS += \
 ./source/src/divsi3.o \
 ./source/src/dm_event_timer.o \
 ./source/src/dm_filter.o \
+./source/src/dm_package_buffer.o \
 ./source/src/dm_splitter_control.o \
 ./source/src/dm_splitter_data.o \
 ./source/src/dm_timer.o \
@@ -89,6 +94,7 @@ OBJS += \
 ./source/src/function_gen_ramp.o \
 ./source/src/lshrsi3.o \
 ./source/src/print_long.o \
+./source/src/sd_file.o \
 ./source/src/simple_float.o \
 ./source/src/sink_sd_card.o \
 ./source/src/sink_uart.o \
@@ -110,6 +116,7 @@ C_DEPS += \
 ./source/src/datastream_condition_compare_int.d \
 ./source/src/datastream_condition_compare_long.d \
 ./source/src/datastream_condition_compare_val_name.d \
+./source/src/datastream_condition_logic.d \
 ./source/src/datastream_object.d \
 ./source/src/datastream_source.d \
 ./source/src/device_PANdrvie.d \
@@ -124,6 +131,7 @@ C_DEPS += \
 ./source/src/divsi3.d \
 ./source/src/dm_event_timer.d \
 ./source/src/dm_filter.d \
+./source/src/dm_package_buffer.d \
 ./source/src/dm_splitter_control.d \
 ./source/src/dm_splitter_data.d \
 ./source/src/dm_timer.d \
@@ -135,6 +143,7 @@ C_DEPS += \
 ./source/src/function_gen_ramp.d \
 ./source/src/lshrsi3.d \
 ./source/src/print_long.d \
+./source/src/sd_file.d \
 ./source/src/simple_float.d \
 ./source/src/sink_sd_card.d \
 ./source/src/sink_uart.d \
