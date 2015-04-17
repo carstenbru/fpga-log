@@ -16,16 +16,19 @@ void DataLoggerOtherModel::setDataLogger(DataLogger* dataLogger) {
 }
 
 int DataLoggerOtherModel::rowCount(const QModelIndex &) const {
-    if (dataLogger != NULL)
+    if (dataLogger != NULL) {
         return dataLogger->getOtherObjects().size();
-    else
+    } else
         return 0;
 }
 
 QVariant DataLoggerOtherModel::data(const QModelIndex &index, int role) const {
      if ((role == Qt::DisplayRole) || (role == Qt::UserRole + 1)) {
-         if (dataLogger != NULL)
-             return dataLogger->getOtherObjects().at(index.row())->getName().c_str();
+         if (dataLogger != NULL) {
+             if (index.row() < (int)dataLogger->getOtherObjects().size()) {
+                 return dataLogger->getOtherObjects().at(index.row())->getName().c_str();
+             }
+         }
      }
      return QVariant();
 }
