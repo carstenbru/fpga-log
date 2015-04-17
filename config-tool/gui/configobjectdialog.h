@@ -20,6 +20,8 @@ class ConfigObjectDialog : public QDialog
     Q_OBJECT
 
 public:
+    enum DialogCode { DeleteResult = 2 };
+
     explicit ConfigObjectDialog(QWidget *parent, CObject* object, DataLogger *dataLogger);
     ~ConfigObjectDialog();
 private:
@@ -49,6 +51,8 @@ private slots:
     void reload();
 
     void addAdvancedConfig();
+
+    void deleteModule();
 };
 
 #endif // CONFIGOBJECTDIALOG_H

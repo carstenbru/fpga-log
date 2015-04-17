@@ -22,7 +22,7 @@ ConfigObjectDialog::ConfigObjectDialog(QWidget *parent, CObject *object, DataLog
 
     connect(this, SIGNAL(finished(int)), this, SLOT(storeParams()));
     connect(dataLogger, SIGNAL(criticalParameterChanged()), this, SLOT(reload()));
-    connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(deleteModule()));
 }
 
 ConfigObjectDialog::~ConfigObjectDialog() {
@@ -212,4 +212,8 @@ void ConfigObjectDialog::addAdvancedConfig() {
         object->addAdvancedConfig(dialog.textValue().toStdString());
         reload();
     }
+}
+
+void ConfigObjectDialog::deleteModule() {
+    done(DeleteResult);
 }

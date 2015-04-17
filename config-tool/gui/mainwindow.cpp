@@ -86,7 +86,7 @@ void MainWindow::otherObjectConfig(QModelIndex index) {
 
 void MainWindow::showConfigDialog(CObject& object) {
     ConfigObjectDialog dialog(this, &object, dataLogger);
-    if (dialog.exec() == QDialog::Rejected) {
+    if (dialog.exec() == ConfigObjectDialog::DeleteResult) {
         dataLogger->deleteObject(&object);
     }
     dataLoggerChanged();
