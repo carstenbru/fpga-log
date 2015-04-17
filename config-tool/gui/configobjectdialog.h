@@ -15,6 +15,8 @@ namespace Ui {
 class ConfigObjectDialog;
 }
 
+#define ConfigObjectDialogReloadEvent 1774
+
 class ConfigObjectDialog : public QDialog
 {
     Q_OBJECT
@@ -32,6 +34,8 @@ private:
     void addHardwareParametersGroup(QLayout *parent);
     void addReqParametersGroup(QLayout *parent);
     void addAdvancedConfigGroup(QLayout *parent);
+
+    bool event(QEvent *event);
 
     QStringList getAdvancedConfigMethods();
 

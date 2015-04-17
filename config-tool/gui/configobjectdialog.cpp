@@ -183,9 +183,8 @@ void ConfigObjectDialog::storeParams() {
 }
 
 void ConfigObjectDialog::reload() {
-    storeParams();
-    signalMapper->deleteLater();
-    setupUi();
+    QEvent *event = new QEvent((QEvent::Type)ConfigObjectDialogReloadEvent);
+    QCoreApplication::postEvent(this, event);
 }
 
 QStringList ConfigObjectDialog::getAdvancedConfigMethods() {
@@ -216,4 +215,13 @@ void ConfigObjectDialog::addAdvancedConfig() {
 
 void ConfigObjectDialog::deleteModule() {
     done(DeleteResult);
+}
+
+bool ConfigObjectDialog::event(QEvent *event) {
+    if (event->type() == ConfigObjectDialogReloadEvent) {
+        storeParams();
+        signalMapper->deleteLater();
+        setupUi();
+    }
+    return QDialog::event(event);
 }
