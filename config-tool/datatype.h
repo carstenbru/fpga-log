@@ -8,8 +8,8 @@
 #include <QComboBox>
 #include "cmethod.h"
 
-class DataLogger;
 
+class DataLogger;
 class DataType
 {
 public:

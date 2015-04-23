@@ -33,6 +33,11 @@ public:
     CParameter* getClockPin() { return &clockPin; }
     CParameter* getClockFreq() { return &clockFreq; }
 
+    void setDefinitionsUpdated(bool state) {definitionsUpdated = state;}
+    bool getDefinitionsUpdated() {return definitionsUpdated;}
+    void addDefinitionsUpdatedModule(std::string moduleName) {definitionsUpdatedModules += "\n" + moduleName; definitionsUpdated = true;}
+    std::string getDefinitionsUpdatedModules() { return definitionsUpdatedModules; }
+
     static void loadTragetXMLs();
     static std::string getTargetXML(std::string target) { return targetXMLs.at(target); }
 
@@ -60,6 +65,9 @@ private:
     std::vector<CObject*> otherObjects;
 
     static std::map<std::string, std::string> targetXMLs;
+
+    bool definitionsUpdated;
+    std::string definitionsUpdatedModules;
 private slots:
     void moduleConnectionsChanged();
 public slots:

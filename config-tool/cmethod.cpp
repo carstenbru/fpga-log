@@ -1,4 +1,5 @@
 #include "cmethod.h"
+#include "cobject.h"
 
 using namespace std;
 
@@ -11,13 +12,28 @@ CMethod::CMethod(std::string completeName, std::string name, CParameter returnTy
 {
 }
 
-CMethod::CMethod(QXmlStreamReader& in) {
+CMethod::CMethod(QXmlStreamReader& in, CMethod* currentSignature, CObject *object) {
     completeName = in.attributes().value("completeName").toString().toStdString();
     name = in.attributes().value("name").toString().toStdString();
     headerFile = in.attributes().value("headerFile").toString().toStdString();
     in >> returnType;
+
+    unsigned int paramCount = 0;
+    bool paramsChanged = false;
+    std::list<CParameter>* sigParameters = currentSignature->getParameters();
+    parameters.insert(parameters.end(), sigParameters->begin(), sigParameters->end());
     while (in.readNextStartElement()) {
-        parameters.push_back(CParameter(in));
+        paramCount++;
+        CParameter param = CParameter(in);
+        if (!setParameter(param)) {
+            paramsChanged = true;
+        }
+    }
+    if (paramCount != parameters.size()) {
+        paramsChanged = true;
+    }
+    if (paramsChanged) {
+        object->setDefinitionsUpdated(true);
     }
 }
 
@@ -37,6 +53,17 @@ bool CMethod::sameSignature(CMethod &compare) {
     }
 
     return true;
+}
+
+bool CMethod::setParameter(CParameter& newValue) {
+    for (list<CParameter>::iterator i = parameters.begin(); i != parameters.end(); i++) {
+        if ((*i).sameSignature(newValue)) {
+            i = parameters.erase(i);
+            parameters.insert(i, newValue);
+            return true;
+        }
+    }
+    return false;
 }
 
 CParameter* CMethod::getParameter(std::string name) {

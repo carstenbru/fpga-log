@@ -1,13 +1,15 @@
 #include "cobject.h"
 #include "datalogger.h"
 #include <QFile>
+#include <iostream>
 
 using namespace std;
 
 CObject::CObject(std::string name, DataTypeStruct* dataType, DataLogger* dataLogger) :
     name(name),
     type(dataType),
-    initMethod(NULL)
+    initMethod(NULL),
+    definitionsUpdated(false)
 {
     if (type->isInstantiableObject()) {
         initMethod = new CMethod(*type->getMethod("init"));
@@ -32,7 +34,9 @@ CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger) :
 
 }
 
-CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool readStart) {
+CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool readStart) :
+    definitionsUpdated(false)
+{
     if (readStart) {
         in.readNextStartElement();
     }
@@ -47,9 +51,10 @@ CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool readStart) {
             peripherals.push_back(new SpmcPeripheral(in, this, dataLogger));
         } else if (in.name().compare("CMethod") == 0) {
             if (in.attributes().value("name").compare("init") == 0)
-                initMethod = new CMethod(in);
-            else
-                advancedConfig.push_back(new CMethod(in));
+                initMethod = new CMethod(in, type->getMethod("init"), this);
+            else {
+                advancedConfig.push_back(new CMethod(in, type->getMethod(in.attributes().value("name").toString().toStdString()), this));
+            }
         } else if (in.name().compare("timestamp_pin") == 0) {
             string parameter = in.attributes().value("name").toString().toStdString();
             timestampPinsInvert[parameter] = (in.attributes().value("inverted").toString().compare("true") == 0);
@@ -60,6 +65,10 @@ CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool readStart) {
             in.skipCurrentElement();
     }
     connect(this, SIGNAL(advancedConfigRemoved()), dataLogger, SLOT(parameterChanged()));
+
+    if (definitionsUpdated) {
+        dataLogger->addDefinitionsUpdatedModule(name);
+    }
 }
 
 CObject::~CObject() {

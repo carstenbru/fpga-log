@@ -5,12 +5,14 @@
 #include <list>
 #include "cparameter.h"
 
+class CObject;
+
 class CMethod
 {
 public:
     CMethod(std::string completeName, std::string name, CParameter returnType, std::string headerFile);
     CMethod(std::string name, CParameter returnType) : CMethod("", name, returnType, "") {}
-    CMethod(QXmlStreamReader& in);
+    CMethod(QXmlStreamReader& in, CMethod *currentSignature, CObject* object);
     ~CMethod();
 
     void addParameter(CParameter paramter) { parameters.push_back(paramter); }
@@ -28,6 +30,8 @@ public:
 
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CMethod& cMethod);
 private:
+    bool setParameter(CParameter& newValue);
+
     std::string completeName;
 
     std::string name;

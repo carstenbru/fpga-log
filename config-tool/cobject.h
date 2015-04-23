@@ -30,6 +30,9 @@ public:
     std::list<CParameter*> getTimestampPinParameters();
     bool getTimestampPinInvert(std::string pin) { return timestampPinsInvert.at(pin); }
 
+    void setDefinitionsUpdated(bool state) {definitionsUpdated = state;}
+    bool getDefinitionsUpdated() {return definitionsUpdated;}
+
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CObject& cObject);
 protected:
     void readTimestampPinsFromModuleXml();
@@ -43,6 +46,8 @@ protected:
     std::map<std::string, bool> timestampPinsInvert;
 
     std::list<CMethod*> advancedConfig;
+
+    bool definitionsUpdated;
 public slots:
     void removeAdvancedConfig(int methodId);
 signals:

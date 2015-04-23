@@ -13,7 +13,8 @@ std::map<std::string, std::string> DataLogger::targetXMLs;
 DataLogger::DataLogger() :
     target("Zielplattform", DataType::getType("target"), false, "papilio-pro"),
     clockPin("Clock Pin", DataType::getType("pin"), false, "CLK:32"),
-    clockFreq("Taktfrequenz", DataType::getType("peripheral_int"), false, "32000000")
+    clockFreq("Taktfrequenz", DataType::getType("peripheral_int"), false, "32000000"),
+    definitionsUpdated(false)
 {
     loadTargetPins();
 }

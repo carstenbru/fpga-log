@@ -253,6 +253,17 @@ void MainWindow::open() {
             dataLoggerSaved = true;
             refreshWindowTitle();
             cout << "Datei " + dataLoggerPath + " geladen!" << endl;
+
+            if (dataLogger->getDefinitionsUpdated()) {
+                QMessageBox dialog(QMessageBox::Warning,
+                                   QString::fromUtf8("geänderte Parameter"),
+                                   QString::fromUtf8("Die Parameter folgender Module haben sich geändert:")
+                                   + QString(dataLogger->getDefinitionsUpdatedModules().c_str())
+                                   + QString::fromUtf8("\n\nBitte überprüfen sie daher alle Parameter dieser Module!"),
+                                   QMessageBox::Ok);
+                dialog.exec();
+                dataLogger->setDefinitionsUpdated(false);
+            }
         } else {
             cerr << "Fehler: Datei konnte nicht geöffnet werden." << endl;
         }
