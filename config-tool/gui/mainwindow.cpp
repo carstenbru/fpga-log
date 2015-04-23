@@ -255,11 +255,13 @@ void MainWindow::open() {
             cout << "Datei " + dataLoggerPath + " geladen!" << endl;
 
             if (dataLogger->getDefinitionsUpdated()) {
+                QString changedText = QString::fromUtf8("Einige Parameter der folgenden Module haben sich geändert:")
+                        + QString(dataLogger->getDefinitionsUpdatedModules().c_str())
+                        + QString::fromUtf8("\n\nBitte überprüfen sie daher alle Parameter dieser Module!");
+                cout << changedText.toStdString() << endl;
                 QMessageBox dialog(QMessageBox::Warning,
                                    QString::fromUtf8("geänderte Parameter"),
-                                   QString::fromUtf8("Die Parameter folgender Module haben sich geändert:")
-                                   + QString(dataLogger->getDefinitionsUpdatedModules().c_str())
-                                   + QString::fromUtf8("\n\nBitte überprüfen sie daher alle Parameter dieser Module!"),
+                                   changedText,
                                    QMessageBox::Ok);
                 dialog.exec();
                 dataLogger->setDefinitionsUpdated(false);

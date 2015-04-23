@@ -19,8 +19,10 @@ public:
     PeripheralPort(std::string name);
     PeripheralPort(std::string name, CParameter* widthRef);
     PeripheralPort(std::string name, int width);
-    PeripheralPort(QXmlStreamReader& in, SpmcPeripheral* parent);
     ~PeripheralPort();
+
+    void load(QXmlStreamReader& in, CObject *parent);
+    bool setLine(CParameter* newValue);
 
     void setDirection(std::string direction);
     std::list<CParameter*> getLines() { return lines; }
@@ -53,6 +55,7 @@ public:
 
     std::list<CParameter*> getParameters() { return parameters; }
     CParameter* getParameter(std::string name);
+    bool setParameter(CParameter* newValue);
     PeripheralPort* getPort(std::string group, std::string name);
     std::map<std::string, std::list<PeripheralPort*> > getPorts() { return ports; }
     std::string getCompleteName();
