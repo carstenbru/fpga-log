@@ -177,12 +177,18 @@ void ConfigObjectDialog::nameEdited() {
 
 void ConfigObjectDialog::storeParams() {
     for (map<CParameter*, QWidget*>::iterator i = paramWidgets.begin(); i != paramWidgets.end(); i++) {
-        CParameter* param = i->first;
-        param->setValue(param->getDataType()->getConfigData(i->second));
+        try {
+            CParameter* param = i->first;
+            param->setValue(param->getDataType()->getConfigData(i->second));
+        } catch (exception e) {
+
+        }
     }
 }
 
 void ConfigObjectDialog::reload() {
+    storeParams();
+
     QEvent *event = new QEvent((QEvent::Type)ConfigObjectDialogReloadEvent);
     QCoreApplication::postEvent(this, event);
 }
@@ -219,9 +225,9 @@ void ConfigObjectDialog::deleteModule() {
 
 bool ConfigObjectDialog::event(QEvent *event) {
     if (event->type() == ConfigObjectDialogReloadEvent) {
-        storeParams();
         signalMapper->deleteLater();
         setupUi();
+        return true;
     }
     return QDialog::event(event);
 }
