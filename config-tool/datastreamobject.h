@@ -22,6 +22,7 @@ public:
     std::list<DataPortIn*> getDataInPorts() { return dataInPorts; }
     std::list<DataPortOut*> getDataOutPorts() { return dataOutPorts; }
     std::list<PortOut*> getOutPorts(port_type type);
+    PortOut* getOutPort(std::string name);
     Port* getPort(std::string name);
 
     void setPosition(QPoint pos);
@@ -29,7 +30,7 @@ public:
 
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DatastreamObject& dObject);
 private:
-    void findPorts(bool addPorts);
+    void findPorts();
     template <typename T>
     bool reorderUnconnectedPort(std::list<T*>& ports, Port* port);
 

@@ -1,6 +1,7 @@
 #include "datastreamobject.h"
 #include <list>
 #include "headerparser.h"
+#include "datalogger.h"
 
 using namespace std;
 
@@ -8,12 +9,15 @@ DatastreamObject::DatastreamObject(string name, DataTypeStruct *type, DataLogger
     CObject(name, type, dataLogger),
     position(QPoint(0,0))
 {
-    findPorts(true);
+    findPorts();
 }
 
 DatastreamObject::DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger,  std::map<PortOut*, stringPair>& connections) :
-    CObject(in, dataLogger, in.readNextStartElement())
+    CObject(in, dataLogger, in.readNextStartElement()),
+    position(QPoint(0,0))
 {
+    findPorts();
+
     while (in.readNextStartElement()) {
         if (in.name().compare("x") == 0) {
             position.setX(in.attributes().value("value").toString().toInt());
@@ -21,19 +25,16 @@ DatastreamObject::DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger,
         } else if (in.name().compare("y") == 0) {
             position.setY(in.attributes().value("value").toString().toInt());
             in.skipCurrentElement();
-        } else if (in.name().compare("ControlPortIn") == 0) {
-            addPort(new ControlPortIn(in, this));
-        } else if (in.name().compare("ControlPortOut") == 0) {
-            addPort(new ControlPortOut(in, this, connections));
-        } else if (in.name().compare("DataPortIn") == 0) {
-            addPort(new DataPortIn(in, this));
-        } else if (in.name().compare("DataPortOut") == 0) {
-            addPort(new DataPortOut(in, this, connections));
+        } else if ((in.name().compare("ControlPortOut") == 0) || (in.name().compare("DataPortOut") == 0)) {
+            PortOut* po = getOutPort(in.attributes().value("name").toString().toStdString());
+            if (po != NULL) {
+                po->load(in, connections);
+            } else {
+                dataLogger->addDefinitionsUpdatedModule(getName());
+            }
         } else
             in.skipCurrentElement();
     }
-
-    findPorts(false);
 }
 
 DatastreamObject::~DatastreamObject() {
@@ -64,7 +65,7 @@ std::list<PortOut*> DatastreamObject::getOutPorts(port_type type) {
     return res;
 }
 
-void DatastreamObject::findPorts(bool addPorts) {
+void DatastreamObject::findPorts() {
     DataType* controlPortType = DataType::getType("control_port_t");
     DataType* dataPortType = DataType::getType("data_port_t");
     DataType* voidType = DataType::getType("void");
@@ -93,37 +94,29 @@ void DatastreamObject::findPorts(bool addPorts) {
         string port_name = m->getName();
         port_name.erase(0, 4);
         if (m->sameSignature(DInSig)) {
-            if (addPorts)
-                addPort(new DataPortIn(port_name, this));
+            addPort(new DataPortIn(port_name, this));
             m->setHideFromUser(true);
         } else if (m->sameSignature(CInSig)) {
-            if (addPorts)
-                addPort(new ControlPortIn(port_name, this));
+            addPort(new ControlPortIn(port_name, this));
             m->setHideFromUser(true);
         } else if (m->sameSignature(DOutSig)) {
-            if (addPorts)
-                addPort(new DataPortOut(port_name, this));
+            addPort(new DataPortOut(port_name, this));
             m->setHideFromUser(true);
         } else if (m->sameSignature(COutSig)) {
-            if (addPorts)
-                addPort(new ControlPortOut(port_name, this));
+            addPort(new ControlPortOut(port_name, this));
             m->setHideFromUser(true);
         } else {
             string maxDef = type->getCleanedName().append("_").append(port_name).append("_MAX");
             transform(maxDef.begin(), maxDef.end(), maxDef.begin(), ::toupper);
             if (m->sameSignature(DOutAddSig)) {
                 m->setHideFromUser(true);
-                if (addPorts) {
-                    for (int i = 0; i < HeaderParser::getDefinedInteger(maxDef); i++) {
-                        addPort(new DataPortOut(port_name, this, true));
-                    }
+                for (int i = 0; i < HeaderParser::getDefinedInteger(maxDef); i++) {
+                    addPort(new DataPortOut(port_name, this, true));
                 }
             } else if (m->sameSignature(COutAddSig)) {
                 m->setHideFromUser(true);
-                if (addPorts) {
-                    for (int i = 0; i < HeaderParser::getDefinedInteger(maxDef); i++) {
-                       addPort(new ControlPortOut(port_name, this, true));
-                    }
+                for (int i = 0; i < HeaderParser::getDefinedInteger(maxDef); i++) {
+                   addPort(new ControlPortOut(port_name, this, true));
                 }
             }
         }
@@ -181,20 +174,27 @@ void DatastreamObject::portDisconnected(Port* port) {
     emit connectionsChanged();
 }
 
-Port* DatastreamObject::getPort(std::string name) {
-    for (list<ControlPortIn*>::iterator i = controlInPorts.begin(); i != controlInPorts.end(); i++) {
-        if ((*i)->getName().compare(name) == 0)
-            return *i;
-    }
+PortOut* DatastreamObject::getOutPort(std::string name) {
     for (list<ControlPortOut*>::iterator i = controlOutPorts.begin(); i != controlOutPorts.end(); i++) {
         if ((*i)->getName().compare(name) == 0)
             return *i;
     }
-    for (list<DataPortIn*>::iterator i = dataInPorts.begin(); i != dataInPorts.end(); i++) {
+    for (list<DataPortOut*>::iterator i = dataOutPorts.begin(); i != dataOutPorts.end(); i++) {
         if ((*i)->getName().compare(name) == 0)
             return *i;
     }
-    for (list<DataPortOut*>::iterator i = dataOutPorts.begin(); i != dataOutPorts.end(); i++) {
+    return NULL;
+}
+
+Port* DatastreamObject::getPort(std::string name) {
+    PortOut* po = getOutPort(name);
+    if (po != NULL)
+        return po;
+    for (list<ControlPortIn*>::iterator i = controlInPorts.begin(); i != controlInPorts.end(); i++) {
+        if ((*i)->getName().compare(name) == 0)
+            return *i;
+    }
+    for (list<DataPortIn*>::iterator i = dataInPorts.begin(); i != dataInPorts.end(); i++) {
         if ((*i)->getName().compare(name) == 0)
             return *i;
     }

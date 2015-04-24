@@ -255,7 +255,8 @@ QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger) {
     for (map<PortOut*, stringPair>::iterator i = connections.begin(); i != connections.end(); i++) {
         PortOut* p = i->first;
         Port* dest = dataLogger.getDatastreamObject(i->second.first)->getPort(i->second.second);
-        p->connectPort(dest);
+        if (dest != NULL)
+            p->connectPort(dest);
     }
 
     emit dataLogger.datastreamModulesChanged();

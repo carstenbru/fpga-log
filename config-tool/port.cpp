@@ -72,16 +72,7 @@ void PortOut::saveToXml(QXmlStreamWriter& out, std::string type) {
     out.writeEndElement();
 }
 
-Port::Port(QXmlStreamReader& in, DatastreamObject* parent) :
-    parent(parent)
-{
-    name = in.attributes().value("name").toString().toStdString();
-    in.skipCurrentElement();
-}
-
-PortOut::PortOut(QXmlStreamReader& in, DatastreamObject* parent, map<PortOut*, stringPair>& connections) :
-    Port(in.attributes().value("name").toString().toStdString(), parent)
-{
+void PortOut::load(QXmlStreamReader& in, map<PortOut*, stringPair>& connections) {
     destination = NULL;
     multiPort = (in.attributes().value("multiPort").toString().compare("true") == 0);
 
