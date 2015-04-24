@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
     new DataTypeNumber("unsigned int", 0, 262143, true);
     new DataTypeNumber("unsigned char", 0, 511, true);
     new DataTypeNumber("uint36_t", 0, 68719476735, true);
+    new DataTypeNumber("int36_t", -34359738368, 34359738367, true);
     new DataTypeNumber("peripheral_int", -2147483648, 2147483647, true);
     new DataTypeFloat("coefficient_t", -9.9999, 9.9999, 4, true, true);
 

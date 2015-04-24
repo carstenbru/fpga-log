@@ -46,6 +46,9 @@ typedef struct {
 
 	dm_event_timer_mode mode; /**< event timer mode (normal, periodic, ...) */
 	int peridic_next; /**< next element of event list in periodic mode */
+
+	int36_t start_delay; /**< start delay (before first iteration, especially in periodic mode) */
+	int repetitions; /**< amount of repetitions in periodic mode, negative for infinite */
 } dm_event_timer_t;
 
 /**
@@ -73,5 +76,27 @@ void dm_event_timer_set_control_out(dm_event_timer_t* const event_timer,
 
 void dm_event_timer_add_event(dm_event_timer_t* const event_timer,
 		uint36_t delay, control_action_t* const control_action);
+
+/**
+ * @brief sets a start delay, has to be done before events are inserted!
+ *
+ * The start delay is an additional delay before the first event. This is especially useful for periodic mode.
+ *
+ * @param event_timer	pointer to the timer
+ * @param start_delay	new start delay, can also be negative!
+ */
+void dm_event_timer_set_start_delay(dm_event_timer_t* const event_timer,
+		int36_t start_delay);
+
+/**
+ * @brief sets the number of repetitions for periodic mode
+ *
+ * If not set (or set negative) the timer will loop forever.
+ *
+ * @param event_timer
+ * @param repetitions
+ */
+void dm_event_timer_set_repetitions(dm_event_timer_t* const event_timer,
+		int repetitions);
 
 #endif

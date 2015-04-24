@@ -38,6 +38,8 @@ void dm_event_timer_init(dm_event_timer_t* const event_timer,
 	event_timer->mode = mode;
 
 	event_timer->peridic_next = 0;
+	event_timer->start_delay = 0;
+	event_timer->repetitions = -1;
 
 	dm_event_timer_clear_event_list(event_timer);
 
@@ -79,7 +81,7 @@ void dm_event_timer_add_event(dm_event_timer_t* const event_timer,
 	}
 
 	if (pos_last == &event_timer->first_event) {  //insertion as first element: timer is affected!
-		timer_set_interval_ms(event_timer->timer, delay);
+		timer_set_interval_ms(event_timer->timer, delay + event_timer->start_delay);
 	}
 
 	int pos = *pos_last;  //insert element
@@ -125,7 +127,12 @@ static void dm_event_timer_update(void* const _event_timer) {
 				event_timer->event_list[pos].control_action = 0;
 			} else {
 				if (pos_next == -1) {
-					pos_next = event_timer->first_event;
+					if (event_timer->repetitions > 0) {
+						event_timer->repetitions--;
+					}
+					if (event_timer->repetitions != 0) {
+						pos_next = event_timer->first_event;
+					}
 				}
 				event_timer->peridic_next = pos_next;
 			}
@@ -135,4 +142,14 @@ static void dm_event_timer_update(void* const _event_timer) {
 						event_timer->event_list[pos_next].delay);
 		}
 	}
+}
+
+void dm_event_timer_set_start_delay(dm_event_timer_t* const event_timer,
+		int36_t start_delay) {
+	event_timer->start_delay = start_delay;
+}
+
+void dm_event_timer_set_repetitions(dm_event_timer_t* const event_timer,
+		int repetitions) {
+	event_timer->repetitions = repetitions;
 }
