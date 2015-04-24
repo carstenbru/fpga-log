@@ -2,6 +2,7 @@
 
 SPMC_SOC_KIT=spmc-soc-kit-beta
 LIB_DEPS="peri/uart_light_receive_nb.o peri/uart_light_send.o peri/spi_activate.o peri/spi_deactivate.o peri/spi_set_div.o peri/spi_enable.o peri/spi_set_cpha.o"
+CONFIG_TOOL_BUILD_DIR=build-config-tool-Desktop-Release
 
 fpga_log_dir=$(pwd)
 
@@ -45,6 +46,12 @@ then
   
   #compile library
   cd $SPARTANMC_ROOT/spartanmc/lib_obj/
+  make
+  
+  #build config-tool
+  mkdir $fpga_log_dir/$CONFIG_TOOL_BUILD_DIR
+  cd $fpga_log_dir/$CONFIG_TOOL_BUILD_DIR
+  qmake ../config-tool/config-tool.pro
   make
 else
   echo "error: variable \$SPARTANMC_ROOT not set! Please check your SpartanMC installation."
