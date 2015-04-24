@@ -14,7 +14,7 @@ class CObject : public QObject
 public:
     CObject(std::string name, DataTypeStruct *dataType, DataLogger* dataLogger);
     CObject(QXmlStreamReader& in, DataLogger* dataLogger);
-    CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool readStart);
+    CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool);
     virtual ~CObject();
 
     void addAdvancedConfig(std::string methodName);
@@ -36,6 +36,8 @@ public:
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CObject& cObject);
 protected:
     void readTimestampPinsFromModuleXml();
+
+    bool setPeripheral(SpmcPeripheral* newPeripheral);
 
     std::string name;
     DataTypeStruct* type;

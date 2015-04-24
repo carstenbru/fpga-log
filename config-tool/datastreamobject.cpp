@@ -12,7 +12,7 @@ DatastreamObject::DatastreamObject(string name, DataTypeStruct *type, DataLogger
 }
 
 DatastreamObject::DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger,  std::map<PortOut*, stringPair>& connections) :
-    CObject(in, dataLogger, true)
+    CObject(in, dataLogger, in.readNextStartElement())
 {
     while (in.readNextStartElement()) {
         if (in.name().compare("x") == 0) {

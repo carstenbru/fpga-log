@@ -34,32 +34,55 @@ CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger) :
 
 }
 
-CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool readStart) :
-    definitionsUpdated(false)
-{
-    if (readStart) {
-        in.readNextStartElement();
+bool CObject::setPeripheral(SpmcPeripheral* newPeripheral) {
+    for (list<SpmcPeripheral*>::iterator i = peripherals.begin(); i != peripherals.end(); i++) {
+        if ((*i)->getCompleteName().compare(newPeripheral->getCompleteName()) == 0) {
+            delete *i;
+            *i = newPeripheral;
+            return true;
+        }
     }
+    return false;
+}
 
-    const QXmlStreamAttributes& a = in.attributes();
-
-    name = a.value("name").toString().toStdString();
-    type = DataTypeStruct::getType(a.value("type").toString().toStdString());
-
+CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool) :
+    CObject(in.attributes().value("name").toString().toStdString(),
+            DataTypeStruct::getType(in.attributes().value("type").toString().toStdString()),
+            dataLogger)
+{
     while (in.readNextStartElement()) {
         if (in.name().compare("SpmcPeripheral") == 0) {
-            peripherals.push_back(new SpmcPeripheral(in, this, dataLogger));
+            if (!setPeripheral(new SpmcPeripheral(in, this, dataLogger))) {
+                definitionsUpdated = true;
+            }
         } else if (in.name().compare("CMethod") == 0) {
-            if (in.attributes().value("name").compare("init") == 0)
+            if (in.attributes().value("name").compare("init") == 0) {
+               if (initMethod != NULL)
+                    delete initMethod;
                 initMethod = new CMethod(in, type->getMethod("init"), this);
-            else {
-                advancedConfig.push_back(new CMethod(in, type->getMethod(in.attributes().value("name").toString().toStdString()), this));
+            } else {
+                CMethod* methodSig = type->getMethod(in.attributes().value("name").toString().toStdString());
+                if (methodSig != NULL) {
+                    advancedConfig.push_back(new CMethod(in, methodSig, this));
+                } else {
+                    definitionsUpdated = true;
+                }
             }
         } else if (in.name().compare("timestamp_pin") == 0) {
             string parameter = in.attributes().value("name").toString().toStdString();
-            timestampPinsInvert[parameter] = (in.attributes().value("inverted").toString().compare("true") == 0);
-            in.readNextStartElement();
-            timestampPins[parameter] = new CParameter(in);
+            try {
+                timestampPinsInvert.at(parameter) = (in.attributes().value("inverted").toString().compare("true") == 0);
+                in.readNextStartElement();
+                CParameter* param = new CParameter(in);
+                if (timestampPins.at(parameter)->getName().compare(param->getName()) != 0) {
+                    param->setName(timestampPins.at(parameter)->getName());
+                    definitionsUpdated = true;
+                }
+                timestampPins[parameter] = param;
+            } catch (exception e) {
+                definitionsUpdated = true;
+            }
+
             in.skipCurrentElement();
         } else
             in.skipCurrentElement();
