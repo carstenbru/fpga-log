@@ -1,6 +1,7 @@
 #include "datastreamview.h"
 #include "moveablebutton.h"
 #include <QScrollBar>
+#include <QWidget>
 
 using namespace std;
 
@@ -46,9 +47,9 @@ void DatastreamView::deleteAllModuleGuis() {
 
 void DatastreamView::generateModuleGui(DatastreamObject* datastreamObject) {
     MoveableButton* btn = new MoveableButton();
-    btn->setParent(view);
+    btn->setParent(view->viewport());
     btn->setText(QString::fromStdString(datastreamObject->getName()));
-    btn->setStyleSheet("background-color: #00689d ;\nfont: 10pt \"Arial\";\ncolor:white;"); //TODO remove
+    btn->setStyleSheet("background-color: #00689d ;\nfont: 10pt \"Arial\";\ncolor:white;");
     btn->setFixedSize(MODULE_SIZE_X, 10);
     moduleGuiElements[btn] = datastreamObject;
 
