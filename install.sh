@@ -42,6 +42,10 @@ then
   then #TODO compile only fpga-log library with this flag and not all
     sed -i '/^_CFLAGS+=/a\_CFLAGS+=-spmc-force-cc-branches=yes' $SPARTANMC_ROOT/spartanmc/lib_obj/objbuild.mk
   fi
+  
+  #compile library
+  cd $SPARTANMC_ROOT/spartanmc/lib_obj/
+  make
 else
   echo "error: variable \$SPARTANMC_ROOT not set! Please check your SpartanMC installation."
 fi
