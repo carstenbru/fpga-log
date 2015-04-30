@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     new DataTypeNumber("long", -2147483648, 2147483647, true);
     new DataTypeNumber("unsigned int", 0, 262143, true);
     new DataTypeNumber("unsigned char", 0, 511, true);
+    new DataTypeNumber("uint_least8_t", 0, 255, true);
     new DataTypeNumber("uint36_t", 0, 68719476735, true);
     new DataTypeNumber("int36_t", -34359738368, 34359738367, true);
     new DataTypeNumber("peripheral_int", -2147483648, 2147483647, true);

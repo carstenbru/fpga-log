@@ -60,6 +60,58 @@ void device_chr_um7_set_error_out(device_chr_um7_t* const chr_um7,
 	chr_um7->error_out = data_in;
 }
 
+static void device_chr_um7_send_and_add_to_chksum(uart_light_regs_t* uart,
+		unsigned int data, unsigned int* chksum) {
+	uart_light_send(uart, data);
+	*chksum += data;
+}
+
+static void device_chr_um7_send_0bytes(uart_light_regs_t* uart,
+		unsigned int amount) {
+	unsigned int i;
+	for (i = 0; i < amount; i++)
+		uart_light_send(uart, 0);
+}
+
+void device_chr_um7_set_rates(device_chr_um7_t* const chr_um7,
+		uint_least8_t raw_accel_rate, uint_least8_t raw_gyro_rate,
+		uint_least8_t raw_mag_rate, uint_least8_t temp_rate,
+		uint_least8_t proc_accel_rate, uint_least8_t proc_gyro_rate,
+		uint_least8_t proc_mag_rate, uint_least8_t quat_rate,
+		uint_least8_t euler_rate, device_chr_um7_health_rate health_rate) {
+	uart_light_regs_t* uart = chr_um7->uart_light;
+	unsigned int chksum;
+
+	device_chr_um7_send_and_add_to_chksum(uart, 's', &chksum);
+	device_chr_um7_send_and_add_to_chksum(uart, 'n', &chksum);
+	device_chr_um7_send_and_add_to_chksum(uart, 'p', &chksum);
+	device_chr_um7_send_and_add_to_chksum(uart, 0b11011100, &chksum);  //has_data, is_batch, bl3-0,hidden,command failed
+	device_chr_um7_send_and_add_to_chksum(uart, 1, &chksum);  //address: 1
+
+	device_chr_um7_send_and_add_to_chksum(uart, raw_accel_rate, &chksum);
+	device_chr_um7_send_and_add_to_chksum(uart, raw_gyro_rate, &chksum);
+	device_chr_um7_send_and_add_to_chksum(uart, raw_mag_rate, &chksum);
+	uart_light_send(uart, 0);
+
+	device_chr_um7_send_and_add_to_chksum(uart, temp_rate, &chksum);
+	device_chr_um7_send_0bytes(uart, 3);
+
+	device_chr_um7_send_and_add_to_chksum(uart, proc_accel_rate, &chksum);
+	device_chr_um7_send_and_add_to_chksum(uart, proc_gyro_rate, &chksum);
+	device_chr_um7_send_and_add_to_chksum(uart, proc_mag_rate, &chksum);
+	device_chr_um7_send_0bytes(uart, 5);
+
+	device_chr_um7_send_and_add_to_chksum(uart, quat_rate, &chksum);
+	device_chr_um7_send_and_add_to_chksum(uart, euler_rate, &chksum);
+	device_chr_um7_send_0bytes(uart, 3);
+
+	device_chr_um7_send_and_add_to_chksum(uart, health_rate, &chksum);
+	device_chr_um7_send_0bytes(uart, 6);
+
+	uart_light_send(uart, (chksum >> 8) & 255);
+	uart_light_send(uart, chksum & 255);
+}
+
 static void device_chr_um7_set_data_length(chr_um7_packet_t* packet) {
 	if (packet->has_data) {
 		if (packet->is_batch) {
@@ -224,6 +276,11 @@ static void device_chr_um7_process_received_package(
 	for (i = 0; i < packet->data_length; i++) {
 		device_chr_um7_process_received_register(chr_um7, timestamp,
 				packet->address + i, packet->data[i]);
+	}
+	if (packet->command_failed) {
+		data_package_t package = { chr_um7->super.id, "command failed",
+				DATA_TYPE_BYTE, &packet->address, timestamp };
+		chr_um7->error_out->new_data(chr_um7->error_out->parent, &package);
 	}
 }
 
