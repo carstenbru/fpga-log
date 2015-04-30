@@ -48,7 +48,7 @@ static void formatter_simple_format(void* const formatter,
 	printf("\tcount %d: %s\tvalue ", fs->count++, package->val_name);
 	switch (package->type) {
 	case (DATA_TYPE_INT): {
-		printf("%d", *((unsigned int* ) package->data));
+		printf("%d", *((int* ) package->data));
 		break;
 	}
 	case (DATA_TYPE_BYTE): {
