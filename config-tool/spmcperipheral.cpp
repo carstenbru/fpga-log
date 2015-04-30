@@ -90,7 +90,7 @@ SpmcPeripheral::~SpmcPeripheral() {
 
 bool SpmcPeripheral::setParameter(CParameter* newValue) {
     for (list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
-        if ((*i)->sameSignature(*newValue)) {
+        if ((*i)->sameSignature(*newValue) && ((*i)->getName().compare(newValue->getName()) == 0)) {
             delete *i;
             *i = newValue;
             return true;

@@ -57,7 +57,7 @@ bool CMethod::sameSignature(CMethod &compare) {
 
 bool CMethod::setParameter(CParameter& newValue) {
     for (list<CParameter>::iterator i = parameters.begin(); i != parameters.end(); i++) {
-        if ((*i).sameSignature(newValue)) {
+        if ((*i).sameSignature(newValue) && ((*i).getName().compare(newValue.getName()) == 0)) {
             i = parameters.erase(i);
             parameters.insert(i, newValue);
             return true;
