@@ -5,6 +5,8 @@
  * This can be used for example as trigger or filter conditions.
  * The new value is compared with a reference value.
  *
+ * The compare string can include '*' for an unknown number of don't care characters
+ *
  * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
  */
 
@@ -17,9 +19,26 @@ static int datastream_condition_compare_val_name_is_fullfilled_equal(
 	const char* s1 =
 			((datastream_condition_compare_val_name_t*) condition)->compare_value;
 	const char* s2 = package->val_name;
-	while (*s1++ == *s2++) {
-		if (!*s1) //end of string
-			return (!*s2); //return 1 if string_2 also ends, otherwise 0
+	const char* last_star = 0;
+	while (1) {
+		if (*s1 != *s2) {
+			if (*s1 != '*') {
+				if (last_star == 0) {
+					return 0;
+				} else {
+					s1 = last_star;
+				}
+			} else {
+				last_star = s1;
+				s2--;  //go one char back in s2 to match current character again
+			}
+		}
+		s1++;
+		s2++;
+		if (!*s1)  //end of string
+			return (!*s2);  //return 1 if string_2 also ends, otherwise 0
+		else if (!*s2)
+			return 0;
 	}
 	return 0;
 }
