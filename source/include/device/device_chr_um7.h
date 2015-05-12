@@ -31,7 +31,7 @@ typedef struct {
 	uint8_t address;
 	union {
 		uint8_t pt;
-		struct {  //TODO check if right order/alignment
+		struct {
 			unsigned int padding :1;
 			unsigned int has_data :1;
 			unsigned int is_batch :1;
@@ -120,5 +120,12 @@ void device_chr_um7_set_rates(device_chr_um7_t* const chr_um7,
 		uint_least8_t proc_accel_rate, uint_least8_t proc_gyro_rate,
 		uint_least8_t proc_mag_rate, uint_least8_t quat_rate,
 		uint_least8_t euler_rate, device_chr_um7_health_rate health_rate);
+
+/**
+ * @brief issues a zero gyros command, the UM7 device should stay stationary during this calibration
+ *
+ * @param chr_um7	pointer to the CHR-UM7 device
+ */
+void device_chr_um7_zero_gyros(device_chr_um7_t* const chr_um7);
 
 #endif 

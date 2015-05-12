@@ -112,6 +112,21 @@ void device_chr_um7_set_rates(device_chr_um7_t* const chr_um7,
 	uart_light_send(uart, chksum & 255);
 }
 
+void device_chr_um7_zero_gyros(device_chr_um7_t* const chr_um7) {
+	uart_light_regs_t* uart = chr_um7->uart_light;
+
+	unsigned int chksum;
+
+	device_chr_um7_send_and_add_to_chksum(uart, 's', &chksum);
+	device_chr_um7_send_and_add_to_chksum(uart, 'n', &chksum);
+	device_chr_um7_send_and_add_to_chksum(uart, 'p', &chksum);
+	device_chr_um7_send_and_add_to_chksum(uart, 0, &chksum);  //PT = 0
+	device_chr_um7_send_and_add_to_chksum(uart, 0xAD, &chksum);  //0xAD is zero GYROs command
+
+	uart_light_send(uart, (chksum >> 8) & 255);  //send checksum
+	uart_light_send(uart, chksum & 255);
+}
+
 static void device_chr_um7_set_data_length(chr_um7_packet_t* packet) {
 	if (packet->has_data) {
 		if (packet->is_batch) {
