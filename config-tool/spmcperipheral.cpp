@@ -364,7 +364,7 @@ PeripheralPort::PeripheralPort(std::string name, int width) :
 
 bool PeripheralPort::setLine(CParameter* newValue) {
     for (list<CParameter*>::iterator i = lines.begin(); i != lines.end(); i++) {
-        if ((*i)->sameSignature(*newValue)) {
+        if ((*i)->sameSignature(*newValue) && (newValue->getName().compare((*i)->getName()) == 0)) {
             i = lines.erase(i);
             lines.insert(i, newValue);
             return true;
