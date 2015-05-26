@@ -1,5 +1,6 @@
 #include "headerparser.h"
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <QDirIterator>
 
@@ -45,6 +46,8 @@ void HeaderParser::parseFiles() {
 
 void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataTypeStruct*, std::string>& inheritanceMap) {
     ifstream header(filename.c_str());
+    string headerDescription = "";
+    bool firstDescription = true;
 
     if (header.is_open()) {
         istreambuf_iterator<char> headerIter(header);
@@ -73,31 +76,49 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                     }
                     string name = *++i;
                     name.erase(name.find(';'), name.length());
-                    DataTypeStruct* d = new DataTypeStruct(name, filename, globalFiles);
+                    DataTypeStruct* d = new DataTypeStruct(name, filename, globalFiles, headerDescription);
                     if (hasSuper)
                         inheritanceMap[d] = superType;
                 } else if ((*i).compare("enum") == 0) {
                     i++;
                     i++;
-                    list<string> values;
+                    list<enumVal> values;
+                    stringstream commentText;
+                    enumVal eVal;
+                    bool firstVal = true;
                     bool comment = false;
                     while ((*i).compare("}") != 0) {
                         if (!comment) {
-                          if (((*i).substr(0,2).compare("/*") == 0) || ((*i).compare("=") == 0))
+                          if (((*i).substr(0,2).compare("/*") == 0) || ((*i).compare("=") == 0)) {
+                              commentText.str("");
                               comment = true;
-                          else {
+                          } else {
+                              if (!firstVal) {
+                                  values.push_back(eVal); //add PREVIUOUS value
+                              }
+                              firstVal = false;
+
                               string value = *i;
                               if (value.find(',') < value.length())
                                   value.erase(value.find(','), value.length());
-                              values.push_back(value);
+                              eVal.value = value;
                           }
                         } else {
-                            if (((*i).compare("*/") == 0) || ((*i).at((*i).length()-1) == ','))
+                            if (((*i).compare("*/") == 0) || ((*i).at((*i).length()-1) == ',')) {
+                                eVal.description = commentText.str();
                                 comment = false;
+                            }
+                            else if ((*i).substr(0,2).compare("/*") == 0) {
+                                commentText.str("");
+                            } else {
+                                commentText << *i << " ";
+                            }
                         }
                         if (++i == tokens.end())
                             return;
                     }
+                    values.push_back(eVal); //add the last value
+
                     string name = *++i;
                     name.erase(name.find(';'), name.length());
                     DataTypeEnumeration* d = new DataTypeEnumeration(name, filename, globalFiles);
@@ -106,6 +127,17 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
             } else if ((*i).compare("#define") == 0) {
                 string name = *(++i);
                 defines[name] = *(++i);
+            } else if ((*i).compare("@brief") == 0) {
+                stringstream s;
+                i++;
+                while ((i != tokens.end()) && ((*i).compare("*") != 0) && ((*i).compare("*/") != 0)) {
+                    s << *i << " ";
+                    i++;
+                }
+                if (firstDescription) {
+                    headerDescription = s.str();
+                    firstDescription = false;
+                }
             }
         }
     }
@@ -121,6 +153,9 @@ void HeaderParser::parseFileForMethods(string filename) {
         char_separator<char> s(" \t\n");
         tokenizer<char_separator<char>, istreambuf_iterator<char> > tokens(headerIter, headerEnd, s);
         string returnType;
+        stringstream description;
+        map<string, string> paramDescMap;
+        description.str("");
         for (tokenizer<char_separator<char>, istreambuf_iterator<char> >::iterator i = tokens.begin(); i != tokens.end(); i++) {
             string s = *i;
             size_t op = s.find_first_of('(');
@@ -164,7 +199,7 @@ void HeaderParser::parseFileForMethods(string filename) {
 
                             try {
                                 DataType* rt = DataType::getType(returnType);
-                                CMethod* method = new CMethod(fullName, method_name, CParameter("return", rt, pointer), filename);
+                                CMethod* method = new CMethod(fullName, method_name, CParameter("return", rt, pointer), filename, description.str()); //TODO
                                 bool inherit = true;
                                 if (method_name.compare("init") == 0) {
                                     method->setHideFromUser(true);
@@ -173,7 +208,7 @@ void HeaderParser::parseFileForMethods(string filename) {
 
                                 try {
                                     wasMethod = true;
-                                    parseMethodParameters(method, parameters);
+                                    parseMethodParameters(method, parameters, paramDescMap);
                                     dt->addMethod(method, inherit);
                                 } catch (exception e) {
                                 }
@@ -188,13 +223,31 @@ void HeaderParser::parseFileForMethods(string filename) {
                 if (!wasMethod) {
                     DataTypeFunction::addFunction(method_name, returnType + ":" + parameters, globalFiles);
                 }
+            } else if ((*i).compare("@brief") == 0) {
+                i++;
+                description.str("");
+                while ((i != tokens.end()) && ((*i).compare("*") != 0) && ((*i).compare("*/") != 0)) {
+                    description << *i << " ";
+                    i++;
+                }
+                paramDescMap.clear();
+            } else if ((*i).compare("@param") == 0) {
+                i++;
+                string name = *i++;
+                stringstream p;
+                p.str("");
+                while ((i != tokens.end()) && ((*i).compare("*") != 0) && ((*i).compare("*/") != 0)) {
+                    p << *i << " ";
+                    i++;
+                }
+                paramDescMap[name] = p.str();
             }
             returnType = *i;
         }
     }
 }
 
-void HeaderParser::parseMethodParameter(CMethod* method, std::string parameter) {
+void HeaderParser::parseMethodParameter(CMethod* method, std::string parameter, map<string, string>& paramDescMap) {
     char_separator<char> s(" ");
     tokenizer<char_separator<char> > tokens(parameter, s);
     tokenizer<char_separator<char> >::iterator i = tokens.begin();
@@ -221,14 +274,19 @@ void HeaderParser::parseMethodParameter(CMethod* method, std::string parameter) 
     }
 
     try {
-        method->addParameter(CParameter(name, DataType::getType(type), pointer));
+        CParameter param(name, DataType::getType(type), pointer);
+        try {
+            param.setDescription(paramDescMap.at(name));
+        } catch (exception) {
+        }
+        method->addParameter(param);
     } catch (exception e) {
         cerr << "method parameter parsing error: unknown type: " << type << endl;
         throw e;
     }
 }
 
-void HeaderParser::parseMethodParameters(CMethod* method, std::string parameters) {
+void HeaderParser::parseMethodParameters(CMethod* method, std::string parameters, map<string, string>& paramDescMap) {
     char_separator<char> s(",");
     tokenizer<char_separator<char> > tokens(parameters, s);
     for (tokenizer<char_separator<char> >::iterator i = tokens.begin(); i != tokens.end(); i++) {
@@ -255,7 +313,7 @@ void HeaderParser::parseMethodParameters(CMethod* method, std::string parameters
             signature += ":" + parameter;
             method->addParameter(CParameter(name, DataTypeFunction::getType(signature), true));
         } else {
-            parseMethodParameter(method, parameter);
+            parseMethodParameter(method, parameter, paramDescMap);
         }
     }
 }

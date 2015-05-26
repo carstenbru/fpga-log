@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     cparameter.cpp \
     gui/pinbox.cpp \
     gui/targetconfigdialog.cpp \
-    outputgenerator.cpp
+    outputgenerator.cpp \
+    gui/newmethoddialog.cpp
 
 HEADERS  += gui/mainwindow.h \
     datastreamobject.h \
@@ -54,12 +55,14 @@ HEADERS  += gui/mainwindow.h \
     cparameter.h \
     gui/pinbox.h \
     gui/targetconfigdialog.h \
-    outputgenerator.h
+    outputgenerator.h \
+    gui/newmethoddialog.h
 
 FORMS    += gui/mainwindow.ui \
     gui/newobjectdialog.ui \
     gui/configobjectdialog.ui \
-    gui/targetconfigdialog.ui
+    gui/targetconfigdialog.ui \
+    gui/newmethoddialog.ui
 
 RESOURCES += \
     icons.qrc

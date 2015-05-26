@@ -6,6 +6,7 @@
 #include <QFormLayout>
 #include <QInputDialog>
 #include "spmcperipheral.h"
+#include "newmethoddialog.h"
 
 using namespace std;
 
@@ -46,10 +47,11 @@ void ConfigObjectDialog::setupUi() {
     addAdvancedConfigGroup(layout);
 }
 
-void ConfigObjectDialog::addGroup(QLayout* parentLayout, string title, QLayout *groupLayout) {
+void ConfigObjectDialog::addGroup(QLayout* parentLayout, string title, string toolTip, QLayout *groupLayout) {
     QGroupBox* group = new QGroupBox();
     group->setLayout(groupLayout);
     group->setTitle(QString().fromUtf8(title.c_str()));
+    group->setToolTip(toolTip.c_str());
     if (!groupLayout->isEmpty()) {
         parentLayout->addWidget(group);
     } else {
@@ -59,7 +61,9 @@ void ConfigObjectDialog::addGroup(QLayout* parentLayout, string title, QLayout *
 
 void ConfigObjectDialog::addNameGroup(QLayout* parent) {
     QFormLayout* layout = new QFormLayout();
-    layout->addRow("Typ", new QLabel(QString(object->getType()->getDisplayName().c_str())));
+    QLabel* typeLabel = new QLabel(QString(object->getType()->getDisplayName().c_str()));
+    typeLabel->setToolTip(object->getType()->getDescription().c_str());
+    layout->addRow("Typ", typeLabel);
 
     objectName = new QLineEdit();
     objectName->setText(QString(object->getName().c_str()));
@@ -67,7 +71,7 @@ void ConfigObjectDialog::addNameGroup(QLayout* parent) {
 
     connect(objectName, SIGNAL(editingFinished()), this, SLOT(nameEdited()));
 
-    addGroup(parent, "Objekt", layout);
+    addGroup(parent, "Objekt",layout);
 }
 
 void ConfigObjectDialog::addPortsGroup(QLayout *parent, string groupName, list<PeripheralPort *>& ports) {
@@ -83,6 +87,7 @@ void ConfigObjectDialog::addParameters(QFormLayout *parent, std::list<CParameter
         if (!(*i)->getHideFromUser()) {
             string paramName = (*i)->getName();
             QWidget* widget = (*i)->getDataType()->getConfigWidget(dataLogger, *i);
+            widget->setToolTip((*i)->getDescription().c_str());
             parent->addRow(paramName.c_str(), widget);
             paramWidgets[*i] = widget;
         }
@@ -135,6 +140,7 @@ void ConfigObjectDialog::addReqParametersGroup(QLayout *parent) {
         if (!type->hasSuffix("_regs_t")) {
             if (!(*i).getHideFromUser()) {
                 QWidget* widget = type->getConfigWidget(dataLogger, &*i);
+                widget->setToolTip(i->getDescription().c_str());
                 layout->addRow(( *i).getName().c_str(), widget);
                 paramWidgets[&*i] = widget;
             }
@@ -149,7 +155,7 @@ void ConfigObjectDialog::addAdvancedConfigGroup(QLayout *parent) {
         QPushButton* addBtn = new QPushButton(QIcon::fromTheme("list-add"), QString::fromUtf8("Hinzufügen"));
         connect(addBtn, SIGNAL(clicked()), this, SLOT(addAdvancedConfig()));
         layout->addWidget(addBtn);
-        addGroup(parent, "erweiterte Konfiguration", layout);
+        addGroup(parent, "erweiterte Konfiguration",layout);
 
         signalMapper = new QSignalMapper(this);
         connect(signalMapper, SIGNAL(mapped(int)), object, SLOT(removeAdvancedConfig(int)));
@@ -166,7 +172,7 @@ void ConfigObjectDialog::addAdvancedConfigGroup(QLayout *parent) {
 
             string name = (*i)->getName();
             addParameters(methodGroupLayout, (*i)->getMethodParameterPointers());
-            addGroup(layout, name, methodGroupLayout);
+            addGroup(layout, name, (*i)->getDescription(),methodGroupLayout);
         }
     }
 }
@@ -198,23 +204,17 @@ QStringList ConfigObjectDialog::getAdvancedConfigMethods() {
     QStringList items;
     for (list<CMethod*>::iterator i = methods.begin(); i != methods.end(); i++) {
         CMethod* m = *i;
-        if (!m->getHideFromUser())
+        if (!m->getHideFromUser()) {
             items.append(m->getName().c_str());
+        }
     }
     return items;
 }
 
 void ConfigObjectDialog::addAdvancedConfig() {
-    QInputDialog dialog(this);
-    dialog.setOption(QInputDialog::UseListViewForComboBoxItems);
-    dialog.setWindowIcon(QIcon::fromTheme("list-add"));
-    dialog.setWindowTitle(QString::fromUtf8("Hinzufügen"));
-    dialog.setLabelText(QString::fromUtf8("verfügbare Methoden:"));
-
-    QStringList items = getAdvancedConfigMethods();
-    dialog.setComboBoxItems(items);
+    NewMethodDialog dialog(object->getType()->getMethods(), this);
     if (dialog.exec() == QDialog::Accepted) {
-        object->addAdvancedConfig(dialog.textValue().toStdString());
+        object->addAdvancedConfig(dialog.getSelectedMethod());
         reload();
     }
 }

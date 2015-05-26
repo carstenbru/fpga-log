@@ -59,9 +59,10 @@ QWidget* DataType::getConfigWidget(DataLogger*, CParameter*) {
     return NULL;
 }
 
-DataTypeStruct::DataTypeStruct(std::string name, string headerFile, bool globalType) :
+DataTypeStruct::DataTypeStruct(std::string name, string headerFile, bool globalType, string description) :
     DataType(name, headerFile, globalType),
-    super(NULL)
+    super(NULL),
+    description(description)
 {
     types[name] = this;
 }
@@ -191,14 +192,15 @@ DataTypeEnumeration::DataTypeEnumeration(std::string name, string headerFile, bo
 {
 }
 
-void DataTypeEnumeration::addValue(std::string value) {
-    values.push_back(value);
+void DataTypeEnumeration::addValue(std::string value, std::string description) {
+    enumVal val = {value, description};
+    values.push_back(val);
     if (hasSuffix("_cpt")) {
-        controlParameterType.values.push_back(value);
+        controlParameterType.values.push_back(val);
     }
 }
 
-void DataTypeEnumeration::addValues(std::list<std::string> valueList) {
+void DataTypeEnumeration::addValues(std::list<enumVal> valueList) {
     values.insert(values.end(), valueList.begin(), valueList.end());
     if (hasSuffix("_cpt")) {
         controlParameterType.values.insert(controlParameterType.values.end(), valueList.begin(), valueList.end());
@@ -211,8 +213,11 @@ QWidget* DataTypeEnumeration::getConfigWidget(DataLogger*, CParameter *param) {
 
 QComboBox* DataTypeEnumeration::getConfigBox(CParameter* param) {
     QComboBox* cbox = new QComboBox();
-    for (list<string>::iterator i = values.begin(); i != values.end(); i++) {
-        cbox->addItem(QString((*i).c_str()));
+    int pos = 0;
+    for (list<enumVal>::iterator i = values.begin(); i != values.end(); i++) {
+        cbox->addItem(QString((*i).value.c_str()));
+        cbox->setItemData(pos, (*i).description.c_str(), Qt::ToolTipRole);
+        pos++;
     }
     cbox->setCurrentIndex(cbox->findText(QString(param->getValue().c_str())));
     return cbox;

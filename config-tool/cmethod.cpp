@@ -3,10 +3,11 @@
 
 using namespace std;
 
-CMethod::CMethod(std::string completeName, std::string name, CParameter returnType, string headerFile) :
+CMethod::CMethod(std::string completeName, std::string name, CParameter returnType, string headerFile, string description) :
     completeName(completeName),
     name(name),
     headerFile(headerFile),
+    description(description),
     returnType(returnType),
     hideFromUser(false)
 {

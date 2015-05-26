@@ -46,7 +46,7 @@ private:
 
 class DataTypeStruct : public DataType {
 public:
-    DataTypeStruct(std::string name, std::string headerFile, bool globalType);
+    DataTypeStruct(std::string name, std::string headerFile, bool globalType, std::string description);
     virtual ~DataTypeStruct() {types.erase(getName());}
 
     DataTypeStruct* getSuperType() { return super; }
@@ -60,6 +60,8 @@ public:
     void addChild(DataTypeStruct* child) { childs.push_back(child); }
     void addMethod(CMethod* method, bool inherit);
 
+    std::string getDescription() {return description;}
+
     virtual QWidget* getConfigWidget(DataLogger* dataLogger, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
 
@@ -70,6 +72,8 @@ private:
 
     std::list<DataTypeStruct*> childs;
     std::list<CMethod*> methods;
+
+    std::string description;
 
     static std::map<std::string, DataTypeStruct*> types;
 };
@@ -102,22 +106,28 @@ private:
     bool outputAsInt;
 };
 
+typedef struct {
+    std::string value;
+    std::string description;
+} enumVal;
+
 class DataTypeEnumeration : public DataType {
 public:
     DataTypeEnumeration(std::string name, bool globalType);
     DataTypeEnumeration(std::string name, std::string headerFile, bool globalType);
     virtual ~DataTypeEnumeration() {}
 
-    void addValue(std::string value);
-    void addValues(std::list<std::string> valueList);
+    void addValue(std::string value, std::string description);
+    void addValue(std::string value) { addValue(value, ""); }
+    void addValues(std::list<enumVal> valueList);
 
     virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
-    virtual std::string getDefaultValue() { return values.front(); }
+    virtual std::string getDefaultValue() { return values.front().value; }
 
     QComboBox* getConfigBox(CParameter *param);
 private:
-    std::list<std::string> values;
+    std::list<enumVal> values;
 
     static DataTypeEnumeration controlParameterType;
 };

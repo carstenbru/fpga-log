@@ -21,8 +21,8 @@ private:
     void parseFileForDataTypes(std::string filename, std::map<DataTypeStruct *, std::string> &inheritanceList);
     void parseFileForMethods(std::string filename);
 
-    void parseMethodParameters(CMethod* method, std::string parameters);
-    void parseMethodParameter(CMethod* method, std::string parameter);
+    void parseMethodParameters(CMethod* method, std::string parameters, std::map<std::string, std::string> &paramDescMap);
+    void parseMethodParameter(CMethod* method, std::string parameter, std::map<std::string, std::string> &paramDescMap);
 
     bool globalFiles;
     std::list<std::string> files;

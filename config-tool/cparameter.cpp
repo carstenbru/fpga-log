@@ -27,6 +27,7 @@ CParameter::CParameter(const CParameter& other) :
     QObject(),
     name(other.name),
     value(other.value),
+    description(other.description),
     hideFromUser(other.hideFromUser),
     critical(false),
     dataType(other.dataType),

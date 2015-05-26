@@ -10,8 +10,8 @@ class CObject;
 class CMethod
 {
 public:
-    CMethod(std::string completeName, std::string name, CParameter returnType, std::string headerFile);
-    CMethod(std::string name, CParameter returnType) : CMethod("", name, returnType, "") {}
+    CMethod(std::string completeName, std::string name, CParameter returnType, std::string headerFile, std::string description);
+    CMethod(std::string name, CParameter returnType) : CMethod("", name, returnType, "", "") {}
     CMethod(QXmlStreamReader& in, CMethod *currentSignature, CObject* object);
     ~CMethod();
 
@@ -24,6 +24,7 @@ public:
     std::list<CParameter*> getMethodParameterPointers();
     CParameter* getParameter(std::string name);
     std::string getHeaderName() { return headerFile; }
+    std::string getDescription() { return description; }
 
     void setHideFromUser(bool hide) { hideFromUser = hide; }
     bool getHideFromUser() { return hideFromUser; }
@@ -36,6 +37,7 @@ private:
 
     std::string name;
     std::string headerFile;
+    std::string description;
 
     CParameter returnType;
     std::list<CParameter> parameters;

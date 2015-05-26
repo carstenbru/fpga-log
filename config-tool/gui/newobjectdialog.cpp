@@ -21,6 +21,7 @@ bool NewObjectDialog::generateItem(QStandardItem* parent, DataTypeStruct* dataTy
     QStandardItem* item = new QStandardItem(QString(dataType->getDisplayName().c_str()));
     item->setEditable(false);
     item->setSelectable(dataType->isInstantiableObject());
+    item->setToolTip(dataType->getDescription().c_str());
     item->setData(QVariant(dataType->getName().c_str()));
     if (recursive) {
         list<DataTypeStruct*> childs = dataType->getChilds();

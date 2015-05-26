@@ -27,7 +27,8 @@ public:
     explicit ConfigObjectDialog(QWidget *parent, CObject* object, DataLogger *dataLogger);
     ~ConfigObjectDialog();
 private:
-    void addGroup(QLayout* parentLayout, std::string title, QLayout* groupLayout);
+    void addGroup(QLayout* parentLayout, std::string title, std::string toolTip, QLayout* groupLayout);
+    void addGroup(QLayout* parentLayout, std::string title, QLayout* groupLayout) { addGroup(parentLayout, title, "", groupLayout); }
     void addNameGroup(QLayout *parent);
     void addPortsGroup(QLayout *parent, std::string groupName, std::list<PeripheralPort*>& ports);
     void addParameters(QFormLayout *parent, std::list<CParameter *> parameters);

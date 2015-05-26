@@ -49,7 +49,8 @@ void DatastreamView::generateModuleGui(DatastreamObject* datastreamObject) {
     MoveableButton* btn = new MoveableButton();
     btn->setParent(view->viewport());
     btn->setText(QString::fromStdString(datastreamObject->getName()));
-    btn->setStyleSheet("background-color: #00689d ;\nfont: 10pt \"Arial\";\ncolor:white;");
+    btn->setStyleSheet("QWidget {background-color: #00689d ;\nfont: 10pt \"Arial\";\ncolor:white}");
+    btn->setToolTip(datastreamObject->getType()->getDescription().c_str());
     btn->setFixedSize(MODULE_SIZE_X, 10);
     moduleGuiElements[btn] = datastreamObject;
 

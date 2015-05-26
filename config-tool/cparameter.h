@@ -35,12 +35,16 @@ public:
     std::string getValue() { return value; }
     std::string getCValue();
 
+    void setDescription(std::string description) { this->description = description; }
+    std::string getDescription() { return description; }
+
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CParameter& parameter);
     friend QXmlStreamReader& operator>>(QXmlStreamReader& in, CParameter& parameter);
     void loadFromXmlStream(QXmlStreamReader& in);
 private:
     std::string name;
     std::string value;
+    std::string description;
 
     bool hideFromUser;
     bool critical;
