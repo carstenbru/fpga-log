@@ -100,6 +100,14 @@ typedef struct {
 	char error_command;
 } device_max5825_t;
 
+/**
+ * @brief device_max5825 initialization function
+ *
+ * @param max5825			pointer to the max5825 device
+ * @param i2c_master	pointer to the i2c peripheral
+ * @param id					source id
+ * @param reference_setting	voltage reference selection
+ */
 void device_max5825_init(device_max5825_t* const max5825,
 		i2c_master_regs_t* const i2c_master, const unsigned int id,
 		max5825_reference_setting reference_setting);
