@@ -106,6 +106,7 @@ QWidget* DataTypeStruct::getConfigWidget(DataLogger* dataLogger, CParameter *par
     for (list<CObject*>::iterator i = instances.begin(); i != instances.end(); i++) {
         cbox->addItem(QString((*i)->getName().c_str()));
     }
+    cbox->addItem(NEW_OBJECT_STRING);
     cbox->setCurrentIndex(cbox->findText(QString(param->getValue().c_str())));
     return cbox;
 }

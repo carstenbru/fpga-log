@@ -17,7 +17,7 @@ public:
     DataLogger();
     ~DataLogger();
 
-    void newObject(DataTypeStruct *type);
+    std::string newObject(DataTypeStruct *type);
     void deleteObject(CObject* object);
     std::list<DatastreamObject*> getDatastreamModules() { return datastreamObjects; }
     std::vector<CObject*> getOtherObjects() { return otherObjects; }

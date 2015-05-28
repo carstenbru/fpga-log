@@ -8,6 +8,7 @@
 #include <QComboBox>
 #include "cmethod.h"
 
+#define NEW_OBJECT_STRING "<neues Objekt>"
 
 class DataLogger;
 class DataType

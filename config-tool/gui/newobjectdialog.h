@@ -15,15 +15,17 @@ class NewObjectDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewObjectDialog(QWidget *parent);
+    explicit NewObjectDialog(QWidget *parent, DataTypeStruct *type);
     ~NewObjectDialog();
 
     DataTypeStruct *getSelectedDataType();
 private:
-    void genrateTypeView();
+    void genrateTypeView(DataTypeStruct *type);
     bool generateItem(QStandardItem *parent, DataTypeStruct *dataType, bool recursive);
 
     Ui::NewObjectDialog *ui;
+    int items;
+    DataTypeStruct* lastInsertedType;
 };
 
 #endif // NEWOBJECTDIALOG_H

@@ -15,7 +15,8 @@ ConfigObjectDialog::ConfigObjectDialog(QWidget *parent, CObject *object, DataLog
     ui(new Ui::ConfigObjectDialog),
     object(object),
     dataLogger(dataLogger),
-    signalMapper(NULL)
+    signalMapper(NULL),
+    objectRequestedForParam(NULL)
 {
     ui->setupUi(this);
 
@@ -82,6 +83,25 @@ void ConfigObjectDialog::addPortsGroup(QLayout *parent, string groupName, list<P
     addGroup(parent, groupName, portGroupLayout);
 }
 
+void ConfigObjectDialog::objectCreationFinished(std::string name) {
+    objectRequestedForParam->setValue(name);
+    reload();
+    objectRequestedForParam = NULL;
+}
+
+void ConfigObjectDialog::objectSelectionChanged(QString text) {
+    QObject* sender = QObject::sender();
+    if (text.compare(NEW_OBJECT_STRING) == 0) {
+        for (map<CParameter*, QWidget*>::iterator i = paramWidgets.begin(); i != paramWidgets.end(); i++) {
+            if (i->second == sender) {
+                objectRequestedForParam = i->first;
+                emit newObjectRequest((DataTypeStruct*)i->first->getDataType(), this);
+                return;
+            }
+        }
+    }
+}
+
 void ConfigObjectDialog::addParameters(QFormLayout *parent, std::list<CParameter*> parameters) {
     for (std::list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
         if (!(*i)->getHideFromUser()) {
@@ -90,6 +110,11 @@ void ConfigObjectDialog::addParameters(QFormLayout *parent, std::list<CParameter
             widget->setToolTip((*i)->getDescription().c_str());
             parent->addRow(paramName.c_str(), widget);
             paramWidgets[*i] = widget;
+
+            QComboBox* cb = dynamic_cast<QComboBox*>(widget);
+            if (cb != NULL) {
+                QObject::connect(cb, SIGNAL(currentIndexChanged(QString)), this, SLOT(objectSelectionChanged(QString)));
+            }
         }
     }
 }
@@ -143,6 +168,11 @@ void ConfigObjectDialog::addReqParametersGroup(QLayout *parent) {
                 widget->setToolTip(i->getDescription().c_str());
                 layout->addRow(( *i).getName().c_str(), widget);
                 paramWidgets[&*i] = widget;
+
+                QComboBox* cb = dynamic_cast<QComboBox*>(widget);
+                if (cb != NULL) {
+                    QObject::connect(cb, SIGNAL(currentIndexChanged(QString)), this, SLOT(objectSelectionChanged(QString)));
+                }
             }
         }
     }
@@ -185,7 +215,9 @@ void ConfigObjectDialog::storeParams() {
     for (map<CParameter*, QWidget*>::iterator i = paramWidgets.begin(); i != paramWidgets.end(); i++) {
         try {
             CParameter* param = i->first;
-            param->setValue(param->getDataType()->getConfigData(i->second));
+            if (param != objectRequestedForParam) {
+                param->setValue(param->getDataType()->getConfigData(i->second));
+            }
         } catch (exception e) {
 
         }

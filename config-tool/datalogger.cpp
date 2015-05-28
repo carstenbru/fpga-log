@@ -59,18 +59,22 @@ void DataLogger::loadTargetPins() {
     }
 }
 
-void DataLogger::newObject(DataTypeStruct *type) {
+string DataLogger::newObject(DataTypeStruct *type) {
+    string name;
     if (type->hasPrefix("device_") || type->hasPrefix("dm_") || type->hasPrefix("sink_")) {
-        DatastreamObject* dso = new DatastreamObject(findObjectName(datastreamObjects, type), type, this);
+        name = findObjectName(datastreamObjects, type);
+        DatastreamObject* dso = new DatastreamObject(name, type, this);
         datastreamObjects.push_back(dso);
         connect(dso, SIGNAL(connectionsChanged()), this, SLOT(moduleConnectionsChanged()));
         emit datastreamModulesChanged();
     }
     else {
-        CObject* co = new CObject(findObjectName(otherObjects, type), type, this);
+        name = findObjectName(otherObjects, type);
+        CObject* co = new CObject(name, type, this);
         otherObjects.push_back(co);
         emit otherModulesChanged();
     }
+    return name;
 }
 
 template <typename T>

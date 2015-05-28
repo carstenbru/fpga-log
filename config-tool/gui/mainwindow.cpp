@@ -63,13 +63,27 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::newObject() {
-    NewObjectDialog dialog(this);
+    NewObjectDialog dialog(this, NULL);
     if (dialog.exec() == QDialog::Accepted) {
         DataTypeStruct* dataType = dialog.getSelectedDataType();
         if (dataType != NULL) {
             dataLogger->newObject(dataType);
         }
      }
+}
+
+void MainWindow::newObject(DataTypeStruct* type, ConfigObjectDialog* confDialog) {
+    NewObjectDialog dialog(this, type);
+    if (dialog.exec() == QDialog::Accepted) {
+        DataTypeStruct* dataType = dialog.getSelectedDataType();
+        if (dataType != NULL) {
+            confDialog->objectCreationFinished(dataLogger->newObject(dataType));
+        } else {
+            confDialog->objectCreationFinished("");
+        }
+     } else {
+        confDialog->objectCreationFinished("");
+    }
 }
 
 void MainWindow::otherObjectConfig(QModelIndex index) {
@@ -86,6 +100,7 @@ void MainWindow::otherObjectConfig(QModelIndex index) {
 
 void MainWindow::showConfigDialog(CObject& object) {
     ConfigObjectDialog dialog(this, &object, dataLogger);
+    QObject::connect(&dialog, SIGNAL(newObjectRequest(DataTypeStruct*,ConfigObjectDialog*)), this, SLOT(newObject(DataTypeStruct*, ConfigObjectDialog*)));
     if (dialog.exec() == ConfigObjectDialog::DeleteResult) {
         dataLogger->deleteObject(&object);
     }

@@ -91,6 +91,12 @@ data_port_t* sink_sd_card_get_data_in_1(sink_sd_card_t* const sink_sd_card);
 data_port_t* sink_sd_card_get_data_in_2(sink_sd_card_t* const sink_sd_card);
 data_port_t* sink_sd_card_get_data_in_3(sink_sd_card_t* const sink_sd_card);
 
+/**
+ * @brief associates a file with a module input, by default all inputs log to the default file
+ *
+ * @param file	new file
+ * @param port_number	port the file should be assigned to
+ */
 void sink_sd_card_set_file_for_input_port(sink_sd_card_t* const sink_sd_card,
 		sd_file_t* file, unsigned int port_number);
 

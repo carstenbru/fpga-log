@@ -49,6 +49,10 @@ private:
     std::map<CParameter*, QWidget*> paramWidgets;
 
     QSignalMapper* signalMapper;
+
+    CParameter* objectRequestedForParam;
+signals:
+    void newObjectRequest(DataTypeStruct*,ConfigObjectDialog*);
 private slots:
     void nameEdited();
     void storeParams();
@@ -58,6 +62,10 @@ private slots:
     void addAdvancedConfig();
 
     void deleteModule();
+
+    void objectSelectionChanged(QString);
+public slots:
+    void objectCreationFinished(std::string name);
 };
 
 #endif // CONFIGOBJECTDIALOG_H

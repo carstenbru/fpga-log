@@ -10,6 +10,7 @@
 #include "datatype.h"
 #include "dataloggerothermodel.h"
 #include "outputgenerator.h"
+#include "configobjectdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -46,6 +47,7 @@ public slots:
     void closeEvent(QCloseEvent* event);
 
     void newObject();
+    void newObject(DataTypeStruct *type, ConfigObjectDialog *confDialog);
     void showConfigDialog(CObject& object);
     void targetConfig();
     void generate();
