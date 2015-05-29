@@ -20,29 +20,29 @@
  */
 typedef enum {
 	/* measure/output commands */
-	HCT99_COMMAND_MEASURE_SINGLE_CHANNEL = 'F', /**< start measurement of result (single channel) */
-	HCT99_COMMAND_MEASURE_COLOR_VALUE = 'G', /**< start measurement/output of color value */
-	HCT99_COMMAND_MEASURE_TRANSMISSION_REFLECTION = 'K', /**< start measurement/output transmission/reflection */
-	HCT99_COMMAND_MEASURE_SPECIAL_CALCULATION = 'L', /**< start measurement/output special calculation */
+	HCT99_COMMAND_MEASURE_SINGLE_CHANNEL = 'F', /**< @value_ref none start measurement of result (single channel) */
+	HCT99_COMMAND_MEASURE_COLOR_VALUE = 'G', /**< @value_ref none start measurement/output of color value */
+	HCT99_COMMAND_MEASURE_TRANSMISSION_REFLECTION = 'K', /**< @value_ref none start measurement/output transmission/reflection */
+	HCT99_COMMAND_MEASURE_SPECIAL_CALCULATION = 'L', /**< @value_ref none start measurement/output special calculation */
 	/* measurement parameter commands */
-	HCT99_COMMAND_RANGE = 'H', /**< measurement range */
-	HCT99_COMMAND_AUTORANGE = 'I', /**< autorange */
+	HCT99_COMMAND_RANGE = 'H', /**< @value_ref none measurement range */
+	HCT99_COMMAND_AUTORANGE = 'I', /**< @value_ref none autorange */
 	HCT99_COMMAND_MEASUREMENT_TIME = 'M', /**< measurement (integration) time - could also be used for M2/M3 commands */
-	HCT99_COMMAND_MEASUREMENT_TIME_SAVE = 'A', /**< save measurement time parameters (representation of M2 command) */
-	HCT99_COMMAND_MEASUREMENT_TIME_LOAD = 'B', /**< load measurement time parameters (representation of M3 command) */
-	HCT99_COMMAND_OFFSET = 'm', /**< offset */
-	HCT99_COMMAND_MEASUREMENT_MODE = 'd', /**< measurement mode */
-	HCT99_COMMAND_CAL_DATA_SELECT = 'i', /**< calibration data selection */
-	HCT99_COMMAND_ZERO_ADJUST = 'J', /**< zero adjust */
-	HCT99_COMMAND_SAVE_PARAMS_EEPROM = 'N', /**< save parameters in eeprom */
-	HCT99_COMMAND_LOAD_PARAMS_EEPROM = 'O', /**< load parameters from eeprom */
+	HCT99_COMMAND_MEASUREMENT_TIME_SAVE = 'A', /**< @value_ref none save measurement time parameters (representation of M2 command) */
+	HCT99_COMMAND_MEASUREMENT_TIME_LOAD = 'B', /**< @value_ref none load measurement time parameters (representation of M3 command) */
+	HCT99_COMMAND_OFFSET = 'm', /**< @value_ref none offset */
+	HCT99_COMMAND_MEASUREMENT_MODE = 'd', /**< @value_ref none measurement mode */
+	HCT99_COMMAND_CAL_DATA_SELECT = 'i', /**< @value_ref none calibration data selection */
+	HCT99_COMMAND_ZERO_ADJUST = 'J', /**< @value_ref none zero adjust */
+	HCT99_COMMAND_SAVE_PARAMS_EEPROM = 'N', /**< @value_ref none save parameters in eeprom */
+	HCT99_COMMAND_LOAD_PARAMS_EEPROM = 'O', /**< @value_ref none load parameters from eeprom */
 	/* miscellaneous commands */
-	HCT99_COMMAND_SPECIAL_DEV_CODE = 's', /**< special device code */
-	HCT99_COMMAND_FIRMWARE_VERSION = 'P', /**< firmware version */
-	HCT99_COMMAND_FIRMWARE_TYPE = 'Q', /**< firmware type */
-	HCT99_COMMAND_HARDWARE_TYPE = 'S', /**< hardware type */
-	HCT99_COMMAND_CAL_DATA_TEXT_INFO = 'n', /**< output of calibration data text info */
-	HCT99_CPARAMETER_ONLY_WHEN_QUEUE_EMPTY = 'e', /**< send command only if command queue is empty */
+	HCT99_COMMAND_SPECIAL_DEV_CODE = 's', /**< @value_ref none special device code */
+	HCT99_COMMAND_FIRMWARE_VERSION = 'P', /**< @value_ref none firmware version */
+	HCT99_COMMAND_FIRMWARE_TYPE = 'Q', /**< @value_ref none firmware type */
+	HCT99_COMMAND_HARDWARE_TYPE = 'S', /**< @value_ref none hardware type */
+	HCT99_COMMAND_CAL_DATA_TEXT_INFO = 'n', /**< @value_ref none output of calibration data text info */
+	HCT99_CPARAMETER_ONLY_WHEN_QUEUE_EMPTY = 'e', /**< @value_ref none send command only if command queue is empty */
 } hct99_command_cpt;
 
 /**

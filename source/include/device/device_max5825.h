@@ -24,10 +24,10 @@
  * @brief enumeration of the different control parameters of the MAX5825 device
  */
 typedef enum {
-	MAX5825_PARAMETER_CHANNEL = 'c', /**< DAC channel selection */
+	MAX5825_PARAMETER_CHANNEL = 'c', /**< @value_ref max5825_selection DAC channel selection */
 	MAX5825_PARAMETER_VALUE = 'v', /**< DAC value (written to CODE register) */
-	MAX5825_PARAMETER_UPDATE = 'u', /**< if present a LOAD operation is performed */
-	MAX5825_PARAMETER_RETURN_VALUE = 'r', /**< RETURN value of hte DAC */
+	MAX5825_PARAMETER_UPDATE = 'u', /**< @value_ref none if present a LOAD operation is performed */
+	MAX5825_PARAMETER_RETURN_VALUE = 'r', /**< RETURN value of the DAC */
 } max5825_parameter_cpt;
 
 typedef enum {

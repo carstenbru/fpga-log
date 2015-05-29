@@ -19,43 +19,43 @@
 #define PAN_DRIVE_ERROR_CODES { "wrong checksum", "invalid command", "wrong type", "invalid value", "EEPROM locked", "not available" }
 
 typedef enum {
-	PAN_DRIVE_MODULE_ADDRESS = 'a',
-	PAN_DRIVE_COMMAND = 'c',
-	PAN_DRIVE_TYPE = 't',
-	PAN_DRIVE_MOTOR_NUMBER = 'm',
-	PAN_DRIVE_BANK_NUMBER = 'b',
-	PAN_DRIVE_VALUE = 'v',
+	PAN_DRIVE_MODULE_ADDRESS = 'a', /** set the address of the module to talk to */
+	PAN_DRIVE_COMMAND = 'c', /** @value_ref pan_drive_command_code_cpt issue a command */
+	PAN_DRIVE_TYPE = 't', /** type field - not needed for most instructions */
+	PAN_DRIVE_MOTOR_NUMBER = 'm', /** number of the motor to access */
+	PAN_DRIVE_BANK_NUMBER = 'b', /** bank of the motor to access */
+	PAN_DRIVE_VALUE = 'v', /** value for the command */
 } pan_drive_command_cpt;
 
 typedef enum {
-	PAN_DRIVE_COMMAND_ROTATE_RIGHT = 1,
-	PAN_DRIVE_COMMAND_ROTATE_LEFT = 2,
-	PAN_DRIVE_COMMAND_MOTOR_STOP = 3,
-	PAN_DRIVE_COMMAND_MOVE_TO_POSTION = 4,
+	PAN_DRIVE_COMMAND_ROTATE_RIGHT = 1, /** rotate right with a specified velocity */
+	PAN_DRIVE_COMMAND_ROTATE_LEFT = 2, /** rotate left with a specified velocity */
+	PAN_DRIVE_COMMAND_MOTOR_STOP = 3, /** @value_ref none stop the motor */
+	PAN_DRIVE_COMMAND_MOVE_TO_POSTION = 4, /** move to a specified position */
 
-	PAN_DRIVE_COMMAND_SET_AXIS_PARAMETER = 5,
-	PAN_DRIVE_COMMAND_GET_AXIS_PARAMETER = 6,
-	PAN_DRIVE_COMMAND_STORE_AXIS_PARAMTER = 7,
-	PAN_DRIVE_COMMAND_RESTORE_AXIS_PARAMTER = 8,
+	PAN_DRIVE_COMMAND_SET_AXIS_PARAMETER = 5, /** set an axis parameter - refer to datasheet for parameters */
+	PAN_DRIVE_COMMAND_GET_AXIS_PARAMETER = 6, /** @value_ref none get an axis parameter - refer to datasheet for parameters */
+	PAN_DRIVE_COMMAND_STORE_AXIS_PARAMTER = 7, /** @value_ref none store an axis parameter - refer to datasheet for parameters */
+	PAN_DRIVE_COMMAND_RESTORE_AXIS_PARAMTER = 8, /** @value_ref none restore an axis parameter - refer to datasheet for parameters */
 
-	PAN_DRIVE_COMMAND_SET_GLOBAL_PARAMETER = 9,
-	PAN_DRIVE_COMMAND_GET_GLOBAL_PARAMETER = 10,
-	PAN_DRIVE_COMMAND_STORE_GLOBAL_PARAMTER = 11,
-	PAN_DRIVE_COMMAND_RESTORE_GLOBAL_PARAMTER = 12,
+	PAN_DRIVE_COMMAND_SET_GLOBAL_PARAMETER = 9, /** set an global parameter - refer to datasheet for parameters */
+	PAN_DRIVE_COMMAND_GET_GLOBAL_PARAMETER = 10, /** @value_ref none get an global parameter - refer to datasheet for parameters */
+	PAN_DRIVE_COMMAND_STORE_GLOBAL_PARAMTER = 11,  /** @value_ref none store an global parameter - refer to datasheet for parameters */
+	PAN_DRIVE_COMMAND_RESTORE_GLOBAL_PARAMTER = 12, /** @value_ref none restore an global parameter - refer to datasheet for parameters */
 
-	PAN_DRIVE_COMMAND_REFERENCE_SEARCH = 13,
-	PAN_DRIVE_COMMAND_SET_OUTPUT = 14,
-	PAN_DRIVE_COMMAND_GET_IN_OUTPUT = 15,
+	PAN_DRIVE_COMMAND_REFERENCE_SEARCH = 13, /** @value_ref none search for reference */
+	PAN_DRIVE_COMMAND_SET_OUTPUT = 14, /** set general digital outputs */
+	PAN_DRIVE_COMMAND_GET_IN_OUTPUT = 15, /** @value_ref none get general digital in/outputs */
 
 	/* gap: TMCL only commands */
 
-	PAN_DRIVE_COMMAND_SET_COORDINATE = 30,
-	PAN_DRIVE_COMMAND_GET_COORDINATE = 31,
-	PAN_DRIVE_COMMAND_CAPTURE_COORDINATE = 32,
+	PAN_DRIVE_COMMAND_SET_COORDINATE = 30, /** set a coordinate */
+	PAN_DRIVE_COMMAND_GET_COORDINATE = 31, /** @value_ref none get a coordinate */
+	PAN_DRIVE_COMMAND_CAPTURE_COORDINATE = 32, /** @value_ref none capture a coordinate */
 
 	/* TODO implement accumulator commands? not really necessary... */
 
-	PAN_DRIVE_COMMAND_TARGET_REACHED_EVENT = 138,
+	PAN_DRIVE_COMMAND_TARGET_REACHED_EVENT = 138, /** @value_ref none send an extra event when target reached */
 } pan_drive_command_code_cpt;
 
 typedef enum {

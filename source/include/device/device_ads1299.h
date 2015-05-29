@@ -107,24 +107,24 @@ typedef enum {
 } ads1299_command;
 
 typedef enum {
-	ADS1299_COMMAND_ACTIVATE_CHANNEL = 'a',
-	ADS1299_COMMAND_DEACTIVATE_CHANNEL = 'd',
-	ADS1299_COMMAND_START_RUNNING = 'b',
-	ADS1299_COMMAND_STOP_RUNNING = 's',
-	ADS1299_COMMAND_AUTO_BIAS_ON = '`',
-	ADS1299_COMMAND_AUTO_BIAS_OFF = '~',
-	ADS1299_COMMAND_TEST_SHORTED = '0',
-	ADS1299_COMMAND_TEST_SIG_1X_SLOW = '-',
-	ADS1299_COMMAND_TEST_SIG_1X_FAST = '+',
-	ADS1299_COMMAND_TEST_SIG_1X_FAST2 = '=',
-	ADS1299_COMMAND_TEST_SIG_2X_DC = 'p',
-	ADS1299_COMMAND_TEST_SIG_2X_SLOW = '[',
-	ADS1299_COMMAND_TEST_SIG_2X_FAST = ']',
+	ADS1299_COMMAND_ACTIVATE_CHANNEL = 'a', /**< activates a channel */
+	ADS1299_COMMAND_DEACTIVATE_CHANNEL = 'd', /**< deactivates a channel */
+	ADS1299_COMMAND_START_RUNNING = 'b', /**< @value_ref none starts the EEG */
+	ADS1299_COMMAND_STOP_RUNNING = 's', /**< @value_ref none stops the EEG */
+	ADS1299_COMMAND_AUTO_BIAS_ON = '`', /**< @value_ref none activates the auto-bias function */
+	ADS1299_COMMAND_AUTO_BIAS_OFF = '~', /**< @value_ref none deactivates the auto-bias function */
+	ADS1299_COMMAND_TEST_SHORTED = '0',  /**< @value_ref none activates the shorted test signal */
+	ADS1299_COMMAND_TEST_SIG_1X_SLOW = '-', /**< @value_ref none activates the shorted test signal */
+	ADS1299_COMMAND_TEST_SIG_1X_FAST = '+', /**< @value_ref none activates the 1x fast test signal */
+	ADS1299_COMMAND_TEST_SIG_1X_FAST2 = '=', /**< @value_ref none activates the 1x fast2 test signal */
+	ADS1299_COMMAND_TEST_SIG_2X_DC = 'p', /**< @value_ref none activates the 2x DC test signal */
+	ADS1299_COMMAND_TEST_SIG_2X_SLOW = '[', /**< @value_ref none activates the 2x slow test signal */
+	ADS1299_COMMAND_TEST_SIG_2X_FAST = ']', /**< @value_ref none activates the 2x fast test signal */
 
-	ADS1299_COMMAND_ACTIVATE_LOFF_NCHAN = 'A',
-	ADS1299_COMMAND_ACTIVATE_LOFF_PCHAN = '!',
-	ADS1299_COMMAND_DEACTIVATE_LOFF_NCHAN = 'Z',
-	ADS1299_COMMAND_DEACTIVATE_LOFF_PCHAN = 'Q',
+	ADS1299_COMMAND_ACTIVATE_LOFF_NCHAN = 'A', /**< activates the lead-off detection for a n-channel */
+	ADS1299_COMMAND_ACTIVATE_LOFF_PCHAN = '!', /**< activates the lead-off detection for a p-channel */
+	ADS1299_COMMAND_DEACTIVATE_LOFF_NCHAN = 'Z', /**< deactivates the lead-off detection for a n-channel */
+	ADS1299_COMMAND_DEACTIVATE_LOFF_PCHAN = 'Q', /**< deactivates the lead-off detection for p n-channel */
 } ads1299_command_cpt;
 
 #define ADS1299_REG_CH_0 0x04

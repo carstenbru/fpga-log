@@ -25,7 +25,7 @@
  * An enumeration is used for this single value to let the config-tool correctly recognize it as parameter type.
  */
 typedef enum {
-	MAX31855_PARAMETER_READ = 'r', /**< read data from MAX31855 device */
+	MAX31855_PARAMETER_READ = 'r', /**< @value_ref none read data from MAX31855 device */
 } max31855_parameter_cpt;
 
 /**

@@ -22,9 +22,8 @@
  * @brief enumeration of the different control parameters of the VL6180 device
  */
 typedef enum {
-	VL6180_PARAMETER_START_RANGE = 'r', /**< starts a single shot range measurement */
-	VL6180_PARAMETER_START_ALS = 'a', /**< starts a single shot ALS (ambient light) measurement */
-//TODO
+	VL6180_PARAMETER_START_RANGE = 'r', /**< @value_ref none starts a single shot range measurement */
+	VL6180_PARAMETER_START_ALS = 'a', /**< @value_ref none starts a single shot ALS (ambient light) measurement */
 } vl6180_parameter_cpt;
 
 typedef enum {

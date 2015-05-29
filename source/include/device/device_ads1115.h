@@ -87,11 +87,11 @@ typedef enum {
  * @brief enumeration of the different control parameters of the ADS1115 device
  */
 typedef enum {
-	ADS1115_PARAMETER_SINGLE_SHOT = 's', /**< starts a single shot measurement */
-	ADS1115_PARAMETER_MUX = 'i', /**< input multiplexer configuration */
-	ADS1115_PARAMETER_GAIN = 'g', /**< gain configuration */
-	ADS1115_PARAMETER_MODE = 'm', /**< mode configuration */
-	ADS1115_PARAMETER_DATA_RATE = 'r' /**< data rate configuration */
+	ADS1115_PARAMETER_SINGLE_SHOT = 's', /**< @value_ref none starts a single shot measurement */
+	ADS1115_PARAMETER_MUX = 'i', /**< @value_ref ads1115_mux input multiplexer configuration */
+	ADS1115_PARAMETER_GAIN = 'g', /**< @value_ref ads1115_pga gain configuration */
+	ADS1115_PARAMETER_MODE = 'm', /**< @value_ref ads1115_mode mode configuration */
+	ADS1115_PARAMETER_DATA_RATE = 'r' /**< @value_ref ads1115_data_rate data rate configuration */
 } ads1115_parameter_cpt;
 
 typedef enum {
