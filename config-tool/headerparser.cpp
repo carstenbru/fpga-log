@@ -87,6 +87,8 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                     enumVal eVal;
                     bool firstVal = true;
                     bool comment = false;
+                    bool valRefToken = false;
+                    bool intToken = false;
                     while ((*i).compare("}") != 0) {
                         if (!comment) {
                           if (((*i).substr(0,2).compare("/*") == 0) || ((*i).compare("=") == 0)) {
@@ -95,6 +97,7 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                           } else {
                               if (!firstVal) {
                                   values.push_back(eVal); //add PREVIUOUS value
+                                  eVal.valueReference = "";
                               }
                               firstVal = false;
 
@@ -110,9 +113,34 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
                             }
                             else if ((*i).substr(0,2).compare("/*") == 0) {
                                 commentText.str("");
+                                valRefToken = false;
                             } else {
-                                commentText << *i << " ";
+                                if (i->compare("@value_ref") == 0) {
+                                    valRefToken = true;
+                                } else {
+                                    if (!valRefToken) {
+                                      commentText << *i << " ";
+                                    } else {
+                                        eVal.valueReference = *i;
+                                        valRefToken = false;
+                                    }
+                                }
                             }
+                        }
+                        if ((*i).at((*i).length()-1) == '=') {
+                            intToken = true;
+                        } else if (intToken) {
+                            intToken = false;
+                            int intVal;
+                            string s = *i;
+                            if (s.find('b') != string::npos) {
+                                intVal = strtol(s.c_str()+s.find('b')+1, NULL, 2);
+                            } else if (s.find('x') != string::npos) {
+                                intVal = strtol(s.c_str()+s.find('x')+1, NULL, 16);
+                            } else {
+                                istringstream(s) >> intVal;
+                            }
+                            eVal.intVal = intVal;
                         }
                         if (++i == tokens.end())
                             return;
@@ -275,6 +303,9 @@ void HeaderParser::parseMethodParameter(CMethod* method, std::string parameter, 
 
     try {
         CParameter param(name, DataType::getType(type), pointer);
+        if (type.compare("parameter_type_t") == 0) {
+            param.setCritical(true);
+        }
         try {
             param.setDescription(paramDescMap.at(name));
         } catch (exception) {

@@ -35,6 +35,7 @@ ConfigObjectDialog::~ConfigObjectDialog() {
 
 void ConfigObjectDialog::setupUi() {
     paramWidgets.clear();
+    paramTypes.clear();
 
     QWidget * contents = new QWidget();
     QVBoxLayout* layout = new QVBoxLayout();
@@ -103,17 +104,43 @@ void ConfigObjectDialog::objectSelectionChanged(QString text) {
 }
 
 void ConfigObjectDialog::addParameters(QFormLayout *parent, std::list<CParameter*> parameters) {
+    addParameters(NULL, parent, parameters);
+}
+
+void ConfigObjectDialog::addParameters(CMethod* parentMethod, QFormLayout *parent, std::list<CParameter*> parameters) {
     for (std::list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
         if (!(*i)->getHideFromUser()) {
             string paramName = (*i)->getName();
-            QWidget* widget = (*i)->getDataType()->getConfigWidget(dataLogger, *i);
-            widget->setToolTip((*i)->getDescription().c_str());
-            parent->addRow(paramName.c_str(), widget);
-            paramWidgets[*i] = widget;
+            DataType* type =(*i)->getDataType();
 
-            QComboBox* cb = dynamic_cast<QComboBox*>(widget);
-            if (cb != NULL) {
-                QObject::connect(cb, SIGNAL(currentIndexChanged(QString)), this, SLOT(objectSelectionChanged(QString)));
+            if (paramName.compare("value") == 0) { //possibly referenced by a parameter_type_t
+                if (parentMethod != NULL) {
+                    CParameter* tparam = parentMethod->getParameter("type");
+                    if (tparam->getDataType() == DataTypeEnumeration::getType("parameter_type_t")) {
+                        string typeRef = ((DataTypeEnumeration*)tparam->getDataType())->getValueReference(tparam->getValue());
+
+                        if (!typeRef.empty()) {
+                            if (typeRef.compare("none") == 0){
+                                type = NULL;
+                            } else {
+                                type = DataType::getType(typeRef);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (type != NULL) {
+                QWidget* widget = type->getConfigWidget(dataLogger, *i);
+                widget->setToolTip((*i)->getDescription().c_str());
+                parent->addRow(paramName.c_str(), widget);
+                paramWidgets[*i] = widget;
+                paramTypes[*i] = type;
+
+                QComboBox* cb = dynamic_cast<QComboBox*>(widget);
+                if (cb != NULL) {
+                    QObject::connect(cb, SIGNAL(currentIndexChanged(QString)), this, SLOT(objectSelectionChanged(QString)));
+                }
             }
         }
     }
@@ -168,6 +195,7 @@ void ConfigObjectDialog::addReqParametersGroup(QLayout *parent) {
                 widget->setToolTip(i->getDescription().c_str());
                 layout->addRow(( *i).getName().c_str(), widget);
                 paramWidgets[&*i] = widget;
+                paramTypes[&*i] = type;
 
                 QComboBox* cb = dynamic_cast<QComboBox*>(widget);
                 if (cb != NULL) {
@@ -201,7 +229,7 @@ void ConfigObjectDialog::addAdvancedConfigGroup(QLayout *parent) {
             methodGroupLayout->addRow(delBtn);
 
             string name = (*i)->getName();
-            addParameters(methodGroupLayout, (*i)->getMethodParameterPointers());
+            addParameters(*i, methodGroupLayout, (*i)->getMethodParameterPointers());
             addGroup(layout, name, (*i)->getDescription(),methodGroupLayout);
         }
     }
@@ -216,7 +244,7 @@ void ConfigObjectDialog::storeParams() {
         try {
             CParameter* param = i->first;
             if (param != objectRequestedForParam) {
-                param->setValue(param->getDataType()->getConfigData(i->second));
+                param->setValue(paramTypes[param]->getConfigData(i->second));
             }
         } catch (exception e) {
 

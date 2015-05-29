@@ -3,6 +3,7 @@
 #include <QSpinBox>
 #include <QLineEdit>
 #include <QHBoxLayout>
+#include <sstream>
 #include "datalogger.h"
 #include "gui/pinbox.h"
 
@@ -194,7 +195,7 @@ DataTypeEnumeration::DataTypeEnumeration(std::string name, string headerFile, bo
 }
 
 void DataTypeEnumeration::addValue(std::string value, std::string description) {
-    enumVal val = {value, description};
+    enumVal val = {value, description, "", 0};
     values.push_back(val);
     if (hasSuffix("_cpt")) {
         controlParameterType.values.push_back(val);
@@ -208,11 +209,20 @@ void DataTypeEnumeration::addValues(std::list<enumVal> valueList) {
     }
 }
 
-QWidget* DataTypeEnumeration::getConfigWidget(DataLogger*, CParameter *param) {
-    return getConfigBox(param);
+QWidget* DataTypeEnumeration::getConfigWidget(DataLogger* dataLogger, CParameter *param) {
+    return getConfigBox(dataLogger, param);
 }
 
-QComboBox* DataTypeEnumeration::getConfigBox(CParameter* param) {
+string DataTypeEnumeration::getEnumValueFromInt(int val) {
+    for (list<enumVal>::iterator i = values.begin(); i != values.end(); i++) {
+        if (i->intVal == val) {
+            return i->value;
+        }
+    }
+    return "";
+}
+
+QComboBox* DataTypeEnumeration::getConfigBox(DataLogger* dataLogger, CParameter* param) {
     QComboBox* cbox = new QComboBox();
     int pos = 0;
     for (list<enumVal>::iterator i = values.begin(); i != values.end(); i++) {
@@ -220,13 +230,33 @@ QComboBox* DataTypeEnumeration::getConfigBox(CParameter* param) {
         cbox->setItemData(pos, (*i).description.c_str(), Qt::ToolTipRole);
         pos++;
     }
-    cbox->setCurrentIndex(cbox->findText(QString(param->getValue().c_str())));
+    pos = cbox->findText(QString(param->getValue().c_str()));
+    if (pos == -1) {
+        int val;
+        istringstream(param->getValue()) >> val;
+        pos = cbox->findText(QString(getEnumValueFromInt(val).c_str()));
+    }
+    cbox->setCurrentIndex(pos);
+
+    if (param->getCritical()) {
+        QObject::connect(cbox, SIGNAL(currentIndexChanged(int)), dataLogger, SLOT(parameterChanged()));
+    }
+
     return cbox;
 }
 
 std::string DataTypeEnumeration::getConfigData(QWidget* widget) {
     QComboBox* cbox = dynamic_cast<QComboBox*>(widget);
     return cbox->currentText().toStdString();
+}
+
+std::string DataTypeEnumeration::getValueReference(std::string enumerationValue) {
+    for (list<enumVal>::iterator i = values.begin(); i != values.end(); i++) {
+        if ((*i).value.compare(enumerationValue) == 0) {
+            return (*i).valueReference;
+        }
+    }
+    return "";
 }
 
 QWidget* DataTypeString::getConfigWidget(DataLogger*, CParameter *param) {

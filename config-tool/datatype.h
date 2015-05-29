@@ -110,6 +110,8 @@ private:
 typedef struct {
     std::string value;
     std::string description;
+    std::string valueReference;
+    int intVal;
 } enumVal;
 
 class DataTypeEnumeration : public DataType {
@@ -122,11 +124,14 @@ public:
     void addValue(std::string value) { addValue(value, ""); }
     void addValues(std::list<enumVal> valueList);
 
-    virtual QWidget* getConfigWidget(DataLogger*, CParameter* param);
+    virtual QWidget* getConfigWidget(DataLogger*dataLogger, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
     virtual std::string getDefaultValue() { return values.front().value; }
 
-    QComboBox* getConfigBox(CParameter *param);
+    std::string getEnumValueFromInt(int val);
+    std::string getValueReference(std::string enumerationValue);
+
+    QComboBox* getConfigBox(DataLogger* dataLogger, CParameter *param);
 private:
     std::list<enumVal> values;
 

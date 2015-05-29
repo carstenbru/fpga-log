@@ -32,6 +32,7 @@ private:
     void addNameGroup(QLayout *parent);
     void addPortsGroup(QLayout *parent, std::string groupName, std::list<PeripheralPort*>& ports);
     void addParameters(QFormLayout *parent, std::list<CParameter *> parameters);
+    void addParameters(CMethod *parentMethod, QFormLayout *parent, std::list<CParameter *> parameters);
     void addHardwareParametersGroup(QLayout *parent);
     void addReqParametersGroup(QLayout *parent);
     void addAdvancedConfigGroup(QLayout *parent);
@@ -47,6 +48,7 @@ private:
     QLineEdit* objectName;
 
     std::map<CParameter*, QWidget*> paramWidgets;
+    std::map<CParameter*, DataType*> paramTypes;
 
     QSignalMapper* signalMapper;
 

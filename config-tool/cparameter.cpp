@@ -29,7 +29,7 @@ CParameter::CParameter(const CParameter& other) :
     value(other.value),
     description(other.description),
     hideFromUser(other.hideFromUser),
-    critical(false),
+    critical(other.critical),
     dataType(other.dataType),
     pointer(other.pointer)
 {
@@ -67,6 +67,10 @@ void CParameter::loadFromXmlStream(QXmlStreamReader& in) {
     critical = (a.value("critical").toString().compare("true") == 0);
     pointer = (a.value("pointer").toString().compare("true") == 0);
     dataType = DataType::getType(a.value("dataType").toString().toStdString());
+
+    if (dataType == DataTypeEnumeration::getType("parameter_type_t")) {
+        critical = true;
+    }
 
     in.skipCurrentElement();
 }

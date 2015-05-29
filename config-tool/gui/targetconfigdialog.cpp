@@ -28,7 +28,7 @@ void TargetConfigDialog::generateUi() {
     widget->setLayout(layout);
 
     CParameter* target = dataLogger->getTarget();
-    QComboBox* targetBox = dynamic_cast<DataTypeEnumeration*>(target->getDataType())->getConfigBox(target);
+    QComboBox* targetBox = dynamic_cast<DataTypeEnumeration*>(target->getDataType())->getConfigBox(NULL, target);
     layout->addRow(target->getName().c_str(), targetBox);
     connect(targetBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(targetChanged(QString)));
 
