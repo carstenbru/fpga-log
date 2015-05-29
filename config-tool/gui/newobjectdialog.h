@@ -26,6 +26,8 @@ private:
     Ui::NewObjectDialog *ui;
     int items;
     DataTypeStruct* lastInsertedType;
+private slots:
+    void itemDoubleClicke(QModelIndex index);
 };
 
 #endif // NEWOBJECTDIALOG_H

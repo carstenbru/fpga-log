@@ -35,6 +35,8 @@ NewMethodDialog::NewMethodDialog(std::list<CMethod *> methods, QWidget *parent) 
     ui->methodList->setModel(model);
     ui->methodList->resizeColumnToContents(0);
     ui->methodList->resizeColumnToContents(1);
+
+    QObject::connect(ui->methodList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(accept()));
 }
 
 string NewMethodDialog::getSelectedMethod() {
