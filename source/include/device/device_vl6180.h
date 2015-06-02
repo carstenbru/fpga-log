@@ -77,7 +77,7 @@ control_port_t* device_vl6180_get_control_in(device_vl6180_t* const vl6180);
 /**
  * @brief connects the range output port of a vl6180 device to a given destination
  *
- * @param	vl6180		pointer to the ads1115 device
+ * @param	vl6180		pointer to the vl6180 device
  * @param	data_in		the new data destination
  */
 void device_vl6180_set_range_out(device_vl6180_t* const vl6180,
