@@ -19,7 +19,7 @@
 void i2c_init(i2c_master_regs_t* i2c, int prescaler);
 
 /**
- * @brief reads 16-bit of data from an i2c slave
+ * @brief reads a defined amount of data from an i2c slave
  *
  * This function blocks until the action is finished (or ack missed).
  *
@@ -31,6 +31,21 @@ void i2c_init(i2c_master_regs_t* i2c, int prescaler);
  * @return 1 on success, 0 if an ack failed
  */
 int i2c_read(i2c_master_regs_t* i2c, int address, int count,
+		unsigned char* data);
+
+/**
+ * @brief reads a defined amount of data from an i2c slave without acknowledging the last read byte
+ *
+ * This function blocks until the action is finished (or ack missed).
+ *
+ * @param i2c				the i2c master
+ * @param address		the i2c slave address
+ * @param count 		amount of	bytes to read
+ * @param data 			pointer where the read data should be placed
+ *
+ * @return 1 on success, 0 if an ack failed
+ */
+int i2c_read_no_ack_last(i2c_master_regs_t* i2c, int address, int count,
 		unsigned char* data);
 
 /**

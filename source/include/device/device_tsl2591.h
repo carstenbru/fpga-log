@@ -13,9 +13,11 @@
 #include <fpga-log/data_port.h>
 #include <peripherals/i2c_master.h>
 
-#define TSL2591_ADDRESS 0x29
+#define TSL2591_ADDRESS (0x29 << 1)
 #define TSL2591_I2C_CLOCK 400000
 #define TSL2591_I2C_RETRIES 3
+
+#define TSL2591_NORMAL_OP 0b10100000
 
 /**
  * @brief enumeration of the different gain configurations of the TLS2591 device

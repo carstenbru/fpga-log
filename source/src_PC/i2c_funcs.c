@@ -49,6 +49,11 @@ int i2c_read(i2c_master_regs_t* i2c, int address, int count,
 	return 1;
 }
 
+int i2c_read(i2c_master_regs_t* i2c, int address, int count,
+		unsigned char* data) {
+	return i2c_read(i2c, address, count, data);
+}
+
 int i2c_action_w_retry(i2c_master_regs_t* i2c, int address, int count,
 		unsigned char* data,
 		int (*i2c_func)(i2c_master_regs_t* i2c, int address, int count,
