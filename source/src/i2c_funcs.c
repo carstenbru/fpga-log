@@ -70,7 +70,7 @@ int i2c_read_no_ack_last(i2c_master_regs_t* i2c, int address, int count,
 
 	while (count--) {
 		if (count)
-			i2c->command = I2C_RD;  //I2C ack flag is inverted and not as described in manual! -> this means no-ack!
+			i2c->command = I2C_RD;  //I2C ack flag is inverted and not as described in manual! -> this means ack!
 		else
 			i2c->command = I2C_RD | I2C_STO | I2C_ACK;  //I2C ack flag is inverted and not as described in manual! -> this means no-ack!
 		while (i2c->status & I2C_TIP)

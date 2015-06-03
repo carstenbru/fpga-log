@@ -119,7 +119,7 @@ static unsigned char device_vl6180_check_state(device_vl6180_t* vl6180,
 			VL6180_I2C_RETRIES)) {
 		unsigned char status[3];
 		if (i2c_action_w_retry(vl6180->i2c_master, VL6180_ADDRESS, 3, status,
-				i2c_read,
+				i2c_read_no_ack_last,
 				VL6180_I2C_RETRIES)) {
 			unsigned char err = status[0] >> 4;
 			if (err) {
@@ -158,7 +158,7 @@ static void device_vl6180_send_data(void* const _vl6180, const unsigned int id,
 				VL6180_I2C_RETRIES)) {
 			unsigned char als[2];
 			if (i2c_action_w_retry(vl6180->i2c_master, VL6180_ADDRESS, 2, als,
-					i2c_read,
+					i2c_read_no_ack_last,
 					VL6180_I2C_RETRIES)) {
 				unsigned int val = als[0] << 8 | als[1];
 				data_package_t package = { id, "ALS value", DATA_TYPE_INT, &val,
@@ -175,21 +175,21 @@ static void device_vl6180_send_data(void* const _vl6180, const unsigned int id,
 				VL6180_I2C_RETRIES)) {
 			unsigned char range;
 			if (i2c_action_w_retry(vl6180->i2c_master, VL6180_ADDRESS, 1, &range,
-					i2c_read,
+					i2c_read_no_ack_last,
 					VL6180_I2C_RETRIES)) {
 				data_package_t package = { id, "range value", DATA_TYPE_BYTE, &range,
 						timestamp };
 				vl6180->range_out->new_data(vl6180->range_out->parent, &package);
 			}
 		}
-
-		//clear interrupt flag bits
-		unsigned char intr_clear[3] = { 0, VL6180_REGISTER_SYSTEM__INTERRUPT_CLEAR,
-				0b00000111 };
-		i2c_action_w_retry(vl6180->i2c_master, VL6180_ADDRESS, 3, intr_clear,
-				i2c_write,
-				VL6180_I2C_RETRIES);
 	}
+
+	//clear interrupt flag bits
+	unsigned char intr_clear[3] = { 0, VL6180_REGISTER_SYSTEM__INTERRUPT_CLEAR,
+			0b00000111 };
+	i2c_action_w_retry(vl6180->i2c_master, VL6180_ADDRESS, 3, intr_clear,
+			i2c_write,
+			VL6180_I2C_RETRIES);
 }
 
 void device_vl6180_start_range_continous(device_vl6180_t* const vl6180,
