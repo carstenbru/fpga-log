@@ -19,7 +19,9 @@
 static void formatter_simple_format(void* const formatter,
 		const data_package_t* const package);
 
-void formatter_simple_init(formatter_simple_t* const formatter, formatter_simple_id_option print_source_id) {
+void formatter_simple_init(formatter_simple_t* const formatter,
+		formatter_simple_id_option print_source_id,
+		formatter_simple_tab_mode tab_mode) {
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
 	 */
@@ -27,6 +29,7 @@ void formatter_simple_init(formatter_simple_t* const formatter, formatter_simple
 
 	formatter->count = 0;
 	formatter->print_source_id = print_source_id;
+	formatter->tab_mode = tab_mode;
 }
 
 static void formatter_simple_format(void* const formatter,
@@ -38,14 +41,22 @@ static void formatter_simple_format(void* const formatter,
 	formatter_simple_t* fs = (formatter_simple_t*) formatter;
 
 	if (fs->print_source_id == FORMATTER_SIMPLE_PRINT_SOURCE_ID) {
-		printf("ID%d\t", package->source_id);
+		if (fs->tab_mode == FORMATTER_SIMPLE_USE_TABS) {
+			printf("ID%d\t", package->source_id);
+		} else {
+			printf("ID%d ", package->source_id);
+		}
 	}
 
 	print_long(package->timestamp->lpt, 1, 12);
 	stdio_descr.send_byte(stdio_descr.base_adr, '.');
 	print_long(package->timestamp->hpt, FORMATTER_SIMPLE_HPT_LENGTH,
 	FORMATTER_SIMPLE_HPT_LENGTH);
-	printf("\tcount %d: %s\tvalue ", fs->count++, package->val_name);
+	if (fs->tab_mode == FORMATTER_SIMPLE_USE_TABS) {
+		printf("\tcount %d: %s\tvalue ", fs->count++, package->val_name);
+	} else {
+		printf(" count %d: %s value ", fs->count++, package->val_name);
+	}
 	switch (package->type) {
 	case (DATA_TYPE_INT): {
 		printf("%d", *((int* ) package->data));
@@ -65,7 +76,7 @@ static void formatter_simple_format(void* const formatter,
 		if (i < 0)
 			i = -i;
 		print_long(f->coefficient / cast_to_ulong(10000), 1, 12);
-		printf(".%04d" , i % cast_to_ulong(10000));
+		printf(".%04d", i % cast_to_ulong(10000));
 		if (f->exponent)
 			printf("E%d", f->exponent);
 		break;
