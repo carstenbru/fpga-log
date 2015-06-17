@@ -208,6 +208,7 @@ static void sink_sd_card_update(void* const _sink_sd_card) {
 		if (file->packages_written >= sink->sync_interval) {
 			sink_sd_card_check_return_code(sink, f_sync(&file->file));
 			file->packages_written = 0;
+			break;
 		}
 	}
 

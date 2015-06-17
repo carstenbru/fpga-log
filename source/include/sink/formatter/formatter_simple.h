@@ -22,6 +22,7 @@ typedef enum {
 typedef enum {
 	FORMATTER_SIMPLE_USE_TABS, /**< use tabulator in output to separate different values (spaces will be used between value name and value) */
 	FORMATTER_SIMPLE_NO_TABS, /**< use only spaces in output to separate between different values and value name from values */
+	FORMATTER_SIMPLE_ONLY_TABS, /**< use only tabulators in output to separate different values and names from values */
 } formatter_simple_tab_mode;
 
 /** 

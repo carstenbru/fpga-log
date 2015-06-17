@@ -43,8 +43,10 @@ static void formatter_simple_format(void* const formatter,
 	if (fs->print_source_id == FORMATTER_SIMPLE_PRINT_SOURCE_ID) {
 		if (fs->tab_mode == FORMATTER_SIMPLE_USE_TABS) {
 			printf("ID%d\t", package->source_id);
-		} else {
+		} else if (fs->tab_mode == FORMATTER_SIMPLE_NO_TABS) {
 			printf("ID%d ", package->source_id);
+		} else {
+			printf("ID%d\t", package->source_id);
 		}
 	}
 
@@ -54,8 +56,10 @@ static void formatter_simple_format(void* const formatter,
 	FORMATTER_SIMPLE_HPT_LENGTH);
 	if (fs->tab_mode == FORMATTER_SIMPLE_USE_TABS) {
 		printf("\tcount %d: %s\tvalue ", fs->count++, package->val_name);
-	} else {
+	} else if (fs->tab_mode == FORMATTER_SIMPLE_NO_TABS) {
 		printf(" count %d: %s value ", fs->count++, package->val_name);
+	} else {
+		printf("\tcount\t%d:\t%s\tvalue\t", fs->count++, package->val_name);
 	}
 	switch (package->type) {
 	case (DATA_TYPE_INT): {
