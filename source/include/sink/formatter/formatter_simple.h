@@ -25,6 +25,11 @@ typedef enum {
 	FORMATTER_SIMPLE_ONLY_TABS, /**< use only tabulators in output to separate different values and names from values */
 } formatter_simple_tab_mode;
 
+typedef enum {
+	FORMATTER_SIMPLE_TIMESTAMP_RAW,  /**< print decimal part of timestamps in clock cycles */
+	FORMATTER_SIMPLE_TIMESTAMP_US, /**< print decimal part of timestamps in us- less precision and performance! */
+} formatter_simple_timestamp_mode;
+
 /** 
  * @brief struct defining a simple formatter which only outputs a message count and the value
  */
@@ -35,6 +40,9 @@ typedef struct {
 
 	formatter_simple_id_option print_source_id;
 	formatter_simple_tab_mode tab_mode;
+	formatter_simple_timestamp_mode timestamp_mode;
+
+	unsigned long ts_divider;
 } formatter_simple_t;
 
 /**
@@ -44,6 +52,6 @@ typedef struct {
  */
 void formatter_simple_init(formatter_simple_t* const formatter,
 		formatter_simple_id_option print_source_id,
-		formatter_simple_tab_mode tab_mode);
+		formatter_simple_tab_mode tab_mode, formatter_simple_timestamp_mode timestamp_mode);
 
 #endif 

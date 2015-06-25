@@ -6,6 +6,7 @@
  */
 
 #include <stdio.h>
+#include <fpga-log/sys_init.h>
 #include <fpga-log/sink/formatter/formatter_simple.h>
 #include <fpga-log/long_int.h>
 #include <fpga-log/simple_float.h>
@@ -21,7 +22,8 @@ static void formatter_simple_format(void* const formatter,
 
 void formatter_simple_init(formatter_simple_t* const formatter,
 		formatter_simple_id_option print_source_id,
-		formatter_simple_tab_mode tab_mode) {
+		formatter_simple_tab_mode tab_mode,
+		formatter_simple_timestamp_mode timestamp_mode) {
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
 	 */
@@ -30,6 +32,11 @@ void formatter_simple_init(formatter_simple_t* const formatter,
 	formatter->count = 0;
 	formatter->print_source_id = print_source_id;
 	formatter->tab_mode = tab_mode;
+	formatter->timestamp_mode = timestamp_mode;
+
+	if (timestamp_mode == FORMATTER_SIMPLE_TIMESTAMP_US) {
+		formatter->ts_divider = get_peri_clock() / 1000000;
+	}
 }
 
 static void formatter_simple_format(void* const formatter,
@@ -52,8 +59,16 @@ static void formatter_simple_format(void* const formatter,
 
 	print_long(package->timestamp->lpt, 1, 12);
 	stdio_descr.send_byte(stdio_descr.base_adr, '.');
-	print_long(package->timestamp->hpt, FORMATTER_SIMPLE_HPT_LENGTH,
-	FORMATTER_SIMPLE_HPT_LENGTH);
+
+	if (fs->timestamp_mode == FORMATTER_SIMPLE_TIMESTAMP_RAW) {
+		print_long(package->timestamp->hpt, FORMATTER_SIMPLE_HPT_LENGTH,
+		FORMATTER_SIMPLE_HPT_LENGTH);
+	} else {
+		unsigned long hpt = package->timestamp->hpt;
+		hpt /= fs->ts_divider;
+		print_long(hpt, 6, 6);
+	}
+
 	if (fs->tab_mode == FORMATTER_SIMPLE_USE_TABS) {
 		printf("\tcount %d: %s\tvalue ", fs->count++, package->val_name);
 	} else if (fs->tab_mode == FORMATTER_SIMPLE_NO_TABS) {
