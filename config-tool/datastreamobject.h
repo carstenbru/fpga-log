@@ -33,6 +33,7 @@ private:
     void findPorts();
     template <typename T>
     bool reorderUnconnectedPort(std::list<T*>& ports, Port* port);
+    PortOut* getFirstNotConnectedOutPort(std::string name, std::map<PortOut*, stringPair>& connections);
 
     void addPort(ControlPortIn* port);
     void addPort(ControlPortOut* port);

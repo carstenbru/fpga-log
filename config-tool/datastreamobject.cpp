@@ -26,7 +26,7 @@ DatastreamObject::DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger,
             position.setY(in.attributes().value("value").toString().toInt());
             in.skipCurrentElement();
         } else if ((in.name().compare("ControlPortOut") == 0) || (in.name().compare("DataPortOut") == 0)) {
-            PortOut* po = getOutPort(in.attributes().value("name").toString().toStdString());
+            PortOut* po = getFirstNotConnectedOutPort(in.attributes().value("name").toString().toStdString(), connections);
             if (po != NULL) {
                 po->load(in, connections);
             } else {
@@ -172,6 +172,22 @@ void DatastreamObject::portDisconnected(Port* port) {
     if (!reorderUnconnectedPort(controlOutPorts, port))
         reorderUnconnectedPort(dataOutPorts, port);
     emit connectionsChanged();
+}
+
+PortOut* DatastreamObject::getFirstNotConnectedOutPort(std::string name, std::map<PortOut*, stringPair>& connections) {
+    for (list<ControlPortOut*>::iterator i = controlOutPorts.begin(); i != controlOutPorts.end(); i++) {
+        if ((*i)->getName().compare(name) == 0)
+            if (connections.count(*i) == 0) {
+              return *i;
+            }
+    }
+    for (list<DataPortOut*>::iterator i = dataOutPorts.begin(); i != dataOutPorts.end(); i++) {
+        if ((*i)->getName().compare(name) == 0)
+            if (connections.count(*i) == 0) {
+              return *i;
+            }
+    }
+    return NULL;
 }
 
 PortOut* DatastreamObject::getOutPort(std::string name) {
