@@ -1,0 +1,8 @@
+<module name="device_input_pins">
+  <peripheral name="port_in" >
+    <parameter name="PORT_WIDTH" value="4" />
+    
+    <port group="global" name="intr" destination="TIMESTAMP_GEN" parameter="int_id" hide="TRUE" />
+    <port group="global" name="pin" constraints="PULLUP" />
+  </peripheral>
+</module>
