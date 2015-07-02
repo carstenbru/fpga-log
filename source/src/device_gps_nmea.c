@@ -94,8 +94,9 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 		const unsigned int id, const timestamp_t* const timestamp) {
 	device_gps_nmea_t* gps_nmea = (device_gps_nmea_t*) _gps_nmea;
 
+	uart_light_disable_rxint(gps_nmea->uart_light);
 	unsigned char byte;
-	if (uart_light_receive_nb(gps_nmea->uart_light, &byte) == UART_OK) {
+	while (uart_light_receive_nb(gps_nmea->uart_light, &byte) == UART_OK) {
 		if (byte > 127) {  //filter out non ASCII characters (should not be there, but who knows..)
 			gps_nmea->parse_status = 0;
 			return;
@@ -206,4 +207,5 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 			}
 		}
 	}
+	uart_light_enable_rxint(gps_nmea->uart_light);
 }

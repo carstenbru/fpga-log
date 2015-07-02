@@ -14,5 +14,9 @@
  * @brief enables the rx interrupt of a uart_light
  */
 void uart_light_enable_rxint(uart_light_regs_t* uart);
+/**
+ * @brief disables the rx interrupt of a uart_light
+ */
+void uart_light_disable_rxint(uart_light_regs_t* uart);
 
 #endif
