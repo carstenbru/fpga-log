@@ -29,7 +29,7 @@ void formatter_raw_init(formatter_raw_t* const formatter) {
 static void formatter_raw_format(void* const formatter,
 		const data_package_t* const package) {
 	formatter_t* f = (formatter_t*) formatter;
-	stdio_descr.base_adr = f->param;
+	stdio_descr.base_addr_out = f->param;
 	stdio_descr.send_byte = f->write_byte;
 
 	switch (package->type) {

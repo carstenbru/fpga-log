@@ -162,7 +162,7 @@ void sink_sd_card_open_file(sink_sd_card_t* const sink_sd_card, sd_file_t* file)
 		i = 0;
 		do {  //generate file with appended "_x" and try to open it until it works
 			char* p = buf;
-			stdio_descr.base_adr = &p;
+			stdio_descr.base_addr_out = &p;
 			printf(format_string, i);
 			i++;
 		} while ((open_code = f_open(&file->file, (char*) buf,

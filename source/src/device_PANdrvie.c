@@ -97,7 +97,7 @@ static void device_PANdrive_send_data(void* const _pan_drive,
 		case 7: {
 			char buffer[32];
 			pan_drive->buf = buffer;
-			stdio_descr.base_adr = pan_drive;
+			stdio_descr.base_addr_out = pan_drive;
 			stdio_descr.send_byte = device_PANdrive_buffer_printf;
 			printf("command %d", pan_drive->reply_command_code);
 			*pan_drive->buf = 0;

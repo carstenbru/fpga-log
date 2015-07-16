@@ -42,7 +42,7 @@ void formatter_simple_init(formatter_simple_t* const formatter,
 static void formatter_simple_format(void* const formatter,
 		const data_package_t* const package) {
 	formatter_t* f = (formatter_t*) formatter;
-	stdio_descr.base_adr = f->param;
+	stdio_descr.base_addr_out = f->param;
 	stdio_descr.send_byte = f->write_byte;
 
 	formatter_simple_t* fs = (formatter_simple_t*) formatter;
@@ -57,14 +57,14 @@ static void formatter_simple_format(void* const formatter,
 		}
 	}
 
-	print_long(package->timestamp->lpt, 1, 12);
-	stdio_descr.send_byte(stdio_descr.base_adr, '.');
+	print_long(package->timestamp->lpt_union.lpt, 1, 12);
+	stdio_descr.send_byte(stdio_descr.base_addr_out, '.');
 
 	if (fs->timestamp_mode == FORMATTER_SIMPLE_TIMESTAMP_RAW) {
-		print_long(package->timestamp->hpt, FORMATTER_SIMPLE_HPT_LENGTH,
+		print_long(package->timestamp->hpt_union.hpt, FORMATTER_SIMPLE_HPT_LENGTH,
 		FORMATTER_SIMPLE_HPT_LENGTH);
 	} else {
-		unsigned long hpt = package->timestamp->hpt;
+		unsigned long hpt = package->timestamp->hpt_union.hpt;
 		hpt /= fs->ts_divider;
 		print_long(hpt, 6, 6);
 	}
