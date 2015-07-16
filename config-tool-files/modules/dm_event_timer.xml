@@ -4,6 +4,8 @@
     <port group="global" name="timer_out" hide="TRUE" />
   </peripheral>
   <peripheral name="compare_regs" >
+    <parameter name="PIN_IDLE_LEVEL" hide="TRUE" />
+    
     <port group="global" name="timer_data" destination="./timer_regs/#PORT.timer_out" hide="TRUE" />
     <port group="global" name="intr" hide="TRUE" />
     <port group="global" name="pin_out" hide="TRUE" />

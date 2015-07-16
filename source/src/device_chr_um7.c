@@ -128,9 +128,9 @@ void device_chr_um7_zero_gyros(device_chr_um7_t* const chr_um7) {
 }
 
 static void device_chr_um7_set_data_length(chr_um7_packet_t* packet) {
-	if (packet->has_data) {
-		if (packet->is_batch) {
-			packet->data_length = packet->batch_length;
+	if (packet->pt_union.pt_struct.has_data) {
+		if (packet->pt_union.pt_struct.is_batch) {
+			packet->data_length = packet->pt_union.pt_struct.batch_length;
 		} else {
 			packet->data_length = 1;
 		}
@@ -292,7 +292,7 @@ static void device_chr_um7_process_received_package(
 		device_chr_um7_process_received_register(chr_um7, timestamp,
 				packet->address + i, packet->data[i]);
 	}
-	if (packet->command_failed) {
+	if (packet->pt_union.pt_struct.command_failed) {
 		data_package_t package = { chr_um7->super.id, "command failed",
 				DATA_TYPE_BYTE, &packet->address, timestamp };
 		chr_um7->error_out->new_data(chr_um7->error_out->parent, &package);
@@ -316,7 +316,7 @@ static void device_chr_um7_send_data(void* const _chr_um7,
 			}
 		} else {
 			if (chr_um7->parse_state == 3) {  //package type
-				chr_um7->um7_packet.pt = byte;
+				chr_um7->um7_packet.pt_union.pt = byte;
 				device_chr_um7_set_data_length(&chr_um7->um7_packet);
 			} else if (chr_um7->parse_state == 4) {  //address
 				chr_um7->um7_packet.address = byte;

@@ -28,9 +28,9 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.630945556" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 								<option id="gnu.c.compiler.option.include.paths.1818895940" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-log/source/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${SPARTANMC_ROOT}/spartanmc/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-log/testsystem}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-log/testsystem/firmware/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${SPARTANMC_ROOT}/spartanmc/include&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1805203490" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="TARGET_SUBSYSTEM_ID=120537"/>
@@ -85,9 +85,9 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1275747622" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 								<option id="gnu.c.compiler.option.include.paths.422772093" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-log/source/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${SPARTANMC_ROOT}/spartanmc/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-log/testsystem}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-log/testsystem/firmware/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${SPARTANMC_ROOT}/spartanmc/include&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1086309771" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="TARGET_SUBSYSTEM_ID=120537"/>
@@ -137,10 +137,10 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.521957213" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1769264383" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 								<option id="gnu.c.compiler.option.include.paths.1585037739" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${SPARTANMC_ROOT}/spartanmc/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-log/source/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-log/testsystem}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-log/testsystem/firmware/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${SPARTANMC_ROOT}/spartanmc/include&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.212655784" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="PC_NATIVE"/>
@@ -162,9 +162,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.toolchain.gnu.base.512130830.1678601965.1777073219" name="i2c_funcs.c" rcbsApplicability="disable" resourcePath="source/src/i2c_funcs.c" toolsToInvoke="cdt.managedbuild.tool.gnu.c.compiler.base.1769264383.1061558227">
-						<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1769264383.1061558227" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.1769264383"/>
-					</fileInfo>
 					<folderInfo id="cdt.managedbuild.toolchain.gnu.base.512130830.1678601965.976589710" name="/" resourcePath="include">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.base.1380160869" name="cdt.managedbuild.toolchain.gnu.base" superClass="cdt.managedbuild.toolchain.gnu.base" unusedChildren="">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
@@ -172,10 +169,10 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1347476397" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.521957213"/>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.556841849" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base.1769264383">
 								<option id="gnu.c.compiler.option.include.paths.1237102869" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${SPARTANMC_ROOT}/spartanmc/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-log/source/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-log/testsystem}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-log/testsystem/firmware/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${SPARTANMC_ROOT}/spartanmc/include&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.672056247" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>

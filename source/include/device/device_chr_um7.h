@@ -38,8 +38,8 @@ typedef struct {
 			unsigned int batch_length :4;
 			unsigned int hidden :1;
 			unsigned int command_failed :1;
-		};
-	};
+		} pt_struct;
+	} pt_union;
 	uint8_t data_length;
 	uint8_t data[15][4];
 

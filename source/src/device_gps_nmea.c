@@ -190,11 +190,11 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 									}
 									if (gps_nmea->time_parse_position == 7) {
 										timestamp_gen_regs_t* timestamp_gen = get_timestamp_gen();
-										timestamp_gen->timestamp.lpt = gps_nmea->time_parsed_sec;
+										timestamp_gen->timestamp.lpt_union.lpt = gps_nmea->time_parsed_sec;
 										unsigned long int lpt = mul34_17(get_peri_clock(),
 												gps_nmea->time_parsed);
 										lpt /= 10;
-										timestamp_gen->timestamp.hpt = lpt;
+										timestamp_gen->timestamp.hpt_union.hpt = lpt;
 									}
 								}
 								gps_nmea->time_parse_position++;
