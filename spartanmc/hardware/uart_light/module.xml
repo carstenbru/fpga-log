@@ -1,80 +1,121 @@
-<!--
-
-XML module description created from .mod file by automated conversion.
-Since some information covered by the new format is not provided by
-the old .mod-format, it needs to be added manually.
-
-For this file this would be:
-- module description
-- direction of ports (attribute direction of element ports)
-  (use ports-element to group port elements by direction)
-- width of ports (attribute width of element port, defaults to 1)
-
--->
-
-<module xmlns="http://www.mr.inf.tu-dresden.de/spartanmc/module" name="uart_light" text="UART Light" type="peripheral" category="Interface">
-  <description>
-    The UART Light is a SpartanMC peripheral device for serial communication with external systems. 
-    Compared to the standard UART the UART Light uses a lightwight interface which enables a smaller 
-    resource footprint. To provide the minimum interface the peripheral is primarily configured via 
-    pre synthesis parameters.
-  </description>
-
-  <interface toplevel="spmc_uart_light_peri" registers="3" />
-
-  <parameters>
-    <parameter name="CLOCK_FREQUENCY" type="int" value="25000000" />
-    <parameter name="FIFO_RX_DEPTH" type="int" value="8">
-      <choice value="8"/>
-      <choice value="16"/>
-      <choice value="32"/>
-      <choice value="64"/>
-      <choice value="128"/>
-      <choice value="256"/>
-      <choice value="512"/>
-      <choice value="1024"/>
-      <choice value="2048"/>
-    </parameter>
-    <parameter name="FIFO_TX_DEPTH" type="int" value="8">
-      <choice value="8"/>
-      <choice value="16"/>
-      <choice value="32"/>
-      <choice value="64"/>
-      <choice value="128"/>
-      <choice value="256"/>
-      <choice value="512"/>
-      <choice value="1024"/>
-      <choice value="2048"/>
-    </parameter>
-    <parameter name="BAUDRATE" type="int" value="115200">
-      <choice value="921600"/>
-      <choice value="576000"/>
-      <choice value="460800"/>
-      <choice value="230400"/>
-      <choice value="115200"/>
-      <choice value="57600"/>
-      <choice value="28000"/>
-      <choice value="19200"/>
-      <choice value="14400"/>
-      <choice value="9600"/>
-      <choice value="7200"/>
-      <choice value="4800"/>
-      <choice value="2400"/>
-      <choice value="1200"/>
-      <choice value="600"/>
-      <choice value="300"/>
-    </parameter>
-    <parameter name="INTERRUPT_SUPPORTED" type="bool" value="FALSE" />
-  </parameters>
-
-  <ports group="Transmitter" direction="output">
-    <port name="tx" />
-  </ports>
-  <ports group="Receiver" direction="input">
-    <port name="rx" />
-  </ports>
-  <ports group="Controller">
-    <port name="intr" direction="output"/>		
-  </ports>
-
-</module>
+<?xml version="1.0" encoding="UTF-8"?>
+<peripheral document-type="soc-peripheral-1.0" xmlns="soc-library" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <header category="Interface" label="UART Light" name="uart_light">
+        <description>The UART Light is a SpartanMC peripheral device for serial communication with external systems. Compared to the standard UART the UART Light uses a lightwight interface which enables a smaller resource footprint. To provide the minimum interface the peripheral is primarily configured via pre synthesis parameters.</description>
+    </header>
+    <hdl lang="verilog" toplevel="spmc_uart_light_peri">
+        <sources toolchain="xilinx">
+            <modules/>
+            <files>spmc_uart_light_peri.v
+uart_light_rx.v
+uart_light_tx.v
+uart_light_clk_gen.v
+uart_light.v
+uart_light_rx_dp.v
+uart_light_rx_ctrl.v
+uart_light_tx_dp.v
+uart_light_tx_ctrl.v</files>
+            <includes>%Please check whether the includes are correct%
+uart_light/util/uart_functions.v</includes>
+        </sources>
+    </hdl>
+    <ports direction="input" group="Processor peripheral interface"/>
+    <xi:include href="../defaults/peripheral.xml"/>
+    <ports direction="output" group="Transmitter">
+        <port descr="%Insert port description here%" direction="output" name="tx"/>
+        <port descr="%Insert port description here%" direction="input" name="tx_chain_i"/>
+    </ports>
+    <ports direction="input" group="Receiver">
+        <port descr="%Insert port description here%" name="rx"/>
+    </ports>
+    <ports group="Controller">
+        <port descr="%Insert port description here%" direction="output" name="intr"/>
+    </ports>
+    <parameters>
+        <parameter name="CLOCK_FREQUENCY" type="int" value="25000000">
+            <description>%Insert a parameter description here%</description>
+        </parameter>
+        <parameter name="FIFO_RX_DEPTH" type="int" value="8">
+            <description>%Insert a parameter description here%</description>
+            <choice descr="%Insert a description for the choices here%" value="8"/>
+            <choice descr="%Insert a description for the choices here%" value="16"/>
+            <choice descr="%Insert a description for the choices here%" value="32"/>
+            <choice descr="%Insert a description for the choices here%" value="64"/>
+            <choice descr="%Insert a description for the choices here%" value="128"/>
+            <choice descr="%Insert a description for the choices here%" value="256"/>
+            <choice descr="%Insert a description for the choices here%" value="512"/>
+            <choice descr="%Insert a description for the choices here%" value="1024"/>
+            <choice descr="%Insert a description for the choices here%" value="2048"/>
+        </parameter>
+        <parameter name="FIFO_TX_DEPTH" type="int" value="8">
+            <description>%Insert a parameter description here%</description>
+            <choice descr="%Insert a description for the choices here%" value="8"/>
+            <choice descr="%Insert a description for the choices here%" value="16"/>
+            <choice descr="%Insert a description for the choices here%" value="32"/>
+            <choice descr="%Insert a description for the choices here%" value="64"/>
+            <choice descr="%Insert a description for the choices here%" value="128"/>
+            <choice descr="%Insert a description for the choices here%" value="256"/>
+            <choice descr="%Insert a description for the choices here%" value="512"/>
+            <choice descr="%Insert a description for the choices here%" value="1024"/>
+            <choice descr="%Insert a description for the choices here%" value="2048"/>
+        </parameter>
+        <parameter name="BAUDRATE" type="int" value="115200">
+            <description>%Insert a parameter description here%</description>
+            <choice descr="%Insert a description for the choices here%" value="921600"/>
+            <choice descr="%Insert a description for the choices here%" value="576000"/>
+            <choice descr="%Insert a description for the choices here%" value="460800"/>
+            <choice descr="%Insert a description for the choices here%" value="230400"/>
+            <choice descr="%Insert a description for the choices here%" value="115200"/>
+            <choice descr="%Insert a description for the choices here%" value="57600"/>
+            <choice descr="%Insert a description for the choices here%" value="28000"/>
+            <choice descr="%Insert a description for the choices here%" value="14400"/>
+            <choice descr="%Insert a description for the choices here%" value="7200"/>
+            <choice descr="%Insert a description for the choices here%" value="4800"/>
+            <choice descr="%Insert a description for the choices here%" value="2400"/>
+            <choice descr="%Insert a description for the choices here%" value="1200"/>
+            <choice descr="%Insert a description for the choices here%" value="600"/>
+            <choice descr="%Insert a description for the choices here%" value="300"/>
+        </parameter>
+        <parameter name="INTERRUPT_SUPPORTED" type="bool" value="FALSE">
+            <description>%Insert a parameter description here%</description>
+        </parameter>
+        <parameter name="ENABLE_TX_CHAIN" type="bool" value="FALSE">
+            <description>%Insert a parameter description here%</description>
+        </parameter>
+    </parameters>
+    <registers>
+        <register access="readwrite" name="STATUS" offset="0">
+            <description>Contains the current Rx/Tx FIFO status. For resetting the tx interrupt this register should be read.</description>
+            <bitgroup lsb="0" name="RX_EMPTY" width="1">
+                <description>Set to one if the Rx FIFO is empty otherwise the value is zero.</description>
+            </bitgroup>
+            <bitgroup lsb="1" name="RX_FULL" width="1">
+                <description>Set to one if the Rx FIFO is full otherwise the value is zero.</description>
+            </bitgroup>
+            <bitgroup lsb="2" name="TX_EMPTY" width="1">
+                <description>Set to one if the Tx FIFO is empty otherwise the value is zero.</description>
+            </bitgroup>
+            <bitgroup lsb="3" name="TX_FULL" width="1">
+                <description>Set to one if the Tx FIFO is full otherwise the value is zero.</description>
+            </bitgroup>
+            <bitgroup lsb="9" name="RX_IE" width="1">
+                <description>To enable rx interrupt set this bit should be set to otherwise set to zero. This bit is only in not polling mode available.</description>
+            </bitgroup>
+            <bitgroup lsb="10" name="TX_IE" width="1">
+                <description>To enable tx interrupt this bit should be set to one otherwise set to zero. This bit is only in not polling mode available.</description>
+            </bitgroup>
+        </register>
+        <register access="read" name="RX_DATA" offset="1">
+            <description>Register for incoming data. The LSB of the data word is written to UART_FIFO_READ0. For resetting the rx interrupt this register should be read.</description>
+            <bitgroup lsb="0" name="value" width="8">
+                <description>Register for received data.</description>
+            </bitgroup>
+        </register>
+        <register access="write" name="TX_DATA" offset="2">
+            <description>Register for outgoing data. The LSB of the data word is written UART_FIFO_WRITE0.</description>
+            <bitgroup lsb="0" name="value" width="8">
+                <description>Register for data to send.</description>
+            </bitgroup>
+        </register>
+    </registers>
+</peripheral>

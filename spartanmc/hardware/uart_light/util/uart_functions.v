@@ -43,7 +43,7 @@ _______________________________________________________________________________
  * gleichen Baudraten.
 */
 
-function signed integer abs;
+function integer abs;
 
 	input integer value;
 	 

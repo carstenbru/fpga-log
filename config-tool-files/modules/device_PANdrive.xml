@@ -4,8 +4,10 @@
     <parameter name="FIFO_TX_DEPTH" value="16" hide="TRUE" />
     <parameter name="BAUDRATE" value="9600" />
     <parameter name="INTERRUPT_SUPPORTED" value="TRUE" hide="TRUE" />
+    <parameter name="ENABLE_TX_CHAIN" value="FALSE" hide="TRUE" />
     
     <port group="Controller" name="intr" destination="TIMESTAMP_GEN" parameter="id" hide="TRUE" />
+    <port group="Transmitter" name="tx_chain_i" hide="TRUE" />
     <port group="Receiver" name="rx" constraints="PULLUP" />
   </peripheral>
 </module>
