@@ -1,26 +1,28 @@
-<!--
-
-XML module description
-
--->
-
-<module xmlns="http://www.mr.inf.tu-dresden.de/spartanmc/module" name="clk_div" text="clock divider" type="gluelogic" category="Clock">
+<?xml version="1.0" encoding="UTF-8"?>
+<module document-type="soc-module-1.0" xmlns="soc-library">
+  <header category="Clock" label="clock divider" name="clk_div">
+    <description> 
+      The clock divider module can be used to divide a clock by a fixed value.
+    </description>
+  </header>
   
-	<description>
-		The clock divider module can be used to divide a clock by a fixed value.
-	</description>
-	
-	<interface toplevel="clk_div" />
-	
-	<parameters>
-		<!--<parameter name="BASE_ADR" type="hex" value="0x10" />-->
-		<parameter name="DIVISION" type="int" value="8000" />
-	</parameters>
-	
-	<ports direction="input">
-          <port name="clk_i"/>
-        </ports>
-	<ports direction="output">
-          <port name="clk_o"/>
-        </ports>
+  <hdl lang="verilog" toplevel="clk_div">
+    <sources toolchain="xilinx">
+      <modules/>
+      <files>
+	clk_div.v
+      </files>
+    </sources>
+  </hdl>
+  
+  <parameters>
+    <parameter name="DIVISION" type="int" value="8000" />  
+  </parameters>
+  
+  <ports direction="input" group="Inputs">
+    <port descr="%Insert port description here%" name="clk_i"/>
+  </ports>
+  <ports direction="output" group="Inputs">
+    <port descr="%Insert port description here%" name="clk_o"/>
+  </ports>
 </module>

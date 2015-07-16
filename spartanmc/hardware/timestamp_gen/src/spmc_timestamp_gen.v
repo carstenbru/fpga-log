@@ -80,9 +80,18 @@ module spmc_timestamp_gen #(
   reg counter_write_req;
   
   wire [17:0] dat_out;
+  
+  //delay read signals by one cycle (for new pipeline)
+  reg reg_read;
+  reg [2:0] reg_read_addr;
+  always @(posedge clk_peri) begin
+    reg_read <= select & !wr_peri;
+    reg_read_addr <= addr_peri[2:0];
+  end
+  
   //SpartanMC peripheral interface read logic
-  assign dat_out = (addr_peri[2:0] == STATUS_ADR) ? {17'd0, fifo_n_empty} : fifo_top[addr_peri[2:0]];
-  assign di_peri = (select & !wr_peri) ? dat_out : 18'b0;
+  assign dat_out = (reg_read_addr == STATUS_ADR) ? {17'd0, fifo_n_empty} : fifo_top[reg_read_addr];
+  assign di_peri = (reg_read) ? dat_out : 18'b0;
   
   assign source_change = (~source_last & source);
   assign fifo_n_empty = (fifo_ts_read != fifo_ts_write);

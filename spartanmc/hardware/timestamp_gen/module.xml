@@ -1,36 +1,62 @@
-<!--
-
-XML module description
-
--->
-
-<module xmlns="http://www.mr.inf.tu-dresden.de/spartanmc/module" name="timestamp_gen" text="Timestamp generator" type="peripheral" category="Timer/Counter">
+<?xml version="1.0" encoding="UTF-8"?>
+<peripheral document-type="soc-peripheral-1.0" xmlns="soc-library" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <header category="Timer/Counter" label="Timestamp generator" name="timestamp_gen">
+    <description>
+      The timestamp Generator is a SpartanMC peripheral for generating precise timestamps. 
+      Therefore it has two 36bit time values: one representing the current time in seconds and one with the exact clock cycle within this second. To get exact values it has a configurable amount of input lines and on a rising edge on this lines the
+      current timer value is stored into a fifo queue.
+      For non interrupt peripherals it is also possible to read the current timer value.
+    </description>
+  </header>
+  <hdl lang="verilog" toplevel="spmc_timestamp_gen">
+    <sources toolchain="xilinx">
+      <modules/>
+      <files>
+	spmc_timestamp_gen.v
+      </files>
+    </sources>
+  </hdl>
   
-	<description>
-		The timestamp Generator is a SpartanMC peripheral for generating precise timestamps. 
-		Therefore it has two 36bit time values: one representing the current time in seconds and one with the exact clock cycle within this second. To get exact values it has a configurable amount of input lines and on a rising edge on this lines the
-		current timer value is stored into a fifo queue.
-		For non interrupt peripherals it is also possible to read the current timer value.
-	</description>
-	
-	<interface toplevel="spmc_timestamp_gen" registers="7" />
-	
-	<parameters>
-		<!--<parameter name="BASE_ADR" type="hex" value="0x10" />-->
-		<parameter name="SOURCES" type="int" value="2" >
-		  <range min="0" max="262144"/>
-		</parameter>
-		<parameter name="PIN_SOURCES" type="int" value="2" >
-		  <range min="0" max="262144"/>
-		</parameter>
-		<parameter name="INVERTED_SOURCES_MASK" type="int" value="0" />
-		<parameter name="CLOCK_FREQUENCY" type="int" value="16000000" >
-		  <range min="1" max="68719476736"/>
-		</parameter>
-	</parameters>
-	
-	<ports group="Timestamp capture sources" direction="input">
-          <port name="internal_source" width="${SOURCES}"/>
-	  <port name="pin_source" width="${PIN_SOURCES}"/>
-        </ports>
-</module>
+  <parameters>
+    <parameter name="SOURCES" type="int" value="2" >
+      <range min="0" max="262144"/>
+    </parameter>
+    <parameter name="PIN_SOURCES" type="int" value="2" >
+      <range min="0" max="262144"/>
+    </parameter>
+    <parameter name="INVERTED_SOURCES_MASK" type="int" value="0" />
+    <parameter name="CLOCK_FREQUENCY" type="int" value="16000000" >
+      <range min="1" max="68719476736"/>
+    </parameter>
+  </parameters>
+  
+  <xi:include href="../defaults/peripheral.xml"/>
+  <ports group="Timestamp capture sources" direction="input">
+    <port name="internal_source" descr="%Insert port description here%" width="${SOURCES}"/>
+    <port name="pin_source" descr="%Insert port description here%" width="${PIN_SOURCES}"/>
+  </ports>
+  
+  <registers>
+    <register access="read" name="LPT_LOW" offset="0">
+      <description>Contains the low-precision timer value of the next event.</description>
+    </register>
+    <register access="read" name="LPT_HIGH" offset="1">
+      <description>Contains the low-precision timer value of the next event.</description>
+    </register>
+    <register access="read" name="HPT_LOW" offset="2">
+      <description>Contains the high-precision timer value of the next event.</description>
+    </register>
+    <register access="read" name="HPT_HIGH" offset="3">
+      <description>Contains the high-precision timer value of the next event.</description>
+    </register>
+    <register access="read" name="TSR" offset="4">
+      <description>Timestamp source register</description>
+    </register>
+    <register access="readwrite" name="CONTROL" offset="5">
+      <description>control register</description>
+    </register>
+    <register access="read" name="STATUS" offset="6">
+      <description>status register</description>
+    </register>
+  </registers>
+</peripheral>

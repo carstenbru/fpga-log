@@ -17,15 +17,15 @@ typedef struct {
 		struct {
 			unsigned int lpt_low; /**< low precision timestamp as uint, low value */
 			unsigned int lpt_high; /**< low precision timestamp as uint, high value */
-		};
-	};
+		} lpt_struct;
+	} lpt_union;
 	volatile union {
 		unsigned long int hpt; /**< high precision timestamp as long */
 		struct {
 			unsigned int hpt_low; /**< high precision timestamp as uint, low value */
 			unsigned int hpt_high; /**< high precision timestamp as uint, high value */
-		};
-	};
+		} hpt_struct;
+	} hpt_union;
 } timestamp_t;
 
 /**
