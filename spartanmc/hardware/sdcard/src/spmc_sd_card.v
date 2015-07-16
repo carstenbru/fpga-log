@@ -35,8 +35,14 @@ module spmc_sd_card(
   defparam iCSL.BASE_WIDTH  = 4;
   defparam iCSL.BASE_ADDR   = BASE_ADR >> 6;      //BASE_ADR has to be divisible by 64
 
+  //delay read signal by one cycle (for new pipeline), data is already generated in this cycle by sdcard module
+  reg reg_read;
+  always @(posedge clk_peri) begin
+    reg_read <= select & !wr_peri;
+  end
+  
   wire [7:0] sd_dat_out;
-  assign di_peri = (select & !wr_peri) ? {10'b0, sd_dat_out} : 18'b0;
+  assign di_peri = reg_read ? {10'b0, sd_dat_out} : 18'b0;
   
   spiMaster sdcard(
     .clk_i(clk_peri),

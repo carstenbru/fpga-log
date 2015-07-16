@@ -1,30 +1,144 @@
-<!--
-
-XML module description
-
--->
-
-<module xmlns="http://www.mr.inf.tu-dresden.de/spartanmc/module" name="sdcard" text="SD-Card controller" type="peripheral" category="MassStorage">
+<?xml version="1.0" encoding="UTF-8"?>
+<peripheral xmlns="soc-library" xmlns:xi="http://www.w3.org/2001/XInclude" document-type="soc-peripheral-1.0">
+  <header category="MassStorage" label="SD-Card controller" name="sdcard">
+    <description>The SD-Card controller can be used to interface sd cards. 
+		It supports card initialization and block read/write on hardware.</description>
+  </header>
   
-	<description>
-		The SD-Card controller can be used to interface sd cards. 
-		It supports card initialization and block read/write on hardware.
-	</description>
-	
-	<interface toplevel="spmc_sd_card" registers="36" />
-	
-	<parameters>
-		<!--<parameter name="BASE_ADR" type="hex" value="0x10" />-->
-		<parameter name="CLOCK_FREQUENCY" type="int" value="16000000" />
-	</parameters>
-	
-	<ports group="SD card">
-          <port name="sd_miso" direction="input"/>
-	  <port name="sd_mosi" direction="output"/>
-	  <port name="sd_clk" direction="output"/>
-	  <port name="sd_cs" direction="output"/>
-        </ports>
-	<ports group="timestamp_dummy">
-	  <port name="ts_dummy" direction="output"/>
-        </ports>
-</module>
+  <hdl lang="verilog" toplevel="spmc_sd_card">
+    <sources toolchain="xilinx">
+      <modules />
+      <files>spmc_sd_card.v</files>
+    </sources>
+  </hdl>
+  
+  <parameters>
+    <parameter name="CLOCK_FREQUENCY" type="int" value="16000000" />
+  </parameters>
+  
+  <xi:include href="../defaults/peripheral.xml" />
+  <ports group="SD card">
+    <port name="sd_miso" descr="%Insert port description here%" direction="input" />
+    <port name="sd_mosi" descr="%Insert port description here%" direction="output" />
+    <port name="sd_clk" descr="%Insert port description here%" direction="output" />
+    <port name="sd_cs" descr="%Insert port description here%" direction="output" />
+  </ports>
+  <ports group="timestamp_dummy">
+    <port name="ts_dummy" descr="%Insert port description here%" direction="output" />
+  </ports>
+  
+  <registers>
+    <register access="read" name="VERSION" offset="0">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="write" name="CONTROL" offset="1">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="readwrite" name="TRANS_TYPE" offset="2">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="write" name="TRANS_CTRL" offset="3">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="TRANS_STS" offset="4">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="TRANS_ERROR" offset="5">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="readwrite" name="DIRECT_ACCESS_DATA" offset="6">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="readwrite" name="SD_ADDR_7_0" offset="7">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="readwrite" name="SD_ADDR_15_8" offset="8">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="readwrite" name="SD_ADDR_23_6" offset="9">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="readwrite" name="SD_ADDR_31_24" offset="10">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="readwrite" name="SPI_CLK_DEL" offset="11">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP1_0" offset="12">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP1_1" offset="13">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP1_2" offset="14">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP1_3" offset="15">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="RX_FIFO_DATA" offset="16">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP2" offset="17">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="RX_FIFO_DATA_COUNT_MSB" offset="18">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="RX_FIFO_DATA_COUNT_LSB" offset="19">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="RX_FIFO_CONTROL" offset="20">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP3_0" offset="21">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP3_1" offset="22">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP3_2" offset="23">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP3_3" offset="24">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP3_4" offset="25">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP3_5" offset="26">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP3_6" offset="27">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP3_7" offset="28">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP3_8" offset="29">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP3_9" offset="30">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP3_10" offset="31">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="write" name="TX_FIFO_DATA" offset="32">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP4_0" offset="33">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP4_1" offset="34">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="read" name="GAP4_2" offset="35">
+      <description>%Insert register description here%</description>
+    </register>
+    <register access="write" name="TX_FIFO_CONTROL" offset="36">
+      <description>%Insert register description here%</description>
+    </register>
+  </registers>
+</peripheral>
+
