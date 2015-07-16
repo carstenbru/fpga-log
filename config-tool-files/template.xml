@@ -39,10 +39,6 @@ TARGET_NODE
                     <attribute id="name" xml:space="preserve">INTR_VECTOR</attribute>
                     <attribute id="value" xml:space="preserve">0x20</attribute>
                 </parameter>
-                <parameter id="#PARAM.MCU_ID">
-                    <attribute id="name" xml:space="preserve">MCU_ID</attribute>
-                    <attribute id="value" xml:space="preserve">0</attribute>
-                </parameter>
                 <parameter id="#PARAM.PERIPHERIE_REGS">
                     <attribute id="name" xml:space="preserve">PERIPHERIE_REGS</attribute>
                     <attribute id="value" xml:space="preserve">2</attribute>

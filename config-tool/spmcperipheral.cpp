@@ -124,6 +124,12 @@ std::string SpmcPeripheral::readModuleNameFromFile(std::string fileName) {
     }
     QXmlStreamReader reader(&file);
     reader.readNextStartElement();
+
+    //in newer spmc versions we need to look in the header tag for the peripheral name and not in the first one
+    if (reader.name().compare("peripheral") == 0) {
+        reader.readNextStartElement();
+    }
+
     return reader.attributes().value("name").toString().toStdString();
 }
 
@@ -161,26 +167,28 @@ void SpmcPeripheral::readParameterElement(QXmlStreamReader& reader) {
         type = "peripheral_int";
     DataTypeEnumeration* dt = NULL;
     while (reader.readNextStartElement()) {
-        type = dataType->getName() + "_" + paramName;
-        if (reader.name().toString().compare("range") == 0) {
-            try {
-                DataType::getType(type);
-            } catch (exception) {
-                QXmlStreamAttributes attributes = reader.attributes();
-                int min = attributes.value("min").toString().toInt();
-                int max = attributes.value("max").toString().toInt();
-                new DataTypeNumber(type, min, max, true);
-            }
-        } else if (reader.name().toString().compare("choice") == 0) {
-            if (dt == NULL) {
+        if (reader.name().compare("choice") == 0) {
+            type = dataType->getName() + "_" + paramName;
+            if (reader.name().toString().compare("range") == 0) {
                 try {
                     DataType::getType(type);
                 } catch (exception) {
-                    dt = new DataTypeEnumeration(type, true);
-                    dt->addValue(reader.attributes().value("value").toString().toStdString());
+                    QXmlStreamAttributes attributes = reader.attributes();
+                    int min = attributes.value("min").toString().toInt();
+                    int max = attributes.value("max").toString().toInt();
+                    new DataTypeNumber(type, min, max, true);
                 }
-            } else
-                dt->addValue(reader.attributes().value("value").toString().toStdString());
+            } else if (reader.name().toString().compare("choice") == 0) {
+                if (dt == NULL) {
+                    try {
+                        DataType::getType(type);
+                    } catch (exception) {
+                        dt = new DataTypeEnumeration(type, true);
+                        dt->addValue(reader.attributes().value("value").toString().toStdString());
+                    }
+                } else
+                    dt->addValue(reader.attributes().value("value").toString().toStdString());
+            }
         }
         reader.skipCurrentElement();
     }
@@ -237,6 +245,7 @@ void SpmcPeripheral::readPeripheralXML() {
     }
     QXmlStreamReader reader(&file);
     reader.readNextStartElement();
+
     while (reader.readNextStartElement()) {
         if (reader.name().compare("parameters") == 0) {
             while (reader.readNextStartElement())
@@ -267,37 +276,41 @@ void SpmcPeripheral::readModuleXML() {
                     QXmlStreamAttributes attributes = reader.attributes();
                     CParameter* parameter = getParameter(attributes.value("name").toString().toStdString());
                     QStringRef value = attributes.value("value");
-                    if (!value.isEmpty()) {
-                        parameter->setValue(value.toString().toStdString());
-                    }
-                    QStringRef hideStr = attributes.value("hide");
-                    if (!hideStr.isEmpty()) {
-                        bool hide = (hideStr.toString().compare("TRUE") == 0);
-                        parameter->setHideFromUser(hide);
+                    if (parameter != NULL) {
+                        if (!value.isEmpty()) {
+                            parameter->setValue(value.toString().toStdString());
+                        }
+                        QStringRef hideStr = attributes.value("hide");
+                        if (!hideStr.isEmpty()) {
+                            bool hide = (hideStr.toString().compare("TRUE") == 0);
+                            parameter->setHideFromUser(hide);
+                        }
                     }
                 } else if (reader.name().toString().compare("port") == 0) {
                     QXmlStreamAttributes attributes = reader.attributes();
                     PeripheralPort* port = getPort(attributes.value("group").toString().toStdString(), attributes.value("name").toString().toStdString());
                     QStringRef destination = attributes.value("destination");
-                    if (!destination.isEmpty()) {
-                        CParameter* p = port->getLines().front();
-                        p->setValue(destination.toString().toStdString());
+                    if (port != NULL) {
+                        if (!destination.isEmpty()) {
+                            CParameter* p = port->getLines().front();
+                            p->setValue(destination.toString().toStdString());
 
-                        QStringRef parameter = attributes.value("parameter");
-                        if (!parameter.isEmpty()) {
-                            string paramStr = parameter.toString().toStdString();
-                            p->setName(paramStr);
-                            parentObject->getInitMethod()->getParameter(paramStr)->setHideFromUser(true);
+                            QStringRef parameter = attributes.value("parameter");
+                            if (!parameter.isEmpty()) {
+                                string paramStr = parameter.toString().toStdString();
+                                p->setName(paramStr);
+                                parentObject->getInitMethod()->getParameter(paramStr)->setHideFromUser(true);
+                            }
                         }
-                    }
-                    QStringRef hideStr = attributes.value("hide");
-                    if (!hideStr.isEmpty()) {
-                        bool hide = (hideStr.toString().compare("TRUE") == 0);
-                        port->setHideFromUser(hide);
-                    }
-                    QStringRef constraints = attributes.value("constraints");
-                    if (!constraints.isEmpty()) {
-                        port->setConstraints(constraints.toString().toStdString());
+                        QStringRef hideStr = attributes.value("hide");
+                        if (!hideStr.isEmpty()) {
+                            bool hide = (hideStr.toString().compare("TRUE") == 0);
+                            port->setHideFromUser(hide);
+                        }
+                        QStringRef constraints = attributes.value("constraints");
+                        if (!constraints.isEmpty()) {
+                            port->setConstraints(constraints.toString().toStdString());
+                        }
                     }
                 }
                 reader.skipCurrentElement();

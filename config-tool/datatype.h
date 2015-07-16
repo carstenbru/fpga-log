@@ -168,7 +168,9 @@ public:
 
     std::string getName() { return name; }
     std::string getFreq() { return freq; }
+    std::string getLoc() { return loc; }
     void setFreq(std::string freq) { this->freq = freq; }
+    void setLoc(std::string loc) { this->loc = loc; }
 
     static std::string getGroupFromFullName(std::string fullName);
     static std::string getPinFromFullName(std::string fullName);
@@ -176,6 +178,7 @@ private:
     std::string name;
 
     std::string freq;
+    std::string loc;
 };
 
 class DataTypePin : public DataType {

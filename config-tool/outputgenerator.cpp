@@ -519,12 +519,17 @@ void OutputGenerator::writeClkPin(QXmlStreamWriter& writer) {
     writer.writeStartElement("fpga_pin");
     CParameter* clkPinParam = dataLogger->getClockPin();
     QString pinName = clkPinParam->getValue().c_str();
+    pinName.replace("_", ":");
+    Pin* pin = DataTypePin::getPinType()->getPin(Pin::getGroupFromFullName(pinName.toStdString()), Pin::getPinFromFullName(pinName.toStdString()));
     pinName.replace(":", "_");
     writer.writeAttribute("id", "#PIN.CLK");
 
     writeAttributeElement(writer, "name", pinName);
     writeAttributeElement(writer, "direction", "INPUT");
     writeAttributeElement(writer, "io_standard", "LVCMOS33");
+    if (pin != NULL) {
+      writeAttributeElement(writer, "loc", pin->getLoc().c_str());
+    }
 
     writer.writeEndElement();
 }
@@ -535,6 +540,8 @@ void OutputGenerator::writePins(QXmlStreamWriter& writer) {
     for (list<FpgaPin>::iterator i = usedPins.begin(); i != usedPins.end(); i++) {
          writer.writeStartElement("fpga_pin");
          QString pinName = (*i).getName().c_str();
+         pinName.replace("_", ":");
+         Pin* pin = DataTypePin::getPinType()->getPin(Pin::getGroupFromFullName(pinName.toStdString()), Pin::getPinFromFullName(pinName.toStdString()));
          pinName.replace(":", "_");
          string pinId = "#PIN." + pinName.toStdString();
          writer.writeAttribute("id", pinId.c_str());
@@ -542,6 +549,10 @@ void OutputGenerator::writePins(QXmlStreamWriter& writer) {
          writeAttributeElement(writer, "name", pinName);
          writeAttributeElement(writer, "direction", (*i).getDirection().c_str());
          writeAttributeElement(writer, "io_standard", "LVCMOS33");
+
+         if (pin != NULL) {
+           writeAttributeElement(writer, "loc", pin->getLoc().c_str());
+         }
          writeAttributeElement(writer, "user_constraints", (*i).getConstraints().c_str());
 
          writer.writeEndElement();

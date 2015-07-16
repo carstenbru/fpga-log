@@ -50,6 +50,11 @@ void DataLogger::loadTargetPins() {
                         pin.setFreq(freq.toString().toStdString());
                     }
 
+                    QStringRef loc = attributes.value("fpgapin");
+                    if (!loc.isEmpty()) {
+                        pin.setLoc(loc.toString().toStdString());
+                    }
+
                     pinType->addPin(groupName, pin);
                 }
                 reader.skipCurrentElement();
