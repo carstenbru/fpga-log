@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SPMC_SOC_KIT=spmc-soc-kit-beta
+SPMC_SOC_KIT=spmc-soc-kit-online
 LIB_DEPS="peri/uart_light_receive_nb.o peri/uart_light_send.o peri/spi_activate.o peri/spi_deactivate.o peri/spi_set_div.o peri/spi_enable.o peri/spi_set_cpha.o"
 CONFIG_TOOL_BUILD_DIR=build-config-tool-Desktop-Release
 
@@ -16,11 +16,13 @@ then
   
   #remove uart_light and timer_compare, they will be replaced with patched versions later
   rm -rf $SPARTANMC_ROOT/spartanmc/hardware/uart_light
-  rm -rf $SPARTANMC_ROOT/spartanmc/hardware/timer_compare
+  #rm -rf $SPARTANMC_ROOT/spartanmc/hardware/timer_compare
   
   #link new peripherals
   ln -sf $fpga_log_dir/spartanmc/include/peripherals/* $SPARTANMC_ROOT/spartanmc/include/peripherals/
-  ln -sf $fpga_log_dir/spartanmc/hardware/* $SPARTANMC_ROOT/spartanmc/hardware/
+  #ln -sf $fpga_log_dir/spartanmc/hardware/* $SPARTANMC_ROOT/spartanmc/hardware/
+  #new JConfig version has problems with links, so copy the files..
+  cp -R $fpga_log_dir/spartanmc/hardware/* $SPARTANMC_ROOT/spartanmc/hardware/
   
   #link new targets/devices
   ln -sf $fpga_log_dir/$SPMC_SOC_KIT/lib/targets/* $SPARTANMC_ROOT/lib/targets/
@@ -41,12 +43,14 @@ then
   #add spmc-force-cc-branches flag for library build
   if  ! grep -q "_CFLAGS+=-spmc-force-cc-branches=yes" $SPARTANMC_ROOT/spartanmc/lib_obj/objbuild.mk ;
   then #TODO compile only fpga-log library with this flag and not all
-    sed -i '/^_CFLAGS+=/a\_CFLAGS+=-spmc-force-cc-branches=yes' $SPARTANMC_ROOT/spartanmc/lib_obj/objbuild.mk
+    sed -i '/^_CFLAGS+=/a\_CFLAGS+=-spmc-force-cc-branches=yes' $SPARTANMC_ROOT/spartanmc/lib_obj/objbuild.mk #for older spmc versions
+    sed -i '/^_CFLAGS_$(D_BUILD):=/a\_CFLAGS_$(D_BUILD)+=-spmc-force-cc-branches=yes' $SPARTANMC_ROOT/spartanmc/lib_obj/objbuild.mk #for newer spmc versions
+    
   fi
   
   #compile library
   cd $SPARTANMC_ROOT/spartanmc/lib_obj/
-  make
+  #make
   
   #build config-tool
   mkdir $fpga_log_dir/$CONFIG_TOOL_BUILD_DIR
