@@ -14,7 +14,3 @@ int spi_trans_finished(spi_master_regs_t* spi) {
 int spi_read_data_in(spi_master_regs_t* spi) {
 	return spi->spi_data_in;
 }
-
-void spi_write(spi_master_regs_t* spi, int data) {
-	spi->spi_data_out = data;
-}

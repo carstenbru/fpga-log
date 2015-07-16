@@ -59,7 +59,7 @@ int spi_read_data_in(spi_master_regs_t* spi) {
 	return (msb << 8) | lsb;
 }
 
-void spi_write(spi_master_regs_t* spi, int data) {
+void spi_write(spi_master_regs_t* spi, unsigned char data) {
 	char buffer[1024];
 
 	//SpartanMC stdio.h overwrites normal c-header, but sprintf is there
