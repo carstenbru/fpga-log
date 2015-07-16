@@ -1,26 +1,40 @@
-<!--
-
-XML module description
-
--->
-
-<module xmlns="http://www.mr.inf.tu-dresden.de/spartanmc/module" name="pwm" text="PWM" type="peripheral" category="Interface">
+<?xml version="1.0" encoding="UTF-8"?>
+<peripheral xmlns="soc-library" xmlns:xi="http://www.w3.org/2001/XInclude" document-type="soc-peripheral-1.0">
+  <header category="Interface" label="PWM" name="pwm">
+    <description>The PWM Module is a SpartanMC peripheral offering a configurabel amount (1-18) of PWM channels. The PWM channels can be configured in frequency and duty cycle by software.
+		Also the phase to a (module internal) reference signal can be set for each channel individually.</description>
+  </header>
   
-	<description>
-		The PWM Module is a SpartanMC peripheral offering a configurabel amount (1-18) of PWM channels. The PWM channels can be configured in frequency and duty cycle by software.
-		Also the phase to a (module internal) reference signal can be set for each channel individually.
-	</description>
-	
-	<interface toplevel="spmc_pwm" registers="4" />
-	
-	<parameters>
-		<!--<parameter name="BASE_ADR" type="hex" value="0x10" />-->
-		<parameter name="CHANNELS" type="int" value="4" >
-		  <range min="1" max="1179648"/>
-		</parameter>
-	</parameters>
-	
-	<ports group="PWM channels" direction="output">
-          <port name="pwm" width="${CHANNELS}"/>
-        </ports>
-</module>
+  <hdl lang="verilog" toplevel="spmc_pwm">
+    <sources toolchain="xilinx">
+      <modules />
+      <files>spmc_pwm.v</files>
+    </sources>
+  </hdl>
+  
+  <parameters>
+    <parameter name="CHANNELS" type="int" value="4">
+      <range min="1" max="1179648" />
+    </parameter>
+  </parameters>
+  
+  <xi:include href="../defaults/peripheral.xml" />
+  <ports group="PWM channels" direction="output">
+    <port name="pwm" descr="%Insert port description here%" width="${CHANNELS}" />
+  </ports>
+  
+  <registers>
+    <register access="write" name="CONFIG" offset="0">
+      <description>configuration type register</description>
+    </register>
+    <register access="write" name="DATA_LOW" offset="1">
+      <description>lower bits of data</description>
+    </register>
+    <register access="write" name="DATA_HIGH" offset="2">
+      <description>higher bits of data</description>
+    </register>
+    <register access="write" name="PWM_SEL" offset="3">
+      <description>channel selection register</description>
+    </register>
+  </registers>
+</peripheral>
