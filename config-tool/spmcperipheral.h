@@ -31,6 +31,7 @@ public:
     void setHideFromUser(bool hide);
     void setConstraints(std::string constraints) { this->constraints = constraints; }
     std::string getConstraints() { return constraints; }
+    std::string getWidthRef() { return widthRef; }
 
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, PeripheralPort& port);
 private:
