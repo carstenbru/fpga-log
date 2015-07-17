@@ -57,9 +57,6 @@ module spmc_timestamp_gen #(
   wire [35:0] fifo_out_dat;
   wire fifo_n_empty;
   
-  reg [17:0] fifo_top [0:7];
-  reg [1:0] fifo_top_read_state;
-  
   //timestamp capture line registers
   reg [SOURCES_SUM-1:0] source_last;
   wire [SOURCES_SUM-1:0] source_change;
@@ -83,14 +80,16 @@ module spmc_timestamp_gen #(
   
   //delay read signals by one cycle (for new pipeline)
   reg reg_read;
-  reg [2:0] reg_read_addr;
+  reg status_read;
+  reg read_addr_lsb;
   always @(posedge clk_peri) begin
     reg_read <= select & !wr_peri;
-    reg_read_addr <= addr_peri[2:0];
+    status_read <= addr_peri[2:0] == STATUS_ADR;
+    read_addr_lsb <= addr_peri[0];
   end
   
   //SpartanMC peripheral interface read logic
-  assign dat_out = (reg_read_addr == STATUS_ADR) ? {17'd0, fifo_n_empty} : fifo_top[reg_read_addr];
+  assign dat_out = status_read ? {17'd0, fifo_n_empty} : (read_addr_lsb ? fifo_out_dat[35:18] : fifo_out_dat[17:0]);
   assign di_peri = (reg_read) ? dat_out : 18'b0;
   
   assign source_change = (~source_last & source);
@@ -214,40 +213,17 @@ module spmc_timestamp_gen #(
     endcase
   end
   
-  //fifo top read logic (to register)
-  always @(posedge clk_peri) begin
-    case (fifo_top_read_state)
-    2'b00: begin
-	     fifo_top[6] <= fifo_out_dat[17:0];
-	     fifo_top[7] <= fifo_out_dat[35:18];
-	   end
-    2'b01: begin
-	     fifo_top[0] <= fifo_out_dat[17:0];
-	     fifo_top[1] <= fifo_out_dat[35:18];
-	   end
-    2'b10: begin
-	     fifo_top[2] <= fifo_out_dat[17:0];
-	     fifo_top[3] <= fifo_out_dat[35:18];
-	   end
-    2'b11: begin
-	     fifo_top[4] <= fifo_out_dat[17:0];
-	     fifo_top[5] <= fifo_out_dat[35:18];
-	   end
-    endcase
-    fifo_top_read_state <= fifo_top_read_state + 1;
-  end
-  
 RAMB16_S36_S36 TIMESTAMP_FIFO	(
-		.ADDRA(		{fifo_ts_read[6:0], fifo_top_read_state[1:0]}	),
+		.ADDRA(		{fifo_ts_read[6:0], addr_peri[2:1]}		),
 		.ENA(		1'b1						),
 		.WEA(		1'b0						),
 		.SSRA(		1'b0						),
 		.CLKA(		clk_peri					),
-		.DOA(		fifo_out_dat[31:0]				),
-		.DOPA(		fifo_out_dat[35:32]				),
+		.DOA(		{fifo_out_dat[33:18],fifo_out_dat[15:0]}	),
+		.DOPA(		{fifo_out_dat[35:34],fifo_out_dat[17:16]}	),
 		
-		.DIB(		fifo_in_dat[31:0]				),
-		.DIPB(		fifo_in_dat[35:32]				),
+		.DIB(		{fifo_in_dat[33:18],fifo_in_dat[15:0]}		),
+		.DIPB(		{fifo_in_dat[35:34],fifo_in_dat[17:16]}		),
 		.ADDRB(		{fifo_ts_write[6:0], capture_state[1:0]}	),
 		.ENB(		!capture_ready					),
 		.WEB(		1'b1						),
