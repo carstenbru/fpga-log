@@ -12,6 +12,9 @@
 
 const char* max31855_fault_names[3] = MAX31855_FAULT_NAMES;
 
+//set to one if SPI offers 16 bit reads, otherwise 8 bit word length is assumed
+#define FULL_16BIT_READ 0
+
 /**
  * @brief max31855 send data function
  *
@@ -66,9 +69,9 @@ void device_max31855_init(device_max31855_t* const max31855,
 		clk >>= 1;
 		prescaler++;
 	}
-	spi_set_div((spi_t*)spi_master, prescaler);
+	spi_set_div((spi_t*) spi_master, prescaler);
 	//CPOL = 0, CPAH = 0 is default
-	spi_enable((spi_t*)spi_master);
+	spi_enable((spi_t*) spi_master);
 }
 
 control_port_t* device_max31855_get_control_in(
@@ -100,7 +103,7 @@ static void device_max31855_control_message(void* const _max31855,
 				_datastream_source_generate_software_timestamp(
 						(datastream_source_t*) _max31855);
 
-				spi_activate((spi_t*)max31855->spi_master, 1);
+				spi_activate((spi_t*) max31855->spi_master, 1);
 				spi_write(max31855->spi_master, 0);  //start reading by write to data_out register
 			}
 		}
@@ -117,7 +120,16 @@ static void device_max31855_send_data(void* const _max31855,
 
 	while (!(spi_trans_finished(max31855->spi_master)))
 		;
+#if (FULL_16BIT_READ)
 	int data = spi_read_data_in(max31855->spi_master);
+#else
+	int data = spi_read_data_in(max31855->spi_master) << 8;
+	spi_write(max31855->spi_master, 0);  //start reading by write to data_out register
+	while (!(spi_trans_finished(max31855->spi_master)))
+		;
+	data |= spi_read_data_in(max31855->spi_master);
+#endif
+
 	//start reading by write to data_out register
 	//do this right now so peripheral will be very likely already finished when the data is needed
 	//e.g. for 16MHz CPU clock and 4MHz SPI clock reading will need 64 clock cycles
@@ -135,7 +147,15 @@ static void device_max31855_send_data(void* const _max31855,
 	while (!(spi_trans_finished(max31855->spi_master)))
 		;
 	if (max31855->internal_temp_out != &data_port_dummy) {
+#if (FULL_16BIT_READ)
 		data = spi_read_data_in(max31855->spi_master);
+#else
+		data = spi_read_data_in(max31855->spi_master) << 8;
+		spi_write(max31855->spi_master, 0);  //start reading by write to data_out register
+		while (!(spi_trans_finished(max31855->spi_master)))
+			;
+		data |= spi_read_data_in(max31855->spi_master);
+#endif
 		val = data >> 4;
 		if ((val & 2047) != val)
 			val -= 4096;
@@ -159,7 +179,7 @@ static void device_max31855_send_data(void* const _max31855,
 			fault = 2;
 			break;
 		default:
-			spi_deactivate((spi_t*)max31855->spi_master);
+			spi_deactivate((spi_t*) max31855->spi_master);
 			return;
 		}
 		data_package_t fault_package = { id, max31855_fault_names[fault],
@@ -167,5 +187,5 @@ static void device_max31855_send_data(void* const _max31855,
 		max31855->error_out->new_data(max31855->error_out->parent, &fault_package);
 	}
 
-	spi_deactivate((spi_t*)max31855->spi_master);
+	spi_deactivate((spi_t*) max31855->spi_master);
 }

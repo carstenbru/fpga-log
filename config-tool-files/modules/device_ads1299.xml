@@ -1,9 +1,9 @@
 <module name="device_ads1299">
   <peripheral name="spi_master" >
     <parameter name="SPI_SS" hide="TRUE" />
-    <parameter name="BITS_PRO_FRAME" value="8" hide="TRUE" />
     
-    <port group="global" name="intr" hide="TRUE" />
+    <port group="Physical SPI-Mastere interrupt" name="intr" hide="TRUE" />
+    <port group="Physical SPI-Master CLK Input >= 400 KHz (1MHz)" name="clk_spi" destination="SUBSYSTEM/SPARTANMC/#PORT.clk_peri" hide="TRUE" />
   </peripheral>
   <timestamp_pin name="DRDY" parameter="drdy_id" invert="TRUE" />
 </module>
