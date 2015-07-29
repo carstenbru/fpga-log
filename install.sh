@@ -1,7 +1,7 @@
 #!/bin/sh
 
 SPMC_SOC_KIT=spmc-soc-kit-online
-LIB_DEPS="peri/uart_light_receive_nb.o peri/uart_light_send.o peri/spi_activate.o peri/spi_deactivate.o peri/spi_set_div.o peri/spi_enable.o peri/spi_set_cpha.o"
+LIB_DEPS="peri/uart_light_receive_nb.o peri/uart_light_send.o peri/spi_activate.o peri/spi_deactivate.o peri/spi_set_div.o peri/spi_enable.o peri/spi_set_cpha.o peri/spi_write.o"
 CONFIG_TOOL_BUILD_DIR=build-config-tool-Desktop-Release
 
 fpga_log_dir=$(pwd)
@@ -16,7 +16,7 @@ then
   
   #remove uart_light and timer_compare, they will be replaced with patched versions later
   rm -rf $SPARTANMC_ROOT/spartanmc/hardware/uart_light
-  #rm -rf $SPARTANMC_ROOT/spartanmc/hardware/timer_compare
+  rm -rf $SPARTANMC_ROOT/spartanmc/hardware/timer_compare
   
   #link new peripherals
   ln -sf $fpga_log_dir/spartanmc/include/peripherals/* $SPARTANMC_ROOT/spartanmc/include/peripherals/

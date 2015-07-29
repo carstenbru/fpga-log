@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<peripheral document-type="soc-peripheral-1.0" xmlns="soc-library" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <header category="Timer/Counter" label="Compare unit" name="compare">
+        <description>%insert module description here%</description>
+    </header>
+    <hdl lang="verilog" toplevel="timer_compare">
+        <sources toolchain="xilinx">
+            <modules/>
+            <files>timer_compare.v</files>
+            <includes>%Please check whether the includes are correct%
+</includes>
+        </sources>
+    </hdl>
+    <ports direction="input" group="Processor peripheral interface"/>
+    <xi:include href="../defaults/peripheral.xml"/>
+    <ports direction="output">
+        <port descr="%Insert port description here%" name="intr"/>
+        <port descr="%Insert port description here%" name="pin_out"/>
+    </ports>
+    <ports direction="input">
+        <port descr="%Insert port description here%" name="timer_data" width="18"/>
+    </ports>
+    <parameters>
+        <parameter name="PIN_IDLE_LEVEL" type="string" value="1'bz"> <description>PIN Value when OE=0</description>  </parameter>
+    </parameters>
+    <registers>
+        <register access="readwrite" name="CTRL" offset="0">
+            <description>Specify the operation mode. (An access on this register clears the interrupt flag.)</description>
+            <bitgroup lsb="0" name="EN" width="1">
+                <description>If set to one the compare logic is enabled.</description>
+            </bitgroup>
+            <bitgroup lsb="1" name="IE" width="1">
+                <description>If set to one the interrupt is enabled.</description>
+            </bitgroup>
+            <bitgroup lsb="2" name="MODE" width="3">
+                <description>Sets the operation mode (if bit 4 = 0)</description>
+                <bitval
+                    descr="%Insert a description for the bit group value here%"
+                    name="NON_FRQ" value="0x0"/>
+                <bitval
+                    descr="%Insert a description for the bit group value here%"
+                    name="SET_OUT" value="0x1"/>
+                <bitval
+                    descr="%Insert a description for the bit group value here%"
+                    name="CLEAR_OUT" value="0x2"/>
+                <bitval
+                    descr="%Insert a description for the bit group value here%"
+                    name="TOGGLE_OUT" value="0x3"/>
+                <bitval
+                    descr="%Insert a description for the bit group value here%"
+                    name="NON_IMP" value="0x4"/>
+                <bitval
+                    descr="%Insert a description for the bit group value here%"
+                    name="C0_N1" value="0x6"/>
+                <bitval
+                    descr="%Insert a description for the bit group value here%"
+                    name="C1_N0" value="0x7"/>
+            </bitgroup>
+            <bitgroup lsb="5" name="EN_OUT" width="1">
+                <description>If set to one the comparator output is enabled.</description>
+            </bitgroup>
+            <bitgroup lsb="6" name="VAL_OUT" width="1">
+                <description>Comparator output bit.</description>
+            </bitgroup>
+        </register>
+        <register access="readwrite" name="DAT" offset="1">
+            <description>Compare value for the 18 bit counter of the basic timer modules.</description>
+        </register>
+    </registers>
+</peripheral>
