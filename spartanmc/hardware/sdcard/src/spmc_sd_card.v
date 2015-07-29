@@ -42,7 +42,17 @@ module spmc_sd_card(
   end
   
   wire [7:0] sd_dat_out;
-  assign di_peri = reg_read ? {10'b0, sd_dat_out} : 18'b0;
+  
+  wire wishbone_ack;
+  reg [7:0] sd_dat_out_last;
+  
+  wire [7:0] sd_dat_out_spmc;
+  assign sd_dat_out_spmc = wishbone_ack ? sd_dat_out : sd_dat_out_last;
+  assign di_peri = reg_read ? {10'b0, sd_dat_out_spmc} : 18'b0;
+  
+  always @(posedge clk_peri) begin
+    sd_dat_out_last <= sd_dat_out;
+  end
   
   spiMaster sdcard(
     .clk_i(clk_peri),
@@ -52,7 +62,7 @@ module spmc_sd_card(
     .data_o(sd_dat_out),
     .strobe_i(select),
     .we_i(wr_peri),
-    //.ack_o, //acknowledgement not used by spmc peripheral bus
+    .ack_o(wishbone_ack),
 
     // SPI logic clock
     .spiSysClk(clk_peri),

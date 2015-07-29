@@ -75,8 +75,12 @@ int sdcard_init(sdcard_regs_t* const sdcard) {
 	}
 
 	sdcard_send_cmd(sdcard, 8, data_cmd8, 0x87);  //send CMD8
-
 	int i;
+	for (i = 0; i < 4; i++) {  //read R7 response
+		sdcard->trans_ctrl = TRANS_START;
+		sdcard_busy_wait(sdcard);
+	}
+
 	for (i = 0; i < SD_INIT_WAIT; i++) {
 		sdcard_send_cmd(sdcard, 55, data_empty, 1);  //send ACMD41 (CMD55+CMD41)
 		r1 = sdcard_send_cmd(sdcard, 41, data_cmd41, 1);
@@ -84,7 +88,12 @@ int sdcard_init(sdcard_regs_t* const sdcard) {
 			break;
 		}
 	}
-	if (r1 == 0x01) {
+
+	if (r1 == 0x05) {  //if ACMD41 was rejected as illegal command retry with CMD1
+		r1 = sdcard_send_cmd(sdcard, 1, data_cmd41, 1);
+	}
+
+	if (r1 & 0x01) {
 		sdcard_reset_cs(sdcard);
 		return INIT_ACMD41_ERROR;
 	}
@@ -118,10 +127,10 @@ int sdcard_init(sdcard_regs_t* const sdcard) {
  */
 static void sdcard_set_address(sdcard_regs_t* const sdcard,
 		unsigned long int address) {
-	sdcard->sd_addr_7_0 = (unsigned int)address;
-	sdcard->sd_addr_15_8 = (unsigned int)(address >> 8);
-	sdcard->sd_addr_23_16 = (unsigned int)(address >> 16);
-	sdcard->sd_addr_31_24 = (unsigned int)(address >> 24);
+	sdcard->sd_addr_7_0 = (unsigned int) address;
+	sdcard->sd_addr_15_8 = (unsigned int) (address >> 8);
+	sdcard->sd_addr_23_16 = (unsigned int) (address >> 16);
+	sdcard->sd_addr_31_24 = (unsigned int) (address >> 24);
 }
 
 int sdcard_block_write(sdcard_regs_t* const sdcard, unsigned long address,
@@ -148,11 +157,18 @@ int sdcard_block_read(sdcard_regs_t* const sdcard, unsigned long address,
 	if (sdcard->trans_error != SD_NO_ERROR)
 		return (sdcard->trans_error);
 
+	/*
+	 * dummy read:
+	 * Since sdcard peripheral was originally designed for a wishbone bus which supports delays by the peripheral
+	 * (and SpartanMCs bus does not), the fifo has a delay of one clock cycle.
+	 * So the read data is always the last value and not the real one.
+	 */
+	*block = sdcard->rx_fifo_data;
 	int i;
 	for (i = 0; i < SD_BLOCK_SIZE; i++) {  //read data from peripheral fifo
 		*block++ = sdcard->rx_fifo_data;
 	}
-	//sdcard->rx_fifo_control = FIFO_FORCE_EMPTY;
+	sdcard->rx_fifo_control = FIFO_FORCE_EMPTY;
 
 	return SD_NO_ERROR;
 }
