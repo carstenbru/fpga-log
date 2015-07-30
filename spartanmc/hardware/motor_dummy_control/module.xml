@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<peripheral xmlns="soc-library" xmlns:xi="http://www.w3.org/2001/XInclude" document-type="soc-peripheral-1.0">
+    <header category="Interface" label="motor_dummy_control" name="motor_dummy_control">
+      <description>
+        This is an application specific module: control of the dummys in the drive test of FGLT, TU Darmstadt.
+      </description>
+    </header>
+    
+    <hdl lang="verilog" toplevel="motor_dummy_control">
+        <sources toolchain="xilinx">
+            <modules />
+            <files>motor_dummy_control.v</files>
+        </sources>
+    </hdl>
+    
+    <parameters>
+        <parameter name="CLOCK_FREQUENCY" type="int" value="16000000" />
+        <parameter name="MAX_SPEED" type="int" value="100" />
+        <parameter name="PWM_FREQ" type="int" value="100" />
+        <parameter name="SOFT_START_LENGTH" type="int" value="5000" />
+        <parameter name="SOFT_START_EXPONENTIAL" type="bool" value="FALSE" />
+	<parameter name="END_SW_DETECTION_LENGTH" type="int" value="128" />
+    </parameters>
+    
+    <xi:include href="../defaults/peripheral.xml" />
+    <ports group="control" direction="output">
+        <port name="active" descr="%Insert port description here%"/>
+        <port name="direction" descr="%Insert port description here%"/>
+    </ports>
+    <ports group="sensors" direction="input">
+        <port name="end_sw_down" descr="%Insert port description here%"/>
+        <port name="end_sw_up" descr="%Insert port description here%"/>
+    </ports>
+    <ports group="timestamp" direction="output">
+        <port name="dest_reached" descr="%Insert port description here%"/>
+    </ports>
+    
+    <registers>
+        <register access="readwrite" name="CONTROL" offset="0">
+            <description>control register</description>
+        </register>
+    </registers>
+</peripheral>

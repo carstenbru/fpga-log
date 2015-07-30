@@ -17,6 +17,12 @@ then
   #remove uart_light and timer_compare, they will be replaced with patched versions later
   rm -rf $SPARTANMC_ROOT/spartanmc/hardware/uart_light
   rm -rf $SPARTANMC_ROOT/spartanmc/hardware/timer_compare
+  #remove older versions of fpga-log's hardware components
+  rm -rf $SPARTANMC_ROOT/spartanmc/hardware/clk_div
+  rm -rf $SPARTANMC_ROOT/spartanmc/hardware/pwm
+  rm -rf $SPARTANMC_ROOT/spartanmc/hardware/sdcard
+  rm -rf $SPARTANMC_ROOT/spartanmc/hardware/timestamp_gen
+  rm -rf $SPARTANMC_ROOT/spartanmc/hardware/motor_dummy_control
   
   #link new peripherals
   ln -sf $fpga_log_dir/spartanmc/include/peripherals/* $SPARTANMC_ROOT/spartanmc/include/peripherals/

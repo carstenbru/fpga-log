@@ -1,0 +1,8 @@
+<module name="device_motor_dummy_control">
+  <peripheral name="motor_dummy_control_peri" >
+    
+    <port group="timestamp" name="dest_reached" destination="TIMESTAMP_GEN" parameter="id" hide="TRUE" />
+    <port group="sensors" name="end_sw_down" constraints="PULLUP" />
+    <port group="sensors" name="end_sw_up" constraints="PULLUP" />
+  </peripheral>
+</module>
