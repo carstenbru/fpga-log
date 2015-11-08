@@ -247,6 +247,7 @@ QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger) {
     }
 
     in >> dataLogger.target >> dataLogger.clockPin >> dataLogger.clockFreq;
+    dataLogger.loadTargetPins();
 
     map<PortOut*, stringPair> connections;
 
