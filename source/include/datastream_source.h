@@ -50,7 +50,7 @@ int datastream_source_init(datastream_source_t* const source,
 /**
  * @brief generates a software triggered timestamp in the timestamp generator
  *
- * When this function is called a timestamp is gerated and
+ * When this function is called a timestamp is genrated and
  * later on the send_data function of the device is invoked with this timestamp.
  *
  * @param source

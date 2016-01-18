@@ -61,7 +61,7 @@ static void device_input_pins_send_data(void* const _input_pins,
 	device_input_pins_t* input_pins = (device_input_pins_t*) _input_pins;
 
 	unsigned int value = input_pins->port_in->data;
-	data_package_t package = { id, "data", DATA_TYPE_INT, &value, timestamp };
+	data_package_t package = { id, "input_pins", DATA_TYPE_INT, &value, timestamp };
 	input_pins->data_out->new_data(input_pins->data_out->parent, &package);
 }
 

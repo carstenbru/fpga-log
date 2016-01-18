@@ -36,7 +36,7 @@ typedef enum {
 typedef struct {
 	formatter_t super; /**< super-"class": formatter_t */
 
-	int count; /**< message counter */
+	unsigned int count; /**< message counter */
 
 	formatter_simple_id_option print_source_id;
 	formatter_simple_tab_mode tab_mode;

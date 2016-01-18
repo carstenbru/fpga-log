@@ -94,9 +94,12 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 		const unsigned int id, const timestamp_t* const timestamp) {
 	device_gps_nmea_t* gps_nmea = (device_gps_nmea_t*) _gps_nmea;
 
+
+
 	uart_light_disable_rxint(gps_nmea->uart_light);
 	unsigned char byte;
 	while (uart_light_receive_nb(gps_nmea->uart_light, &byte) == UART_OK) {
+
 		if (byte > 127) {  //filter out non ASCII characters (should not be there, but who knows..)
 			gps_nmea->parse_status = 0;
 			return;
@@ -111,12 +114,11 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 			gps_nmea->raw_data_out->new_data(gps_nmea->raw_data_out->parent,
 					&package);
 		}
-
 		if ((gps_nmea->parsed_data_out != &data_port_dummy)
 				|| (gps_nmea->sync_logger_time == GPS_SYNC_TIME)) {  //parse only if data out assigned or sync activated
 			if (byte == '$') {  //start of a NMEA sentence
 				device_gps_nmea_reset_parse_data(gps_nmea);
-			} else if (gps_nmea->parse_status != 0) {
+			} else if (gps_nmea->parse_status != 0) { //valid char
 				if ((gps_nmea->parse_status < 3) || (gps_nmea->parse_status == 6)) {  //every sentence starts with "GP"
 					gps_nmea->parse_status++;
 				} else if (gps_nmea->parse_status < 6) {  //next three chars are the sentence type
@@ -206,6 +208,7 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 				}
 			}
 		}
+
 	}
 	uart_light_enable_rxint(gps_nmea->uart_light);
 }

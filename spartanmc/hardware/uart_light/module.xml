@@ -68,7 +68,9 @@ uart_light/util/uart_functions.v</includes>
             <choice descr="%Insert a description for the choices here%" value="115200"/>
             <choice descr="%Insert a description for the choices here%" value="57600"/>
             <choice descr="%Insert a description for the choices here%" value="28000"/>
+            <choice descr="%Insert a description for the choices here%" value="19200"/>
             <choice descr="%Insert a description for the choices here%" value="14400"/>
+            <choice descr="%Insert a description for the choices here%" value="9600"/>
             <choice descr="%Insert a description for the choices here%" value="7200"/>
             <choice descr="%Insert a description for the choices here%" value="4800"/>
             <choice descr="%Insert a description for the choices here%" value="2400"/>

@@ -85,6 +85,7 @@ typedef enum {
 	HCT99_EXPECT_EXPONENT_1, /**< expecting first digit of exponent */
 	HCT99_EXPECT_EXPONENT_2, /**< expecting second digit of exponent */
 	HCT99_EXPECT_ERR_CODE, /**< expecting error code */
+	HCT99_EXPECT_ERR_LF, /**< expecting error LF */
 	HCT99_EXPECT_NUMBER, /**< expecting a simple number (e.g. firmware version) */
 	HCT99_EXPECT_LF, /**< expecting line feed */
 	HCT99_EXPECT_NOTHING /**< expecting no data */

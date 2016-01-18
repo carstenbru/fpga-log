@@ -123,6 +123,8 @@ static void device_hct99_send_data(void* const _hct99, const unsigned int id,
 		case (HCT99_EXPECT_LF): {
 			if (byte == '\n') {
 				hct99->expected_byte = HCT99_EXPECT_NOTHING;
+			}else if (byte == '*'){ //an error occur
+				hct99->expected_byte = HCT99_EXPECT_ERR_LF;
 			}
 			break;
 		}
@@ -155,6 +157,15 @@ static void device_hct99_send_data(void* const _hct99, const unsigned int id,
 			hct99->expected_byte = HCT99_EXPECT_ERR_CODE;
 			if (hct99->val_neg) {
 				hct99->value.exponent = -hct99->value.exponent;
+			}
+			break;
+		}
+		case (HCT99_EXPECT_ERR_LF): {
+			if(byte == '\n'){
+				hct99->command_fifo_elements++; //Resend the last command
+				hct99->command_fifo_top--;
+				device_hct99_send_command(hct99);
+				hct99->expected_byte = HCT99_EXPECT_LF;
 			}
 			break;
 		}
@@ -276,6 +287,7 @@ static void device_hct99_new_control_message(void* const _hct99,
 static void device_hct99_send_paramters(device_hct99_t* const hct99,
 		unsigned int count, const unsigned int* params,
 		unsigned char last_param_three_digits) {
+
 	while (count--) {
 		unsigned int val = *params++;
 		if (!last_param_three_digits || count) {
@@ -303,6 +315,7 @@ static void device_hct99_send_paramters(device_hct99_t* const hct99,
 void device_hct99_execute_command(device_hct99_t* const hct99,
 		hct99_command_cpt command_code, unsigned int x, unsigned int y,
 		unsigned int z) {
+
 	if (hct99->command_fifo_elements < HCT99_COMMAND_FIFO_SIZE) {
 		int i = hct99->command_fifo_top + hct99->command_fifo_elements++;
 		i %= HCT99_COMMAND_FIFO_SIZE;
@@ -400,6 +413,8 @@ static void device_hct99_send_command(device_hct99_t* const hct99) {
 	case HCT99_COMMAND_MEASUREMENT_MODE:
 		device_hct99_send_paramters(hct99, 1, params, 0);
 		break;
+	case HCT99_COMMAND_ZERO_ADJUST:
+		break;
 	case HCT99_COMMAND_CAL_DATA_SELECT:
 		device_hct99_send_paramters(hct99, 2, params, 1);
 		break;
@@ -430,6 +445,7 @@ static void device_hct99_send_command(device_hct99_t* const hct99) {
 
 static void device_hct99_update(void* const _hct99) {
 	device_hct99_t* hct99 = (device_hct99_t*) _hct99;
+
 	if (hct99->command_fifo_elements
 			&& (hct99->expected_byte == HCT99_EXPECT_NOTHING)) {
 		device_hct99_send_command(hct99);
