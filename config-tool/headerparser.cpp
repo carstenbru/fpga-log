@@ -5,7 +5,6 @@
 #include <QDirIterator>
 
 using namespace std;
-using namespace boost;
 
 std::map<std::string, std::string> HeaderParser::defines;
 
@@ -53,9 +52,9 @@ void HeaderParser::parseFileForDataTypes(std::string filename, std::map<DataType
         istreambuf_iterator<char> headerIter(header);
         istreambuf_iterator<char> headerEnd;
 
-        char_separator<char> s(" \t\n");
-        tokenizer<char_separator<char>, istreambuf_iterator<char> > tokens(headerIter, headerEnd, s);
-        for (tokenizer<char_separator<char>, istreambuf_iterator<char> >::iterator i = tokens.begin(); i != tokens.end(); i++) {
+        boost::char_separator<char> s(" \t\n");
+        boost::tokenizer<boost::char_separator<char>, istreambuf_iterator<char> > tokens(headerIter, headerEnd, s);
+        for (boost::tokenizer<boost::char_separator<char>, istreambuf_iterator<char> >::iterator i = tokens.begin(); i != tokens.end(); i++) {
             if ((*i).compare("typedef") == 0) {
                 i++;
                 if ((*i).compare("volatile") == 0)
@@ -178,13 +177,13 @@ void HeaderParser::parseFileForMethods(string filename) {
         istreambuf_iterator<char> headerIter(header);
         istreambuf_iterator<char> headerEnd;
 
-        char_separator<char> s(" \t\n");
-        tokenizer<char_separator<char>, istreambuf_iterator<char> > tokens(headerIter, headerEnd, s);
+        boost::char_separator<char> s(" \t\n");
+        boost::tokenizer<boost::char_separator<char>, istreambuf_iterator<char> > tokens(headerIter, headerEnd, s);
         string returnType;
         stringstream description;
         map<string, string> paramDescMap;
         description.str("");
-        for (tokenizer<char_separator<char>, istreambuf_iterator<char> >::iterator i = tokens.begin(); i != tokens.end(); i++) {
+        for (boost::tokenizer<boost::char_separator<char>, istreambuf_iterator<char> >::iterator i = tokens.begin(); i != tokens.end(); i++) {
             string s = *i;
             size_t op = s.find_first_of('(');
             if ((op != string::npos) && (op != 0)) {
@@ -276,9 +275,9 @@ void HeaderParser::parseFileForMethods(string filename) {
 }
 
 void HeaderParser::parseMethodParameter(CMethod* method, std::string parameter, map<string, string>& paramDescMap) {
-    char_separator<char> s(" ");
-    tokenizer<char_separator<char> > tokens(parameter, s);
-    tokenizer<char_separator<char> >::iterator i = tokens.begin();
+    boost::char_separator<char> s(" ");
+    boost::tokenizer<boost::char_separator<char> > tokens(parameter, s);
+    boost::tokenizer<boost::char_separator<char> >::iterator i = tokens.begin();
     while ((*i).compare("const") == 0) {
         i++;
     }
@@ -318,9 +317,9 @@ void HeaderParser::parseMethodParameter(CMethod* method, std::string parameter, 
 }
 
 void HeaderParser::parseMethodParameters(CMethod* method, std::string parameters, map<string, string>& paramDescMap) {
-    char_separator<char> s(",");
-    tokenizer<char_separator<char> > tokens(parameters, s);
-    for (tokenizer<char_separator<char> >::iterator i = tokens.begin(); i != tokens.end(); i++) {
+    boost::char_separator<char> s(",");
+    boost::tokenizer<boost::char_separator<char> > tokens(parameters, s);
+    for (boost::tokenizer<boost::char_separator<char> >::iterator i = tokens.begin(); i != tokens.end(); i++) {
         string parameter = *i;
         parameter.erase(0, parameter.find_first_not_of(" "));
         size_t op = parameter.find("(");

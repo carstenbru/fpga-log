@@ -52,7 +52,7 @@ SpmcPeripheral::SpmcPeripheral(QXmlStreamReader& in, CObject* parentObject, Data
                         string name = in.attributes().value("name").toString().toStdString();
                         for (list<PeripheralPort*>::iterator i = portGroup.begin(); i != portGroup.end(); i++) {
                             if ((*i)->getName().compare(name) == 0) {
-                                (*i)->load(in, parentObject);
+                                (*i)->load(in, parentObject, this);
 
                                 string ref = (*i)->getWidthRef();
                                 if (!ref.empty()) {
@@ -395,7 +395,7 @@ bool PeripheralPort::setLine(CParameter* newValue) {
     return false;
 }
 
-void PeripheralPort::load(QXmlStreamReader& in, CObject* parent) {
+void PeripheralPort::load(QXmlStreamReader& in, CObject* parent, SpmcPeripheral* peripheral) {
     bool changed = false;
 
     if (name.compare(in.attributes().value("name").toString().toStdString()) != 0)
@@ -407,6 +407,11 @@ void PeripheralPort::load(QXmlStreamReader& in, CObject* parent) {
         changed = true;
     if (constraints.compare(in.attributes().value("constraints").toString().toStdString()) != 0)
         changed = true;
+
+    if (!widthRef.empty()) {
+        CParameter* p = peripheral->getParameter(widthRef);
+        newWidth(p->getValue());
+    }
 
     while (in.readNextStartElement()) {
         CParameter* param = new CParameter(in);

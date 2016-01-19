@@ -21,7 +21,7 @@ public:
     PeripheralPort(std::string name, int width);
     ~PeripheralPort();
 
-    void load(QXmlStreamReader& in, CObject *parent);
+    void load(QXmlStreamReader& in, CObject *parent, SpmcPeripheral *peripheral);
     bool setLine(CParameter* newValue);
 
     void setDirection(std::string direction);
