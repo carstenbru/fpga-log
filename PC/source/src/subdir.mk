@@ -27,9 +27,12 @@ C_SRCS += \
 ../source/src/device_chr_um7.c \
 ../source/src/device_gps_nmea.c \
 ../source/src/device_hct99.c \
+../source/src/device_input_pins.c \
 ../source/src/device_max31855.c \
 ../source/src/device_max5825.c \
+../source/src/device_motor_dummy_control.c \
 ../source/src/device_pwm.c \
+../source/src/device_tsl2591.c \
 ../source/src/device_uart_raw.c \
 ../source/src/device_vl6180.c \
 ../source/src/divsi3.c \
@@ -78,9 +81,12 @@ OBJS += \
 ./source/src/device_chr_um7.o \
 ./source/src/device_gps_nmea.o \
 ./source/src/device_hct99.o \
+./source/src/device_input_pins.o \
 ./source/src/device_max31855.o \
 ./source/src/device_max5825.o \
+./source/src/device_motor_dummy_control.o \
 ./source/src/device_pwm.o \
+./source/src/device_tsl2591.o \
 ./source/src/device_uart_raw.o \
 ./source/src/device_vl6180.o \
 ./source/src/divsi3.o \
@@ -129,9 +135,12 @@ C_DEPS += \
 ./source/src/device_chr_um7.d \
 ./source/src/device_gps_nmea.d \
 ./source/src/device_hct99.d \
+./source/src/device_input_pins.d \
 ./source/src/device_max31855.d \
 ./source/src/device_max5825.d \
+./source/src/device_motor_dummy_control.d \
 ./source/src/device_pwm.d \
+./source/src/device_tsl2591.d \
 ./source/src/device_uart_raw.d \
 ./source/src/device_vl6180.d \
 ./source/src/divsi3.d \
@@ -161,7 +170,7 @@ C_DEPS += \
 source/src/%.o: ../source/src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C Compiler'
-	gcc -DPC_NATIVE -I"${SPARTANMC_ROOT}/spartanmc/include" -I"/home/carsten/Uni/ba/fpga-log/source/include" -I"/home/carsten/Uni/ba/fpga-log/testsystem" -I"/home/carsten/Uni/ba/fpga-log/testsystem/firmware/include" -O0 -g -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	gcc -DPC_NATIVE -I"/home/carsten/Uni/ba/fpga-log/source/include" -I"/home/carsten/Uni/ba/fpga-log/testsystem" -I"/home/carsten/Uni/ba/fpga-log/testsystem/firmware/include" -I"${SPARTANMC_ROOT}/spartanmc/include" -O0 -g -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
