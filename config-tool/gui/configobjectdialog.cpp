@@ -116,7 +116,7 @@ void ConfigObjectDialog::addParameters(CMethod* parentMethod, QFormLayout *paren
             if (paramName.compare("value") == 0) { //possibly referenced by a parameter_type_t
                 if (parentMethod != NULL) {
                     CParameter* tparam = parentMethod->getParameter("type");
-                    if (tparam->getDataType() == DataTypeEnumeration::getType("parameter_type_t")) {
+                    if (tparam != NULL && tparam->getDataType() == DataTypeEnumeration::getType("parameter_type_t")) {
                         string typeRef = ((DataTypeEnumeration*)tparam->getDataType())->getValueReference(tparam->getValue());
 
                         if (!typeRef.empty()) {
