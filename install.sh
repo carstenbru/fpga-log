@@ -23,6 +23,7 @@ then
   rm -rf $SPARTANMC_ROOT/spartanmc/hardware/sdcard
   rm -rf $SPARTANMC_ROOT/spartanmc/hardware/timestamp_gen
   rm -rf $SPARTANMC_ROOT/spartanmc/hardware/motor_dummy_control
+  rm -rf $SPARTANMC_ROOT/spartanmc/hardware/contrast_box
   
   #link new peripherals
   ln -sf $fpga_log_dir/spartanmc/include/peripherals/* $SPARTANMC_ROOT/spartanmc/include/peripherals/
