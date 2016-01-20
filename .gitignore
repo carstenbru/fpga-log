@@ -14,7 +14,7 @@ jconfig.log
 *.d
 /PC/fpga-log
 
-*.user
+*.user*
 /build-*
 
 /projects
