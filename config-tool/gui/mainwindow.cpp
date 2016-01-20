@@ -356,6 +356,6 @@ void MainWindow::setDataLoggerPath(string newPath) {
 }
 
 void MainWindow::pinOverview() {
-    PinOverview dialog(this, dataLogger);
+    PinOverview dialog(this, dataLogger, dataLoggerPath);
     dialog.exec();
 }

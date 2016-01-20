@@ -2,21 +2,26 @@
 #include "ui_pinoverview.h"
 
 #include "datatype.h"
+#include <fstream>
+#include <QMessageBox>
+#include <QFileInfo>
+#include <QDir>
 
 using namespace std;
 
-//TODO export overview (txt/html) (include datalogger name and target)
 //TODO not assigned pins (from modules)!!!
 //TODO assign pins (boxe woth not assigned pins, exchange)
 //TODO maybe direction could be interesting for user? other values maybe not..
 //TODO correct after target change and Pin assigment orphaned??
 
-PinOverview::PinOverview(QWidget *parent, DataLogger* dataLogger) :
+PinOverview::PinOverview(QWidget *parent, DataLogger* dataLogger, string dataLoggerPath) :
     QDialog(parent),
     ui(new Ui::PinOverview),
-    dataLogger(dataLogger)
+    dataLogger(dataLogger),
+    dataLoggerPath(dataLoggerPath)
 {
     ui->setupUi(this);
+    connect(ui->exportButton, SIGNAL(clicked(bool)), this, SLOT(exportOverview()));
     items.clear();
 
     QStandardItemModel* model = new QStandardItemModel();
@@ -81,6 +86,75 @@ void PinOverview::readPinAssignments() {
             //TODO
         }
     }
+}
+
+#include <iostream>
+void PinOverview::writeHTMLtable(ofstream& file) {
+    file << "<table border= \"1\">" << endl;
+
+    file << "<tr>" << endl;
+    file << "<th>Pin</th>" << endl;
+    file << "<th>Modul</th>" << endl;
+    file << "<th>Gruppe</th>" << endl;
+    file << "<th>Funktion</th>" << endl;
+    file << "</tr>" << endl;
+
+    string lastGroup;
+    for (map<string, QStandardItem*[4]>::iterator i = items.begin(); i != items.end(); i++) {
+        string group = Pin::getGroupFromFullName(i->first);
+        if (group.compare(lastGroup) != 0) {
+            file << "<tr>" << endl;
+            file << "<td colspan=\"4\"><b>" << group << "</b></td>" << endl;
+            file << "</tr>" << endl;
+            lastGroup = group;
+        }
+
+        QStandardItem** items = i->second;
+        file << "<tr>" << endl;
+        for (int j = 0; j < 4; j++) {
+          file << "<td>" << items[j]->text().toStdString() << "</td>" << endl;
+        }
+        file << "</tr>" << endl;
+    }
+
+    file << "</table>" << endl;
+}
+
+void PinOverview::exportOverview() {
+    if (dataLoggerPath.empty()) {
+        QMessageBox dialog(QMessageBox::Critical,
+                           "Datenlogger nicht gespeichert",
+                           "Der Datenlogger muss zuerst gespeichert werden.",
+                           QMessageBox::Ok);
+        dialog.exec();
+        return;
+    }
+
+    string path = QFileInfo(dataLoggerPath.c_str()).dir().absolutePath().toStdString() + "/doc";
+    QDir().mkpath(path.c_str());
+    ofstream file;
+    file.open(path + "/pinout.html");
+
+    file << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN" << endl <<
+            "http://www.w3.org/TR/html4/loose.dtd\">" << endl;
+    file << "<html>" << endl << "<head>" << endl << "<title>fpga-log</title>" << endl;
+    file << "</head>" << endl << "<body>" << endl;
+
+    string name = dataLoggerPath.erase(0, dataLoggerPath.rfind("/")+1);
+    name.erase(dataLoggerPath.rfind("."), dataLoggerPath.length());
+    file << "<h1>" << "Projekt: " << name << "</h1>" << endl;
+    file << "Zielplattform: " << dataLogger->getTarget()->getValue() << endl;
+
+    writeHTMLtable(file);
+
+    file << "</body>" << endl << "</html>" << endl;
+    file.close();
+
+    QMessageBox dialog(QMessageBox::Information,
+                       "Pinbelegung exportiert",
+                       ("Die Pinbelegung wurde erfolgreich in die Datei " + path + "/pinout.html exportiert.").c_str(),
+                       QMessageBox::Ok);
+    dialog.exec();
 }
 
 PinOverview::~PinOverview()
