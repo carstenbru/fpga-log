@@ -1,9 +1,9 @@
 module contrast_box_in_out #(parameter CLOCK_FREQUENCY = 16000000,
 			     parameter PWM_FREQ = 1000,
                              parameter INCREASE_VALUE_AUTOMATIC = 11,
-                             parameter TIME_TO_INCREASE_AUTOMATIC = 500,		//TIME_TO_INCREASE_BIT limits the time: 25->0ms - 2097 ms 
+                             parameter TIME_TO_INCREASE_AUTOMATIC = 100,		//value in 10ms //TIME_TO_INCREASE_BIT limits the time: 25->0ms - 2097 ms 
                              parameter INCREASE_VALUE_SWITCH = 11,
-                             parameter TIME_TO_INCREASE_SWITCH = 50,		//TIME_TO_INCREASE_BIT limits the time: 25->0ms - 2097 ms 
+                             parameter TIME_TO_INCREASE_SWITCH = 5,		//value in 10ms //TIME_TO_INCREASE_BIT limits the time: 25->0ms - 2097 ms 
                              parameter DECREASE_VALUE_SWITCH = 11,
 			     parameter PWM_REG_WIDTH = 10,
 			     parameter PWM_CYCLE = 1023,		//max 2^PWM_REG_WIDTH-1
@@ -19,11 +19,11 @@ module contrast_box_in_out #(parameter CLOCK_FREQUENCY = 16000000,
 );  
 
   parameter PWM_CLK_CYCLES = (CLOCK_FREQUENCY/PWM_FREQ)/(PWM_CYCLE+1);
-  parameter TIME_TO_INCREASE_CYCLE_SWITCH = CLOCK_FREQUENCY*TIME_TO_INCREASE_SWITCH/1000;
-  parameter TIME_TO_INCREASE_CYCLE_AUTO = CLOCK_FREQUENCY*TIME_TO_INCREASE_AUTOMATIC/1000;
+  parameter TIME_TO_INCREASE_CYCLE_SWITCH = CLOCK_FREQUENCY*TIME_TO_INCREASE_SWITCH/100;
+  parameter TIME_TO_INCREASE_CYCLE_AUTO = CLOCK_FREQUENCY*TIME_TO_INCREASE_AUTOMATIC/100;
   parameter MAX_PWM_ON_VALUE_SWITCH = PWM_CYCLE - INCREASE_VALUE_SWITCH + 1;
   parameter MAX_PWM_ON_VALUE_AUTO = PWM_CYCLE - INCREASE_VALUE_AUTOMATIC + 1;
-  parameter TIME_TO_INCREASE_BIT = 27;
+  parameter TIME_TO_INCREASE_BIT = 25;
 
   //control registers
   reg [PWM_REG_WIDTH-1:0] pwm_counter;
@@ -37,7 +37,7 @@ module contrast_box_in_out #(parameter CLOCK_FREQUENCY = 16000000,
   reg time_to_increase_switch;
   reg time_to_increase_auto;
 
-  //Button debounce => active High switch
+  //Button debounce => active LOW switch
   //Variate the COUNTER_WIDTH for longer or shorter debounce time
   PushButton_Debouncer #(.COUNTER_WIDTH(DEBOUNCE_CNTR_WIDTH)) debounce_down (
 	.clk(clk),
@@ -77,7 +77,7 @@ module contrast_box_in_out #(parameter CLOCK_FREQUENCY = 16000000,
 			time_to_increase_switch <= 1'b0;
 		end
 
-		if((TIME_TO_INCREASE_AUTOMATIC > 0)) begin
+		if(TIME_TO_INCREASE_AUTOMATIC > 0) begin
 			//Automatic increase
 
 			if(time_to_increase_auto_cnt < TIME_TO_INCREASE_CYCLE_AUTO) time_to_increase_auto_cnt <= time_to_increase_auto_cnt + 1;
