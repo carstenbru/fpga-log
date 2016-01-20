@@ -14,10 +14,11 @@ module spmc_contrast_box #(parameter BASE_ADR = 10'h0,
                              parameter CLOCK_FREQUENCY = 16000000,
                              parameter NUMBER_OF_BOXES = 2,
 			     parameter PWM_FREQ = 1000,
-			     parameter AUTOMATIC_INCREASE = "FALSE",
-                             parameter INCREASE_VALUE = 11,
-                             parameter TIME_TO_INCREASE = 50,
-                             parameter DECREASE_VALUE = 11) ( 
+                             parameter INCREASE_VALUE_AUTOMATIC = 55,
+                             parameter TIME_TO_INCREASE_AUTOMATIC = 500,
+                             parameter INCREASE_VALUE_SWITCH = 11,
+                             parameter TIME_TO_INCREASE_SWITCH = 50,
+                             parameter DECREASE_VALUE_SWITCH = 11) ( 
         //*** Connections to SpartanMC Core (do not change) ***
         input wire              clk_peri,       //System-Clock
         input wire      [17:0]  do_peri,        //Data Bus  from MC
@@ -104,10 +105,11 @@ assign	wr_control		= reg_write[CONTROL_ADR];			// Schreiben
     for (i = 0; i < NUMBER_OF_BOXES; i = i + 1) begin : output_stage_gen_loop
       contrast_box_in_out #(.CLOCK_FREQUENCY(CLOCK_FREQUENCY),
 			    .PWM_FREQ(PWM_FREQ),
-			    .AUTOMATIC_INCREASE(AUTOMATIC_INCREASE),
-			    .INCREASE_VALUE(INCREASE_VALUE),
-			    .TIME_TO_INCREASE(TIME_TO_INCREASE),
-			    .DECREASE_VALUE(DECREASE_VALUE),
+			    .INCREASE_VALUE_AUTOMATIC(INCREASE_VALUE_AUTOMATIC),
+			    .TIME_TO_INCREASE_AUTOMATIC(TIME_TO_INCREASE_AUTOMATIC),
+			    .INCREASE_VALUE_SWITCH(INCREASE_VALUE_SWITCH),
+			    .TIME_TO_INCREASE_SWITCH(TIME_TO_INCREASE_SWITCH),
+			    .DECREASE_VALUE_SWITCH(DECREASE_VALUE_SWITCH),
 			    .PWM_REG_WIDTH(PWM_REG_WIDTH),
 			    .PWM_CYCLE(PWM_CYCLE),
 			    .DEBOUNCE_CNTR_WIDTH(17))
