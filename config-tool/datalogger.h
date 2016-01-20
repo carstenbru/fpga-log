@@ -37,6 +37,7 @@ public:
     bool getDefinitionsUpdated() {return definitionsUpdated;}
     void addDefinitionsUpdatedModule(std::string moduleName) {definitionsUpdatedModules += "\n" + moduleName; definitionsUpdated = true;}
     std::string getDefinitionsUpdatedModules() { return definitionsUpdatedModules; }
+    std::list<std::string[4]> getPinAssignments();
 
     static void loadTragetXMLs();
     static std::string getTargetXML(std::string target) { return targetXMLs.at(target); }

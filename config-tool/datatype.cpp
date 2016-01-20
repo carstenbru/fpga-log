@@ -300,7 +300,7 @@ QWidget* DataTypePin::getConfigWidget(DataLogger* dataLogger, CParameter *param)
     return getConfigWidget(dataLogger, param, NULL, NULL);
 }
 
-QWidget* DataTypePin::getConfigWidget(DataLogger*, CParameter* param, QObject* receiver, const char* slot) {
+QWidget* DataTypePin::getConfigWidget(DataLogger* dataLogger, CParameter* param, QObject* receiver, const char* slot) {
     string pin = param->getValue();
     string groupName = Pin::getGroupFromFullName(pin);
 
@@ -316,7 +316,7 @@ QWidget* DataTypePin::getConfigWidget(DataLogger*, CParameter* param, QObject* r
     }
     groupBox->setCurrentIndex(groupBox->findText(QString(groupName.c_str())));
 
-    PinBox* pinBox = new PinBox();
+    PinBox* pinBox = new PinBox(dataLogger, pin);
     layout->addWidget(pinBox);
     pinBox->setPinItems(QString(groupName.c_str()));
     pinBox->setCurrentIndex(pinBox->findText(QString(Pin::getPinFromFullName(pin).c_str())));
@@ -326,6 +326,7 @@ QWidget* DataTypePin::getConfigWidget(DataLogger*, CParameter* param, QObject* r
     if (receiver != NULL) {
         QObject::connect(pinBox, SIGNAL(pinChanged()), receiver, slot);
     }
+    QObject::connect(pinBox, SIGNAL(pinChanged()), dataLogger, SLOT(parameterChanged()));
 
     return widget;
 }
@@ -355,6 +356,14 @@ Pin* DataTypePin::getPin(std::string group, std::string pin) {
     }
 
     return NULL;
+}
+
+std::list<std::string> DataTypePin::getGroups() {
+    std::list<std::string> keyList;
+    for (map<string, list<Pin> >::iterator i = pins.begin(); i != pins.end(); i++) {
+        keyList.push_back(i->first);
+    }
+    return keyList;
 }
 
 string Pin::getGroupFromFullName(string fullName) {

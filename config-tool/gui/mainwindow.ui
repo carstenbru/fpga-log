@@ -78,7 +78,7 @@
      <x>0</x>
      <y>0</y>
      <width>1003</width>
-     <height>19</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -101,7 +101,7 @@
      <bool>false</bool>
     </property>
     <property name="title">
-     <string>Objekte</string>
+     <string>Ob&amp;jekte</string>
     </property>
     <property name="separatorsCollapsible">
      <bool>false</bool>
@@ -113,25 +113,31 @@
      <bool>true</bool>
     </property>
     <property name="title">
-     <string>Generieren</string>
+     <string>&amp;Generieren</string>
     </property>
     <addaction name="actionSynthesize"/>
     <addaction name="actionFlash"/>
     <addaction name="separator"/>
     <addaction name="actionGenerate"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Too&amp;ls</string>
+    </property>
+    <addaction name="actionPinOverview"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuObjects"/>
+   <addaction name="menuTools"/>
    <addaction name="menuGenerate"/>
   </widget>
   <action name="actionClose">
    <property name="icon">
     <iconset theme="application-exit">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Beenden</string>
+    <string>&amp;Beenden</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -140,11 +146,10 @@
   <action name="actionNewObject">
    <property name="icon">
     <iconset theme="list-add">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Neues Objekt</string>
+    <string>&amp;Neues Objekt</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+M</string>
@@ -153,11 +158,10 @@
   <action name="actionTarget">
    <property name="icon">
     <iconset theme="preferences-system">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Zielplattform</string>
+    <string>&amp;Zielplattform</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+T</string>
@@ -165,7 +169,7 @@
   </action>
   <action name="actionGenerate">
    <property name="text">
-    <string>Dateien erzeugen</string>
+    <string>&amp;Dateien erzeugen</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
@@ -177,11 +181,10 @@
    </property>
    <property name="icon">
     <iconset theme="system-run">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Bitfile erstellen</string>
+    <string>&amp;Bitfile erstellen</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
@@ -190,11 +193,10 @@
   <action name="actionFlash">
    <property name="icon">
     <iconset theme="media-flash">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Upload</string>
+    <string>&amp;Upload</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+U</string>
@@ -203,11 +205,10 @@
   <action name="actionNew">
    <property name="icon">
     <iconset theme="document-new">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Neu</string>
+    <string>&amp;Neu</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -216,11 +217,10 @@
   <action name="actionOpen">
    <property name="icon">
     <iconset theme="document-open">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Öffnen</string>
+    <string>&amp;Öffnen</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -229,11 +229,10 @@
   <action name="actionSave">
    <property name="icon">
     <iconset theme="document-save">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Speichern</string>
+    <string>&amp;Speichern</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -242,14 +241,21 @@
   <action name="actionSaveAs">
    <property name="icon">
     <iconset theme="document-save-as">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Speichern unter</string>
+    <string>Speichern &amp;unter</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionPinOverview">
+   <property name="text">
+    <string>Pin Planner</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
  </widget>

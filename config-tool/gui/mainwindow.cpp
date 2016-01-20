@@ -10,6 +10,7 @@
 #include "consoleredirector.h"
 #include "targetconfigdialog.h"
 #include "datalogger.h"
+#include "pinoverview.h"
 
 using namespace std;
 
@@ -37,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(save()));
     connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAs()));
+
+    connect(ui->actionPinOverview, SIGNAL(triggered()), this, SLOT(pinOverview()));
 
     ui->listView->setModel(&otherModel);
     connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(otherObjectConfig(QModelIndex)));
@@ -350,4 +353,9 @@ void MainWindow::setDataLoggerPath(string newPath) {
             reparseLocalHeaders(newPath);
         }
     }
+}
+
+void MainWindow::pinOverview() {
+    PinOverview dialog(this, dataLogger);
+    dialog.exec();
 }

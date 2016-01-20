@@ -58,6 +58,8 @@ public slots:
     void open();
     void save();
     void saveAs();
+
+    void pinOverview();
 private slots:
     void otherObjectConfig(QModelIndex index);
     void outputGeneratorFinished(bool errorOccured);

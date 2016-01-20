@@ -187,10 +187,11 @@ public:
     virtual ~DataTypePin() {}
 
     virtual QWidget* getConfigWidget(DataLogger*dataLogger, CParameter* param);
-    QWidget* getConfigWidget(DataLogger*, CParameter* param, QObject* receiver, const char *slot);
+    QWidget* getConfigWidget(DataLogger* dataLogger, CParameter* param, QObject* receiver, const char *slot);
     virtual std::string getConfigData(QWidget* widget);
 
     void addPin(std::string groupName, Pin &pin);
+    std::list<std::string> getGroups();
     std::list<Pin> getPinsInGroup(std::string group) { return pins.at(group); }
     Pin* getPin(std::string group, std::string pin);
     void clear() { pins.clear(); }

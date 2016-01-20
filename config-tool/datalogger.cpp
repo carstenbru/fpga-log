@@ -214,6 +214,42 @@ int DataLogger::getPeriClk() {
     return getClk() / 2;
 }
 
+list<string[4]> DataLogger::getPinAssignments() {
+    list<string[4]> result;
+
+    map<string, CObject*> objects = getObjectsMap();
+    for (map<string, CObject*>::iterator oi = objects.begin(); oi != objects.end(); oi++) {
+        list<SpmcPeripheral*> peripherals = oi->second->getPeripherals();
+        for (list<SpmcPeripheral*>::iterator pi = peripherals.begin(); pi != peripherals.end(); pi++) {
+            map<string, list<PeripheralPort*> > ports = (*pi)->getPorts();
+            for (map<string, list<PeripheralPort*> >::iterator poi = ports.begin(); poi != ports.end(); poi++) {
+                list<PeripheralPort*> pins = poi->second;
+                for (list<PeripheralPort*>::iterator i = pins.begin(); i != pins.end(); i++) {
+                    list<CParameter*> lines = (*i)->getLines();
+                    for (std::list<CParameter*>::iterator li = lines.begin(); li != lines.end(); li++) {
+                        if (!(*li)->getHideFromUser()) {
+                            string item[4];
+                            item[0] = (*li)->getValue();
+                            item[1] = oi->second->getName();
+                            item[2] = poi->first;
+                            item[3] = (*li)->getName();
+                            result.push_back(item);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //clk pin
+    string clk_pin[4];
+    clk_pin[0] = getClockPin()->getValue();
+    clk_pin[1] = "SYSTEM";
+    clk_pin[2] = "clock";
+    clk_pin[3] = "in";
+    result.push_back(clk_pin);
+    return result;
+}
+
 QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DataLogger& dataLogger) {
     out.writeStartElement("datalogger");
 
