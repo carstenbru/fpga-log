@@ -73,11 +73,14 @@ private slots:
     void moduleConnectionsChanged();
 public slots:
     void parameterChanged();
+    void pinParamterChanged();
 signals:
     void datastreamModulesChanged();
     void otherModulesChanged();
     void connectionsChanged();
     void criticalParameterChanged();
+    void pinChanged();
+    void storePins();
 };
 
 #endif // DATALOGGER_H

@@ -14,6 +14,7 @@ signals:
     void pinChanged();
 public slots:
     void setPinItems(const QString& pinGroup);
+    void setPinItems();
 private slots:
     void indexChanged();
 private:
@@ -21,6 +22,8 @@ private:
 
     DataLogger* dataLogger;
     std::string selectedPin;
+    std::string pinGroup;
+    bool disablePinChange;
 };
 
 #endif // PINBOX_H

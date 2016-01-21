@@ -206,6 +206,11 @@ void DataLogger::parameterChanged() {
     emit criticalParameterChanged();
 }
 
+void DataLogger::pinParamterChanged() {
+    emit storePins();
+    emit pinChanged();
+}
+
 int DataLogger::getClk() {
     return atoi(clockFreq.getValue().c_str());
 }

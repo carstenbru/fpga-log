@@ -24,6 +24,7 @@ ConfigObjectDialog::ConfigObjectDialog(QWidget *parent, CObject *object, DataLog
 
     connect(this, SIGNAL(finished(int)), this, SLOT(storeParams()));
     connect(dataLogger, SIGNAL(criticalParameterChanged()), this, SLOT(reload()));
+    connect(dataLogger, SIGNAL(storePins()), this, SLOT(storeParams()));
     connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(deleteModule()));
 }
 

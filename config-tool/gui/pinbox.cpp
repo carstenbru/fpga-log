@@ -7,7 +7,8 @@ using namespace std;
 PinBox::PinBox(DataLogger *dataLogger, string selectedPin, QWidget *parent) :
     QComboBox(parent),
     dataLogger(dataLogger),
-    selectedPin(selectedPin)
+    selectedPin(selectedPin),
+    disablePinChange(false)
 {
     setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
@@ -24,7 +25,14 @@ bool PinBox::pinAssigned(list<string[4]>& pinAssignments, string name) {
     return false;
 }
 
+void PinBox::setPinItems() {
+    setPinItems(pinGroup.c_str());
+}
+
+#include <iostream>
 void PinBox::setPinItems(const QString& pinGroup) {
+    disablePinChange = true;
+    this->pinGroup = pinGroup.toStdString();
     clear();
     try {
         list<string[4]> pinAssignments = dataLogger->getPinAssignments();
@@ -32,16 +40,25 @@ void PinBox::setPinItems(const QString& pinGroup) {
         list<Pin> pinGroupList = DataTypePin::getPinType()->getPinsInGroup(pinGroup.toStdString());
         for (list<Pin>::iterator i = pinGroupList.begin(); i != pinGroupList.end(); i++) {
             string pinFullName = pinGroup.toStdString() + ":" + (*i).getName();
-            if ((pinFullName.compare(selectedPin) == 0) || !pinAssigned(pinAssignments, pinFullName)) {
+            if (((*i).getName().compare(selectedPin) == 0) || !pinAssigned(pinAssignments, pinFullName)) {
               addItem(QString((*i).getName().c_str()));
             }
         }
     } catch (exception) {
-
+    }
+    int ind = findText(QString(selectedPin.c_str()));
+    if (ind >= 0) {
+      setCurrentIndex(ind);
+      disablePinChange = false;
+    } else {
+      disablePinChange = false;
+      indexChanged();
     }
 }
 
 void PinBox::indexChanged() {
-    if (count())
+    if (!disablePinChange && count()) {
+        selectedPin = currentText().toStdString();
         emit pinChanged();
+    }
 }

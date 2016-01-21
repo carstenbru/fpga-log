@@ -316,17 +316,17 @@ QWidget* DataTypePin::getConfigWidget(DataLogger* dataLogger, CParameter* param,
     }
     groupBox->setCurrentIndex(groupBox->findText(QString(groupName.c_str())));
 
-    PinBox* pinBox = new PinBox(dataLogger, pin);
+    PinBox* pinBox = new PinBox(dataLogger, Pin::getPinFromFullName(pin));
     layout->addWidget(pinBox);
     pinBox->setPinItems(QString(groupName.c_str()));
-    pinBox->setCurrentIndex(pinBox->findText(QString(Pin::getPinFromFullName(pin).c_str())));
 
     QObject::connect(groupBox, SIGNAL(currentIndexChanged(QString)), pinBox, SLOT(setPinItems(QString)));
 
     if (receiver != NULL) {
         QObject::connect(pinBox, SIGNAL(pinChanged()), receiver, slot);
     }
-    QObject::connect(pinBox, SIGNAL(pinChanged()), dataLogger, SLOT(parameterChanged()));
+    QObject::connect(dataLogger, SIGNAL(pinChanged()), pinBox, SLOT(setPinItems()));
+    QObject::connect(pinBox, SIGNAL(pinChanged()), dataLogger, SLOT(pinParamterChanged()));
 
     return widget;
 }
