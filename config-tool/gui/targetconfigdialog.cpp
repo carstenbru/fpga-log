@@ -45,6 +45,8 @@ void TargetConfigDialog::targetChanged(QString newTarget) {
     dataLogger->getTarget()->setValue(newTarget.toStdString());
     dataLogger->loadTargetPins();
 
+    dataLogger->getClockPin()->setValue("");
+
     widget->deleteLater();
     generateUi();
 }

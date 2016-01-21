@@ -219,8 +219,8 @@ int DataLogger::getPeriClk() {
     return getClk() / 2;
 }
 
-list<string[4]> DataLogger::getPinAssignments() {
-    list<string[4]> result;
+map<CParameter*, string[4]> DataLogger::getPinAssignments() {
+    map<CParameter*, string[4]> result;
 
     map<string, CObject*> objects = getObjectsMap();
     for (map<string, CObject*>::iterator oi = objects.begin(); oi != objects.end(); oi++) {
@@ -233,12 +233,11 @@ list<string[4]> DataLogger::getPinAssignments() {
                     list<CParameter*> lines = (*i)->getLines();
                     for (std::list<CParameter*>::iterator li = lines.begin(); li != lines.end(); li++) {
                         if (!(*li)->getHideFromUser()) {
-                            string item[4];
+                            string* item = (string*)&result[*li];
                             item[0] = (*li)->getValue();
                             item[1] = oi->second->getName();
                             item[2] = poi->first;
                             item[3] = (*li)->getName();
-                            result.push_back(item);
                         }
                     }
                 }
@@ -247,22 +246,20 @@ list<string[4]> DataLogger::getPinAssignments() {
         //timestamp pins
         list<CParameter*> timestampPins = oi->second->getTimestampPinParameters();
         for (list<CParameter*>::iterator tpi = timestampPins.begin(); tpi != timestampPins.end(); tpi++) {
-            string item[4];
+            string* item = (string*)&result[*tpi];
             item[0] = (*tpi)->getValue();
             item[1] = oi->second->getName();
             item[2] = "timestamp pin";
             item[3] = (*tpi)->getName();
-            result.push_back(item);
         }
     }
 
     //clk pin
-    string clk_pin[4];
+    string* clk_pin = (string*)&result[getClockPin()];
     clk_pin[0] = getClockPin()->getValue();
     clk_pin[1] = "SYSTEM";
     clk_pin[2] = "clock";
     clk_pin[3] = "in";
-    result.push_back(clk_pin);
     return result;
 }
 

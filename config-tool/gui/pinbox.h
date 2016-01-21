@@ -18,7 +18,7 @@ public slots:
 private slots:
     void indexChanged();
 private:
-    bool pinAssigned(std::list<std::string[4]>& pinAssignments, std::string name);
+    bool pinAssigned(std::map<CParameter*, std::string[4]> &pinAssignments, std::string name);
 
     DataLogger* dataLogger;
     std::string selectedPin;

@@ -251,8 +251,11 @@
    </property>
   </action>
   <action name="actionPinOverview">
+   <property name="icon">
+    <iconset theme="document-properties"/>
+   </property>
    <property name="text">
-    <string>Pin Planner</string>
+    <string>&amp;Pin Planner</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>

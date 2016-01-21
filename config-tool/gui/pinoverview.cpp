@@ -9,10 +9,7 @@
 
 using namespace std;
 
-//TODO not assigned pins (from modules)!!!
-//TODO assign pins (boxe woth not assigned pins, exchange)
 //TODO maybe direction could be interesting for user? other values maybe not..
-//TODO correct after target change and Pin assigment orphaned??
 
 PinOverview::PinOverview(QWidget *parent, DataLogger* dataLogger, string dataLoggerPath) :
     QDialog(parent),
@@ -22,6 +19,8 @@ PinOverview::PinOverview(QWidget *parent, DataLogger* dataLogger, string dataLog
 {
     ui->setupUi(this);
     connect(ui->exportButton, SIGNAL(clicked(bool)), this, SLOT(exportOverview()));
+    connect(ui->freePin, SIGNAL(clicked(bool)), this, SLOT(freePin()));
+    connect(ui->assignPin, SIGNAL(clicked(bool)), this, SLOT(assignPin()));
     items.clear();
 
     QStandardItemModel* model = new QStandardItemModel();
@@ -36,6 +35,12 @@ PinOverview::PinOverview(QWidget *parent, DataLogger* dataLogger, string dataLog
         QStandardItem* pinGroup = new QStandardItem(i->c_str());
         pinGroup->setEditable(false);
         pinGroup->setSelectable(false);
+        for (int j = 1; j <= 3; j++) {
+            QStandardItem* dummy = new QStandardItem();
+            dummy->setEditable(false);
+            dummy->setSelectable(false);
+            model->setItem(pos,j,dummy);
+        }
         model->setItem(pos, pinGroup);
 
         list<Pin> pins = DataTypePin::getPinType()->getPinsInGroup(*i);
@@ -74,21 +79,71 @@ PinOverview::PinOverview(QWidget *parent, DataLogger* dataLogger, string dataLog
 }
 
 void PinOverview::readPinAssignments() {
-    list<string[4]> pinAssignments = dataLogger->getPinAssignments();
-    for (list<string[4]>::iterator pin = pinAssignments.begin(); pin != pinAssignments.end(); pin++) {
-        string pinArray[4] = *pin;
+    pendingAssignmentsModel = new QStandardItemModel();
+    pendingAssignmentsModel->setHorizontalHeaderItem( 0, new QStandardItem(QString::fromUtf8("Modul/Gruppe")));
+    pendingAssignmentsModel->setHorizontalHeaderItem( 1, new QStandardItem(QString::fromUtf8("Funktion")));
+    int pos = 0;
+    QStandardItem* module;
+
+    map<CParameter*, string[4]> pinAssignments = dataLogger->getPinAssignments();
+    for (map<CParameter*, string[4]>::iterator pin = pinAssignments.begin(); pin != pinAssignments.end(); pin++) {
+        string pinArray[4] = pin->second;
+
+        pinParameters[pinArray[1] + pinArray[2] + pinArray[3]] = pin->first;
+
         string pinName = pinArray[0];
+        bool exists = false;
         if (!pinName.empty()) {
-            items[pinName][1]->setText(pinArray[1].c_str());
-            items[pinName][2]->setText(pinArray[2].c_str());
-            items[pinName][3]->setText(pinArray[3].c_str());
-        } else {
-            //TODO
+            try {
+                QStandardItem** itemPointers = items.at(pinName);
+                itemPointers[1]->setText(pinArray[1].c_str());
+                itemPointers[2]->setText(pinArray[2].c_str());
+                itemPointers[3]->setText(pinArray[3].c_str());
+                exists = true;
+            } catch (exception) {
+
+            }
+        }
+        if (!exists){
+            try {
+                module = pendingAssignmentGroups.at(pinArray[1]);
+            } catch (exception) {
+                module = new QStandardItem(pinArray[1].c_str());
+                module->setEditable(false);
+                module->setSelectable(false);
+                QStandardItem* dummy = new QStandardItem();
+                dummy->setEditable(false);
+                dummy->setSelectable(false);
+
+                pendingAssignmentsModel->setItem(pos, module);
+                pendingAssignmentsModel->setItem(pos, 1, dummy);
+                pos++;
+
+                pendingAssignmentGroups[pinArray[1]] = module;
+            }
+
+            QStandardItem* group = new QStandardItem(pinArray[2].c_str());
+            group->setEditable(false);
+            group->setSelectable(true);
+
+            QStandardItem* func = new QStandardItem(pinArray[3].c_str());
+            func->setEditable(false);
+            func->setSelectable(true);
+
+            QList<QStandardItem*> row;
+            row.append(group);
+            row.append(func);
+
+            module->appendRow(row);
         }
     }
+
+    ui->pendingAssignments->setModel(pendingAssignmentsModel);
+    ui->pendingAssignments->expandAll();
+    ui->pendingAssignments->resizeColumnToContents(0);
+    ui->pendingAssignments->resizeColumnToContents(1);
 }
 
-#include <iostream>
 void PinOverview::writeHTMLtable(ofstream& file) {
     file << "<table border= \"1\">" << endl;
 
@@ -160,4 +215,117 @@ void PinOverview::exportOverview() {
 PinOverview::~PinOverview()
 {
     delete ui;
+}
+
+void PinOverview::addPendingAssignment(string definition[3]) {
+    QStandardItem* parent;
+    try {
+        parent = pendingAssignmentGroups.at(definition[0]);
+    } catch (exception) {
+        parent = new QStandardItem(definition[0].c_str());
+        parent->setEditable(false);
+        parent->setSelectable(false);
+
+        QStandardItem* dummy = new QStandardItem();
+        dummy->setEditable(false);
+        dummy->setSelectable(false);
+
+        QList<QStandardItem*> row;
+        row.append(parent);
+        row.append(dummy);
+        pendingAssignmentsModel->appendRow(row);
+
+        pendingAssignmentGroups[definition[0]] = parent;
+    }
+
+    QStandardItem* group = new QStandardItem(definition[1].c_str());
+    group->setEditable(false);
+    group->setSelectable(true);
+
+    QStandardItem* func = new QStandardItem(definition[2].c_str());
+    func->setEditable(false);
+    func->setSelectable(true);
+
+    QList<QStandardItem*> row;
+    row.append(group);
+    row.append(func);
+
+    parent->appendRow(row);
+    ui->pendingAssignments->expandAll();
+    ui->pendingAssignments->resizeColumnToContents(0);
+    ui->pendingAssignments->resizeColumnToContents(1);
+}
+
+void PinOverview::freePin() {
+    QModelIndexList i = ui->pinOverview->selectionModel()->selectedIndexes();
+    if (!i.isEmpty()) {
+        QVariant v = i.first().data(Qt::DisplayRole);
+        string pin = v.toString().toStdString();
+        if (!pin.empty()) {
+            string assignment;
+            string definition[3];
+            int c = 0;
+            for (QModelIndexList::iterator p = ++i.begin(); p != i.end(); p++) {
+                assignment = assignment + p->data(Qt::DisplayRole).toString().toStdString();
+                definition[c++] = p->data(Qt::DisplayRole).toString().toStdString();
+            }
+            try {
+                CParameter* param = pinParameters.at(assignment);
+                param->setValue("");
+
+                string completePinName = i.first().parent().data(Qt::DisplayRole).toString().toStdString() + ":" + pin;
+                for (int j = 1; j <= 3; j++) {
+                    items[completePinName][j]->setText("");
+                }
+
+
+                addPendingAssignment(definition);
+            } catch (exception) {
+
+            }
+            return;
+        }
+    }
+}
+
+void PinOverview::assignPin() {
+    QModelIndexList pi = ui->pinOverview->selectionModel()->selectedIndexes();
+    if (!pi.isEmpty()) {
+        QVariant v = pi.first().data(Qt::DisplayRole);
+        string pin = v.toString().toStdString();
+        if (!pin.empty()) { //sth selected in the pin overview
+            QModelIndexList ai = ui->pendingAssignments->selectionModel()->selectedIndexes();
+            if (!ai.isEmpty()) {
+                QVariant v = ai.first().data(Qt::DisplayRole);
+                string assignFunc = v.toString().toStdString();
+                if (!assignFunc.empty()) { //sth selected in the pending pins box
+                    string pinFree = (*(++pi.begin())).data(Qt::DisplayRole).toString().toStdString();
+                    if (pinFree.empty()) { //pin currently not assigned
+                        string completePinName = pi.first().parent().data(Qt::DisplayRole).toString().toStdString() + ":" + pin;
+                        string module = ai.first().parent().data(Qt::DisplayRole).toString().toStdString();
+                        string pinFunc = (++ai.begin())->data(Qt::DisplayRole).toString().toStdString();
+                        string assignment = module + assignFunc + pinFunc;
+                        try {
+                            CParameter* param = pinParameters.at(assignment);
+                            param->setValue(completePinName);
+                        } catch (exception) {
+
+                        }
+                        items[completePinName][1]->setText(module.c_str());
+                        items[completePinName][2]->setText(assignFunc.c_str());
+                        items[completePinName][3]->setText(pinFunc.c_str());
+
+                        pendingAssignmentsModel->removeRow(ai.first().row(), ai.first().parent());
+
+                        if (!pendingAssignmentsModel->hasChildren(ai.first().parent())) {
+                            pendingAssignmentsModel->removeRow(ai.first().parent().row());
+                            pendingAssignmentGroups.erase(module);
+                        }
+                    }
+                }
+            }
+            return;
+        }
+    }
+    //TODO
 }
