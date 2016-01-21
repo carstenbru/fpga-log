@@ -244,7 +244,18 @@ list<string[4]> DataLogger::getPinAssignments() {
                 }
             }
         }
+        //timestamp pins
+        list<CParameter*> timestampPins = oi->second->getTimestampPinParameters();
+        for (list<CParameter*>::iterator tpi = timestampPins.begin(); tpi != timestampPins.end(); tpi++) {
+            string item[4];
+            item[0] = (*tpi)->getValue();
+            item[1] = oi->second->getName();
+            item[2] = "timestamp pin";
+            item[3] = (*tpi)->getName();
+            result.push_back(item);
+        }
     }
+
     //clk pin
     string clk_pin[4];
     clk_pin[0] = getClockPin()->getValue();
