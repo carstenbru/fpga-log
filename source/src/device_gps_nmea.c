@@ -157,9 +157,12 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 					char digit = byte - '0';
 					if (gps_nmea->parsed_data_out != &data_port_dummy) {
 						if (digit >= 0 && digit <= 9) {  //normal digit
-							gps_nmea->parse_uint *= 10;
-							gps_nmea->parse_uint += digit;
-							gps_nmea->parsed_digits++;
+							if(gps_nmea->parsed_digits < 4 && gps_nmea->parse_package.type == DATA_TYPE_SIMPLE_FLOAT //Check if there are only 4 decimal places or truncate them to 4
+									|| gps_nmea->parse_package.type == DATA_TYPE_INT) {
+								gps_nmea->parse_uint *= 10;
+								gps_nmea->parse_uint += digit;
+								gps_nmea->parsed_digits++;
+							}
 						} else {
 							gps_nmea->parsed_digits = 0;
 							if (byte == '.') {  //fixed point value -> treat as float with exponent 0
