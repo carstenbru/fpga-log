@@ -107,6 +107,7 @@
      <bool>false</bool>
     </property>
     <addaction name="actionNewObject"/>
+    <addaction name="actionPasteModule"/>
    </widget>
    <widget class="QMenu" name="menuGenerate">
     <property name="enabled">
@@ -252,13 +253,28 @@
   </action>
   <action name="actionPinOverview">
    <property name="icon">
-    <iconset theme="document-properties"/>
+    <iconset theme="document-properties">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Pin Planner</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionPasteModule">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="edit-paste"/>
+   </property>
+   <property name="text">
+    <string>Einfügen</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
  </widget>

@@ -20,7 +20,7 @@ SpmcPeripheral::SpmcPeripheral(string name, DataType *type, CObject* parentObjec
     readModuleXML();
 }
 
-SpmcPeripheral::SpmcPeripheral(QXmlStreamReader& in, CObject* parentObject, DataLogger *dataLogger) :
+SpmcPeripheral::SpmcPeripheral(QXmlStreamReader& in, CObject* parentObject, DataLogger *dataLogger, bool ignorePins) :
     SpmcPeripheral(in.attributes().value("name").toString().toStdString(),
                    DataType::getType(in.attributes().value("dataType").toString().toStdString()),
                    parentObject,
@@ -41,38 +41,40 @@ SpmcPeripheral::SpmcPeripheral(QXmlStreamReader& in, CObject* parentObject, Data
                 }
             }
         } else if (in.name().compare("portGroup") == 0) {
-            string name = in.attributes().value("name").toString().toStdString();
-            try {
-                list<PeripheralPort*> portGroup = ports.at(name);
-                portGroupsCount++;
-                unsigned int portsCount = 0;
-                while (in.readNextStartElement()) {
-                    if (in.name().compare("peripheralPort") == 0) {
-                        portsCount++;
-                        string name = in.attributes().value("name").toString().toStdString();
-                        for (list<PeripheralPort*>::iterator i = portGroup.begin(); i != portGroup.end(); i++) {
-                            if ((*i)->getName().compare(name) == 0) {
-                                (*i)->load(in, parentObject, this);
+            if (!ignorePins) {
+                string name = in.attributes().value("name").toString().toStdString();
+                try {
+                    list<PeripheralPort*> portGroup = ports.at(name);
+                    portGroupsCount++;
+                    unsigned int portsCount = 0;
+                    while (in.readNextStartElement()) {
+                        if (in.name().compare("peripheralPort") == 0) {
+                            portsCount++;
+                            string name = in.attributes().value("name").toString().toStdString();
+                            for (list<PeripheralPort*>::iterator i = portGroup.begin(); i != portGroup.end(); i++) {
+                                if ((*i)->getName().compare(name) == 0) {
+                                    (*i)->load(in, parentObject, this);
 
-                                string ref = (*i)->getWidthRef();
-                                if (!ref.empty()) {
-                                    CParameter* p = getParameter(ref);
-                                    p->setCritical(true);
-                                    QObject::connect(p, SIGNAL(valueChanged(std::string)), (*i), SLOT(newWidth(std::string)));
-                                    (*i)->newWidth(p->getValue());
+                                    string ref = (*i)->getWidthRef();
+                                    if (!ref.empty()) {
+                                        CParameter* p = getParameter(ref);
+                                        p->setCritical(true);
+                                        QObject::connect(p, SIGNAL(valueChanged(std::string)), (*i), SLOT(newWidth(std::string)));
+                                        (*i)->newWidth(p->getValue());
+                                    }
+
+                                    break;
                                 }
-
-                                break;
                             }
-                        }
-                    } else
-                        in.skipCurrentElement();
-                }
-                ports[name] = portGroup;
-                if (portsCount != portGroup.size())
+                        } else
+                            in.skipCurrentElement();
+                    }
+                    ports[name] = portGroup;
+                    if (portsCount != portGroup.size())
+                        paramsChanged = true;
+                } catch (exception e) {
                     paramsChanged = true;
-            } catch (exception e) {
-                paramsChanged = true;
+                }
             }
         }
     }

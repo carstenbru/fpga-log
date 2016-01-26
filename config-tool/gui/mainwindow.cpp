@@ -7,6 +7,7 @@
 #include <QProcessEnvironment>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QInputDialog>
 #include "consoleredirector.h"
 #include "targetconfigdialog.h"
 #include "datalogger.h"
@@ -29,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->actionClose, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionNewObject, SIGNAL(triggered()), this, SLOT(newObject()));
+    connect(ui->actionPasteModule, SIGNAL(triggered()), this, SLOT(pasteModule()));
     connect(ui->actionTarget, SIGNAL(triggered()), this, SLOT(targetConfig()));
     connect(ui->actionGenerate, SIGNAL(triggered()), this, SLOT(generate()));
     connect(ui->actionSynthesize, SIGNAL(triggered()), this, SLOT(synthesize()));
@@ -358,4 +360,40 @@ void MainWindow::setDataLoggerPath(string newPath) {
 void MainWindow::pinOverview() {
     PinOverview dialog(this, dataLogger, dataLoggerPath);
     dialog.exec();
+}
+
+void MainWindow::copyObject(std::string objectDescription) {
+    clipboardObjectDescription = objectDescription;
+    ui->actionPasteModule->setEnabled(true);
+
+    QMessageBox dialog(QMessageBox::Information,
+                       QString::fromUtf8("Objekt kopieren"),
+                       QString::fromUtf8("Objekt erfolgreich in Zwischenablage kopiert.\nZum einfügen unter \"Objekte\" den Punkt \"einfügen\" nutzen"),
+                       QMessageBox::Ok);
+    dialog.exec();
+}
+
+void MainWindow::pasteModule() {
+    QString s(clipboardObjectDescription.c_str());
+    QXmlStreamReader object(s);
+    object.readNextStartElement();
+
+    bool dataStreamObject = false;
+    DataTypeStruct* type = DataTypeStruct::getType(object.attributes().value("type").toString().toStdString());
+    if (type->hasPrefix("device_") || type->hasPrefix("dm_") || type->hasPrefix("sink_")) {
+        dataStreamObject = true;
+    }
+    QString name = dataLogger->findObjectName(dataStreamObject, type).c_str();
+
+    bool ok;
+    QInputDialog* inputDialog = new QInputDialog();
+    inputDialog->setOptions(QInputDialog::NoButtons);
+
+    name =  inputDialog->getText(NULL ,QString::fromUtf8("Modul einfügen"),
+                                          "Objekt Name:", QLineEdit::Normal,
+                                          name, &ok);
+
+     if (ok && !name.isEmpty()) {
+         dataLogger->addObject(name.toStdString(), dataStreamObject, object);
+     }
 }

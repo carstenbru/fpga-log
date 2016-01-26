@@ -13,8 +13,8 @@ class CObject : public QObject
 
 public:
     CObject(std::string name, DataTypeStruct *dataType, DataLogger* dataLogger);
-    CObject(QXmlStreamReader& in, DataLogger* dataLogger);
-    CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool);
+    CObject(QXmlStreamReader& in, DataLogger* dataLogger, std::string name = "", bool ignorePins = false);
+    CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool, std::string name = "", bool ignorePins = false);
     virtual ~CObject();
 
     void addAdvancedConfig(std::string methodName);

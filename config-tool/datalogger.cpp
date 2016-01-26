@@ -129,6 +129,14 @@ std::string DataLogger::findObjectName(T searchList, DataType* dataType) {
     return ss.str();
 }
 
+string DataLogger::findObjectName(bool isDataStreamObject, DataType* dataType) {
+    if (isDataStreamObject) {
+        return findObjectName(datastreamObjects, dataType);
+    } else {
+        return findObjectName(otherObjects, dataType);
+    }
+}
+
 bool DataLogger::changeObjectName(CObject* object, std::string newName) {
     if (newName.empty()) {
         cerr << "leerer Modulname ist nicht erlaubt" << endl;
@@ -323,4 +331,17 @@ QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger) {
     emit dataLogger.connectionsChanged();
 
     return in;
+}
+
+void DataLogger::addObject(std::string name, bool isDataStreamObject, QXmlStreamReader& description) {
+    if (isDataStreamObject) {
+        DatastreamObject* dso = new DatastreamObject(description, this, name, true);
+        datastreamObjects.push_back(dso);
+        connect(dso, SIGNAL(connectionsChanged()), this, SLOT(moduleConnectionsChanged()));
+        emit datastreamModulesChanged();
+    } else {
+        CObject* co = new CObject(description, this, name, true);
+        otherObjects.push_back(co);
+        emit otherModulesChanged();
+    }
 }

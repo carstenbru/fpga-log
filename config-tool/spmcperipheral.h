@@ -51,7 +51,7 @@ class SpmcPeripheral
 {
 public:
     SpmcPeripheral(std::string name, DataType* dataType, CObject* parentObject, DataLogger *dataLogger);
-    SpmcPeripheral(QXmlStreamReader& in, CObject* parentObject, DataLogger *dataLogger);
+    SpmcPeripheral(QXmlStreamReader& in, CObject* parentObject, DataLogger *dataLogger, bool ignorePins = false);
     ~SpmcPeripheral();
 
     std::list<CParameter*> getParameters() { return parameters; }

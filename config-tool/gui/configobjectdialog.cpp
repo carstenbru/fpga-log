@@ -7,11 +7,12 @@
 #include <QInputDialog>
 #include "spmcperipheral.h"
 #include "newmethoddialog.h"
+#include <sstream>
 
 using namespace std;
 
-ConfigObjectDialog::ConfigObjectDialog(QWidget *parent, CObject *object, DataLogger* dataLogger) :
-    QDialog(parent),
+ConfigObjectDialog::ConfigObjectDialog(MainWindow *parent, CObject *object, DataLogger* dataLogger) :
+    QDialog((QWidget*)parent),
     ui(new Ui::ConfigObjectDialog),
     object(object),
     dataLogger(dataLogger),
@@ -23,9 +24,11 @@ ConfigObjectDialog::ConfigObjectDialog(QWidget *parent, CObject *object, DataLog
     setupUi();
 
     connect(this, SIGNAL(finished(int)), this, SLOT(storeParams()));
+    connect(this, SIGNAL(copyObject(std::string)), (QObject*)parent, SLOT(copyObject(std::string)));
     connect(dataLogger, SIGNAL(criticalParameterChanged()), this, SLOT(reload()));
     connect(dataLogger, SIGNAL(storePins()), this, SLOT(storeParams()));
     connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(deleteModule()));
+    connect(ui->copyButton, SIGNAL(clicked()), this, SLOT(copyObjectButton()));
 }
 
 ConfigObjectDialog::~ConfigObjectDialog() {
@@ -291,4 +294,11 @@ bool ConfigObjectDialog::event(QEvent *event) {
         return true;
     }
     return QDialog::event(event);
+}
+
+void ConfigObjectDialog::copyObjectButton() {
+    QString s;
+    QXmlStreamWriter stream(&s);
+    stream << *object;
+    emit copyObject(s.toStdString());
 }

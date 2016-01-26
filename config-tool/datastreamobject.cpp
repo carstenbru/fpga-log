@@ -12,7 +12,14 @@ DatastreamObject::DatastreamObject(string name, DataTypeStruct *type, DataLogger
     findPorts();
 }
 
-DatastreamObject::DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger,  std::map<PortOut*, stringPair>& connections) :
+DatastreamObject::DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger, std::string name, bool ignorePins) :
+    CObject(in, dataLogger, false, name, ignorePins),
+    position(QPoint(0,0))
+{
+    findPorts();
+}
+
+DatastreamObject::DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger, std::map<PortOut *, stringPair> &connections) :
     CObject(in, dataLogger, in.readNextStartElement()),
     position(QPoint(0,0))
 {

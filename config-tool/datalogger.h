@@ -18,6 +18,7 @@ public:
     ~DataLogger();
 
     std::string newObject(DataTypeStruct *type);
+    void addObject(std::string name, bool isDataStreamObject, QXmlStreamReader& description);
     void deleteObject(CObject* object);
     std::list<DatastreamObject*> getDatastreamModules() { return datastreamObjects; }
     std::vector<CObject*> getOtherObjects() { return otherObjects; }
@@ -38,6 +39,8 @@ public:
     void addDefinitionsUpdatedModule(std::string moduleName) {definitionsUpdatedModules += "\n" + moduleName; definitionsUpdated = true;}
     std::string getDefinitionsUpdatedModules() { return definitionsUpdatedModules; }
     std::map<CParameter *, std::string[4]> getPinAssignments();
+
+    std::string findObjectName(bool isDataStreamObject, DataType* dataType);
 
     static void loadTragetXMLs();
     static std::string getTargetXML(std::string target) { return targetXMLs.at(target); }

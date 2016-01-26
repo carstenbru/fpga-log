@@ -28,8 +28,8 @@ CObject::CObject(std::string name, DataTypeStruct* dataType, DataLogger* dataLog
     }
 }
 
-CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger) :
-    CObject(in, dataLogger, false)
+CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, string name, bool ignorePins) :
+    CObject(in, dataLogger, false, name, ignorePins)
 {
 
 }
@@ -45,14 +45,20 @@ bool CObject::setPeripheral(SpmcPeripheral* newPeripheral) {
     return false;
 }
 
-CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool) :
+//the dummy bool parameter is needed by the DatastreamObject class,
+//so that it can move the XML reader in the initialization list
+CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool, string name, bool ignorePins) :
     CObject(in.attributes().value("name").toString().toStdString(),
             DataTypeStruct::getType(in.attributes().value("type").toString().toStdString()),
             dataLogger)
 {
+    if (!name.empty()) {
+        this->name = name;
+    }
+
     while (in.readNextStartElement()) {
         if (in.name().compare("SpmcPeripheral") == 0) {
-            if (!setPeripheral(new SpmcPeripheral(in, this, dataLogger))) {
+            if (!setPeripheral(new SpmcPeripheral(in, this, dataLogger, ignorePins))) {
                 definitionsUpdated = true;
             }
         } else if (in.name().compare("CMethod") == 0) {
@@ -69,18 +75,20 @@ CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool) :
                 }
             }
         } else if (in.name().compare("timestamp_pin") == 0) {
-            string parameter = in.attributes().value("name").toString().toStdString();
-            try {
-                timestampPinsInvert.at(parameter) = (in.attributes().value("inverted").toString().compare("true") == 0);
-                in.readNextStartElement();
-                CParameter* param = new CParameter(in);
-                if (timestampPins.at(parameter)->getName().compare(param->getName()) != 0) {
-                    param->setName(timestampPins.at(parameter)->getName());
+            if (!ignorePins) {
+                string parameter = in.attributes().value("name").toString().toStdString();
+                try {
+                    timestampPinsInvert.at(parameter) = (in.attributes().value("inverted").toString().compare("true") == 0);
+                    in.readNextStartElement();
+                    CParameter* param = new CParameter(in);
+                    if (timestampPins.at(parameter)->getName().compare(param->getName()) != 0) {
+                        param->setName(timestampPins.at(parameter)->getName());
+                        definitionsUpdated = true;
+                    }
+                    timestampPins[parameter] = param;
+                } catch (exception e) {
                     definitionsUpdated = true;
                 }
-                timestampPins[parameter] = param;
-            } catch (exception e) {
-                definitionsUpdated = true;
             }
 
             in.skipCurrentElement();

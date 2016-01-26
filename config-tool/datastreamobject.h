@@ -15,6 +15,7 @@ class DatastreamObject : public CObject
 public:
     DatastreamObject(std::string name, DataTypeStruct *type, DataLogger* dataLogger);
     DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger, std::map<PortOut *, stringPair> &connections);
+    DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger, std::string name, bool ignorePins = false);
     ~DatastreamObject();
 
     std::list<ControlPortIn*> getControlInPorts() { return controlInPorts; }

@@ -43,11 +43,14 @@ private:
 
     OutputGenerator* outputGenerator;
     DataLoggerOtherModel otherModel;
+
+    std::string clipboardObjectDescription;
 public slots:
     void closeEvent(QCloseEvent* event);
 
     void newObject();
     void newObject(DataTypeStruct *type, ConfigObjectDialog *confDialog);
+    void pasteModule();
     void showConfigDialog(CObject& object);
     void targetConfig();
     void generate();
@@ -60,6 +63,8 @@ public slots:
     void saveAs();
 
     void pinOverview();
+
+    void copyObject(std::string objectDescription);
 private slots:
     void otherObjectConfig(QModelIndex index);
     void outputGeneratorFinished(bool errorOccured);

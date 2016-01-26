@@ -14,6 +14,8 @@
 namespace Ui {
 class ConfigObjectDialog;
 }
+class MainWindow;
+
 
 #define ConfigObjectDialogReloadEvent 1774
 
@@ -24,7 +26,7 @@ class ConfigObjectDialog : public QDialog
 public:
     enum DialogCode { DeleteResult = 2 };
 
-    explicit ConfigObjectDialog(QWidget *parent, CObject* object, DataLogger *dataLogger);
+    explicit ConfigObjectDialog(MainWindow *parent, CObject* object, DataLogger *dataLogger);
     ~ConfigObjectDialog();
 private:
     void addGroup(QLayout* parentLayout, std::string title, std::string toolTip, QLayout* groupLayout);
@@ -55,6 +57,7 @@ private:
     CParameter* objectRequestedForParam;
 signals:
     void newObjectRequest(DataTypeStruct*,ConfigObjectDialog*);
+    void copyObject(std::string objectDescription);
 private slots:
     void nameEdited();
     void storeParams();
@@ -66,6 +69,8 @@ private slots:
     void deleteModule();
 
     void objectSelectionChanged(QString);
+
+    void copyObjectButton();
 public slots:
     void objectCreationFinished(std::string name);
 };
