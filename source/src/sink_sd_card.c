@@ -271,7 +271,7 @@ static void sink_sd_card_send_data(void* const _sink_sd_card,
 		sink->error_out->new_data(sink->error_out->parent, &package);
 	}
 
-	if (sink->sd_error_code != SD_NO_ERROR) {
+	if (sink->sd_error_code != SD_NO_ERROR) {	//TODO
 		int i;
 		for (i = 0; i < 3; i++) {  //check for init,read and write errors (see hardware specification)
 			byte = (sink->sd_error_code >> (i * 2)) & 3;

@@ -1,0 +1,9 @@
+<module name="device_contrast_box">
+  <peripheral name="contrast_box_peri" >
+    
+    <port group="timestamp" name="pwm_value_changed" destination="TIMESTAMP_GEN" parameter="id" hide="TRUE" />
+    <port group="LEDs" name="LED_PWM" />
+    <port group="switches" name="switch_up" constraints="PULLUP" />
+    <port group="switches" name="switch_down" constraints="PULLUP" />
+  </peripheral>
+</module>

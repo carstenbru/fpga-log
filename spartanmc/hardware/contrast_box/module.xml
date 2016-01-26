@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<peripheral xmlns="soc-library" xmlns:xi="http://www.w3.org/2001/XInclude" document-type="soc-peripheral-1.0">
+    <header category="Interface" label="contrast_box" name="contrast_box">
+      <description>
+        This is an application specific module: control of the contrast box in the drive test of FGLT, TU Darmstadt.
+      </description>
+    </header>
+    
+    <hdl lang="verilog" toplevel="spmc_contrast_box">
+        <sources toolchain="xilinx">
+            <modules />
+            <files>spmc_contrast_box.v</files>
+        </sources>
+    </hdl>
+    
+    <parameters>
+        <parameter name="CLOCK_FREQUENCY" type="int" value="16000000" />
+        <parameter name="NUMBER_OF_BOXES" type="int" value="2" descr="Insert the number of switch/LED pairs" >
+		<range min="1" max="8" />
+	</parameter>
+	<parameter name="PWM_FREQ" type="int" value="1000" descr="Insert the PWM frequency for the LEDs" /> 	
+	<parameter name="INCREASE_VALUE_AUTOMATIC" type="int" value="11" descr="Insert the value in steps which is increased every TIME_TO_INCREASE between 0 to 1023" >
+		<range min="0" max="1023" />
+	</parameter>
+        <parameter name="TIME_TO_INCREASE_AUTOMATIC" type="int" value="100" descr="%Insert the value after which time in 10 ms the PWM value is increased by the INCREASE_VALUE" />	
+	<parameter name="INCREASE_VALUE_SWITCH" type="int" value="11" descr="Insert the value in steps which is increased every TIME_TO_INCREASE between 0 to 1023" >
+		<range min="0" max="1023" />
+	</parameter>
+        <parameter name="TIME_TO_INCREASE_SWITCH" type="int" value="5" descr="%Insert the value after which time in 10 ms the PWM value is increased by the INCREASE_VALUE" />
+        <parameter name="DECREASE_VALUE_SWITCH" type="int" value="11" descr="Insert the value in steps which is decreased every time the switch is pressed between 0 to 1023" >
+		<range min="0" max="1023" />
+	</parameter>
+    </parameters>
+    
+    <xi:include href="../defaults/peripheral.xml" />
+    <ports group="switches" direction="input" >
+        <port name="switch_up" descr="switch which increases the LED output" width="${NUMBER_OF_BOXES}" />
+	<port name="switch_down" descr="switch which decrease the LED output" width="${NUMBER_OF_BOXES}" />
+    </ports>
+    <ports group="LEDs" direction="output">
+        <port name="LED_PWM" descr="LED Output which is controlled" width="${NUMBER_OF_BOXES}" />
+    </ports>
+    <ports group="timestamp" direction="output">
+        <port name="pwm_value_changed" descr="generate a timestamp if any pwm_on_value has changed"/>
+    </ports>
+    
+    <registers>
+        <register access="readwrite" name="CONTROL" offset="0">
+            <description>control register</description>
+        </register>
+        <register access="read" name="PWM_ON_VALUE_0" offset="1">
+            <description>pwm on time value 0 register</description>
+        </register>
+        <register access="read" name="PWM_ON_VALUE_1" offset="2">
+            <description>pwm on time value 1 register</description>
+        </register>
+        <register access="read" name="PWM_ON_VALUE_2" offset="3">
+            <description>pwm on time value 2 register</description>
+        </register>
+        <register access="read" name="PWM_ON_VALUE_3" offset="4">
+            <description>pwm on time value 3 register</description>
+        </register>
+        <register access="read" name="PWM_ON_VALUE_4" offset="5">
+            <description>pwm on time value 4 register</description>
+        </register>
+        <register access="read" name="PWM_ON_VALUE_5" offset="6">
+            <description>pwm on time value 5 register</description>
+        </register>
+        <register access="read" name="PWM_ON_VALUE_6" offset="7">
+            <description>pwm on time value 6 register</description>
+        </register>
+        <register access="read" name="PWM_ON_VALUE_7" offset="8">
+            <description>pwm on time value 7 register</description>
+        </register>
+    </registers>
+</peripheral>
