@@ -75,6 +75,8 @@ SpmcPeripheral::SpmcPeripheral(QXmlStreamReader& in, CObject* parentObject, Data
                 } catch (exception e) {
                     paramsChanged = true;
                 }
+            } else {
+                in.skipCurrentElement();
             }
         }
     }

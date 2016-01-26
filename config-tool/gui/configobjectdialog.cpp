@@ -297,6 +297,8 @@ bool ConfigObjectDialog::event(QEvent *event) {
 }
 
 void ConfigObjectDialog::copyObjectButton() {
+    storeParams();
+
     QString s;
     QXmlStreamWriter stream(&s);
     stream << *object;
