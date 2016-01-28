@@ -8,6 +8,8 @@
 #include <fpga-log/device/device_uart_raw.h>
 #include <fpga-log/peripheral_funcs/uart_light_funcs.h>
 
+#include <stdio.h>
+
 /**
  * @brief uart raw send data function
  *
@@ -31,7 +33,8 @@ static void device_uart_raw_new_control_message(void* const _uart_raw,
 		const unsigned int count, const control_parameter_t* parameters);
 
 void device_uart_raw_init(device_uart_raw_t* const uart_raw,
-		uart_light_regs_t* const uart_light, const int id) {
+		uart_light_regs_t* const uart_light, const int id,
+		device_uart_raw_print_mode print_mode) {
 	datastream_source_init(&uart_raw->super, id);  //call parents init function
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
@@ -42,14 +45,18 @@ void device_uart_raw_init(device_uart_raw_t* const uart_raw,
 
 	uart_raw->control_in = control_port_dummy;
 	uart_raw->control_in.parent = (void*) uart_raw;
-	uart_raw->control_in.new_control_message = device_uart_raw_new_control_message;
+	uart_raw->control_in.new_control_message =
+			device_uart_raw_new_control_message;
+
+	uart_raw->print_mode = print_mode;
 
 	uart_raw->uart_light = uart_light;
 
 	uart_light_enable_rxint(uart_light);
 }
 
-control_port_t* device_uart_raw_get_control_in(device_uart_raw_t* const uart_raw) {
+control_port_t* device_uart_raw_get_control_in(
+		device_uart_raw_t* const uart_raw) {
 	return &uart_raw->control_in;
 }
 
@@ -70,8 +77,22 @@ static void device_uart_raw_send_data(void* const _uart_raw,
 }
 
 static void device_uart_raw_new_control_message(void* const _uart_raw,
-		unsigned int count, const control_parameter_t* parameters) {  //TODO remove
+		unsigned int count, const control_parameter_t* parameters) {
+	device_uart_raw_t* uart_raw = (device_uart_raw_t*) _uart_raw;
+
 	while (count--)
-		uart_light_send(((device_uart_raw_t*) _uart_raw)->uart_light,
-				(parameters++)->type);
+		if (uart_raw->print_mode == DEVICE_UART_RAW_TYPE_ONLY) {
+			uart_light_send(uart_raw->uart_light, (parameters++)->type);
+		} else {
+			stdio_descr.base_addr_out = uart_raw->uart_light;
+			stdio_descr.send_byte =
+					(void (*)(void *param, unsigned char byte)) uart_light_send;
+
+			if (uart_raw->print_mode == DEVICE_UART_RAW_VALUE_ONLY) {
+				printf(",%d", (parameters++)->value);
+			} else {
+				printf(",%c%d", parameters->type, parameters->value);
+				parameters++;
+			}
+		}
 }

@@ -14,6 +14,12 @@
 #include <fpga-log/data_port.h>
 #include <fpga-log/control_port.h>
 
+typedef enum {
+	DEVICE_UART_RAW_TYPE_ONLY,  /**< print only the type of parameters of incoming packages */
+	DEVICE_UART_RAW_VALUE_ONLY, /**< print only the value of parameters of incoming packages */
+	DEVICE_UART_RAW_TYPE_VALUE /**< print type and value of parameters of incoming packages */
+} device_uart_raw_print_mode;
+
 /** 
  * @brief struct describing a uart raw device 
  */
@@ -24,6 +30,8 @@ typedef struct {
 	control_port_t control_in; 			/**< control port, this can be set at a control output to direct the control stream to this device */
 
 	uart_light_regs_t* uart_light; 	/**< pointer to UART hardware registers */
+
+	device_uart_raw_print_mode print_mode;
 } device_uart_raw_t;
 
 /**
@@ -36,7 +44,7 @@ typedef struct {
  * @param id		id of the new device (for log output, etc)
  */
 void device_uart_raw_init(device_uart_raw_t* const uart_raw,
-		uart_light_regs_t* const uart_light, const int id);
+		uart_light_regs_t* const uart_light, const int id, device_uart_raw_print_mode print_mode);
 
 /**
  * @brief returns the uart raw device control input
