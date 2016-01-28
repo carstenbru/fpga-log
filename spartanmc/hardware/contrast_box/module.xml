@@ -18,7 +18,8 @@
         <parameter name="NUMBER_OF_BOXES" type="int" value="2" descr="Insert the number of switch/LED pairs" >
 		<range min="1" max="8" />
 	</parameter>
-	<parameter name="PWM_FREQ" type="int" value="1000" descr="Insert the PWM frequency for the LEDs" /> 	
+	<parameter name="PWM_FREQ" type="int" value="1000" descr="Insert the PWM frequency for the LEDs" /> 
+	<parameter name="SEND_STATUS_AUTOMATIC" type="int" value="10" descr="Insert the number after which time in 10 ms the status will be send automatically" /> 	
 	<parameter name="INCREASE_VALUE_AUTOMATIC" type="int" value="11" descr="Insert the value in steps which is increased every TIME_TO_INCREASE between 0 to 1023" >
 		<range min="0" max="1023" />
 	</parameter>

@@ -14,11 +14,12 @@ module spmc_contrast_box #(parameter BASE_ADR = 10'h0,
                              parameter CLOCK_FREQUENCY = 16000000,
                              parameter NUMBER_OF_BOXES = 2,
 			     parameter PWM_FREQ = 1000,
-                             parameter INCREASE_VALUE_AUTOMATIC = 55,
-                             parameter TIME_TO_INCREASE_AUTOMATIC = 11'd1000,
-                             parameter INCREASE_VALUE_SWITCH = 11,
-                             parameter TIME_TO_INCREASE_SWITCH = 50,
-                             parameter DECREASE_VALUE_SWITCH = 11) ( 
+                             parameter INCREASE_VALUE_AUTOMATIC = 55,		//Manuel increase the PWM_ON_VALUE + INCREASE_VALUE_AUTOMATIC
+                             parameter TIME_TO_INCREASE_AUTOMATIC = 100,	//times 10ms
+			     parameter SEND_STATUS_AUTOMATIC = 10,		//times 10ms
+                             parameter INCREASE_VALUE_SWITCH = 11,		//Manuel increase the PWM_ON_VALUE + INCREASE_VALUE_SWITCH
+                             parameter TIME_TO_INCREASE_SWITCH = 5,		//times 10ms
+                             parameter DECREASE_VALUE_SWITCH = 11) ( 		//Manuel decrease the PWM_ON_VALUE - DECREASE_VALUE_SWITCH
         //*** Connections to SpartanMC Core (do not change) ***
         input wire              clk_peri,       //System-Clock
         input wire      [17:0]  do_peri,        //Data Bus  from MC
@@ -45,6 +46,10 @@ module spmc_contrast_box #(parameter BASE_ADR = 10'h0,
 
   parameter ALL_PORTS = 9;		//NUMBER_OF_BOXES + 1; reserviert den platz im speicher für maximal 8 boxen
   parameter DECODSIM_DEB = "NO";
+
+  parameter TIME_SEND_STATUS_AUTOMATIC = CLOCK_FREQUENCY*SEND_STATUS_AUTOMATIC/100;
+  parameter TIMER_COUNTER_BIT = 25;	//Bitwitdh of automatic status timer
+
 
 
 // Dekodierung der Adressen ********************** START *************************************
@@ -99,6 +104,10 @@ assign	wr_control		= reg_write[CONTROL_ADR];			// Schreiben
   wire [(PWM_REG_WIDTH*NUMBER_OF_BOXES-1):0] di_peri_single;
   wire [17:0] di_peri_control_single;
   wire [NUMBER_OF_BOXES-1:0] pwm_value_changed_single;
+  //Automatic send the Status every SEND_STATUS_AUTOMATIC*10ms
+  reg automatic_send_status;
+  reg [TIMER_COUNTER_BIT-1:0] send_status_cnt;
+
 
   genvar i;
   generate //generate specified number of contrast box stages
@@ -126,7 +135,30 @@ assign	wr_control		= reg_write[CONTROL_ADR];			// Schreiben
   assign contrast_reset_enable = reset || sw_reset || ~enable;
 
   //Generate timestamp if one of the pwm_on_values has changed
-  assign pwm_value_changed = |pwm_value_changed_single;
+  assign pwm_value_changed = |pwm_value_changed_single || automatic_send_status;
+
+  //Automatic generate a timestamp and send all pwm values. Only if TIME_SEND_STATUS_AUTOMATIC not anyway will send a status
+  always @(posedge clk_peri) begin
+	if(reset) begin
+		send_status_cnt <= {(TIMER_COUNTER_BIT){1'b0}};
+		automatic_send_status <= 1'b0;
+	end else begin
+		if(|pwm_value_changed_single) begin
+			send_status_cnt <= {(TIMER_COUNTER_BIT){1'b0}};
+			automatic_send_status <= 1'b0;
+		end else begin
+			if(TIME_SEND_STATUS_AUTOMATIC != 0) begin
+				if(send_status_cnt < TIME_SEND_STATUS_AUTOMATIC) send_status_cnt <= send_status_cnt + 1;
+				else send_status_cnt <= {(TIMER_COUNTER_BIT){1'b0}};
+			
+				if(send_status_cnt == TIME_SEND_STATUS_AUTOMATIC) automatic_send_status <= 1'b1;
+				else automatic_send_status <= 1'b0;
+			end
+		end
+	end
+  end
+
+
 
   //SpartanMC peripheral interface logic
   //CONFIG Data Input from SpartanMC
