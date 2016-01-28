@@ -98,7 +98,7 @@ CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool, string name
     connect(this, SIGNAL(advancedConfigRemoved()), dataLogger, SLOT(parameterChanged()));
 
     if (definitionsUpdated) {
-        dataLogger->addDefinitionsUpdatedModule(name);
+        dataLogger->addDefinitionsUpdatedModule(this->name);
     }
 }
 
