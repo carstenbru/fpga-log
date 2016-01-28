@@ -5,8 +5,8 @@ static void device_contrast_box_send_data(
 		const timestamp_t* const timestamp);
 
 
-unsigned int pwm[8] = {0,0,0,0,0,0,0,0};
-unsigned char number_of_boxes = 0;
+//unsigned int pwm[8] = {0,0,0,0,0,0,0,0};	//Save old PWM_ON_VALUES
+unsigned char number_of_boxes = 0;	//Save the number of active boxes
 
 void device_contrast_box_init(
 		device_contrast_box_t* const contrast_box,
@@ -41,20 +41,20 @@ static void device_contrast_box_send_data(
 	data_package_t package = { contrast_box->super.id, "PWM_ON_VALUE_0",
 			DATA_TYPE_INT, (void*) &contrast_box->contrast_box->pwm_on_value[0] , timestamp };
 
-	if(pwm[0] != contrast_box->contrast_box->pwm_on_value[0]){
+	/*if(pwm[0] != contrast_box->contrast_box->pwm_on_value[0]){
 		contrast_box->data_out->new_data(contrast_box->data_out->parent, &package);
 		pwm[0] = contrast_box->contrast_box->pwm_on_value[0];
-	}
+	}*/
 	char name[15] = {"PWM_ON_VALUE_X\0"};
-	for(unsigned char i = 1 ; i < number_of_boxes; i = i + 1){
-		if(pwm[i] != contrast_box->contrast_box->pwm_on_value[i]){
+	for(unsigned char i = 0 ; i < number_of_boxes; i = i + 1){
+		//if(pwm[i] != contrast_box->contrast_box->pwm_on_value[i]){
 			package.data =  (void*) &(contrast_box->contrast_box->pwm_on_value[i]);
 			name[13] = i+'0';
 			package.val_name = name;
 			contrast_box->data_out->new_data(contrast_box->data_out->parent, &package);
 
-			pwm[i] = contrast_box->contrast_box->pwm_on_value[i];
-		}
+		//	pwm[i] = contrast_box->contrast_box->pwm_on_value[i];
+		//}
 	}
 
 }
