@@ -134,6 +134,19 @@ void DatastreamView::redrawModules() {
     }
 }
 
+/*
+class Via {
+public:
+    Via(int x, int y) : x(x), y(y) {}
+    Via(QPoint point) : x(point.x()), y(point.y()) {}
+
+    int getX() {return x;}
+    int getY() {return x;}
+private:
+    int x;
+    int y;
+};*/
+
 void DatastreamView::redrawStreams() {
     int x = view->horizontalScrollBar()->value();
     int y = view->verticalScrollBar()->value();
@@ -142,6 +155,75 @@ void DatastreamView::redrawStreams() {
     QGraphicsScene* scene = view->scene();
     scene->clear();
 
+    for (std::list<PortOutButton*>::iterator i = portOuts.begin(); i != portOuts.end(); i++) {
+        PortOut* p = (*i)->getPortOut();
+        if (p->getDestination() != NULL) {
+            QPen pen = QPen((*i)->getConnectionColor(), Qt::SolidLine);
+            pen.setWidth(LINE_WIDTH);
+
+            list<QPoint> viaList;
+            QPoint p1 = (*i)->getPosition();
+            QPoint p2 = ports[p->getDestination()]->getPosition();
+
+            int space1 = ((*i)->getPortSide()) ? CONNECTION_LINE_SPACE : -CONNECTION_LINE_SPACE;
+            QPoint dummyVia1(p1.x() + space1, p1.y());
+            int space2 = (ports[p->getDestination()]->getPortSide()) ? CONNECTION_LINE_SPACE : -CONNECTION_LINE_SPACE;
+            QPoint dummyVia2(p2.x() + space2, p2.y());
+
+            viaList.push_back(p1);
+            viaList.push_back(dummyVia1);
+
+            //TODO add custom VIAs here
+
+            //otherwise add pseudo mid-via
+            int xDiff = (dummyVia2.x()-dummyVia1.x())/2;
+            int xmid = dummyVia1.x() + xDiff;
+            int ymid;
+            if ((*i)->getPortSide() == (xDiff < 0)) {
+                int y1 = (*i)->getModuleMiddle().y();
+                ymid =  y1 + ((ports[p->getDestination()]->getModuleMiddle().y() - y1) / 2);
+            } else {
+                ymid = dummyVia1.y() + (dummyVia2.y()-dummyVia1.y())/2;
+            }
+            viaList.push_back(QPoint(xmid,ymid));
+
+            viaList.push_back(dummyVia2);
+            viaList.push_back(p2);
+
+            list<QPoint>::iterator lastVia = viaList.begin();
+            int lastDir = -1;
+            for (list<QPoint>::iterator via = ++viaList.begin(); via != viaList.end(); via++) {
+                int xDiff = via->x() - lastVia->x();
+                int yDiff = via->y() - lastVia->y();
+
+                if ((xDiff != 0) && (yDiff != 0)) {
+                    int xDirInv = xDiff < 0 ? 1 : 0;
+                    if ((lastDir >= 2) || (xDirInv == lastDir)) {
+                        viaList.insert(via, QPoint(lastVia->x(), via->y()));
+                        yDiff = 0;
+                    } else {
+                        viaList.insert(via, QPoint(via->x(), lastVia->y()));
+                        xDiff = 0;
+                    }
+                }
+                if (xDiff != 0) {
+                    lastDir = xDiff < 0 ? 0 : 1;
+                } else {
+                    lastDir =  xDiff < 0 ? 2 : 3;
+                }
+                lastVia = via;
+            }
+
+            QPoint last = *viaList.begin();
+            for (list<QPoint>::iterator via = ++viaList.begin(); via != viaList.end(); via++) {
+                scene->addLine(QLine(last, *via), pen);
+                last = *via;
+            }
+        }
+    }
+
+    //old drawing algorithm
+    /*
     for (std::list<PortOutButton*>::iterator i = portOuts.begin(); i != portOuts.end(); i++) {
         PortOut* p = (*i)->getPortOut();
         if (p->getDestination() != NULL) {
@@ -173,7 +255,7 @@ void DatastreamView::redrawStreams() {
                 scene->addLine(QLine(l6,l2), pen);
             }
         }
-    }
+    }*/
 }
 
 void DatastreamView::moveDatastreamModules() {
