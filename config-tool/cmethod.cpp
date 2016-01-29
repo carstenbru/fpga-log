@@ -17,6 +17,7 @@ CMethod::CMethod(QXmlStreamReader& in, CMethod* currentSignature, CObject *objec
     completeName = in.attributes().value("completeName").toString().toStdString();
     name = in.attributes().value("name").toString().toStdString();
     headerFile = in.attributes().value("headerFile").toString().toStdString();
+    description = currentSignature->getDescription();
     in >> returnType;
 
     unsigned int paramCount = 0;
@@ -59,6 +60,7 @@ bool CMethod::sameSignature(CMethod &compare) {
 bool CMethod::setParameter(CParameter& newValue) {
     for (list<CParameter>::iterator i = parameters.begin(); i != parameters.end(); i++) {
         if ((*i).sameSignature(newValue) && ((*i).getName().compare(newValue.getName()) == 0)) {
+            newValue.setDescription(i->getDescription());
             i = parameters.erase(i);
             parameters.insert(i, newValue);
             return true;
