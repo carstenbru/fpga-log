@@ -28,6 +28,9 @@ private:
     void deleteAllModuleGuis();
     void deleteAllViaBtns();
 
+    bool addCustomVIAs(std::list<std::pair<QPoint, bool>>& viaList, PortOut *p, bool keepViaBtns, QColor color);
+    void refineVIAs(std::list<std::pair<QPoint, bool>>& viaList);
+
     QGraphicsView* view;
     DataLogger* dataLogger;
 

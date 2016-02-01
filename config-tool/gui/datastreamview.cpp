@@ -157,6 +157,9 @@ void DatastreamView::deleteAllViaBtns() {
     viaBtns.clear();
 }
 
+/*
+ * checks if a point is on or close to a line
+ */
 bool checkOnLine(QLine& line, QPoint& point) {
     int a, b;
     int c;
@@ -190,6 +193,74 @@ bool checkOnLine(QLine& line, QPoint& point) {
     return true;
 }
 
+bool DatastreamView::addCustomVIAs(list<pair<QPoint, bool>>& viaList, PortOut* p, bool keepViaBtns, QColor color) {
+    list<QPoint> customVias = p->getVias();
+    int x = view->horizontalScrollBar()->value();
+    int y = view->verticalScrollBar()->value();
+    QPoint scrollPos(x, y);
+    for (list<QPoint>::iterator i = customVias.begin(); i != customVias.end(); i++) {
+        if (!keepViaBtns) {
+            //create VIA button
+            MoveableButton* btn = new MoveableButton();
+            btn->setParent(view->viewport());
+            btn->setStyleSheet("QWidget {background-color: " + color.name() + " ;\ncolor:white;\nborder-radius: " + QString::number(VIA_WIDTH/2) + "px;}");
+            btn->setFixedSize(VIA_WIDTH, VIA_WIDTH);
+            viaBtns[btn] = p;
+            btn->move(QPoint(i->x()-VIA_WIDTH/2, i->y()-VIA_WIDTH/2) - scrollPos);
+            btn->show();
+
+            connect(btn, SIGNAL(moved(QPoint, QPoint)), this, SLOT(viaMoved(QPoint, QPoint)));
+            connect(btn, SIGNAL(rightClicked()), this, SLOT(viaDelete()));
+        }
+
+        //add it to the list
+        viaList.push_back(pair<QPoint, bool>(*i, true));
+    }
+    //return if we added some VIAs here
+    return !customVias.empty();
+}
+
+/*
+ * refines the list of VIAs so that the connections between two points are always either horizontal or vertical
+ *
+ * prefer x-direction and straight lines but avoid going back in the same direction we previously came from
+ */
+void DatastreamView::refineVIAs(list<pair<QPoint, bool>>& viaList) {
+    list<pair<QPoint, bool>>::iterator lastVia = viaList.begin();
+    int lastDir = -1;
+    for (list<pair<QPoint, bool>>::iterator via = ++viaList.begin(); via != viaList.end(); via++) {
+        int xDiff = via->first.x() - lastVia->first.x();
+        int yDiff = via->first.y() - lastVia->first.y();
+
+        if ((xDiff != 0) && (yDiff != 0)) {
+            int xDirInv = xDiff < 0 ? 1 : 0;
+            int yDirInv = yDiff < 0 ? 3 : 2;
+            if (((lastDir >= 2) && (yDirInv != lastDir)) || (xDirInv == lastDir)) {
+                viaList.insert(via, pair<QPoint, bool>(QPoint(lastVia->first.x(), via->first.y()), false));
+                yDiff = 0;
+            } else {
+                viaList.insert(via, pair<QPoint, bool>(QPoint(via->first.x(), lastVia->first.y()), false));
+                xDiff = 0;
+            }
+        }
+        if (xDiff != 0) {
+            lastDir = xDiff < 0 ? 0 : 1;
+        } else {
+            lastDir =  yDiff < 0 ? 2 : 3;
+        }
+        lastVia = via;
+    }
+}
+
+/*
+ * redraws the streams in the DatastreamView
+ *
+ * @param addVia if true the Via specified in newVia will be added (if on a connection)
+ * @param newVia position at which a Via should be added
+ * @param keepViaBtns if true keep the old Buttons for Vias (necessary if Vias moved), if false generate new ones (necessary if Vias changed)
+ *
+ * @return true if a VIA was successfully added
+ */
 bool DatastreamView::redrawStreams(bool addVia, QPoint newVia, bool keepViaBtns) {
     bool addedVia = false;
     if (!keepViaBtns) {
@@ -209,10 +280,12 @@ bool DatastreamView::redrawStreams(bool addVia, QPoint newVia, bool keepViaBtns)
             QPen pen = QPen((*i)->getConnectionColor(), Qt::SolidLine);
             pen.setWidth(LINE_WIDTH);
 
+            //first points: start and end
             list<pair<QPoint, bool>> viaList;
             QPoint p1 = (*i)->getPosition();
             QPoint p2 = ports[p->getDestination()]->getPosition();
 
+            //dummy VIAs to ensure straight lines out of the modules
             int space1 = ((*i)->getPortSide()) ? CONNECTION_LINE_SPACE : -CONNECTION_LINE_SPACE;
             QPoint dummyVia1(p1.x() + space1, p1.y());
             int space2 = (ports[p->getDestination()]->getPortSide()) ? CONNECTION_LINE_SPACE : -CONNECTION_LINE_SPACE;
@@ -221,29 +294,11 @@ bool DatastreamView::redrawStreams(bool addVia, QPoint newVia, bool keepViaBtns)
             viaList.push_back(pair<QPoint, bool>(p1, false));
             viaList.push_back(pair<QPoint, bool>(dummyVia1, false));
 
-            list<QPoint> customVias = p->getVias();
-            int x = view->horizontalScrollBar()->value();
-            int y = view->verticalScrollBar()->value();
-            QPoint scrollPos(x, y);
-            for (list<QPoint>::iterator i = customVias.begin(); i != customVias.end(); i++) {
-                if (!keepViaBtns) {
-                    MoveableButton* btn = new MoveableButton();
-                    btn->setParent(view->viewport());
-                    btn->setStyleSheet("QWidget {background-color: " + pen.color().name() + " ;\ncolor:white;\nborder-radius: " + QString::number(VIA_WIDTH/2) + "px;}");
-                    btn->setFixedSize(VIA_WIDTH, VIA_WIDTH);
-                    viaBtns[btn] = p;
-                    btn->move(QPoint(i->x()-VIA_WIDTH/2, i->y()-VIA_WIDTH/2) - scrollPos);
-                    btn->show();
-
-                    connect(btn, SIGNAL(moved(QPoint, QPoint)), this, SLOT(viaMoved(QPoint, QPoint)));
-                    connect(btn, SIGNAL(rightClicked()), this, SLOT(viaDelete()));
-                }
-
-                viaList.push_back(pair<QPoint, bool>(*i, true));
-            }
+            //add user defined VIAs to our list
+            bool customViasPresent = addCustomVIAs(viaList, p, keepViaBtns, pen.color());
 
             //otherwise add pseudo mid-via
-            if (customVias.empty()) {
+            if (!customViasPresent) {
                 int xDiff = (dummyVia2.x()-dummyVia1.x())/2;
                 int xmid = dummyVia1.x() + xDiff;
                 int ymid;
@@ -259,41 +314,23 @@ bool DatastreamView::redrawStreams(bool addVia, QPoint newVia, bool keepViaBtns)
             viaList.push_back(pair<QPoint, bool>(dummyVia2, false));
             viaList.push_back(pair<QPoint, bool>(p2, false));
 
-            list<pair<QPoint, bool>>::iterator lastVia = viaList.begin();
-            int lastDir = -1;
-            for (list<pair<QPoint, bool>>::iterator via = ++viaList.begin(); via != viaList.end(); via++) {
-                int xDiff = via->first.x() - lastVia->first.x();
-                int yDiff = via->first.y() - lastVia->first.y();
+            //make all connections either horizontal or vertical
+            refineVIAs(viaList);
 
-                if ((xDiff != 0) && (yDiff != 0)) {
-                    int xDirInv = xDiff < 0 ? 1 : 0;
-                    int yDirInv = yDiff < 0 ? 3 : 2;
-                    if (((lastDir >= 2) && (yDirInv != lastDir)) || (xDirInv == lastDir)) {
-                        viaList.insert(via, pair<QPoint, bool>(QPoint(lastVia->first.x(), via->first.y()), false));
-                        yDiff = 0;
-                    } else {
-                        viaList.insert(via, pair<QPoint, bool>(QPoint(via->first.x(), lastVia->first.y()), false));
-                        xDiff = 0;
-                    }
-                }
-                if (xDiff != 0) {
-                    lastDir = xDiff < 0 ? 0 : 1;
-                } else {
-                    lastDir =  yDiff < 0 ? 2 : 3;
-                }
-                lastVia = via;
-            }
-
+            //finally draw everything
             QPoint last = viaList.begin()->first;
             QPoint lastCustomVia = last;
             for (list<pair<QPoint, bool>>::iterator via = ++viaList.begin(); via != viaList.end(); via++) {
                 QLine line(last, via->first);
+                //if we are also searching for a place to add a VIA..
                 if (addVia && !addedVia) {
                     if (checkOnLine(line, newVia)) {
+                        //we found the right connection, add the VIA
                         p->addVia(newVia, lastCustomVia);
                         addedVia = true;
                     }
                 }
+                //draw the connection line part
                 scene->addLine(line, pen);
                 last = via->first;
                 if (via->second) {
