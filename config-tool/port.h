@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <QXmlStreamWriter>
+#include <QPoint>
 
 typedef std::pair<std::string, std::string> stringPair;
 
@@ -39,6 +40,7 @@ protected:
 signals:
     void connected();
     void disconnected(Port* port);
+    void viaChanged();
 
     void disconnectFromDest();
 };
@@ -77,11 +79,18 @@ public:
     bool isConnected() { return destination != NULL; }
     bool isMultiPort() { return multiPort; }
 
+    void addVia(QPoint via, QPoint& prev);
+    void moveVia(QPoint oldPos, QPoint newPos);
+    void deleteVia(QPoint pos);
+    std::list<QPoint> getVias() { return vias; }
+
     virtual void saveToXml(QXmlStreamWriter& out, std::string type);
 protected:
     Port* destination;
 
     bool multiPort;
+
+    std::list<QPoint> vias;
 private slots:
     void destDisconnected();
 };

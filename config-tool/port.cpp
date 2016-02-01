@@ -45,6 +45,39 @@ int DataPortOut::connectPort(Port *port) {
     }
 }
 
+void PortOut::addVia(QPoint via, QPoint& prev) {
+    for (list<QPoint>::iterator i = vias.begin(); i != vias.end(); i++) {
+        if (i->x() == prev.x() && i->y() == prev.y()) {
+            vias.insert(++i, via);
+            emit viaChanged();
+            return;
+        }
+    }
+    vias.push_front(via);
+    emit viaChanged();
+}
+
+void PortOut::moveVia(QPoint oldPos, QPoint newPos) {
+    for (list<QPoint>::iterator i = vias.begin(); i != vias.end(); i++) {
+        if (i->x() == oldPos.x() && i->y() == oldPos.y()) {
+            i->setX(newPos.x());
+            i->setY(newPos.y());
+            emit viaChanged();
+            return;
+        }
+    }
+}
+
+void PortOut::deleteVia(QPoint pos) {
+    for (list<QPoint>::iterator i = vias.begin(); i != vias.end(); i++) {
+        if (i->x() == pos.x() && i->y() == pos.y()) {
+            vias.remove(*i);
+            emit viaChanged();
+            return;
+        }
+    }
+}
+
 void PortOut::disconnectPort() {
     destination = NULL;
     emit disconnected(this);
@@ -69,6 +102,20 @@ void PortOut::saveToXml(QXmlStreamWriter& out, std::string type) {
         out.writeAttribute("destinationModule", destination->getParent()->getName().c_str());
         out.writeAttribute("destinationPort", destination->getName().c_str());
     }
+
+    if (vias.empty()) {
+        out.writeAttribute("hasVias", "false");
+    } else {
+        out.writeAttribute("hasVias", "true");
+    }
+
+    for (list<QPoint>::iterator i = vias.begin(); i != vias.end(); i++) {
+        out.writeStartElement("via");
+        out.writeAttribute("x", QString::number(i->x()));
+        out.writeAttribute("y", QString::number(i->y()));
+        out.writeEndElement();
+    }
+
     out.writeEndElement();
 }
 
@@ -82,9 +129,19 @@ void PortOut::load(QXmlStreamReader& in, map<PortOut*, stringPair>& connections)
         p.first = destModule;
         p.second = in.attributes().value("destinationPort").toString().toStdString();
         connections[this] = p;
-    }
 
-    in.skipCurrentElement();
+        if (in.attributes().value("hasVias").toString().compare("true") == 0) {
+            while (in.readNextStartElement()) {
+                QPoint via(in.attributes().value("x").toString().toInt(), in.attributes().value("y").toString().toInt());
+                vias.push_back(via);
+                in.skipCurrentElement();
+            }
+        } else {
+            in.skipCurrentElement();
+        }
+    } else {
+        in.skipCurrentElement();
+    }
 }
 
 QXmlStreamWriter& operator<<(QXmlStreamWriter& out, ControlPortIn& port) {

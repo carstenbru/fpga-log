@@ -133,29 +133,37 @@ void DatastreamObject::findPorts() {
 void DatastreamObject::addPort(ControlPortIn* port) {
     controlInPorts.push_back(port);
     connect(port, SIGNAL(connected()), this, SLOT(portConnected()));
+    connect(port, SIGNAL(viaChanged()), this, SLOT(portViasChanged()));
     connect(port, SIGNAL(disconnected(Port*)), this, SLOT(portDisconnected(Port*)));
 }
 
 void DatastreamObject::addPort(ControlPortOut* port) {
     controlOutPorts.push_back(port);
     connect(port, SIGNAL(connected()), this, SLOT(portConnected()));
+    connect(port, SIGNAL(viaChanged()), this, SLOT(portViasChanged()));
     connect(port, SIGNAL(disconnected(Port*)), this, SLOT(portDisconnected(Port*)));
 }
 
 void DatastreamObject::addPort(DataPortIn* port) {
     dataInPorts.push_back(port);
     connect(port, SIGNAL(connected()), this, SLOT(portConnected()));
+    connect(port, SIGNAL(viaChanged()), this, SLOT(portViasChanged()));
     connect(port, SIGNAL(disconnected(Port*)), this, SLOT(portDisconnected(Port*)));
 }
 
 void DatastreamObject::addPort(DataPortOut* port) {
     dataOutPorts.push_back(port);
     connect(port, SIGNAL(connected()), this, SLOT(portConnected()));
+    connect(port, SIGNAL(viaChanged()), this, SLOT(portViasChanged()));
     connect(port, SIGNAL(disconnected(Port*)), this, SLOT(portDisconnected(Port*)));
 }
 
 void DatastreamObject::portConnected() {
     emit connectionsChanged();
+}
+
+void DatastreamObject::portViasChanged() {
+    emit viasChanged();
 }
 
 template <typename T>

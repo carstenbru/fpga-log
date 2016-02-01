@@ -242,6 +242,7 @@ void MainWindow::newLogger() {
         dataLogger = new DataLogger();
 
         connect(dataLogger, SIGNAL(connectionsChanged()), this, SLOT(dataLoggerChanged()));
+        connect(dataLogger, SIGNAL(viasChanged()), this, SLOT(dataLoggerChanged()));
         connect(dataLogger, SIGNAL(datastreamModulesChanged()), this, SLOT(dataLoggerChanged()));
         connect(dataLogger, SIGNAL(otherModulesChanged()), this, SLOT(dataLoggerChanged()));
 

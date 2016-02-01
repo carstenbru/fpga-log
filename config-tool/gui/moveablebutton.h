@@ -17,9 +17,12 @@ private:
 
     QPoint clickPos;
     bool isClick;
+    bool isRightClick;
 signals:
     void moved();
+    void moved(QPoint oldPos, QPoint newPos);
     void clicked();
+    void rightClicked();
 };
 
 #endif // MOVEABLEBUTTON_H

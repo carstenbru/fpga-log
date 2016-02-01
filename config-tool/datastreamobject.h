@@ -50,8 +50,10 @@ private:
 private slots:
     void portConnected();
     void portDisconnected(Port *port);
+    void portViasChanged();
 signals:
     void connectionsChanged();
+    void viasChanged();
 };
 
 #endif // DATASTREAMOBJECT_H

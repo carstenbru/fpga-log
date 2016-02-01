@@ -71,6 +71,7 @@ string DataLogger::newObject(DataTypeStruct *type) {
         DatastreamObject* dso = new DatastreamObject(name, type, this);
         datastreamObjects.push_back(dso);
         connect(dso, SIGNAL(connectionsChanged()), this, SLOT(moduleConnectionsChanged()));
+        connect(dso, SIGNAL(viasChanged()), this, SLOT(viaChanged()));
         emit datastreamModulesChanged();
     }
     else {
@@ -103,6 +104,10 @@ void DataLogger::deleteObject(CObject *object) {
 
 void DataLogger::moduleConnectionsChanged() {
     emit connectionsChanged();
+}
+
+void DataLogger::viaChanged() {
+    emit viasChanged();
 }
 
 template <typename T>
@@ -313,6 +318,7 @@ QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger) {
             DatastreamObject* dso = new DatastreamObject(in, &dataLogger, connections);
             dataLogger.datastreamObjects.push_back(dso);
             QObject::connect(dso, SIGNAL(connectionsChanged()), &dataLogger, SLOT(moduleConnectionsChanged()));
+            QObject::connect(dso, SIGNAL(viasChanged()), &dataLogger, SLOT(viaChanged()));
         } else if (in.name().compare("CObject") == 0) {
             dataLogger.otherObjects.push_back(new CObject(in, &dataLogger));
         } else
@@ -338,6 +344,7 @@ void DataLogger::addObject(std::string name, bool isDataStreamObject, QXmlStream
         DatastreamObject* dso = new DatastreamObject(description, this, name, true);
         datastreamObjects.push_back(dso);
         connect(dso, SIGNAL(connectionsChanged()), this, SLOT(moduleConnectionsChanged()));
+        connect(dso, SIGNAL(viasChanged()), this, SLOT(viaChanged()));
         emit datastreamModulesChanged();
     } else {
         CObject* co = new CObject(description, this, name, true);

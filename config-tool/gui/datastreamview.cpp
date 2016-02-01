@@ -2,14 +2,29 @@
 #include "moveablebutton.h"
 #include <QScrollBar>
 #include <QWidget>
+#include <QGraphicsSceneMouseEvent>
 
 using namespace std;
+
+void DatastreamViewScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * mouseEvent) {
+    view->mouseReleaseEvent(mouseEvent);
+    QGraphicsScene::mouseReleaseEvent(mouseEvent);
+}
+
+
+void DatastreamView::mouseReleaseEvent(QGraphicsSceneMouseEvent * mouseEvent) {
+    if (mouseEvent->button() == Qt::LeftButton) {
+        if (redrawStreams(true, mouseEvent->scenePos().toPoint())) {
+            redrawStreams();
+        }
+    }
+}
 
 DatastreamView::DatastreamView(QGraphicsView* view) :
     view(view),
     dataLogger(NULL)
 {
-    view->setScene(new QGraphicsScene(QRectF(0, 0, 5300, 3005))); //TODO scene size
+    view->setScene(new DatastreamViewScene(QRectF(0, 0, 5300, 3005), this)); //TODO scene size
 
     connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(moveDatastreamModules()));
     connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(moveDatastreamModules()));
@@ -134,20 +149,53 @@ void DatastreamView::redrawModules() {
     }
 }
 
-/*
-class Via {
-public:
-    Via(int x, int y) : x(x), y(y) {}
-    Via(QPoint point) : x(point.x()), y(point.y()) {}
+void DatastreamView::deleteAllViaBtns() {
+    std::map<QWidget*, PortOut*>::iterator i;
+    for (i = viaBtns.begin(); i != viaBtns.end(); i++) {
+        i->first->deleteLater();
+    }
+    viaBtns.clear();
+}
 
-    int getX() {return x;}
-    int getY() {return x;}
-private:
-    int x;
-    int y;
-};*/
+bool checkOnLine(QLine& line, QPoint& point) {
+    int a, b;
+    int c;
+    if (line.dx() == 0) {
+        a = line.p1().y();
+        b = line.p2().y();
+        c = point.y();
+        if (point.x() < line.p1().x() - VIA_ADD_TOL) {
+            return false;
+        }
+        if (point.x() > line.p1().x() + VIA_ADD_TOL) {
+            return false;
+        }
+    } else {
+        a = line.p1().x();
+        b = line.p2().x();
+        c = point.x();
+        if (point.y() < line.p1().y() - VIA_ADD_TOL) {
+            return false;
+        }
+        if (point.y() > line.p1().y() + VIA_ADD_TOL) {
+            return false;
+        }
+    }
+    if (a > b) {
+        swap(a ,b);
+    }
+    if (c < a || c > b) {
+        return false;
+    }
+    return true;
+}
 
-void DatastreamView::redrawStreams() {
+bool DatastreamView::redrawStreams(bool addVia, QPoint newVia, bool keepViaBtns) {
+    bool addedVia = false;
+    if (!keepViaBtns) {
+        deleteAllViaBtns();
+    }
+
     int x = view->horizontalScrollBar()->value();
     int y = view->verticalScrollBar()->value();
     QPoint p(x, y);
@@ -161,7 +209,7 @@ void DatastreamView::redrawStreams() {
             QPen pen = QPen((*i)->getConnectionColor(), Qt::SolidLine);
             pen.setWidth(LINE_WIDTH);
 
-            list<QPoint> viaList;
+            list<pair<QPoint, bool>> viaList;
             QPoint p1 = (*i)->getPosition();
             QPoint p2 = ports[p->getDestination()]->getPosition();
 
@@ -170,92 +218,92 @@ void DatastreamView::redrawStreams() {
             int space2 = (ports[p->getDestination()]->getPortSide()) ? CONNECTION_LINE_SPACE : -CONNECTION_LINE_SPACE;
             QPoint dummyVia2(p2.x() + space2, p2.y());
 
-            viaList.push_back(p1);
-            viaList.push_back(dummyVia1);
+            viaList.push_back(pair<QPoint, bool>(p1, false));
+            viaList.push_back(pair<QPoint, bool>(dummyVia1, false));
 
-            //TODO add custom VIAs here
+            list<QPoint> customVias = p->getVias();
+            int x = view->horizontalScrollBar()->value();
+            int y = view->verticalScrollBar()->value();
+            QPoint scrollPos(x, y);
+            for (list<QPoint>::iterator i = customVias.begin(); i != customVias.end(); i++) {
+                if (!keepViaBtns) {
+                    MoveableButton* btn = new MoveableButton();
+                    btn->setParent(view->viewport());
+                    btn->setStyleSheet("QWidget {background-color: " + pen.color().name() + " ;\ncolor:white;\nborder-radius: " + QString::number(VIA_WIDTH/2) + "px;}");
+                    btn->setFixedSize(VIA_WIDTH, VIA_WIDTH);
+                    viaBtns[btn] = p;
+                    btn->move(QPoint(i->x()-VIA_WIDTH/2, i->y()-VIA_WIDTH/2) - scrollPos);
+                    btn->show();
+
+                    connect(btn, SIGNAL(moved(QPoint, QPoint)), this, SLOT(viaMoved(QPoint, QPoint)));
+                    connect(btn, SIGNAL(rightClicked()), this, SLOT(viaDelete()));
+                }
+
+                viaList.push_back(pair<QPoint, bool>(*i, true));
+            }
 
             //otherwise add pseudo mid-via
-            int xDiff = (dummyVia2.x()-dummyVia1.x())/2;
-            int xmid = dummyVia1.x() + xDiff;
-            int ymid;
-            if ((*i)->getPortSide() == (xDiff < 0)) {
-                int y1 = (*i)->getModuleMiddle().y();
-                ymid =  y1 + ((ports[p->getDestination()]->getModuleMiddle().y() - y1) / 2);
-            } else {
-                ymid = dummyVia1.y() + (dummyVia2.y()-dummyVia1.y())/2;
+            if (customVias.empty()) {
+                int xDiff = (dummyVia2.x()-dummyVia1.x())/2;
+                int xmid = dummyVia1.x() + xDiff;
+                int ymid;
+                if ((*i)->getPortSide() == (xDiff < 0)) {
+                    int y1 = (*i)->getModuleMiddle().y();
+                    ymid =  y1 + ((ports[p->getDestination()]->getModuleMiddle().y() - y1) / 2);
+                } else {
+                    ymid = dummyVia1.y() + (dummyVia2.y()-dummyVia1.y())/2;
+                }
+                viaList.push_back(pair<QPoint, bool>(QPoint(xmid,ymid), false));
             }
-            viaList.push_back(QPoint(xmid,ymid));
 
-            viaList.push_back(dummyVia2);
-            viaList.push_back(p2);
+            viaList.push_back(pair<QPoint, bool>(dummyVia2, false));
+            viaList.push_back(pair<QPoint, bool>(p2, false));
 
-            list<QPoint>::iterator lastVia = viaList.begin();
+            list<pair<QPoint, bool>>::iterator lastVia = viaList.begin();
             int lastDir = -1;
-            for (list<QPoint>::iterator via = ++viaList.begin(); via != viaList.end(); via++) {
-                int xDiff = via->x() - lastVia->x();
-                int yDiff = via->y() - lastVia->y();
+            for (list<pair<QPoint, bool>>::iterator via = ++viaList.begin(); via != viaList.end(); via++) {
+                int xDiff = via->first.x() - lastVia->first.x();
+                int yDiff = via->first.y() - lastVia->first.y();
 
                 if ((xDiff != 0) && (yDiff != 0)) {
                     int xDirInv = xDiff < 0 ? 1 : 0;
-                    if ((lastDir >= 2) || (xDirInv == lastDir)) {
-                        viaList.insert(via, QPoint(lastVia->x(), via->y()));
+                    int yDirInv = yDiff < 0 ? 3 : 2;
+                    if (((lastDir >= 2) && (yDirInv != lastDir)) || (xDirInv == lastDir)) {
+                        viaList.insert(via, pair<QPoint, bool>(QPoint(lastVia->first.x(), via->first.y()), false));
                         yDiff = 0;
                     } else {
-                        viaList.insert(via, QPoint(via->x(), lastVia->y()));
+                        viaList.insert(via, pair<QPoint, bool>(QPoint(via->first.x(), lastVia->first.y()), false));
                         xDiff = 0;
                     }
                 }
                 if (xDiff != 0) {
                     lastDir = xDiff < 0 ? 0 : 1;
                 } else {
-                    lastDir =  xDiff < 0 ? 2 : 3;
+                    lastDir =  yDiff < 0 ? 2 : 3;
                 }
                 lastVia = via;
             }
 
-            QPoint last = *viaList.begin();
-            for (list<QPoint>::iterator via = ++viaList.begin(); via != viaList.end(); via++) {
-                scene->addLine(QLine(last, *via), pen);
-                last = *via;
+            QPoint last = viaList.begin()->first;
+            QPoint lastCustomVia = last;
+            for (list<pair<QPoint, bool>>::iterator via = ++viaList.begin(); via != viaList.end(); via++) {
+                QLine line(last, via->first);
+                if (addVia && !addedVia) {
+                    if (checkOnLine(line, newVia)) {
+                        p->addVia(newVia, lastCustomVia);
+                        addedVia = true;
+                    }
+                }
+                scene->addLine(line, pen);
+                last = via->first;
+                if (via->second) {
+                    lastCustomVia = last;
+                }
             }
         }
     }
 
-    //old drawing algorithm
-    /*
-    for (std::list<PortOutButton*>::iterator i = portOuts.begin(); i != portOuts.end(); i++) {
-        PortOut* p = (*i)->getPortOut();
-        if (p->getDestination() != NULL) {
-            QPoint l1 = (*i)->getPosition();
-            QPoint l2 = ports[p->getDestination()]->getPosition();
-            QPen pen = QPen((*i)->getConnectionColor(), Qt::SolidLine);
-            pen.setWidth(LINE_WIDTH);
-
-            if ((*i)->getPortSide() != (l2.x()-l1.x() < 0)) {
-                int xmid = l1.x() + ((l2.x() - l1.x()) / 2);
-                QPoint l3(xmid, l1.y());
-                scene->addLine(QLine(l1,l3), pen);
-                QPoint l4(xmid, l2.y());
-                scene->addLine(QLine(l3,l4),pen);
-                scene->addLine(QLine(l4,l2),pen);
-            } else {
-                int y1 = (*i)->getModuleMiddle().y();
-                int ymid =  y1 + ((ports[p->getDestination()]->getModuleMiddle().y() - y1) / 2);
-
-                int space = ((*i)->getPortSide()) ? CONNECTION_LINE_SPACE : -CONNECTION_LINE_SPACE;
-                QPoint l3(l1.x() + space, l1.y());
-                scene->addLine(QLine(l1,l3), pen);
-                QPoint l4(l1.x() + space, ymid);
-                scene->addLine(QLine(l3,l4), pen);
-                QPoint l5(l2.x() - space, ymid);
-                scene->addLine(QLine(l4,l5), pen);
-                QPoint l6(l2.x() - space, l2.y());
-                scene->addLine(QLine(l5,l6), pen);
-                scene->addLine(QLine(l6,l2), pen);
-            }
-        }
-    }*/
+    return addedVia;
 }
 
 void DatastreamView::moveDatastreamModules() {
@@ -278,6 +326,42 @@ void DatastreamView::configClickedModule() {
             QWidget* widget = dynamic_cast<QWidget*>(sender);
             DatastreamObject* object = moduleGuiElements.at(widget);
             emit requestConfigDialog(*object);
+        } catch (exception) {
+        }
+    }
+}
+
+void DatastreamView::viaMoved(QPoint oldPos, QPoint newPos) {
+    QObject* sender = QObject::sender();
+    if (sender != NULL) {
+        try {
+            QWidget* widget = dynamic_cast<QWidget*>(sender);
+            PortOut* port = viaBtns.at(widget);
+
+            int x = view->horizontalScrollBar()->value();
+            int y = view->verticalScrollBar()->value();
+            QPoint scrollPos(x, y);
+            QPoint viaMid(VIA_WIDTH/2, VIA_WIDTH/2);
+            port->moveVia(oldPos + viaMid + scrollPos, newPos + viaMid + scrollPos);
+            redrawStreams(false, QPoint(0,0), true);
+        } catch (exception) {
+        }
+    }
+}
+
+void DatastreamView::viaDelete() {
+    QObject* sender = QObject::sender();
+    if (sender != NULL) {
+        try {
+            QWidget* widget = dynamic_cast<QWidget*>(sender);
+            PortOut* port = viaBtns.at(widget);
+
+            int x = view->horizontalScrollBar()->value();
+            int y = view->verticalScrollBar()->value();
+            QPoint scrollPos(x, y);
+            QPoint viaMid(VIA_WIDTH/2, VIA_WIDTH/2);
+            port->deleteVia(widget->pos() + viaMid + scrollPos);
+            redrawStreams();
         } catch (exception) {
         }
     }

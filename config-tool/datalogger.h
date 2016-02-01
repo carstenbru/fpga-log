@@ -74,6 +74,7 @@ private:
     std::string definitionsUpdatedModules;
 private slots:
     void moduleConnectionsChanged();
+    void viaChanged();
 public slots:
     void parameterChanged();
     void pinParamterChanged();
@@ -81,6 +82,7 @@ signals:
     void datastreamModulesChanged();
     void otherModulesChanged();
     void connectionsChanged();
+    void viasChanged();
     void criticalParameterChanged();
     void pinChanged();
     void storePins();

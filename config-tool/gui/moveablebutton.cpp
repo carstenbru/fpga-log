@@ -2,15 +2,18 @@
 
 MoveableButton::MoveableButton(QWidget *parent) :
     QPushButton(parent),
-    isClick(false)
+    isClick(false),
+    isRightClick(false)
 {
 }
 
 void MoveableButton::mouseMoveEvent(QMouseEvent *e) {
     if (e->buttons() & Qt::LeftButton) {
         isClick = false;
+        QPoint oldPos = pos();
         move(parentWidget()->mapFromGlobal(e->globalPos()) - clickPos);
         emit moved();
+        emit moved(oldPos, pos());
    }
 }
 
@@ -19,13 +22,22 @@ void MoveableButton::mousePressEvent(QMouseEvent *e) {
         clickPos = e->pos();
         isClick = true;
    }
+   if (e->buttons() & Qt::RightButton) {
+        isRightClick = true;
+   }
    QPushButton::mousePressEvent(e);
 }
 
 void MoveableButton::mouseReleaseEvent(QMouseEvent *e) {
-    if ((e->buttons() == Qt::NoButton) && (isClick)) {
-        isClick = false;
-        emit clicked();
+    if ((e->buttons() == Qt::NoButton) && (isClick || isRightClick)) {
+        if (isClick) {
+            isClick = false;
+            emit clicked();
+        }
+        if (isRightClick) {
+            isRightClick = false;
+            emit rightClicked();
+        }
     } else
         QPushButton::mouseReleaseEvent(e);
 }
