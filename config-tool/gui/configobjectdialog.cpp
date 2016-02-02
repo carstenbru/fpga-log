@@ -8,6 +8,7 @@
 #include "spmcperipheral.h"
 #include "newmethoddialog.h"
 #include <sstream>
+#include <QMessageBox>
 
 using namespace std;
 
@@ -303,4 +304,10 @@ void ConfigObjectDialog::copyObjectButton() {
     QXmlStreamWriter stream(&s);
     stream << *object;
     emit copyObject(s.toStdString());
+
+    QMessageBox dialog(QMessageBox::Information,
+                       QString::fromUtf8("Objekt kopieren"),
+                       QString::fromUtf8("Objekt erfolgreich in Zwischenablage kopiert.\nZum einfügen unter \"Objekte\" den Punkt \"einfügen\" nutzen"),
+                       QMessageBox::Ok);
+    dialog.exec();
 }

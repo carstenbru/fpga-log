@@ -51,6 +51,7 @@ public slots:
     void newObject();
     void newObject(DataTypeStruct *type, ConfigObjectDialog *confDialog);
     void pasteModule();
+    void pasteModule(QPoint pos);
     void showConfigDialog(CObject& object);
     void targetConfig();
     void generate();
@@ -67,6 +68,8 @@ public slots:
     void copyObject(std::string objectDescription);
 private slots:
     void otherObjectConfig(QModelIndex index);
+    void otherObjectMenu(QPoint pos);
+    void otherObjectCopy();
     void outputGeneratorFinished(bool errorOccured);
     void dataLoggerChanged();
 };

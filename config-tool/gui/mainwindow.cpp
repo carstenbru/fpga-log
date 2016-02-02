@@ -45,6 +45,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->listView->setModel(&otherModel);
     connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(otherObjectConfig(QModelIndex)));
+    ui->listView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->listView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(otherObjectMenu(QPoint)));
 }
 
 void MainWindow::show() {
@@ -52,6 +54,8 @@ void MainWindow::show() {
 
     datastreamView = new DatastreamView(ui->graphicsView);
     connect(datastreamView, SIGNAL(requestConfigDialog(CObject&)), this, SLOT(showConfigDialog(CObject&)));
+    connect(datastreamView, SIGNAL(pasteModule(QPoint)), this, SLOT(pasteModule(QPoint)));
+    connect(datastreamView, SIGNAL(copyObject(std::string)), this, SLOT(copyObject(std::string)));
 
     newLogger();
 
@@ -101,6 +105,34 @@ void MainWindow::otherObjectConfig(QModelIndex index) {
     }
 
     showConfigDialog(**i);
+}
+
+void MainWindow::otherObjectCopy() {
+    QModelIndex index = ui->listView->selectionModel()->selectedIndexes().first();
+
+    string objectName = index.data(Qt::UserRole + 1).toString().toStdString();
+    vector<CObject*> objects = dataLogger->getOtherObjects();
+    vector<CObject*>::iterator i;
+    for (i = objects.begin(); i != objects.end(); i++) {
+        if ((*i)->getName().compare(objectName) == 0)
+            break;
+    }
+
+    QString s;
+    QXmlStreamWriter stream(&s);
+    stream << **i;
+
+    copyObject(s.toStdString());
+}
+
+void MainWindow::otherObjectMenu(QPoint pos) {
+    if (!ui->listView->selectionModel()->selectedIndexes().isEmpty()) {
+        QMenu *menu = new QMenu(ui->listView);
+        QAction* action = new QAction(QString::fromUtf8("Objekt kopieren"), this);
+        connect(action, SIGNAL(triggered(bool)), this, SLOT(otherObjectCopy()));
+        menu->addAction(action);
+        menu->popup(ui->listView->mapToGlobal(pos));
+    }
 }
 
 void MainWindow::showConfigDialog(CObject& object) {
@@ -366,15 +398,14 @@ void MainWindow::pinOverview() {
 void MainWindow::copyObject(std::string objectDescription) {
     clipboardObjectDescription = objectDescription;
     ui->actionPasteModule->setEnabled(true);
-
-    QMessageBox dialog(QMessageBox::Information,
-                       QString::fromUtf8("Objekt kopieren"),
-                       QString::fromUtf8("Objekt erfolgreich in Zwischenablage kopiert.\nZum einfügen unter \"Objekte\" den Punkt \"einfügen\" nutzen"),
-                       QMessageBox::Ok);
-    dialog.exec();
+    datastreamView->setPastePossible(true);
 }
 
 void MainWindow::pasteModule() {
+    pasteModule(QPoint(0,0));
+}
+
+void MainWindow::pasteModule(QPoint pos) {
     QString s(clipboardObjectDescription.c_str());
     QXmlStreamReader object(s);
     object.readNextStartElement();
@@ -394,7 +425,7 @@ void MainWindow::pasteModule() {
                                           "Objekt Name:", QLineEdit::Normal,
                                           name, &ok);
 
-     if (ok && !name.isEmpty()) {
-         dataLogger->addObject(name.toStdString(), dataStreamObject, object);
-     }
+    if (ok && !name.isEmpty()) {
+        dataLogger->addObject(name.toStdString(), dataStreamObject, object, pos);
+    }
 }

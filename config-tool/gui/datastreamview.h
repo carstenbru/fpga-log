@@ -21,11 +21,13 @@ public:
     explicit DatastreamView(QGraphicsView* view);
 
     void setDataLogger(DataLogger* dataLogger);
+    void setPastePossible(bool pastePossible) { this->pastePossible = pastePossible; }
 
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * mouseEvent);
 private:
     void generateModuleGui(DatastreamObject* datastreamObject);
     void deleteAllModuleGuis();
+    void raiseModules();
     void deleteAllViaBtns();
 
     bool addCustomVIAs(std::list<std::pair<QPoint, bool>>& viaList, PortOut *p, bool keepViaBtns, QColor color);
@@ -39,6 +41,10 @@ private:
 
     std::map<QWidget*, DatastreamObject*> moduleGuiElements;
     std::map<QWidget*, PortOut*> viaBtns;
+
+    bool pastePossible;
+    QPoint lastMenuPos;
+    DatastreamObject* rightClickedObject;
 public slots:
     void setModulePositions();
     void redrawModules();
@@ -46,10 +52,16 @@ public slots:
     void moveDatastreamModules();
 private slots:
     void configClickedModule();
+    void moduleRightClick(QPoint pos);
     void viaMoved(QPoint oldPos, QPoint newPos);
     void viaDelete();
+
+    void pasteModule();
+    void copyModule();
 signals:
     void requestConfigDialog(CObject& object);
+    void pasteModule(QPoint pos);
+    void copyObject(std::string objectDescription);
 };
 
 class DatastreamViewScene : public QGraphicsScene {

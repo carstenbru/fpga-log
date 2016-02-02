@@ -3,6 +3,8 @@
 #include <QScrollBar>
 #include <QWidget>
 #include <QGraphicsSceneMouseEvent>
+#include <QMenu>
+#include <QAction>
 
 using namespace std;
 
@@ -11,18 +13,44 @@ void DatastreamViewScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * mouseEven
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }
 
-
 void DatastreamView::mouseReleaseEvent(QGraphicsSceneMouseEvent * mouseEvent) {
     if (mouseEvent->button() == Qt::LeftButton) {
         if (redrawStreams(true, mouseEvent->scenePos().toPoint())) {
             redrawStreams();
         }
+    } else {
+        if (mouseEvent->button() == Qt::RightButton) {
+            if (pastePossible) {
+                int x = view->horizontalScrollBar()->value();
+                int y = view->verticalScrollBar()->value();
+                QPoint p(x, y);
+                lastMenuPos = mouseEvent->scenePos().toPoint();
+
+                QMenu *menu = new QMenu(view);
+                QAction* action = new QAction(QString::fromUtf8("Objekt Einfügen"), this);
+                connect(action, SIGNAL(triggered(bool)), this, SLOT(pasteModule()));
+                menu->addAction(action);
+                menu->popup(view->mapToGlobal(mouseEvent->scenePos().toPoint() - p));
+            }
+        }
     }
+}
+
+void DatastreamView::pasteModule() {
+    emit pasteModule(lastMenuPos);
+}
+
+void DatastreamView::copyModule() {
+    QString s;
+    QXmlStreamWriter stream(&s);
+    stream << *((CObject*)rightClickedObject);
+    emit copyObject(s.toStdString());
 }
 
 DatastreamView::DatastreamView(QGraphicsView* view) :
     view(view),
-    dataLogger(NULL)
+    dataLogger(NULL),
+    pastePossible(false)
 {
     view->setScene(new DatastreamViewScene(QRectF(0, 0, 5300, 3005), this)); //TODO scene size
 
@@ -72,6 +100,7 @@ void DatastreamView::generateModuleGui(DatastreamObject* datastreamObject) {
     connect(btn, SIGNAL(moved()), this, SLOT(setModulePositions()));
     connect(btn, SIGNAL(moved()), this, SLOT(redrawStreams()));
     connect(btn, SIGNAL(clicked()), this, SLOT(configClickedModule()));
+    connect(btn, SIGNAL(rightClicked(QPoint)), this, SLOT(moduleRightClick(QPoint)));
 
     int port_number_left = 0;
     string lastName;
@@ -210,7 +239,7 @@ bool DatastreamView::addCustomVIAs(list<pair<QPoint, bool>>& viaList, PortOut* p
             btn->show();
 
             connect(btn, SIGNAL(moved(QPoint, QPoint)), this, SLOT(viaMoved(QPoint, QPoint)));
-            connect(btn, SIGNAL(rightClicked()), this, SLOT(viaDelete()));
+            connect(btn, SIGNAL(rightClicked(QPoint)), this, SLOT(viaDelete()));
         }
 
         //add it to the list
@@ -340,7 +369,17 @@ bool DatastreamView::redrawStreams(bool addVia, QPoint newVia, bool keepViaBtns)
         }
     }
 
+    //bring module buttons to front (in front of VIAs)
+    raiseModules();
+
     return addedVia;
+}
+
+void DatastreamView::raiseModules() {
+    std::map<QWidget*, DatastreamObject*>::iterator i;
+    for (i = moduleGuiElements.begin(); i != moduleGuiElements.end(); i++) {
+        i->first->raise();
+    }
 }
 
 void DatastreamView::moveDatastreamModules() {
@@ -363,6 +402,23 @@ void DatastreamView::configClickedModule() {
             QWidget* widget = dynamic_cast<QWidget*>(sender);
             DatastreamObject* object = moduleGuiElements.at(widget);
             emit requestConfigDialog(*object);
+        } catch (exception) {
+        }
+    }
+}
+
+void DatastreamView::moduleRightClick(QPoint pos) {
+    QObject* sender = QObject::sender();
+    if (sender != NULL) {
+        try {
+            QWidget* widget = dynamic_cast<QWidget*>(sender);
+            rightClickedObject = moduleGuiElements.at(widget);
+
+            QMenu *menu = new QMenu(view);
+            QAction* action = new QAction(QString::fromUtf8("Modul kopieren"), this);
+            connect(action, SIGNAL(triggered(bool)), this, SLOT(copyModule()));
+            menu->addAction(action);
+            menu->popup(widget->mapToGlobal(pos));
         } catch (exception) {
         }
     }

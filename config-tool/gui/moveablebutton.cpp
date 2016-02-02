@@ -36,7 +36,7 @@ void MoveableButton::mouseReleaseEvent(QMouseEvent *e) {
         }
         if (isRightClick) {
             isRightClick = false;
-            emit rightClicked();
+            emit rightClicked(e->pos());
         }
     } else
         QPushButton::mouseReleaseEvent(e);

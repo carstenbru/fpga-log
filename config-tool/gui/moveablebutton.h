@@ -22,7 +22,7 @@ signals:
     void moved();
     void moved(QPoint oldPos, QPoint newPos);
     void clicked();
-    void rightClicked();
+    void rightClicked(QPoint pos);
 };
 
 #endif // MOVEABLEBUTTON_H

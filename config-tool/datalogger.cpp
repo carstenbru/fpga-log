@@ -339,9 +339,10 @@ QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger) {
     return in;
 }
 
-void DataLogger::addObject(std::string name, bool isDataStreamObject, QXmlStreamReader& description) {
+void DataLogger::addObject(string name, bool isDataStreamObject, QXmlStreamReader& description, QPoint pos) {
     if (isDataStreamObject) {
         DatastreamObject* dso = new DatastreamObject(description, this, name, true);
+        dso->setPosition(pos);
         datastreamObjects.push_back(dso);
         connect(dso, SIGNAL(connectionsChanged()), this, SLOT(moduleConnectionsChanged()));
         connect(dso, SIGNAL(viasChanged()), this, SLOT(viaChanged()));
