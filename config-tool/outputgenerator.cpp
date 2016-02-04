@@ -44,7 +44,28 @@ void OutputGenerator::copyProjectTemplate() {
             newPath = (directory + "/").c_str() + newPath;
 
             QDir().mkpath(QFileInfo(newPath).dir().absolutePath());
-            QFile::copy(dirIter.filePath(), newPath);
+            if (dirIter.fileName().compare("main.c") == 0) {
+                copyMainC(dirIter.filePath(), newPath);
+            } else {
+                QFile::copy(dirIter.filePath(), newPath);
+            }
+        }
+    }
+}
+
+void OutputGenerator::copyMainC(QString src, QString dest) {
+    ofstream destFile;
+    destFile.open(dest.toStdString());
+
+    ifstream srcFile;
+    srcFile.open(src.toStdString());
+
+    char buf[1024];
+    while (srcFile.getline(buf, 1024)) {
+        if ((buf[0] == 0) || (strstr("CLOCK_FREQUENCY_DEFINITION", buf) == NULL)) {
+            destFile << buf << endl;
+        } else {
+            destFile << "#define CLOCK_FREQUENCY " << dataLogger->getPeriClk() << endl;
         }
     }
 }
@@ -356,6 +377,12 @@ void OutputGenerator::generateSystemXML() {
             stream << "<attribute id=\"value\">" << dataLogger->getPeriClk() << "</attribute>" << endl;
         } else if (line.compare("CLOCK_PERIOD_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << (1000000000.0f / dataLogger->getClk()) << "</attribute>" << endl;
+        } else if (line.compare("SYSTEM_CLOCK_PERIOD_ATTRIBUTE") == 0) {
+            stream << "<attribute id=\"value\">" << (1000000000.0f / dataLogger->getSystemClk()) << "</attribute>" << endl;
+        } else if (line.compare("CLOCK_DIVIDE_ATTRIBUTE") == 0) {
+            stream << "<attribute id=\"value\">" << dataLogger->getClkDivide() << "</attribute>" << endl;
+        } else if (line.compare("CLOCK_MULTIPLY_ATTRIBUTE") == 0) {
+            stream << "<attribute id=\"value\">" << dataLogger->getClkMultiply() << "</attribute>" << endl;
         } else if (line.compare("TIMESTAMP_GEN_SOURCES_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << usedTimestampSources << "</attribute>" << endl;
         } else if (line.compare("TIMESTAMP_GEN_PIN_SOURCES_ATTRIBUTE") == 0) {

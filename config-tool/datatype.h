@@ -84,6 +84,9 @@ public:
     DataTypeNumber(std::string name, long min, long max, bool globalType);
     virtual ~DataTypeNumber() {}
 
+    long getMin() { return min; }
+    long getMax() { return max; }
+
     virtual QWidget* getConfigWidget(DataLogger*dataLogger, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
     virtual std::string getDefaultValue() { return std::to_string((min < 0) ? 0 : min); }

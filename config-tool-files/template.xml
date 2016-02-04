@@ -272,24 +272,24 @@ TIMESTAMP_GEN_PIN_CONNECTIONS
 FPGA-LOG_PERIPHERALS
         </processor_module>
 FPGA_PINS
-        <gluelogic id="SYSCLK">
+        <gluelogic id="PRE_SYSCLK">
             <attribute id="module_type" xml:space="preserve">sysclk</attribute>
-            <attribute id="name" xml:space="preserve">sysclk</attribute>
+            <attribute id="name" xml:space="preserve">pre_sysclk</attribute>
             <parameter id="#PARAM.CLKDV_DIVIDE">
                 <attribute id="name" xml:space="preserve">CLKDV_DIVIDE</attribute>
                 <attribute id="value" xml:space="preserve">2.0</attribute>
             </parameter>
             <parameter id="#PARAM.CLKFX_DIVIDE">
                 <attribute id="name" xml:space="preserve">CLKFX_DIVIDE</attribute>
-                <attribute id="value" xml:space="preserve">1</attribute>
+CLOCK_DIVIDE_ATTRIBUTE
             </parameter>
             <parameter id="#PARAM.CLKFX_MULTIPLY">
                 <attribute id="name" xml:space="preserve">CLKFX_MULTIPLY</attribute>
-                <attribute id="value" xml:space="preserve">4</attribute>
+CLOCK_MULTIPLY_ATTRIBUTE
             </parameter>
             <parameter id="#PARAM.CLKIN_DIVIDE_BY_2">
                 <attribute id="name" xml:space="preserve">CLKIN_DIVIDE_BY_2</attribute>
-                <attribute id="value" xml:space="preserve">TRUE</attribute>
+                <attribute id="value" xml:space="preserve">FALSE</attribute>
             </parameter>
             <parameter id="#PARAM.CLKIN_PERIOD">
                 <attribute id="name" xml:space="preserve">CLKIN_PERIOD</attribute>
@@ -330,8 +330,100 @@ CLOCK_PERIOD_ATTRIBUTE
             <port id="#PORT.clk_gen">
                 <attribute id="name" xml:space="preserve">clk_gen</attribute>
                 <attribute id="route_external" xml:space="preserve">0</attribute>
-                <connection id="#3142">
+                <connection id="#3143">
                     <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/#PIN.CLK</attribute>
+                    <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                </connection>
+            </port>
+            <port id="#PORT.clkdv">
+                <attribute id="name" xml:space="preserve">clkdv</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clkfx">
+                <attribute id="name" xml:space="preserve">clkfx</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clkfx180">
+                <attribute id="name" xml:space="preserve">clkfx180</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.locked">
+                <attribute id="name" xml:space="preserve">locked</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.phase">
+                <attribute id="name" xml:space="preserve">phase</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.reset">
+                <attribute id="name" xml:space="preserve">reset</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+                <connection id="#8824">
+                    <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/VCC_GND/#PORT.VCC</attribute>
+                    <attribute id="lsb_index" xml:space="preserve">0</attribute>
+                </connection>
+            </port>
+        </gluelogic>
+        <gluelogic id="SYSCLK">
+            <attribute id="module_type" xml:space="preserve">sysclk</attribute>
+            <attribute id="name" xml:space="preserve">sysclk</attribute>
+            <parameter id="#PARAM.CLKDV_DIVIDE">
+                <attribute id="name" xml:space="preserve">CLKDV_DIVIDE</attribute>
+                <attribute id="value" xml:space="preserve">2.0</attribute>
+            </parameter>
+            <parameter id="#PARAM.CLKFX_DIVIDE">
+                <attribute id="name" xml:space="preserve">CLKFX_DIVIDE</attribute>
+                <attribute id="value" xml:space="preserve">1</attribute>
+            </parameter>
+            <parameter id="#PARAM.CLKFX_MULTIPLY">
+                <attribute id="name" xml:space="preserve">CLKFX_MULTIPLY</attribute>
+                <attribute id="value" xml:space="preserve">4</attribute>
+            </parameter>
+            <parameter id="#PARAM.CLKIN_DIVIDE_BY_2">
+                <attribute id="name" xml:space="preserve">CLKIN_DIVIDE_BY_2</attribute>
+                <attribute id="value" xml:space="preserve">FALSE</attribute>
+            </parameter>
+            <parameter id="#PARAM.CLKIN_PERIOD">
+                <attribute id="name" xml:space="preserve">CLKIN_PERIOD</attribute>
+SYSTEM_CLOCK_PERIOD_ATTRIBUTE
+            </parameter>
+            <parameter id="#PARAM.DFS_FREQUENCY_MODE">
+                <attribute id="name" xml:space="preserve">DFS_FREQUENCY_MODE</attribute>
+                <attribute id="value" xml:space="preserve">LOW</attribute>
+            </parameter>
+            <parameter id="#PARAM.INSTANTIATE_BUFGS">
+                <attribute id="name" xml:space="preserve">INSTANTIATE_BUFGS</attribute>
+                <attribute id="value" xml:space="preserve">YES</attribute>
+            </parameter>
+            <parameter id="#PARAM.RESET_LEVEL">
+                <attribute id="name" xml:space="preserve">RESET_LEVEL</attribute>
+                <attribute id="value" xml:space="preserve">LOW_ACTIVE</attribute>
+            </parameter>
+            <port id="#PORT.clk1">
+                <attribute id="name" xml:space="preserve">clk1</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clk2">
+                <attribute id="name" xml:space="preserve">clk2</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clk270">
+                <attribute id="name" xml:space="preserve">clk270</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clk2x">
+                <attribute id="name" xml:space="preserve">clk2x</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clk2x180">
+                <attribute id="name" xml:space="preserve">clk2x180</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+            </port>
+            <port id="#PORT.clk_gen">
+                <attribute id="name" xml:space="preserve">clk_gen</attribute>
+                <attribute id="route_external" xml:space="preserve">0</attribute>
+                <connection id="#3142">
+                    <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/PRE_SYSCLK/#PORT.clkfx</attribute>
                     <attribute id="lsb_index" xml:space="preserve">0</attribute>
                 </connection>
             </port>

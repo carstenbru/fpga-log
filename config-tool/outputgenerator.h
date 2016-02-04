@@ -36,6 +36,7 @@ public:
     void flash();
 private:
     void copyProjectTemplate();
+    void copyMainC(QString src, QString dest);
 
     void generateCSource();
     void generateSystemXML();

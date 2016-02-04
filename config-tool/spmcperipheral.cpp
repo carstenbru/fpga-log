@@ -109,6 +109,14 @@ bool SpmcPeripheral::setParameter(CParameter* newValue) {
             return true;
         }
     }
+    //search for parameter with same name but different signature in case the type changed
+    //-> set at least the value to the old value
+    for (list<CParameter*>::iterator i = parameters.begin(); i != parameters.end(); i++) {
+        if ((*i)->getName().compare(newValue->getName()) == 0) {
+            (*i)->setValue(newValue->getValue());
+            break;
+        }
+    }
     return false;
 }
 
@@ -139,7 +147,7 @@ std::string SpmcPeripheral::readModuleNameFromFile(std::string fileName) {
     reader.readNextStartElement();
 
     //in newer spmc versions we need to look in the header tag for the peripheral name and not in the first one
-    if (reader.name().compare("peripheral") == 0) {
+    if (reader.attributes().value("name").isNull()) {
         reader.readNextStartElement();
     }
 
@@ -153,7 +161,7 @@ void SpmcPeripheral::loadPeripheralXMLs() {
     while (dirIter.hasNext()) {
         dirIter.next();
         if (QFileInfo(dirIter.filePath()).isFile()) {
-            if (dirIter.fileName() == "module.xml") {
+            if ((dirIter.fileName() == "module.xml") || (dirIter.fileName().contains(".module"))) {
                 string fileName = dirIter.filePath().toStdString();
                 peripheralXMLs[readModuleNameFromFile(fileName)] = fileName;
             }
@@ -180,36 +188,40 @@ void SpmcPeripheral::readParameterElement(QXmlStreamReader& reader) {
         type = "peripheral_int";
     DataTypeEnumeration* dt = NULL;
     while (reader.readNextStartElement()) {
-        if (reader.name().compare("choice") == 0) {
+        if (reader.name().toString().compare("range") == 0) {
             type = dataType->getName() + "_" + paramName;
-            if (reader.name().toString().compare("range") == 0) {
+            try {
+                DataType::getType(type);
+            } catch (exception) {
+                QXmlStreamAttributes attributes = reader.attributes();
+                int min = attributes.value("min").toString().toInt();
+                int max = attributes.value("max").toString().toInt();
+                new DataTypeNumber(type, min, max, true);
+            }
+        } else if (reader.name().toString().compare("choice") == 0) {
+            type = dataType->getName() + "_" + paramName;
+            if (dt == NULL) {
                 try {
                     DataType::getType(type);
                 } catch (exception) {
-                    QXmlStreamAttributes attributes = reader.attributes();
-                    int min = attributes.value("min").toString().toInt();
-                    int max = attributes.value("max").toString().toInt();
-                    new DataTypeNumber(type, min, max, true);
-                }
-            } else if (reader.name().toString().compare("choice") == 0) {
-                if (dt == NULL) {
-                    try {
-                        DataType::getType(type);
-                    } catch (exception) {
-                        dt = new DataTypeEnumeration(type, true);
-                        dt->addValue(reader.attributes().value("value").toString().toStdString());
-                    }
-                } else
+                    dt = new DataTypeEnumeration(type, true);
                     dt->addValue(reader.attributes().value("value").toString().toStdString());
-            }
+                }
+            } else
+                dt->addValue(reader.attributes().value("value").toString().toStdString());
         }
         reader.skipCurrentElement();
     }
     string value = attributes.value("value").toString().toStdString();
-    CParameter* param = new CParameter(paramName, DataType::getType(type), false, value);
-    parameters.push_back(param);
-    if (paramName.compare("CLOCK_FREQUENCY") == 0)
-        param->setHideFromUser(true);
+    try {
+        CParameter* param = new CParameter(paramName, DataType::getType(type), false, value);
+        parameters.push_back(param);
+        if (paramName.compare("CLOCK_FREQUENCY") == 0) {
+            param->setHideFromUser(true);
+        }
+    } catch (exception) {
+
+    }
 }
 
 void SpmcPeripheral::readPortsElement(QXmlStreamReader& reader, std::string direction) {
@@ -272,6 +284,9 @@ void SpmcPeripheral::readPeripheralXML() {
 }
 
 void SpmcPeripheral::readModuleXML() {
+    if (parentObject == NULL) {
+        return;
+    }
     string moduleXmlFile = "../config-tool-files/modules/";
     moduleXmlFile += parentObject->getType()->getCleanedName();
     moduleXmlFile += ".xml";

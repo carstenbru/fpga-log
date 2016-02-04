@@ -28,6 +28,10 @@ int main(int argc, char *argv[])
     new DataTypeNumber("peripheral_int", -2147483648, 2147483647, true);
     new DataTypeFloat("coefficient_t", -9.9999, 9.9999, 4, true, true);
 
+    //create a dummy peripheral of dummy type sysclk_regs_t to force loading of clock divider and multiply data types
+    new DataType("sysclk_regs_t", true);
+    SpmcPeripheral("clk_dummy", DataType::getType("sysclk_regs_t"), NULL, NULL);
+
     HeaderParser hp = HeaderParser(true);
     string spmc_root = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();
     if (!spmc_root.empty()) {

@@ -14,6 +14,8 @@ DataLogger::DataLogger() :
     target("Zielplattform", DataType::getType("target"), false, "papilio-pro"),
     clockPin("Clock Pin", DataType::getType("pin"), false, "CLK:32"),
     clockFreq("Taktfrequenz", DataType::getType("peripheral_int"), false, "32000000"),
+    clockDivide("clock divide", DataType::getType("sysclk_regs_t_CLKFX_DIVIDE"), false, "4"),
+    clockMultiply("clock multiply", DataType::getType("sysclk_regs_t_CLKFX_MULTIPLY"), false, "2"),
     definitionsUpdated(false)
 {
     loadTargetPins();
@@ -228,8 +230,20 @@ int DataLogger::getClk() {
     return atoi(clockFreq.getValue().c_str());
 }
 
+int DataLogger::getClkDivide() {
+    return atoi(clockDivide.getValue().c_str());
+}
+
+int DataLogger::getClkMultiply() {
+    return atoi(clockMultiply.getValue().c_str());
+}
+
+int DataLogger::getSystemClk() {
+    return getClk() / getClkDivide() * getClkMultiply();
+}
+
 int DataLogger::getPeriClk() {
-    return getClk() / 2;
+    return getSystemClk();
 }
 
 map<CParameter*, string[4]> DataLogger::getPinAssignments() {
@@ -280,6 +294,7 @@ QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DataLogger& dataLogger) {
     out.writeStartElement("datalogger");
 
     out << dataLogger.target << dataLogger.clockPin << dataLogger.clockFreq;
+    out << dataLogger.clockDivide << dataLogger.clockMultiply;
 
     for (list<DatastreamObject*>::iterator i = dataLogger.datastreamObjects.begin(); i != dataLogger.datastreamObjects.end(); i++) {
         out << **i;
@@ -308,7 +323,7 @@ QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger) {
         return in;
     }
 
-    in >> dataLogger.target >> dataLogger.clockPin >> dataLogger.clockFreq;
+    in >> dataLogger.target >> dataLogger.clockPin >> dataLogger.clockFreq;    
     dataLogger.loadTargetPins();
 
     map<PortOut*, stringPair> connections;
@@ -321,6 +336,12 @@ QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger) {
             QObject::connect(dso, SIGNAL(viasChanged()), &dataLogger, SLOT(viaChanged()));
         } else if (in.name().compare("CObject") == 0) {
             dataLogger.otherObjects.push_back(new CObject(in, &dataLogger));
+        } else if (in.name().compare("parameter") == 0) {
+            if (in.attributes().value("name").compare("clock divide") == 0) {
+                dataLogger.clockDivide.loadFromXmlStream(in);
+            } else if (in.attributes().value("name").compare("clock multiply") == 0) {
+                dataLogger.clockMultiply.loadFromXmlStream(in);
+            }
         } else
             in.skipCurrentElement();
     }
