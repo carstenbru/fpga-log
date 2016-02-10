@@ -14,6 +14,7 @@ module spmc_contrast_box #(parameter BASE_ADR = 10'h0,
                              parameter CLOCK_FREQUENCY = 16000000,
                              parameter NUMBER_OF_BOXES = 2,
 			     parameter PWM_FREQ = 1000,
+			     parameter EXPONENT = 3,				//Exponent which is used to calculate the pwm_on_value = value^EXPONENT
                              parameter INCREASE_VALUE_AUTOMATIC = 55,		//Manuel increase the PWM_ON_VALUE + INCREASE_VALUE_AUTOMATIC
                              parameter TIME_TO_INCREASE_AUTOMATIC = 100,	//times 10ms
 			     parameter SEND_STATUS_AUTOMATIC = 10,		//times 10ms
@@ -114,6 +115,7 @@ assign	wr_control		= reg_write[CONTROL_ADR];			// Schreiben
     for (i = 0; i < NUMBER_OF_BOXES; i = i + 1) begin : output_stage_gen_loop
       contrast_box_in_out #(.CLOCK_FREQUENCY(CLOCK_FREQUENCY),
 			    .PWM_FREQ(PWM_FREQ),
+			    .EXPONENT(EXPONENT),
 			    .INCREASE_VALUE_AUTOMATIC(INCREASE_VALUE_AUTOMATIC),
 			    .TIME_TO_INCREASE_AUTOMATIC(TIME_TO_INCREASE_AUTOMATIC),
 			    .INCREASE_VALUE_SWITCH(INCREASE_VALUE_SWITCH),
@@ -128,7 +130,7 @@ assign	wr_control		= reg_write[CONTROL_ADR];			// Schreiben
 			   .switch_down(switch_down[i]), 
 			   .pwm(LED_PWM[i]),
 			   .pwm_on_value_changed(pwm_value_changed_single[i]),
-			   .pwm_on_time(pwm_on_time[(PWM_REG_WIDTH-1+PWM_REG_WIDTH*i):PWM_REG_WIDTH*i]));
+			   .pwm_exponent_value(pwm_on_time[(PWM_REG_WIDTH-1+PWM_REG_WIDTH*i):PWM_REG_WIDTH*i]));
     end
   endgenerate
 
