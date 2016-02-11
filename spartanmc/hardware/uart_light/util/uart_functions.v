@@ -122,7 +122,7 @@ function integer find_best_ovs_rate;
 		best_baud_error = baud_error(clock_rate, 9, baud_rate);
 		best_ovs_rate   = 9;
 		
-		for(probe_baud_rate = 10; probe_baud_rate <= 31; probe_baud_rate = probe_baud_rate + 1) begin
+		for(probe_baud_rate = 11; probe_baud_rate <= 31; probe_baud_rate = probe_baud_rate + 2) begin
 			err             = baud_error(clock_rate, probe_baud_rate, baud_rate);
 			baud_divisor_rx = baud_divisor(ovs_freq_10x(clock_rate, probe_baud_rate), baud_rate);
 			if (err < best_baud_error && baud_divisor_rx > 1)
