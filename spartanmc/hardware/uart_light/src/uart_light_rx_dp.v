@@ -128,7 +128,7 @@ module uart_light_rx_dp
 		.rempty(				),	//FIFO leer mit rclk synchronisiert
 		.rwempty(	fifo_empty		),	//FIFO leer = rempty & wempty
 		.fill(					),	//Output wird nicht verwendet.
-		.wdata(		shfreg_rx		),	//Daten vom Transceiver lesen
+		.wdata(		shfreg_rx[WORD_SIZE-1:0]),	//Daten vom Transceiver lesen
 		.winc(		fifo_write_enable	),	//Transceiver schreibt Daten
 		.wclk(		clk_rx			),
 		.wrst_n(	~reset			),

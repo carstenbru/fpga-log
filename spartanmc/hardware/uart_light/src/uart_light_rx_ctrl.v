@@ -76,6 +76,7 @@ module uart_light_rx_ctrl
     );
 	 	 
 	 reg [STATE_COUNT-1:0] state_cur, state_next;
+	 reg err_recover, err_recover_next;
 	 
 	 assign fifo_rx_full     = fifo_full;
 	 assign fifo_rx_empty    = fifo_empty;
@@ -89,6 +90,7 @@ module uart_light_rx_ctrl
 		shift  = 1'b0;
 		fifo_write_enable = 1'b0;
 		state_next = IDLE;
+		err_recover_next = err_recover;
 		
 		case(state_cur)
 			IDLE:
@@ -109,12 +111,21 @@ module uart_light_rx_ctrl
 					state_next = STARTING;
 				end
 			RECEIVING:
+                            if (err_recover) begin
+                                state_next = IDLE;
+                                err_recover_next = 1'b0;
+                            end else begin
 				if(sc_full == 1'b1) begin
 					sc_clr = 1'b1;
 					if(frame_done) begin
 						bc_clr = 1'b1;
-						fifo_write_enable = 1'b1;
-						state_next = IDLE;
+						state_next = IDLE;						
+						
+						if (!bit_eq_0) begin
+                                                    fifo_write_enable = 1'b1;
+						end else begin
+						    err_recover_next = 1'b1;
+						end
 					end
 					else begin
 						shift  = 1'b1;
@@ -126,6 +137,7 @@ module uart_light_rx_ctrl
 					sc_inc = 1'b1;
 					state_next = RECEIVING;
 				end
+                            end
 			default: state_next = IDLE;
 		endcase
 	 end
@@ -133,9 +145,11 @@ module uart_light_rx_ctrl
 	 always @(posedge clk_rx, posedge reset) begin
 		if(reset) begin
 			state_cur <= IDLE;
+			err_recover <= 1'b0;
 		end
 		else begin 
 			state_cur <= state_next;
+			err_recover <= err_recover_next;
 		end
 	 end
 
