@@ -19,6 +19,7 @@
 		<range min="1" max="8" />
 	</parameter>
 	<parameter name="PWM_FREQ" type="int" value="1000" descr="Insert the PWM frequency for the LEDs" /> 
+	<parameter name="EXPONENT" type="int" value="3" descr="Insert the exponent which is used to calculate the pwm_on_value = value^EXPONENT" /> 
 	<parameter name="SEND_STATUS_AUTOMATIC" type="int" value="10" descr="Insert the number after which time in 10 ms the status will be send automatically" /> 	
 	<parameter name="INCREASE_VALUE_AUTOMATIC" type="int" value="11" descr="Insert the value in steps which is increased every TIME_TO_INCREASE between 0 to 1023" >
 		<range min="0" max="1023" />
