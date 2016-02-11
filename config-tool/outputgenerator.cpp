@@ -547,11 +547,14 @@ void OutputGenerator::writeClkPin(QXmlStreamWriter& writer) {
     CParameter* clkPinParam = dataLogger->getClockPin();
     QString pinName = clkPinParam->getValue().c_str();
     pinName.replace("_", ":");
-    Pin* pin = DataTypePin::getPinType()->getPin(Pin::getGroupFromFullName(pinName.toStdString()), Pin::getPinFromFullName(pinName.toStdString()));
+    string group = Pin::getGroupFromFullName(pinName.toStdString());
+    Pin* pin = DataTypePin::getPinType()->getPin(group, Pin::getPinFromFullName(pinName.toStdString()));
     pinName.replace(":", "_");
     writer.writeAttribute("id", "#PIN.CLK");
 
     writeAttributeElement(writer, "name", pinName);
+    writeAttributeElement(writer, "group", group.c_str());
+    writeAttributeElement(writer, "clock_freq", to_string(dataLogger->getClk()).c_str());
     writeAttributeElement(writer, "direction", "INPUT");
     writeAttributeElement(writer, "io_standard", "LVCMOS33");
     if (pin != NULL) {
@@ -568,12 +571,14 @@ void OutputGenerator::writePins(QXmlStreamWriter& writer) {
          writer.writeStartElement("fpga_pin");
          QString pinName = (*i).getName().c_str();
          pinName.replace("_", ":");
-         Pin* pin = DataTypePin::getPinType()->getPin(Pin::getGroupFromFullName(pinName.toStdString()), Pin::getPinFromFullName(pinName.toStdString()));
+         string group = Pin::getGroupFromFullName(pinName.toStdString());
+         Pin* pin = DataTypePin::getPinType()->getPin(group, Pin::getPinFromFullName(pinName.toStdString()));
          pinName.replace(":", "_");
          string pinId = "#PIN." + pinName.toStdString();
          writer.writeAttribute("id", pinId.c_str());
 
          writeAttributeElement(writer, "name", pinName);
+         writeAttributeElement(writer, "group", group.c_str());
          writeAttributeElement(writer, "direction", (*i).getDirection().c_str());
          writeAttributeElement(writer, "io_standard", "LVCMOS33");
 
