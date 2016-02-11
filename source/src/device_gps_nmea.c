@@ -114,16 +114,9 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 	unsigned char byte;
 	unsigned int processed_bytes = 0;
 	while (uart_light_receive_nb(gps_nmea->uart_light, &byte) == UART_OK) {
-		if (processed_bytes >= gps_nmea->max_bytes_per_call) {
-			//force generation of timestamp in next update function call
-			gps_nmea->timestamp_miss_counter = gps_nmea->timestamp_miss_assumption;
-			break;
-		}
-		processed_bytes++;
-
 		if (byte > 127) {  //filter out non ASCII characters (should not be there, but who knows..)
 			gps_nmea->parse_status = 0;
-			return;
+			continue;
 		}
 
 		if (byte == '$') {  //found start of NMEA sentence
@@ -233,6 +226,12 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 					}
 				}
 			}
+		}
+		processed_bytes++;
+		if (processed_bytes >= gps_nmea->max_bytes_per_call) {
+			//force generation of timestamp in next update function call
+			gps_nmea->timestamp_miss_counter = gps_nmea->timestamp_miss_assumption;
+			break;
 		}
 
 	}
