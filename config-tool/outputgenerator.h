@@ -33,9 +33,11 @@ public:
 
     void generateConfigFiles();
     void synthesizeSystem();
+    void synthesizeOnly();
     void flash();
 private:
     void copyProjectTemplate();
+    void copyMainC(QString src, QString dest);
 
     void generateCSource();
     void generateSystemXML();
@@ -70,6 +72,8 @@ private:
 
     void exec(std::string cmd);
 
+    void checkSynthesisMessage(std::string message);
+
     DataLogger* dataLogger;
 
     std::string directory;
@@ -94,12 +98,16 @@ private:
     int pcPeripheralTimerCounter;
 
     long timestampInvertMask;
+
+    bool timingError;
+    bool synthesisSuccessful;
 private slots:
     void newChildStdOut();
     void newChildErrOut();
     void processFinished();
 signals:
-    void finished(bool errorOccured);
+    void finished(bool errorOccured, bool timingError);
+    void errorFound(std::string message);
 };
 
 #endif // OUTPUTGENERATOR_H

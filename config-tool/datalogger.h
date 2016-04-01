@@ -26,13 +26,18 @@ public:
     std::map<std::string, CObject*> getObjectsMap();
     bool changeObjectName(CObject* object, std::string newName);
     int getClk();
+    int getSystemClk();
     int getPeriClk();
+    int getClkDivide();
+    int getClkMultiply();
 
     void loadTargetPins();
 
     CParameter* getTarget() { return &target; }
     CParameter* getClockPin() { return &clockPin; }
     CParameter* getClockFreq() { return &clockFreq; }
+    CParameter* getClockDivideParam() { return &clockDivide; }
+    CParameter* getClockMultiplyParam() { return &clockMultiply; }
 
     void setDefinitionsUpdated(bool state) {definitionsUpdated = state;}
     bool getDefinitionsUpdated() {return definitionsUpdated;}
@@ -64,6 +69,9 @@ private:
     CParameter target;
     CParameter clockPin;
     CParameter clockFreq;
+
+    CParameter clockDivide;
+    CParameter clockMultiply;
 
     std::list<DatastreamObject*> datastreamObjects;
     std::vector<CObject*> otherObjects;

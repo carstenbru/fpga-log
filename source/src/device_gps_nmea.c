@@ -31,6 +31,13 @@ const unsigned int time_multiplicators[8] =
 static void device_gps_nmea_send_data(void* const _gps_nmea,
 		const unsigned int id, const timestamp_t* const timestamp);
 
+/**
+ * @brief update function of the gps_nmea device
+ *
+ * @param _gps_nmea	pointer to the gps_nmea device
+ */
+static void device_gps_nmea_update(void* const _gps_nmea);
+
 void device_gps_nmea_init(device_gps_nmea_t* const gps_nmea,
 		uart_light_regs_t* const uart_light, device_gps_sync_mode sync_logger_time,
 		const int id) {
@@ -39,12 +46,18 @@ void device_gps_nmea_init(device_gps_nmea_t* const gps_nmea,
 	 * set method pointer(s) of super-"class" to sub-class function(s)
 	 */
 	gps_nmea->super.send_data = device_gps_nmea_send_data;
+	gps_nmea->super.super.update = device_gps_nmea_update;
 
 	gps_nmea->raw_data_out = &data_port_dummy;
 	gps_nmea->parsed_data_out = &data_port_dummy;
 
 	gps_nmea->sync_logger_time = sync_logger_time;
 	gps_nmea->uart_light = uart_light;
+
+	gps_nmea->timestamp_miss_counter = 0;
+	gps_nmea->timestamp_miss_assumption =
+	DEVICE_GPS_NMEA_DEFAULT_TIMESTAMP_MISS_ASSUMPTION;
+	gps_nmea->max_bytes_per_call = DEVICE_GPS_NMEA_DEFAULT_MAY_BYTES_PER_CALL;
 
 	uart_light_enable_rxint(uart_light);
 
@@ -94,15 +107,16 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 		const unsigned int id, const timestamp_t* const timestamp) {
 	device_gps_nmea_t* gps_nmea = (device_gps_nmea_t*) _gps_nmea;
 
-
-
 	uart_light_disable_rxint(gps_nmea->uart_light);
-	unsigned char byte;
-	while (uart_light_receive_nb(gps_nmea->uart_light, &byte) == UART_OK) {
 
+	gps_nmea->timestamp_miss_counter = 0;
+
+	unsigned char byte;
+	unsigned int processed_bytes = 0;
+	while (uart_light_receive_nb(gps_nmea->uart_light, &byte) == UART_OK) {
 		if (byte > 127) {  //filter out non ASCII characters (should not be there, but who knows..)
 			gps_nmea->parse_status = 0;
-			return;
+			continue;
 		}
 
 		if (byte == '$') {  //found start of NMEA sentence
@@ -118,7 +132,7 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 				|| (gps_nmea->sync_logger_time == GPS_SYNC_TIME)) {  //parse only if data out assigned or sync activated
 			if (byte == '$') {  //start of a NMEA sentence
 				device_gps_nmea_reset_parse_data(gps_nmea);
-			} else if (gps_nmea->parse_status != 0) { //valid char
+			} else if (gps_nmea->parse_status != 0) {  //valid char
 				if ((gps_nmea->parse_status < 3) || (gps_nmea->parse_status == 6)) {  //every sentence starts with "GP"
 					gps_nmea->parse_status++;
 				} else if (gps_nmea->parse_status < 6) {  //next three chars are the sentence type
@@ -157,8 +171,9 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 					char digit = byte - '0';
 					if (gps_nmea->parsed_data_out != &data_port_dummy) {
 						if (digit >= 0 && digit <= 9) {  //normal digit
-							if(gps_nmea->parsed_digits < 4 && gps_nmea->parse_package.type == DATA_TYPE_SIMPLE_FLOAT //Check if there are only 4 decimal places or truncate them to 4
-									|| gps_nmea->parse_package.type == DATA_TYPE_INT) {
+							if (((gps_nmea->parsed_digits < 4)
+									&& (gps_nmea->parse_package.type == DATA_TYPE_SIMPLE_FLOAT))  //Check if there are only 4 decimal places or truncate them to 4
+							|| (gps_nmea->parse_package.type == DATA_TYPE_INT)) {
 								gps_nmea->parse_uint *= 10;
 								gps_nmea->parse_uint += digit;
 								gps_nmea->parsed_digits++;
@@ -195,7 +210,8 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 									}
 									if (gps_nmea->time_parse_position == 7) {
 										timestamp_gen_regs_t* timestamp_gen = get_timestamp_gen();
-										timestamp_gen->timestamp.lpt_union.lpt = gps_nmea->time_parsed_sec;
+										timestamp_gen->timestamp.lpt_union.lpt =
+												gps_nmea->time_parsed_sec;
 										unsigned long int lpt = mul34_17(get_peri_clock(),
 												gps_nmea->time_parsed);
 										lpt /= 10;
@@ -211,7 +227,39 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 				}
 			}
 		}
+		processed_bytes++;
+		if (processed_bytes >= gps_nmea->max_bytes_per_call) {
+			//force generation of timestamp in next update function call
+			gps_nmea->timestamp_miss_counter = gps_nmea->timestamp_miss_assumption;
+			break;
+		}
 
 	}
 	uart_light_enable_rxint(gps_nmea->uart_light);
+}
+
+void device_gps_nmea_set_timestamp_miss_assumption(
+		device_gps_nmea_t* const gps_nmea, unsigned int timestamp_miss_assumption) {
+	gps_nmea->timestamp_miss_assumption = timestamp_miss_assumption;
+}
+
+void device_gps_nmea_set_max_bytes_per_call(device_gps_nmea_t* const gps_nmea,
+		unsigned int max_bytes_per_call) {
+	gps_nmea->max_bytes_per_call = max_bytes_per_call;
+}
+
+static void device_gps_nmea_update(void* const _gps_nmea) {
+	device_gps_nmea_t* gps_nmea = (device_gps_nmea_t*) _gps_nmea;
+
+	if (uart_light_rx_data_available(gps_nmea->uart_light)) {
+		gps_nmea->timestamp_miss_counter++;
+		if (gps_nmea->timestamp_miss_counter
+				>= gps_nmea->timestamp_miss_assumption) {
+			gps_nmea->timestamp_miss_counter = 0;
+			_datastream_source_generate_software_timestamp(
+					(datastream_source_t*) gps_nmea);
+		}
+	} else {
+		gps_nmea->timestamp_miss_counter = 0;
+	}
 }

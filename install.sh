@@ -51,6 +51,10 @@ then
   if  ! grep -q "_CFLAGS+=-spmc-force-cc-branches=yes" $SPARTANMC_ROOT/spartanmc/lib_obj/objbuild.mk ;
   then #TODO compile only fpga-log library with this flag and not all
     sed -i '/^_CFLAGS+=/a\_CFLAGS+=-spmc-force-cc-branches=yes' $SPARTANMC_ROOT/spartanmc/lib_obj/objbuild.mk #for older spmc versions
+    
+  fi
+  if  ! grep -q "_CFLAGS_\$(D_BUILD)+=-spmc-force-cc-branches=yes" $SPARTANMC_ROOT/spartanmc/lib_obj/objbuild.mk ;
+  then #TODO compile only fpga-log library with this flag and not all
     sed -i '/^_CFLAGS_$(D_BUILD):=/a\_CFLAGS_$(D_BUILD)+=-spmc-force-cc-branches=yes' $SPARTANMC_ROOT/spartanmc/lib_obj/objbuild.mk #for newer spmc versions
     
   fi

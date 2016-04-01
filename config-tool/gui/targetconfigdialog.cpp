@@ -1,5 +1,8 @@
 #include "targetconfigdialog.h"
 #include "ui_targetconfigdialog.h"
+#include <iostream>
+#include <QMessageBox>
+#include <QSpinBox>
 
 using namespace std;
 
@@ -38,7 +41,16 @@ void TargetConfigDialog::generateUi() {
 
     CParameter* clockFreq = dataLogger->getClockFreq();
     clockFreqWidget = clockFreq->getDataType()->getConfigWidget(dataLogger, clockFreq);
-    layout->addRow(clockFreq->getName().c_str(), clockFreqWidget);
+    layout->addRow("Eingangstakt", clockFreqWidget);
+
+    QSpinBox* freqSpinBox =(QSpinBox*)clockFreqWidget;
+    connect(freqSpinBox, SIGNAL(valueChanged(int)), this, SLOT(freqChanged(int)));
+
+    systemClkSelect = new QComboBox();
+    int clockFreqValue = atoi(clockFreq->getValue().c_str());
+    freqChanged(clockFreqValue);
+
+    layout->addRow("Systemtaktfrequenz", systemClkSelect);
 }
 
 void TargetConfigDialog::targetChanged(QString newTarget) {
@@ -49,6 +61,45 @@ void TargetConfigDialog::targetChanged(QString newTarget) {
 
     widget->deleteLater();
     generateUi();
+}
+
+void TargetConfigDialog::freqChanged(int clockFreqValue) {
+    systemClkSelect->clear();
+
+    int curSysFreq = clockFreqValue / dataLogger->getClkDivide() * dataLogger->getClkMultiply();
+    int curSysFreqItem = -1;
+    frequencies.clear();
+    freqCoefficients.clear();
+    DataTypeNumber* divType = (DataTypeNumber*)DataType::getType("sysclk_regs_t_CLKFX_DIVIDE");
+    DataTypeNumber* multType = (DataTypeNumber*)DataType::getType("sysclk_regs_t_CLKFX_MULTIPLY");
+    for (int divider = divType->getMax(); divider >= divType->getMin(); divider--) {
+        for (int multiplier = multType->getMax(); multiplier >= multType->getMin(); multiplier--) {
+            int f = clockFreqValue / divider * multiplier;
+            frequencies.insert(f);
+            freqCoefficients[f] = pair<int, int>(divider, multiplier);
+        }
+    }
+    int itemCount = 0;
+    for (set<int>::iterator i = frequencies.begin(); i != frequencies.end(); i++) {
+        int freq = *i;
+        if (freq == curSysFreq) {
+            curSysFreqItem = itemCount;
+        }
+        itemCount++;
+        bool onlyMhz = ((freq % 1000000) == 0);
+        bool recommendedFreq = ((freq % 2000) == 0);
+        string s = "";
+        if (onlyMhz) {
+            s += to_string(freq / 1000000) + " MHz";
+        } else {
+            s += to_string(freq / 1000000.0f) + " MHz";
+        }
+        if (!recommendedFreq) {
+            s = "(" + s + ")";
+        }
+        systemClkSelect->addItem(s.c_str());
+    }
+    systemClkSelect->setCurrentIndex(curSysFreqItem);
 }
 
 void TargetConfigDialog::pinChanged() {
@@ -71,4 +122,25 @@ void TargetConfigDialog::pinChanged() {
 void TargetConfigDialog::storeParams() {
     CParameter* clkFreqParam = dataLogger->getClockFreq();
     clkFreqParam->setValue(clkFreqParam->getDataType()->getConfigData(clockFreqWidget));
+
+    int itemNr = systemClkSelect->currentIndex();
+
+    set<int>::iterator i = frequencies.begin();
+    while (itemNr--) {
+        i++;
+    }
+    int freq = *i;
+    pair<int, int> c = freqCoefficients.at(freq);
+    dataLogger->getClockDivideParam()->setValue(to_string(c.first));
+    dataLogger->getClockMultiplyParam()->setValue(to_string(c.second));
+
+    if (systemClkSelect->currentText().startsWith("(")) {
+        QString text = QString::fromUtf8("Sie haben eine nicht empfohlene Taktfrequenz gewählt. Dies kann zu unerwünschtem Verhalten führen! Nutzen sie diese Frequenz nur wenn sie sicher sind was sie tun!");
+        cerr << "WARNUNG: " << text.toStdString() << endl;
+        QMessageBox dialog(QMessageBox::Warning,
+                           QString::fromUtf8("ungünstige Taktfrequenz"),
+                           text,
+                           QMessageBox::Ok);
+        dialog.exec();
+    }
 }

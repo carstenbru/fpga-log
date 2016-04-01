@@ -14,11 +14,13 @@
 
 #include "logger_config.h"
 
+CLOCK_FREQUENCY_DEFINITION
+
 /**
  * @brief main function
  */
 int main() {
-	sys_init(16000000, (timestamp_gen_regs_t*)TIMESTAMP_GEN);
+	sys_init(CLOCK_FREQUENCY, (timestamp_gen_regs_t*)TIMESTAMP_GEN);
 
 	init_objects();
 	connect_ports();

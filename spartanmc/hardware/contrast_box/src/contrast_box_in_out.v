@@ -1,5 +1,6 @@
 module contrast_box_in_out #(parameter CLOCK_FREQUENCY = 16000000,
 			     parameter PWM_FREQ = 1000,
+			     parameter EXPONENT = 3,				//Exponent which is used to calculate the pwm_on_value = value^EXPONENT
                              parameter INCREASE_VALUE_AUTOMATIC = 11,
                              parameter TIME_TO_INCREASE_AUTOMATIC = 100,		//value in 10ms //TIME_TO_INCREASE_BIT limits the time: 25->0ms - 2097 ms 
                              parameter INCREASE_VALUE_SWITCH = 11,
@@ -15,7 +16,8 @@ module contrast_box_in_out #(parameter CLOCK_FREQUENCY = 16000000,
 
 	output reg pwm_on_value_changed,	//1 if the pwm value changed, 0 otherwise
         output wire pwm,
-	output reg [PWM_REG_WIDTH-1:0] pwm_on_time
+	//output reg [PWM_REG_WIDTH-1:0] pwm_on_time	//the linear pwm_on_value
+	output wire [PWM_REG_WIDTH-1:0] pwm_exponent_value
 );  
 
   parameter PWM_CLK_CYCLES = (CLOCK_FREQUENCY/PWM_FREQ)/(PWM_CYCLE+1);
@@ -26,6 +28,8 @@ module contrast_box_in_out #(parameter CLOCK_FREQUENCY = 16000000,
   parameter TIME_TO_INCREASE_BIT = 25;
 
   //control registers
+  reg [PWM_REG_WIDTH-1:0] pwm_on_time;
+  //wire [PWM_REG_WIDTH-1:0] pwm_exponent_value;
   reg [PWM_REG_WIDTH-1:0] pwm_counter;
   wire switch_down_state;
   wire switch_down_state_continuous;
@@ -53,7 +57,9 @@ module contrast_box_in_out #(parameter CLOCK_FREQUENCY = 16000000,
 	.PB_down(),
 	.PB_up());
 
-
+  init_ROM #(.ROM_WIDTH(PWM_REG_WIDTH), .ROM_DEPTH(PWM_REG_WIDTH), .EXPONENT(EXPONENT)) rom (
+	.addr(pwm_on_time),
+	.data_out(pwm_exponent_value));
 
 
   //automatic increase pwm duty cycle
@@ -130,7 +136,8 @@ module contrast_box_in_out #(parameter CLOCK_FREQUENCY = 16000000,
 	end
   end
 
-  assign pwm = (pwm_counter < pwm_on_time);	
+  //assign pwm = (pwm_counter < pwm_on_time);	//the linear pwm_on_value
+  assign pwm = (pwm_counter < pwm_exponent_value);	
   always @(posedge pwm_clk or posedge reset) begin
     if(reset) begin
 	pwm_counter <= {(PWM_REG_WIDTH){1'b0}}; //reset counter to 0

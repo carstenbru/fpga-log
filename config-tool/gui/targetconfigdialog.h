@@ -5,6 +5,8 @@
 #include <QFormLayout>
 #include <QWidget>
 #include "datalogger.h"
+#include <map>
+#include <set>
 
 namespace Ui {
 class TargetConfigDialog;
@@ -28,10 +30,17 @@ private:
     QWidget* widget;
     QWidget* clockPinWidget;
     QWidget* clockFreqWidget;
+
+    QComboBox* systemClkSelect;
+
+    std::set<int> frequencies;
+    std::map<int, std::pair<int,int>> freqCoefficients;
 private slots:
     void targetChanged(QString newTarget);
     void pinChanged();
     void storeParams();
+
+    void freqChanged(int clockFreqValue);
 };
 
 #endif // TARGETCONFIGDIALOG_H

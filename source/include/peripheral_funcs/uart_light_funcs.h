@@ -19,4 +19,11 @@ void uart_light_enable_rxint(uart_light_regs_t* uart);
  */
 void uart_light_disable_rxint(uart_light_regs_t* uart);
 
+/**
+ * @brief checks if the UART has received data in its FIFO
+ *
+ * @return true if data is available, otherwise false
+ */
+int uart_light_rx_data_available(uart_light_regs_t* uart);
+
 #endif

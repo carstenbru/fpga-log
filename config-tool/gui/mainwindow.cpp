@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionTarget, SIGNAL(triggered()), this, SLOT(targetConfig()));
     connect(ui->actionGenerate, SIGNAL(triggered()), this, SLOT(generate()));
     connect(ui->actionSynthesize, SIGNAL(triggered()), this, SLOT(synthesize()));
+    connect(ui->actionSynthesizeOnly, SIGNAL(triggered()), this, SLOT(synthesizeOnly()));
     connect(ui->actionFlash, SIGNAL(triggered()), this, SLOT(flash()));
 
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newLogger()));
@@ -161,8 +162,11 @@ bool MainWindow::newOutputGenerator() {
     ui->actionGenerate->setEnabled(false);
     ui->actionFlash->setEnabled(false);
 
+    clearErrorList();
+
     outputGenerator = new OutputGenerator(dataLogger, QFileInfo(dataLoggerPath.c_str()).dir().absolutePath().toStdString());
-    connect(outputGenerator, SIGNAL(finished(bool)), this, SLOT(outputGeneratorFinished(bool)));
+    connect(outputGenerator, SIGNAL(finished(bool, bool)), this, SLOT(outputGeneratorFinished(bool, bool)));
+    connect(outputGenerator, SIGNAL(errorFound(std::string)), this, SLOT(addErrorToList(std::string)));
     return true;
 }
 
@@ -177,6 +181,16 @@ void MainWindow::synthesize() {
     if (outputGenerator == NULL) {
         if (newOutputGenerator()) {
             outputGenerator->synthesizeSystem();
+
+            bitfileGenerated = true;
+        }
+    }
+}
+
+void MainWindow::synthesizeOnly() {
+    if (outputGenerator == NULL) {
+        if (newOutputGenerator()) {
+            outputGenerator->synthesizeOnly();
 
             bitfileGenerated = true;
         }
@@ -209,7 +223,7 @@ void MainWindow::flash() {
     }
 }
 
-void MainWindow::outputGeneratorFinished(bool errorOccured) {
+void MainWindow::outputGeneratorFinished(bool errorOccured, bool timingError) {
     outputGenerator->deleteLater();
     outputGenerator = NULL;
 
@@ -221,6 +235,9 @@ void MainWindow::outputGeneratorFinished(bool errorOccured) {
         cerr << "Fehler bei Taskbearbeitung." << endl;
     } else {
         cout << "Task erfolgreich abgeschlossen." << endl;
+    }
+    if (timingError) {
+        cerr << QString::fromUtf8("Die gewählte Taktfrequenz ist zu hoch. Bitte wählen sie unter \"Datei->Zielplattform\" eine niedrigere Taktfrequenz.").toStdString() << endl;
     }
 }
 
@@ -261,6 +278,8 @@ bool MainWindow::checkAndAskSave() {
 
 void MainWindow::newLogger() {
     if (checkAndAskSave()) {
+        clearErrorList();
+
         dataLoggerPath = "";
         dataLoggerSaved = true;
         bitfileGenerated = false;
@@ -428,4 +447,12 @@ void MainWindow::pasteModule(QPoint pos) {
     if (ok && !name.isEmpty()) {
         dataLogger->addObject(name.toStdString(), dataStreamObject, object, pos);
     }
+}
+
+void MainWindow::clearErrorList() {
+    ui->errorList->clear();
+}
+
+void MainWindow::addErrorToList(std::string message) {
+    ui->errorList->addItem(message.c_str());
 }

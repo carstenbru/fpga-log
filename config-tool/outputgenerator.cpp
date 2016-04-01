@@ -44,7 +44,28 @@ void OutputGenerator::copyProjectTemplate() {
             newPath = (directory + "/").c_str() + newPath;
 
             QDir().mkpath(QFileInfo(newPath).dir().absolutePath());
-            QFile::copy(dirIter.filePath(), newPath);
+            if (dirIter.fileName().compare("main.c") == 0) {
+                copyMainC(dirIter.filePath(), newPath);
+            } else {
+                QFile::copy(dirIter.filePath(), newPath);
+            }
+        }
+    }
+}
+
+void OutputGenerator::copyMainC(QString src, QString dest) {
+    ofstream destFile;
+    destFile.open(dest.toStdString());
+
+    ifstream srcFile;
+    srcFile.open(src.toStdString());
+
+    char buf[1024];
+    while (srcFile.getline(buf, 1024)) {
+        if ((buf[0] == 0) || (strstr("CLOCK_FREQUENCY_DEFINITION", buf) == NULL)) {
+            destFile << buf << endl;
+        } else {
+            destFile << "#define CLOCK_FREQUENCY " << dataLogger->getPeriClk() << endl;
         }
     }
 }
@@ -61,22 +82,40 @@ void OutputGenerator::exec(string cmd) {
 void OutputGenerator::processFinished() {
     if (pending.empty() || error) {
         busy = false;
-        emit finished(error);
+        emit finished(error || timingError, timingError);
     } else {
         process.start(QString(pending.front().c_str()));
         pending.pop_front();
     }
 }
 
+void OutputGenerator::checkSynthesisMessage(string message) {
+    if (message.find("System synthesis complete.") != string::npos) {
+        synthesisSuccessful = true;
+    }
+    if (message.find("Timing: Completed") != string::npos) {
+        if (message.find("Timing: Completed - No errors found.") == string::npos) {
+            timingError = true;
+            emit errorFound("Taktfrequenz zu hoch");
+        }
+    }
+}
+
 void OutputGenerator::newChildStdOut() {
-    cout << QString(process.readAllStandardOutput()).toStdString();
+    string s = QString(process.readAllStandardOutput()).toStdString();
+    cout << s;
+    checkSynthesisMessage(s);
 }
 
 void OutputGenerator::newChildErrOut() {
-    cerr << QString(process.readAllStandardError()).toStdString();
+    string s = QString(process.readAllStandardError()).toStdString();
+    cerr << s;
 }
 
 void OutputGenerator::generateConfigFiles() {
+    timingError = false;
+    synthesisSuccessful = false;
+
     generateSystemXML();
     generateCSource();;
 
@@ -85,6 +124,13 @@ void OutputGenerator::generateConfigFiles() {
 
 void OutputGenerator::synthesizeSystem() {
     generateConfigFiles();
+
+    exec("make all");
+}
+
+void OutputGenerator::synthesizeOnly() {
+    timingError = false;
+    synthesisSuccessful = false;
 
     exec("make all");
 }
@@ -199,7 +245,9 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
 
             if (value.empty()) {
                 error = true;
-                cerr << "FEHLER: Parameter " << (*i).getName() << " von Objekt " << object->getName() << " nicht gesetzt!" << endl;
+                string s = "Parameter " + (*i).getName() + " von Objekt " + object->getName() + " nicht gesetzt";
+                cerr << "FEHLER: " << s << "!" << endl;
+                emit errorFound(s);
             }
 
             tmpStream << value;
@@ -289,7 +337,9 @@ void OutputGenerator::writeMethod(std::ostream& stream, CObject* object, CMethod
 
         if (value.empty()) {
             error = true;
-            cerr << "FEHLER: Parameter " << (*i).getName() << " von Objekt " << object->getName() << " nicht gesetzt!" << endl;
+            string s = "Parameter " + (*i).getName() + " von Objekt " + object->getName() + " nicht gesetzt";
+            cerr << "FEHLER: " << s << "!" << endl;
+            emit errorFound(s);
         }
 
         stream << value;
@@ -316,7 +366,9 @@ void OutputGenerator::writeAdvancedConfig(std::ostream& stream) {
 void OutputGenerator::generateSystemXML() {
     ifstream templateFile("../config-tool-files/template.xml");
     if (!templateFile.is_open()) {
-        cerr << "System Template XML konnte nicht geöffnet werden." << endl;
+        string s = "System Template XML konnte nicht geöffnet werden.";
+        cerr << s << endl;
+        emit errorFound(s);
         return;
     }
 
@@ -356,6 +408,12 @@ void OutputGenerator::generateSystemXML() {
             stream << "<attribute id=\"value\">" << dataLogger->getPeriClk() << "</attribute>" << endl;
         } else if (line.compare("CLOCK_PERIOD_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << (1000000000.0f / dataLogger->getClk()) << "</attribute>" << endl;
+        } else if (line.compare("SYSTEM_CLOCK_PERIOD_ATTRIBUTE") == 0) {
+            stream << "<attribute id=\"value\">" << (1000000000.0f / dataLogger->getSystemClk()) << "</attribute>" << endl;
+        } else if (line.compare("CLOCK_DIVIDE_ATTRIBUTE") == 0) {
+            stream << "<attribute id=\"value\">" << dataLogger->getClkDivide() << "</attribute>" << endl;
+        } else if (line.compare("CLOCK_MULTIPLY_ATTRIBUTE") == 0) {
+            stream << "<attribute id=\"value\">" << dataLogger->getClkMultiply() << "</attribute>" << endl;
         } else if (line.compare("TIMESTAMP_GEN_SOURCES_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << usedTimestampSources << "</attribute>" << endl;
         } else if (line.compare("TIMESTAMP_GEN_PIN_SOURCES_ATTRIBUTE") == 0) {
@@ -461,6 +519,10 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
                         pcTimestampCaptureStream << ", " << peripheralNameUpper;
                     }
                     writeConnection(writer, destination.toStdString(), lsb++);
+                } else {
+                    if (!(*portIt)->getHideFromUser()) {
+                        emit errorFound("Pin " + portName + " (" + groupIt->first + ") im Modul " + peripheral->getParentName() + " nicht zugewiesen");
+                    }
                 }
             }
 
@@ -520,11 +582,14 @@ void OutputGenerator::writeClkPin(QXmlStreamWriter& writer) {
     CParameter* clkPinParam = dataLogger->getClockPin();
     QString pinName = clkPinParam->getValue().c_str();
     pinName.replace("_", ":");
-    Pin* pin = DataTypePin::getPinType()->getPin(Pin::getGroupFromFullName(pinName.toStdString()), Pin::getPinFromFullName(pinName.toStdString()));
+    string group = Pin::getGroupFromFullName(pinName.toStdString());
+    Pin* pin = DataTypePin::getPinType()->getPin(group, Pin::getPinFromFullName(pinName.toStdString()));
     pinName.replace(":", "_");
     writer.writeAttribute("id", "#PIN.CLK");
 
     writeAttributeElement(writer, "name", pinName);
+    writeAttributeElement(writer, "group", group.c_str());
+    writeAttributeElement(writer, "clock_freq", to_string(dataLogger->getClk()).c_str());
     writeAttributeElement(writer, "direction", "INPUT");
     writeAttributeElement(writer, "io_standard", "LVCMOS33");
     if (pin != NULL) {
@@ -541,12 +606,14 @@ void OutputGenerator::writePins(QXmlStreamWriter& writer) {
          writer.writeStartElement("fpga_pin");
          QString pinName = (*i).getName().c_str();
          pinName.replace("_", ":");
-         Pin* pin = DataTypePin::getPinType()->getPin(Pin::getGroupFromFullName(pinName.toStdString()), Pin::getPinFromFullName(pinName.toStdString()));
+         string group = Pin::getGroupFromFullName(pinName.toStdString());
+         Pin* pin = DataTypePin::getPinType()->getPin(group, Pin::getPinFromFullName(pinName.toStdString()));
          pinName.replace(":", "_");
          string pinId = "#PIN." + pinName.toStdString();
          writer.writeAttribute("id", pinId.c_str());
 
          writeAttributeElement(writer, "name", pinName);
+         writeAttributeElement(writer, "group", group.c_str());
          writeAttributeElement(writer, "direction", (*i).getDirection().c_str());
          writeAttributeElement(writer, "io_standard", "LVCMOS33");
 
