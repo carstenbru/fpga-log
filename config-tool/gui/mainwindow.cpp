@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionTarget, SIGNAL(triggered()), this, SLOT(targetConfig()));
     connect(ui->actionGenerate, SIGNAL(triggered()), this, SLOT(generate()));
     connect(ui->actionSynthesize, SIGNAL(triggered()), this, SLOT(synthesize()));
+    connect(ui->actionSynthesizeOnly, SIGNAL(triggered()), this, SLOT(synthesizeOnly()));
     connect(ui->actionFlash, SIGNAL(triggered()), this, SLOT(flash()));
 
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newLogger()));
@@ -148,6 +149,16 @@ void MainWindow::synthesize() {
     if (outputGenerator == NULL) {
         if (newOutputGenerator()) {
             outputGenerator->synthesizeSystem();
+
+            bitfileGenerated = true;
+        }
+    }
+}
+
+void MainWindow::synthesizeOnly() {
+    if (outputGenerator == NULL) {
+        if (newOutputGenerator()) {
+            outputGenerator->synthesizeOnly();
 
             bitfileGenerated = true;
         }

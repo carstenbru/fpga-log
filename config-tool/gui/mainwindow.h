@@ -56,6 +56,7 @@ public slots:
     void targetConfig();
     void generate();
     void synthesize();
+    void synthesizeOnly();
     void flash();
 
     void newLogger();

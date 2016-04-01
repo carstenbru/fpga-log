@@ -33,6 +33,7 @@ public:
 
     void generateConfigFiles();
     void synthesizeSystem();
+    void synthesizeOnly();
     void flash();
 private:
     void copyProjectTemplate();

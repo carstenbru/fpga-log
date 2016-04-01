@@ -150,6 +150,7 @@
     <addaction name="actionFlash"/>
     <addaction name="separator"/>
     <addaction name="actionGenerate"/>
+    <addaction name="actionSynthesizeOnly"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -306,6 +307,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionSynthesizeOnly">
+   <property name="text">
+    <string>Synthese starten</string>
    </property>
   </action>
  </widget>

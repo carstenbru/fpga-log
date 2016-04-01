@@ -128,6 +128,13 @@ void OutputGenerator::synthesizeSystem() {
     exec("make all");
 }
 
+void OutputGenerator::synthesizeOnly() {
+    timingError = false;
+    synthesisSuccessful = false;
+
+    exec("make all");
+}
+
 void OutputGenerator::generateCSource() {
     ofstream file;
     file.open(directory + "/firmware/src/logger_config.c");
