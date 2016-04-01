@@ -82,7 +82,7 @@ void OutputGenerator::exec(string cmd) {
 void OutputGenerator::processFinished() {
     if (pending.empty() || error) {
         busy = false;
-        emit finished(error || !synthesisSuccessful || timingError, timingError);
+        emit finished(error || timingError, timingError);
     } else {
         process.start(QString(pending.front().c_str()));
         pending.pop_front();
@@ -96,6 +96,7 @@ void OutputGenerator::checkSynthesisMessage(string message) {
     if (message.find("Timing: Completed") != string::npos) {
         if (message.find("Timing: Completed - No errors found.") == string::npos) {
             timingError = true;
+            emit errorFound("Taktfrequenz zu hoch");
         }
     }
 }
@@ -107,10 +108,14 @@ void OutputGenerator::newChildStdOut() {
 }
 
 void OutputGenerator::newChildErrOut() {
-    cerr << QString(process.readAllStandardError()).toStdString();
+    string s = QString(process.readAllStandardError()).toStdString();
+    cerr << s;
 }
 
 void OutputGenerator::generateConfigFiles() {
+    timingError = false;
+    synthesisSuccessful = false;
+
     generateSystemXML();
     generateCSource();;
 
@@ -120,8 +125,6 @@ void OutputGenerator::generateConfigFiles() {
 void OutputGenerator::synthesizeSystem() {
     generateConfigFiles();
 
-    timingError = false;
-    synthesisSuccessful = false;
     exec("make all");
 }
 
@@ -235,7 +238,9 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
 
             if (value.empty()) {
                 error = true;
-                cerr << "FEHLER: Parameter " << (*i).getName() << " von Objekt " << object->getName() << " nicht gesetzt!" << endl;
+                string s = "Parameter " + (*i).getName() + " von Objekt " + object->getName() + " nicht gesetzt";
+                cerr << "FEHLER: " << s << "!" << endl;
+                emit errorFound(s);
             }
 
             tmpStream << value;
@@ -325,7 +330,9 @@ void OutputGenerator::writeMethod(std::ostream& stream, CObject* object, CMethod
 
         if (value.empty()) {
             error = true;
-            cerr << "FEHLER: Parameter " << (*i).getName() << " von Objekt " << object->getName() << " nicht gesetzt!" << endl;
+            string s = "Parameter " + (*i).getName() + " von Objekt " + object->getName() + " nicht gesetzt";
+            cerr << "FEHLER: " << s << "!" << endl;
+            emit errorFound(s);
         }
 
         stream << value;
@@ -352,7 +359,9 @@ void OutputGenerator::writeAdvancedConfig(std::ostream& stream) {
 void OutputGenerator::generateSystemXML() {
     ifstream templateFile("../config-tool-files/template.xml");
     if (!templateFile.is_open()) {
-        cerr << "System Template XML konnte nicht geöffnet werden." << endl;
+        string s = "System Template XML konnte nicht geöffnet werden.";
+        cerr << s << endl;
+        emit errorFound(s);
         return;
     }
 
@@ -503,6 +512,10 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
                         pcTimestampCaptureStream << ", " << peripheralNameUpper;
                     }
                     writeConnection(writer, destination.toStdString(), lsb++);
+                } else {
+                    if (!(*portIt)->getHideFromUser()) {
+                        emit errorFound("Pin " + portName + " (" + groupIt->first + ") im Modul " + peripheral->getParentName() + " nicht zugewiesen");
+                    }
                 }
             }
 

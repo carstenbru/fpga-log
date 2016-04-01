@@ -129,8 +129,11 @@ bool MainWindow::newOutputGenerator() {
     ui->actionGenerate->setEnabled(false);
     ui->actionFlash->setEnabled(false);
 
+    clearErrorList();
+
     outputGenerator = new OutputGenerator(dataLogger, QFileInfo(dataLoggerPath.c_str()).dir().absolutePath().toStdString());
     connect(outputGenerator, SIGNAL(finished(bool, bool)), this, SLOT(outputGeneratorFinished(bool, bool)));
+    connect(outputGenerator, SIGNAL(errorFound(std::string)), this, SLOT(addErrorToList(std::string)));
     return true;
 }
 
@@ -232,6 +235,8 @@ bool MainWindow::checkAndAskSave() {
 
 void MainWindow::newLogger() {
     if (checkAndAskSave()) {
+        clearErrorList();
+
         dataLoggerPath = "";
         dataLoggerSaved = true;
         bitfileGenerated = false;
@@ -400,4 +405,12 @@ void MainWindow::pasteModule() {
      if (ok && !name.isEmpty()) {
          dataLogger->addObject(name.toStdString(), dataStreamObject, object);
      }
+}
+
+void MainWindow::clearErrorList() {
+    ui->errorList->clear();
+}
+
+void MainWindow::addErrorToList(std::string message) {
+    ui->errorList->addItem(message.c_str());
 }

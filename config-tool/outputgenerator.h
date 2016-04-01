@@ -106,6 +106,7 @@ private slots:
     void processFinished();
 signals:
     void finished(bool errorOccured, bool timingError);
+    void errorFound(std::string message);
 };
 
 #endif // OUTPUTGENERATOR_H

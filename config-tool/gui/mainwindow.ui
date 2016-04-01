@@ -60,13 +60,43 @@
         </property>
        </widget>
       </widget>
-      <widget class="QTextBrowser" name="textBrowser">
+      <widget class="QTabWidget" name="tabWidget">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
-         <verstretch>20</verstretch>
+         <verstretch>30</verstretch>
         </sizepolicy>
        </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Ausgabefenster</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QTextBrowser" name="textBrowser">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>30</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_2">
+        <attribute name="title">
+         <string>Fehlermeldungen</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QListWidget" name="errorList"/>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -170,7 +200,7 @@
   </action>
   <action name="actionGenerate">
    <property name="text">
-    <string>&amp;Dateien erzeugen</string>
+    <string>&amp;Dateien erzeugen / Fehler prüfen</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
@@ -268,10 +298,11 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="edit-paste"/>
+    <iconset theme="edit-paste">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Einfügen</string>
+    <string>&amp;Einfügen</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>

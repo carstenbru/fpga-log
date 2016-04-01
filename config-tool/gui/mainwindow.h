@@ -31,6 +31,7 @@ private:
     bool checkAndAskSave();
     void setDataLoggerPath(std::string newPath);
     void reparseLocalHeaders(std::string path);
+    void clearErrorList();
 
     Ui::MainWindow *ui;
 
@@ -65,6 +66,8 @@ public slots:
     void pinOverview();
 
     void copyObject(std::string objectDescription);
+
+    void addErrorToList(std::string message);
 private slots:
     void otherObjectConfig(QModelIndex index);
     void outputGeneratorFinished(bool errorOccured, bool timingError);
