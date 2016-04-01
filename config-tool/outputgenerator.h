@@ -71,6 +71,8 @@ private:
 
     void exec(std::string cmd);
 
+    void checkSynthesisMessage(std::string message);
+
     DataLogger* dataLogger;
 
     std::string directory;
@@ -95,12 +97,15 @@ private:
     int pcPeripheralTimerCounter;
 
     long timestampInvertMask;
+
+    bool timingError;
+    bool synthesisSuccessful;
 private slots:
     void newChildStdOut();
     void newChildErrOut();
     void processFinished();
 signals:
-    void finished(bool errorOccured);
+    void finished(bool errorOccured, bool timingError);
 };
 
 #endif // OUTPUTGENERATOR_H

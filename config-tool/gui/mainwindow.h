@@ -67,7 +67,7 @@ public slots:
     void copyObject(std::string objectDescription);
 private slots:
     void otherObjectConfig(QModelIndex index);
-    void outputGeneratorFinished(bool errorOccured);
+    void outputGeneratorFinished(bool errorOccured, bool timingError);
     void dataLoggerChanged();
 };
 

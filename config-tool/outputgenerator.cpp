@@ -82,15 +82,28 @@ void OutputGenerator::exec(string cmd) {
 void OutputGenerator::processFinished() {
     if (pending.empty() || error) {
         busy = false;
-        emit finished(error);
+        emit finished(error || !synthesisSuccessful || timingError, timingError);
     } else {
         process.start(QString(pending.front().c_str()));
         pending.pop_front();
     }
 }
 
+void OutputGenerator::checkSynthesisMessage(string message) {
+    if (message.find("System synthesis complete.") != string::npos) {
+        synthesisSuccessful = true;
+    }
+    if (message.find("Timing: Completed") != string::npos) {
+        if (message.find("Timing: Completed - No errors found.") == string::npos) {
+            timingError = true;
+        }
+    }
+}
+
 void OutputGenerator::newChildStdOut() {
-    cout << QString(process.readAllStandardOutput()).toStdString();
+    string s = QString(process.readAllStandardOutput()).toStdString();
+    cout << s;
+    checkSynthesisMessage(s);
 }
 
 void OutputGenerator::newChildErrOut() {
@@ -107,6 +120,8 @@ void OutputGenerator::generateConfigFiles() {
 void OutputGenerator::synthesizeSystem() {
     generateConfigFiles();
 
+    timingError = false;
+    synthesisSuccessful = false;
     exec("make all");
 }
 

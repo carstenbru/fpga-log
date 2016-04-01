@@ -130,7 +130,7 @@ bool MainWindow::newOutputGenerator() {
     ui->actionFlash->setEnabled(false);
 
     outputGenerator = new OutputGenerator(dataLogger, QFileInfo(dataLoggerPath.c_str()).dir().absolutePath().toStdString());
-    connect(outputGenerator, SIGNAL(finished(bool)), this, SLOT(outputGeneratorFinished(bool)));
+    connect(outputGenerator, SIGNAL(finished(bool, bool)), this, SLOT(outputGeneratorFinished(bool, bool)));
     return true;
 }
 
@@ -177,7 +177,7 @@ void MainWindow::flash() {
     }
 }
 
-void MainWindow::outputGeneratorFinished(bool errorOccured) {
+void MainWindow::outputGeneratorFinished(bool errorOccured, bool timingError) {
     outputGenerator->deleteLater();
     outputGenerator = NULL;
 
@@ -189,6 +189,9 @@ void MainWindow::outputGeneratorFinished(bool errorOccured) {
         cerr << "Fehler bei Taskbearbeitung." << endl;
     } else {
         cout << "Task erfolgreich abgeschlossen." << endl;
+    }
+    if (timingError) {
+        cerr << QString::fromUtf8("Die gewählte Taktfrequenz ist zu hoch. Bitte wählen sie unter \"Datei->Zielplattform\" eine niedrigere Taktfrequenz.").toStdString() << endl;
     }
 }
 
