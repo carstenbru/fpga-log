@@ -18,41 +18,39 @@
  * @param sdcard	pointer to the sdcard peripheral
  */
 static sdcard_busy_wait(sdcard_regs_t* const sdcard) {
-	while (sdcard->trans_sts)
+	while (sdcard->trans_ctrl & TRANS_STATUS)
 		;
 }
 
 static void sdcard_reset_cs(sdcard_regs_t* const sdcard) {
-	sdcard->trans_type = TRANS_TYPE_DIRECT_ACCES;
 	sdcard->direct_acces_data = 0xFF;  //dummy
-	sdcard->trans_ctrl = TRANS_START;
+	sdcard->trans_ctrl = TRANS_TYPE_DIRECT_ACCES | TRANS_START;
 }
 
 unsigned char sdcard_send_cmd(sdcard_regs_t* const sdcard, unsigned char cmd,
 		unsigned char* data, unsigned char checksum) {
-	sdcard->trans_type = TRANS_TYPE_INIT_SD;
 	sdcard->direct_acces_data = 0xFF;  //dummy
-	sdcard->trans_ctrl = TRANS_START;
+	sdcard->trans_ctrl = TRANS_TYPE_INIT_SD | TRANS_START;
 	sdcard_busy_wait(sdcard);
 
 	sdcard->direct_acces_data = 0x40 | cmd;  //command code
-	sdcard->trans_ctrl = TRANS_START;
+	sdcard->trans_ctrl = TRANS_TYPE_INIT_SD | TRANS_START;
 	sdcard_busy_wait(sdcard);
 
 	int i;
 	for (i = 0; i < 4; i++) {
 		sdcard->direct_acces_data = *data++;  //data
-		sdcard->trans_ctrl = TRANS_START;
+		sdcard->trans_ctrl = TRANS_TYPE_INIT_SD | TRANS_START;
 		sdcard_busy_wait(sdcard);
 	}
 
 	sdcard->direct_acces_data = checksum;  //checksum
-	sdcard->trans_ctrl = TRANS_START;
+	sdcard->trans_ctrl = TRANS_TYPE_INIT_SD | TRANS_START;
 	sdcard_busy_wait(sdcard);
 
 	sdcard->direct_acces_data = 0xFF;  //wait for R1 response
 	for (i = 0; i < SD_RESPONSE_WAIT; i++) {
-		sdcard->trans_ctrl = TRANS_START;
+		sdcard->trans_ctrl = TRANS_TYPE_INIT_SD | TRANS_START;
 		sdcard_busy_wait(sdcard);
 		if (sdcard->direct_acces_data != 0xFF) {
 			return sdcard->direct_acces_data;
@@ -77,7 +75,7 @@ int sdcard_init(sdcard_regs_t* const sdcard) {
 	sdcard_send_cmd(sdcard, 8, data_cmd8, 0x87);  //send CMD8
 	int i;
 	for (i = 0; i < 4; i++) {  //read R7 response
-		sdcard->trans_ctrl = TRANS_START;
+		sdcard->trans_ctrl = TRANS_TYPE_DIRECT_ACCES | TRANS_START;
 		sdcard_busy_wait(sdcard);
 	}
 
@@ -102,7 +100,7 @@ int sdcard_init(sdcard_regs_t* const sdcard) {
 	sdcard->direct_acces_data = 0xFF;
 	for (i = 0; i < 4; i++) {  //read R3 response
 
-		sdcard->trans_ctrl = TRANS_START;
+		sdcard->trans_ctrl = TRANS_TYPE_DIRECT_ACCES | TRANS_START;
 		sdcard_busy_wait(sdcard);
 		if (i == 0) {
 			if (sdcard->direct_acces_data & 0b01000000) {  //HCS flag set
@@ -127,10 +125,8 @@ int sdcard_init(sdcard_regs_t* const sdcard) {
  */
 static void sdcard_set_address(sdcard_regs_t* const sdcard,
 		unsigned long int address) {
-	sdcard->sd_addr_7_0 = (unsigned int) address;
-	sdcard->sd_addr_15_8 = (unsigned int) (address >> 8);
-	sdcard->sd_addr_23_16 = (unsigned int) (address >> 16);
-	sdcard->sd_addr_31_24 = (unsigned int) (address >> 24);
+	sdcard->sd_addr_17_0 = (unsigned int) address;
+	sdcard->sd_addr_31_18 = (unsigned int) (address >> 18);
 }
 
 int sdcard_block_write(sdcard_regs_t* const sdcard, unsigned long address,
@@ -140,8 +136,7 @@ int sdcard_block_write(sdcard_regs_t* const sdcard, unsigned long address,
 		sdcard->tx_fifo_data = *block++;
 	}
 	sdcard_set_address(sdcard, address);
-	sdcard->trans_type = TRANS_TYPE_RW_WRITE_SD_BLOCK;
-	sdcard->trans_ctrl = TRANS_START;
+	sdcard->trans_ctrl = TRANS_TYPE_RW_WRITE_SD_BLOCK | TRANS_START;
 
 	sdcard_busy_wait(sdcard);
 	return sdcard->trans_error;
@@ -150,8 +145,7 @@ int sdcard_block_write(sdcard_regs_t* const sdcard, unsigned long address,
 int sdcard_block_read(sdcard_regs_t* const sdcard, unsigned long address,
 		unsigned char* block) {
 	sdcard_set_address(sdcard, address);
-	sdcard->trans_type = TRANS_TYPE_RW_READ_SD_BLOCK;
-	sdcard->trans_ctrl = TRANS_START;
+	sdcard->trans_ctrl = TRANS_TYPE_RW_READ_SD_BLOCK | TRANS_START;
 
 	sdcard_busy_wait(sdcard);
 	if (sdcard->trans_error != SD_NO_ERROR)

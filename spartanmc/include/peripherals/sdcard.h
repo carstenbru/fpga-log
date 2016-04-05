@@ -14,13 +14,14 @@
  * @brief enumeration of the different transaction types
  */
 typedef enum {
-	TRANS_TYPE_DIRECT_ACCES = 0,
-	TRANS_TYPE_INIT_SD = 1,
-	TRANS_TYPE_RW_READ_SD_BLOCK = 2,
-	TRANS_TYPE_RW_WRITE_SD_BLOCK = 3
+	TRANS_TYPE_DIRECT_ACCES = 0 << 1,
+	TRANS_TYPE_INIT_SD = 1 << 1,
+	TRANS_TYPE_RW_READ_SD_BLOCK = 2 << 1,
+	TRANS_TYPE_RW_WRITE_SD_BLOCK = 3 << 1
 } transaction_type;
 
 #define TRANS_START 1
+#define TRANS_STATUS (1 << 3)
 
 #define FIFO_FORCE_EMPTY 1
 
@@ -44,17 +45,14 @@ typedef enum {
 typedef struct {
 	volatile unsigned int version;
 	volatile unsigned int control;
-	volatile unsigned int trans_type;
 	volatile unsigned int trans_ctrl;
-	volatile unsigned int trans_sts;
 	volatile unsigned int trans_error;
 	volatile unsigned int direct_acces_data;
-	volatile unsigned int sd_addr_7_0;
-	volatile unsigned int sd_addr_15_8;
-	volatile unsigned int sd_addr_23_16;
-	volatile unsigned int sd_addr_31_24;
+	volatile unsigned int sd_addr_17_0;
+	volatile unsigned int sd_addr_31_18;
 	volatile unsigned int spi_clk_del;
 
+	volatile unsigned int gap0[4];
 	volatile unsigned int gap1[4]; /* gap fields only used to get right address mapping of hardware registers */
 
 	volatile unsigned int rx_fifo_data;

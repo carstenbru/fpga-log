@@ -69,13 +69,13 @@ module ctrlStsRegBI (
 );
 parameter SDCARD_CLOCK = 16000000;
 
-input [7:0] dataIn;
+input [17:0] dataIn;
 input [7:0] address;
 input writeEn;
 input strobe_i;
 input busClk;
 input spiSysClk;
-output [7:0] dataOut;
+output [17:0] dataOut;
 input ctrlStsRegSel;
 output [1:0] spiTransType;
 output spiTransCtrl;
@@ -94,12 +94,12 @@ reg [31:0] SDAddr;
 output [7:0] spiClkDelay;
 reg [7:0] spiClkDelay;
 
-wire [7:0] dataIn;
+wire [17:0] dataIn;
 wire [7:0] address;
 wire writeEn;
 wire strobe_i;
 wire clk;
-reg [7:0] dataOut;
+reg [17:0] dataOut;
 reg [1:0] spiTransType;
 reg spiTransCtrl;
 wire ctrlStsRegSel;
@@ -147,11 +147,9 @@ begin
       spiTransCtrlSTB <= 1'b0;
     if (writeEn == 1'b1 && ctrlStsRegSel == 1'b1 && strobe_i == 1'b1) begin
       case (address)
-        `TRANS_TYPE_REG: spiTransTypeSTB <= dataIn[1:0];
-        `SD_ADDR_7_0_REG: SDAddr[7:0] <= dataIn;
-        `SD_ADDR_15_8_REG: SDAddr[15:8] <= dataIn;
-        `SD_ADDR_23_16_REG: SDAddr[23:16] <= dataIn;
-        `SD_ADDR_31_24_REG: SDAddr[31:24] <= dataIn;
+        `TRANS_CTRL_REG: spiTransTypeSTB <= dataIn[2:1];
+        `SD_ADDR_17_0_REG: SDAddr[17:0] <= dataIn[17:0];
+        `SD_ADDR_31_18_REG: SDAddr[31:18] <= dataIn[13:0];
         `SPI_CLK_DEL_REG: spiClkDelay <= dataIn;
         `DIRECT_ACCESS_DATA_REG: spiDirectAccessTxDataSTB <= dataIn;
       endcase
@@ -167,17 +165,13 @@ always @(address or spiTransTypeSTB or spiTransCtrlSTB or
 begin
   case (address)
     `SPI_MASTER_VERSION_REG: dataOut <= `SPI_MASTER_VERSION_NUM;
-    `TRANS_TYPE_REG: dataOut <= { 6'b000000, spiTransTypeSTB};
-    `TRANS_CTRL_REG: dataOut <= { 7'b0000000, spiTransCtrlSTB};
-    `TRANS_STS_REG: dataOut <= { 7'b0000000, spiTransStatusSTB};
+    `TRANS_CTRL_REG: dataOut <= { 14'b0000000, spiTransStatusSTB, spiTransTypeSTB[1:0],spiTransCtrlSTB};
     `TRANS_ERROR_REG: dataOut <= {2'b00, SDWriteErrorSTB, SDReadErrorSTB, SDInitErrorSTB};
-    `SD_ADDR_7_0_REG: dataOut <= SDAddr[7:0];
-    `SD_ADDR_15_8_REG: dataOut <= SDAddr[15:8];
-    `SD_ADDR_23_16_REG: dataOut <= SDAddr[23:16];
-    `SD_ADDR_31_24_REG: dataOut <= SDAddr[31:24];
+    `SD_ADDR_17_0_REG: dataOut <= SDAddr[17:0];
+    `SD_ADDR_31_18_REG: dataOut <= {4'd0, SDAddr[31:18]};
     `SPI_CLK_DEL_REG: dataOut <= spiClkDelay;
     `DIRECT_ACCESS_DATA_REG: dataOut <= spiDirectAccessRxDataSTB;
-    default: dataOut <= 8'h00;
+    default: dataOut <= 18'd0;
   endcase
 end
 

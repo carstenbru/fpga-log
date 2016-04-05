@@ -28,16 +28,12 @@
 
 `define SPI_MASTER_VERSION_REG 8'h00
 `define SPI_MASTER_CONTROL_REG 8'h01
-`define TRANS_TYPE_REG 8'h02
-`define TRANS_CTRL_REG 8'h03
-`define TRANS_STS_REG 8'h04
-`define TRANS_ERROR_REG 8'h05
-`define DIRECT_ACCESS_DATA_REG 8'h06
-`define SD_ADDR_7_0_REG 8'h07
-`define SD_ADDR_15_8_REG 8'h08
-`define SD_ADDR_23_16_REG 8'h09
-`define SD_ADDR_31_24_REG 8'h0a
-`define SPI_CLK_DEL_REG 8'h0b
+`define TRANS_CTRL_REG 8'h02
+`define TRANS_ERROR_REG 8'h03
+`define DIRECT_ACCESS_DATA_REG 8'h04
+`define SD_ADDR_17_0_REG 8'h05
+`define SD_ADDR_31_18_REG 8'h06
+`define SPI_CLK_DEL_REG 8'h07
 
 
 //FifoAddresses

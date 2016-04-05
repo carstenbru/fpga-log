@@ -59,33 +59,33 @@ module spiMasterWishBoneBI (
 input clk;
 input rst;
 input [7:0] address;
-input [7:0] dataIn;
-output [7:0] dataOut;
+input [17:0] dataIn;
+output [17:0] dataOut;
 input strobe_i;
 output ack_o;
 input writeEn;
 output ctrlStsRegSel;
 output rxFifoSel;
 output txFifoSel;
-input [7:0] dataFromCtrlStsReg;
-input [7:0] dataFromRxFifo;
-input [7:0] dataFromTxFifo;
+input [17:0] dataFromCtrlStsReg;
+input [17:0] dataFromRxFifo;
+input [17:0] dataFromTxFifo;
 
 
 wire clk;
 wire rst;
 wire [7:0] address;
-wire [7:0] dataIn;
-reg [7:0] dataOut;
+wire [17:0] dataIn;
+reg [17:0] dataOut;
 wire writeEn;
 wire strobe_i;
 reg ack_o;
 reg ctrlStsRegSel;
 reg rxFifoSel;
 reg txFifoSel;
-wire [7:0] dataFromCtrlStsReg;
-wire [7:0] dataFromRxFifo;
-wire [7:0] dataFromTxFifo;
+wire [17:0] dataFromCtrlStsReg;
+wire [17:0] dataFromRxFifo;
+wire [17:0] dataFromTxFifo;
 
 //internal wires and regs
 reg ack_delayed;
@@ -114,9 +114,12 @@ begin
       dataOut <= dataFromTxFifo;
     end
     default: 
-      dataOut <= 8'h00;
+      dataOut <= 18'd0;
   endcase
 end
+
+
+//TODO remove from here on!!
 
 //delayed ack
 always @(posedge clk) begin

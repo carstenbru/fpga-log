@@ -41,14 +41,14 @@ module spmc_sd_card(
     reg_read <= select & !wr_peri;
   end
   
-  wire [7:0] sd_dat_out;
+  wire [17:0] sd_dat_out;
   
   wire wishbone_ack;
-  reg [7:0] sd_dat_out_last;
+  reg [17:0] sd_dat_out_last;
   
-  wire [7:0] sd_dat_out_spmc;
+  wire [17:0] sd_dat_out_spmc;
   assign sd_dat_out_spmc = wishbone_ack ? sd_dat_out : sd_dat_out_last;
-  assign di_peri = reg_read ? {10'b0, sd_dat_out_spmc} : 18'b0;
+  assign di_peri = reg_read ? sd_dat_out_spmc : 18'b0;
   
   always @(posedge clk_peri) begin
     sd_dat_out_last <= sd_dat_out;
@@ -58,7 +58,7 @@ module spmc_sd_card(
     .clk_i(clk_peri),
     .rst_i(reset),
     .address_i(addr_peri[5:0]),
-    .data_i(do_peri[7:0]),
+    .data_i(do_peri[17:0]),
     .data_o(sd_dat_out),
     .strobe_i(select),
     .we_i(wr_peri),
