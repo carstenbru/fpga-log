@@ -23,7 +23,8 @@ typedef enum {
 #define TRANS_START 1
 #define TRANS_STATUS (1 << 3)
 
-#define FIFO_FORCE_EMPTY 1
+#define FIFO_WR_FORCE_EMPTY (1 << 3)
+#define FIFO_RD_FORCE_EMPTY (1 << 4)
 
 /**
  * @brief enumeration of the different sdcard error codes
@@ -71,5 +72,9 @@ typedef struct {
 
 	volatile unsigned int tx_fifo_control;
 } sdcard_regs_t;
+
+typedef struct {
+	volatile unsigned int bytes[512];
+} sdcard_dma_t;
 
 #endif

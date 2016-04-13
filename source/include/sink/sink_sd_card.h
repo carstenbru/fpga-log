@@ -53,6 +53,7 @@ typedef struct {
 	unsigned int write_file_dest; /**< indicator for write_byte function which file should be used */
 
 	sdcard_regs_t* sd_card_regs; /**< pointer to SD-card hardware registers */
+	sdcard_dma_t* sd_card_dma; /**< pointer to SD-card hardware DMA */
 	unsigned char sdhc_card;
 } sink_sd_card_t;
 
@@ -64,12 +65,13 @@ typedef struct {
  * @param	sink_sd_card						pointer to the sd card sink
  * @param	formatter								pointer to a output log formatter
  * @param	sd_card							 		pounter to the SD-card peripheral
+ * @param	sd_card_dma							 		pounter to the SD-card DMA
  * @param sync_interval_packages	amount of packages until f_sync should be called
  * @param file										the file where the data should be stored
  */
 void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
-		sdcard_regs_t* const sd_card, unsigned int sync_interval_packages,
-		sd_file_t* file, int id);
+		sdcard_regs_t* const sd_card, sdcard_dma_t* const sd_card_dma,
+		unsigned int sync_interval_packages, sd_file_t* file, int id);
 
 /**
  * @brief connects the error output port of a sd card to a given destination

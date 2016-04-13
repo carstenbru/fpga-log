@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<peripheral xmlns="soc-library" xmlns:xi="http://www.w3.org/2001/XInclude" document-type="soc-peripheral-1.0">
+<peripheral xmlns="soc-library" xmlns:xi="http://www.w3.org/2001/XInclude" document-type="soc-dmadevice-1.0">
   <header category="MassStorage" label="SD-Card controller" name="sdcard">
     <description>The SD-Card controller can be used to interface sd cards. 
 		It supports card initialization and block read/write on hardware.</description>
@@ -17,6 +17,7 @@
   </parameters>
   
   <xi:include href="../defaults/peripheral.xml" />
+  <xi:include href="../defaults/dma.xml"/>
   <ports group="SD card">
     <port name="sd_miso" descr="%Insert port description here%" direction="input" />
     <port name="sd_mosi" descr="%Insert port description here%" direction="output" />
@@ -26,7 +27,7 @@
   <ports group="timestamp_dummy">
     <port name="ts_dummy" descr="%Insert port description here%" direction="output" />
   </ports>
-  
+    
   <registers>
     <register access="read" name="VERSION" offset="0">
       <description>%Insert register description here%</description>
@@ -140,5 +141,6 @@
       <description>%Insert register description here%</description>
     </register>
   </registers>
+  <memory instance="DMARAM%02d" size="1024"/>
 </peripheral>
 

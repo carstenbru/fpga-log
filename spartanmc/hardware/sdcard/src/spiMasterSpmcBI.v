@@ -1,18 +1,19 @@
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
-//// ctrlStsRegBI.v                                               ////
+//// spiMasterSpmcBI.v                                            ////
 ////                                                              ////
 //// This file is part of the spiMaster opencores effort.
 //// <http://www.opencores.org/cores//>                           ////
 ////                                                              ////
 //// Module Description:                                          ////
-//// Wishbone bus interface to spiMaster control and status regs
+//// SpartanMC bus interface to spiMaster control and status regs ////
 ////                                                              ////
 //// To Do:                                                       ////
 //// 
 ////                                                              ////
 //// Author(s):                                                   ////
 //// - Steve Fielding, sfielding@base2designs.com                 ////
+//// - changed by Carsten Bruns, bruns@lichttechnik.tu-darmstadt.de //
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
@@ -44,39 +45,40 @@
 `include "timescale.v"
 `include "spiMaster_defines.v"
 
-module ctrlStsRegBI (
+module spiMasterSpmcBI (
   busClk, 
   rstFromWire, 
   dataIn, 
   dataOut, 
   address, 
   writeEn, 
-  strobe_i, 
+  select, 
   spiSysClk,
   spiTransType, 
   spiTransCtrl, 
   spiTransStatus,
   spiDirectAccessTxData,
   spiDirectAccessRxData, 
-  ctrlStsRegSel, 
   rstSyncToBusClkOut, 
   rstSyncToSpiClkOut,
   SDWriteError,
   SDReadError,
   SDInitError,
   SDAddr,
-  spiClkDelay
+  spiClkDelay,
+  
+  forceEmptyWrSyncToSpiClk,
+  forceEmptyRdSyncToSpiClk
 );
 parameter SDCARD_CLOCK = 16000000;
 
 input [17:0] dataIn;
 input [7:0] address;
 input writeEn;
-input strobe_i;
+input select;
 input busClk;
 input spiSysClk;
 output [17:0] dataOut;
-input ctrlStsRegSel;
 output [1:0] spiTransType;
 output spiTransCtrl;
 input spiTransStatus;
@@ -94,15 +96,17 @@ reg [31:0] SDAddr;
 output [7:0] spiClkDelay;
 reg [7:0] spiClkDelay;
 
+output forceEmptyWrSyncToSpiClk;
+output forceEmptyRdSyncToSpiClk;
+
 wire [17:0] dataIn;
 wire [7:0] address;
 wire writeEn;
-wire strobe_i;
+wire select;
 wire clk;
 reg [17:0] dataOut;
 reg [1:0] spiTransType;
 reg spiTransCtrl;
-wire ctrlStsRegSel;
 wire rstFromWire;
 reg rstSyncToBusClkOut;
 reg rstSyncToSpiClkOut;
@@ -127,6 +131,16 @@ reg spiTransCtrl_reg1;
 reg spiTransCtrl_reg2;
 reg spiTransCtrl_reg3;
 
+//fifo empty signals
+reg forceEmptyWrReg;
+reg forceEmptyWr;
+reg forceEmptyWrToggle;
+reg [2:0] forceEmptyWrToggleSyncToSpiClk;
+reg forceEmptyRdReg;
+reg forceEmptyRd;
+reg forceEmptyRdToggle;
+reg [2:0] forceEmptyRdToggleSyncToSpiClk;
+
 //sync write demux
 always @(posedge busClk)
 begin
@@ -137,15 +151,23 @@ begin
     spiClkDelay <= `FAST_SPI_CLK;
   end
   else begin
-    if (writeEn == 1'b1 && ctrlStsRegSel == 1'b1 && strobe_i == 1'b1 && address == `SPI_MASTER_CONTROL_REG && dataIn[0] == 1'b1 )
+    if (writeEn == 1'b1 && select == 1'b1 && address == `SPI_MASTER_CONTROL_REG && dataIn[0] == 1'b1 )
       rstFromBus <= 1'b1;
     else
       rstFromBus <= 1'b0;
-    if (writeEn == 1'b1 && ctrlStsRegSel == 1'b1 && strobe_i == 1'b1 && address == `TRANS_CTRL_REG && dataIn[0] == 1'b1 )
+    if (writeEn == 1'b1 && select == 1'b1 && address == `TRANS_CTRL_REG && dataIn[0] == 1'b1 )
       spiTransCtrlSTB <= 1'b1;
     else
       spiTransCtrlSTB <= 1'b0;
-    if (writeEn == 1'b1 && ctrlStsRegSel == 1'b1 && strobe_i == 1'b1) begin
+    if (writeEn == 1'b1 && select == 1'b1 && address == `TRANS_CTRL_REG && dataIn[3] == 1'b1 )
+      forceEmptyWr <= 1'b1;
+    else
+      forceEmptyWr <= 1'b0;
+    if (writeEn == 1'b1 && select == 1'b1 && address == `TRANS_CTRL_REG && dataIn[4] == 1'b1 )
+      forceEmptyRd <= 1'b1;
+    else
+      forceEmptyRd <= 1'b0;
+    if (writeEn == 1'b1 && select == 1'b1) begin
       case (address)
         `TRANS_CTRL_REG: spiTransTypeSTB <= dataIn[2:1];
         `SD_ADDR_17_0_REG: SDAddr[17:0] <= dataIn[17:0];
@@ -260,6 +282,50 @@ always @(posedge busClk) begin
   SDReadErrorSTB <= SDReadError;
   SDInitErrorSTB <= SDInitError;
 end
+
+//detect rising edge of 'forceEmptyWr', and generate toggle signal
+always @(posedge busClk) begin
+  if (rstSyncToBusClkOut == 1'b1) begin
+    forceEmptyWrReg <= 1'b0;
+    forceEmptyWrToggle <= 1'b0;
+  end
+  else begin
+    if (forceEmptyWr == 1'b1)
+      forceEmptyWrReg <= 1'b1;
+    else
+      forceEmptyWrReg <= 1'b0;
+    if (forceEmptyWr == 1'b1 && forceEmptyWrReg == 1'b0)
+      forceEmptyWrToggle <= ~forceEmptyWrToggle;
+  end
+end
+
+// double sync across clock domains to generate 'forceEmptyWrSyncToSpiClk'
+always @(posedge spiSysClk) begin
+    forceEmptyWrToggleSyncToSpiClk <= {forceEmptyWrToggleSyncToSpiClk[1:0], forceEmptyWrToggle};
+end
+assign forceEmptyWrSyncToSpiClk = forceEmptyWrToggleSyncToSpiClk[2] ^ forceEmptyWrToggleSyncToSpiClk[1];
+
+//detect rising edge of 'forceEmpty', and generate toggle signal
+always @(posedge busClk) begin
+  if (rstSyncToBusClkOut == 1'b1) begin
+    forceEmptyRdReg <= 1'b0;
+    forceEmptyRdToggle <= 1'b0;
+  end
+  else begin
+    if (forceEmptyRd == 1'b1)
+      forceEmptyRdReg <= 1'b1;
+    else
+      forceEmptyRdReg <= 1'b0;
+    if (forceEmptyRd == 1'b1 && forceEmptyRdReg == 1'b0)
+      forceEmptyRdToggle <= ~forceEmptyRdToggle;
+  end
+end
+
+// double sync across clock domains to generate 'forceEmptySyncToSpiClk'
+always @(posedge spiSysClk) begin
+    forceEmptyRdToggleSyncToSpiClk <= {forceEmptyRdToggleSyncToSpiClk[1:0], forceEmptyRdToggle};
+end
+assign forceEmptyRdSyncToSpiClk = forceEmptyRdToggleSyncToSpiClk[2] ^ forceEmptyRdToggleSyncToSpiClk[1];
 
 endmodule
 

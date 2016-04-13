@@ -10,6 +10,14 @@ module spmc_sd_card(
         //*** Connections to SpartanMC Core which can be changed ***
         input wire              reset,          //Reset-Signal (could be external)
 
+        // BlockRAM interface
+        input                   mem_clk,        //BRAM clk
+        input                   mem_access,
+        input                   store_access,
+        input                   store_access_low,
+	input                   store_access_high,
+        input            [7:0]  addr_high,
+
         //*** io interface ***
         input wire sd_miso,
         output wire sd_mosi,
@@ -20,9 +28,12 @@ module spmc_sd_card(
 );
 
   parameter BASE_ADR = 10'h0;
+  parameter DMA_BASE_ADR = 18'h19c00;     //1024 addresses below IO ports
   parameter CLOCK_FREQUENCY = 16000000;
   
   assign ts_dummy = 1'b1;
+  
+  wire [17:0] di_peri_dma;
 
   wire select;
   // Address decoder generates the select sinal out of the upper part of the peripheral address.
@@ -43,12 +54,11 @@ module spmc_sd_card(
   
   wire [17:0] sd_dat_out;
   
-  wire wishbone_ack;
   reg [17:0] sd_dat_out_last;
   
   wire [17:0] sd_dat_out_spmc;
-  assign sd_dat_out_spmc = wishbone_ack ? sd_dat_out : sd_dat_out_last;
-  assign di_peri = reg_read ? sd_dat_out_spmc : 18'b0;
+  assign sd_dat_out_spmc = sd_dat_out_last;
+  assign di_peri = (reg_read ? sd_dat_out_spmc : 18'b0) | di_peri_dma;
   
   always @(posedge clk_peri) begin
     sd_dat_out_last <= sd_dat_out;
@@ -60,10 +70,9 @@ module spmc_sd_card(
     .address_i(addr_peri[5:0]),
     .data_i(do_peri[17:0]),
     .data_o(sd_dat_out),
-    .strobe_i(select),
+    .select(select),
     .we_i(wr_peri),
-    .ack_o(wishbone_ack),
-
+    
     // SPI logic clock
     .spiSysClk(clk_peri),
 
@@ -71,11 +80,20 @@ module spmc_sd_card(
     .spiClkOut(sd_clk),
     .spiDataIn(sd_miso),
     .spiDataOut(sd_mosi),
-    .spiCS_n(sd_cs)
+    .spiCS_n(sd_cs),
+    
+    .do_peri(do_peri),
+    .di_peri(di_peri_dma),
+    .addr_peri(addr_peri),
+    .mem_clk(mem_clk),
+    .mem_access(mem_access),
+    .store_access(store_access | store_access_low),
+    .addr_high(addr_high)
   );
   
   defparam sdcard.SDCARD_CLOCK = CLOCK_FREQUENCY;
   defparam sdcard.u_readWriteSDBlock.SDCARD_CLOCK = CLOCK_FREQUENCY;
   defparam sdcard.u_ctrlStsRegBI.SDCARD_CLOCK = CLOCK_FREQUENCY;
+  defparam sdcard.DMA_ADR = DMA_BASE_ADR;
   
 endmodule

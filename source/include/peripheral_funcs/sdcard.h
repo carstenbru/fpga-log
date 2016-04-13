@@ -26,7 +26,8 @@ int sdcard_init(sdcard_regs_t* const sdcard);
  * @param block		pointer to the data block in memory
  * @return	WRITE_NO_ERROR on success, otherwise error code
  */
-int sdcard_block_write(sdcard_regs_t* const sdcard, unsigned long address, const unsigned char* block);
+//int sdcard_block_write(sdcard_regs_t* const sdcard, unsigned long address, const unsigned char* block);
+int sdcard_block_write(sdcard_regs_t* const sdcard, sdcard_dma_t* const sdcard_dma, unsigned long address, const unsigned char* block);
 
 /**
  * reads a block (512 bytes) from the sdcard
@@ -36,6 +37,6 @@ int sdcard_block_write(sdcard_regs_t* const sdcard, unsigned long address, const
  * @param block		pointer to the data destination in memory
  * @return	READ_NO_ERROR on success, otherwise error code
  */
-int sdcard_block_read(sdcard_regs_t* const sdcard, unsigned long address, unsigned char* block);
+int sdcard_block_read(sdcard_regs_t* const sdcard, sdcard_dma_t* sdcard_dma, unsigned long address, unsigned char* block);
 
 #endif

@@ -129,40 +129,32 @@ static void sdcard_set_address(sdcard_regs_t* const sdcard,
 	sdcard->sd_addr_31_18 = (unsigned int) (address >> 18);
 }
 
-int sdcard_block_write(sdcard_regs_t* const sdcard, unsigned long address,
+int sdcard_block_write(sdcard_regs_t* const sdcard, sdcard_dma_t* sdcard_dma, unsigned long address,
 		const unsigned char* block) {
 	int i;
 	for (i = 0; i < SD_BLOCK_SIZE; i++) {  //write data to peripheral fifo
-		sdcard->tx_fifo_data = *block++;
+		sdcard_dma->bytes[i] = *block++;
 	}
 	sdcard_set_address(sdcard, address);
-	sdcard->trans_ctrl = TRANS_TYPE_RW_WRITE_SD_BLOCK | TRANS_START;
+	sdcard->trans_ctrl = TRANS_TYPE_RW_WRITE_SD_BLOCK | TRANS_START | FIFO_WR_FORCE_EMPTY | FIFO_RD_FORCE_EMPTY;
 
 	sdcard_busy_wait(sdcard);
 	return sdcard->trans_error;
 }
 
-int sdcard_block_read(sdcard_regs_t* const sdcard, unsigned long address,
+int sdcard_block_read(sdcard_regs_t* const sdcard, sdcard_dma_t* sdcard_dma, unsigned long address,
 		unsigned char* block) {
 	sdcard_set_address(sdcard, address);
-	sdcard->trans_ctrl = TRANS_TYPE_RW_READ_SD_BLOCK | TRANS_START;
+	sdcard->trans_ctrl = TRANS_TYPE_RW_READ_SD_BLOCK | TRANS_START | FIFO_WR_FORCE_EMPTY | FIFO_RD_FORCE_EMPTY;
 
 	sdcard_busy_wait(sdcard);
 	if (sdcard->trans_error != SD_NO_ERROR)
 		return (sdcard->trans_error);
 
-	/*
-	 * dummy read:
-	 * Since sdcard peripheral was originally designed for a wishbone bus which supports delays by the peripheral
-	 * (and SpartanMCs bus does not), the fifo has a delay of one clock cycle.
-	 * So the read data is always the last value and not the real one.
-	 */
-	*block = sdcard->rx_fifo_data;
 	int i;
 	for (i = 0; i < SD_BLOCK_SIZE; i++) {  //read data from peripheral fifo
-		*block++ = sdcard->rx_fifo_data;
+		*block++ = sdcard_dma->bytes[i];
 	}
-	sdcard->rx_fifo_control = FIFO_FORCE_EMPTY;
 
 	return SD_NO_ERROR;
 }

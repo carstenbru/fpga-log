@@ -46,63 +46,63 @@
 //
 `include "timescale.v"
 
-module sm_fifoRTL(wrClk, rdClk, rstSyncToWrClk, rstSyncToRdClk, dataIn, 
-  dataOut, fifoWEn, fifoREn, fifoFull, fifoEmpty,
-  forceEmptySyncToWrClk, forceEmptySyncToRdClk, numElementsInFifo);
+module sm_fifoDMA(fifoClk, reset, dataIn, 
+  dataOut, fifoWEn, fifoREn,
+  forceEmptyWr, forceEmptyRd,
+  do_peri, di_peri, addr_peri, mem_clk, mem_access, store_access, addr_high);
 //FIFO_DEPTH = ADDR_WIDTH^2. Min = 2, Max = 66536
-  parameter FIFO_WIDTH = 8;
   parameter FIFO_DEPTH = 64; 
   parameter ADDR_WIDTH = 6;   
+  
+  parameter DMA_ADR = 18'h19c00;     //1024 addresses below IO ports
+  
+  parameter FIFO_WIDTH = 8;
 
-// Two clock domains within this module
-// These ports are within 'wrClk' domain
-input wrClk;
-input rstSyncToWrClk;
+// Two clock domains within this module, DMA and fifo clocks
+input fifoClk;
+input reset;
 input [FIFO_WIDTH-1:0] dataIn;
 input fifoWEn;
-input forceEmptySyncToWrClk;
-output fifoFull;
+input forceEmptyWr;
 
-// These ports are within 'rdClk' domain
-input rdClk;
-input rstSyncToRdClk;
 output [FIFO_WIDTH-1:0] dataOut;
 input fifoREn;
-input forceEmptySyncToRdClk;
-output fifoEmpty;
-output [15:0]numElementsInFifo; //note that this implies a max fifo depth of 65536
+input forceEmptyRd;
 
-wire wrClk;
-wire rdClk;
-wire rstSyncToWrClk;
-wire rstSyncToRdClk;
+//*** Connections to SpartanMC Core (do not change) ***
+
+input           [17:0]  do_peri;        //Data Bus  from MC
+output          [17:0]  di_peri;        //Data Bus  to MC
+input           [9:0]   addr_peri;      //Address Bus from MC
+
+// BlockRAM interface
+input                   mem_clk;        //BRAM clk
+input                   mem_access;
+input                   store_access;
+input            [7:0]  addr_high;
+
+
+wire fifoClk;
+wire reset;
 wire [FIFO_WIDTH-1:0] dataIn;
 reg [FIFO_WIDTH-1:0] dataOut;
 wire fifoWEn;
 wire fifoREn;
-reg fifoFull;
-reg fifoEmpty;
 wire forceEmpty;
 reg  [15:0]numElementsInFifo;
 
 
 // local registers
 reg  [ADDR_WIDTH:0]bufferInIndex; 
-reg  [ADDR_WIDTH:0]bufferInIndexSyncToRdClk;
 reg  [ADDR_WIDTH:0]bufferOutIndex;
-reg  [ADDR_WIDTH:0]bufferOutIndexSyncToWrClk;
-reg  [ADDR_WIDTH-1:0]bufferInIndexToMem;
-reg  [ADDR_WIDTH-1:0]bufferOutIndexToMem;
-reg  [ADDR_WIDTH:0]bufferCnt;
+reg  [ADDR_WIDTH-1:0]bufferIndexToMem;
 reg  fifoREnDelayed;
 wire [FIFO_WIDTH-1:0] dataFromMem;
 
-always @(posedge wrClk)
+always @(posedge fifoClk)
 begin
-  bufferOutIndexSyncToWrClk <= bufferOutIndex;
-  if (rstSyncToWrClk == 1'b1 || forceEmptySyncToWrClk == 1'b1)
+  if (reset == 1'b1 || forceEmptyWr == 1'b1)
   begin
-    fifoFull <= 1'b0;
     bufferInIndex <= 0;
   end
     else
@@ -110,24 +110,14 @@ begin
       if (fifoWEn == 1'b1) begin
         bufferInIndex <= bufferInIndex + 1'b1;
       end 
-      if ((bufferOutIndexSyncToWrClk[ADDR_WIDTH-1:0] == bufferInIndex[ADDR_WIDTH-1:0]) &&
-          (bufferOutIndexSyncToWrClk[ADDR_WIDTH] != bufferInIndex[ADDR_WIDTH]) )
-        fifoFull <= 1'b1;
-      else
-        fifoFull <= 1'b0;
     end
 end
 
-always @(bufferInIndexSyncToRdClk or bufferOutIndex) 
-  bufferCnt <= bufferInIndexSyncToRdClk - bufferOutIndex;
 
-always @(posedge rdClk)
+always @(posedge fifoClk)
 begin
-  numElementsInFifo <= { {16-ADDR_WIDTH-1{1'b0}}, bufferCnt }; //pad bufferCnt with leading zeroes
-  bufferInIndexSyncToRdClk <= bufferInIndex;
-  if (rstSyncToRdClk == 1'b1 || forceEmptySyncToRdClk == 1'b1)
+  if (reset == 1'b1 || forceEmptyRd == 1'b1)
   begin
-    fifoEmpty <= 1'b1;
     bufferOutIndex <= 0;
     fifoREnDelayed <= 1'b0;
   end
@@ -138,27 +128,52 @@ begin
         dataOut <= dataFromMem;
         bufferOutIndex <= bufferOutIndex + 1'b1;
       end
-      if (bufferInIndexSyncToRdClk == bufferOutIndex) 
-        fifoEmpty <= 1'b1;
-      else
-        fifoEmpty <= 1'b0;
     end
 end
 
 
-always @(bufferInIndex or bufferOutIndex) begin
-  bufferInIndexToMem <= bufferInIndex[ADDR_WIDTH-1:0];
-  bufferOutIndexToMem <= bufferOutIndex[ADDR_WIDTH-1:0];
+always @(bufferInIndex or bufferOutIndex or fifoWEn) begin
+  if (fifoWEn) begin
+    bufferIndexToMem <= bufferInIndex[ADDR_WIDTH-1:0];
+  end else begin
+    bufferIndexToMem <= bufferOutIndex[ADDR_WIDTH-1:0];
+  end
 end
+  
+wire            activ_dma0;
 
-sm_dpMem_dc #(FIFO_WIDTH, FIFO_DEPTH, ADDR_WIDTH)  u_sm_dpMem_dc (
-  .addrIn(bufferInIndexToMem),
-  .addrOut(bufferOutIndexToMem),
-  .wrClk(wrClk),
-  .rdClk(rdClk),
-  .dataIn(dataIn),
-  .writeEn(fifoWEn),
-  .readEn(fifoREn),
-  .dataOut(dataFromMem));
+pselect        #(
+                .ADDR_WIDTH     (8                         ),
+                .BASE_WIDTH     (8                         ),
+                .BASE_ADDR      (DMA_ADR >> 10      ) // using upper 8 bit of address
+                )
+        dmasel0 (
+                .addr           (addr_high[7:0]            ),
+                .activ_peri     (mem_access                ),
+                .select         (activ_dma0                )
+                );
+  
+RAMB16_S9_S9 fifo_mem (
+// Port A, access from SD card module
+                .DIA            (dataIn[7:0]                ),
+                .DIPA           (1'd0                       ),
+                .ADDRA          ({2'b0, bufferIndexToMem}   ),
+                .ENA            (1'b1                       ), 
+                .WEA            (fifoWEn                    ),
+                .SSRA           (1'b0                       ),   
+                .CLKA           (fifoClk                    ),
+                .DOA            (dataFromMem[7:0]           ),
+               // .DOPA           (dataFromMem[8]              ),
+// Port B, access from SpartanMC
+                .DIB            (do_peri[7:0]               ),
+                .DIPB           (do_peri[8]                 ),
+                .ADDRB          ({1'b0, addr_peri[9:0]}     ),
+                .ENB            (1'b1                       ),
+                .WEB            (store_access & activ_dma0  ),
+                .SSRB           (! activ_dma0               ),
+                .CLKB           (mem_clk                    ),
+                .DOB            (di_peri[7:0]               ),
+                .DOPB           (di_peri[8]                 )
+                );
 
 endmodule

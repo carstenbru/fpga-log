@@ -56,7 +56,7 @@ DRESULT disk_read(BYTE pdrv, BYTE* buff, DWORD sector, UINT count) {
 	int i;
 	for (i = 0; i < count; i++) {
 		DWORD sec_address = sink->sdhc_card ? sector : sector * SD_BLOCK_SIZE;
-		res |= sdcard_block_read(sink->sd_card_regs, sec_address, buff);
+		res |= sdcard_block_read(sink->sd_card_regs, sink->sd_card_dma, sec_address, buff);
 		buff += SD_BLOCK_SIZE;
 		sector++;
 	}
@@ -76,7 +76,8 @@ DRESULT disk_write(BYTE pdrv, const BYTE* buff, DWORD sector, UINT count) {
 	int i;
 	for (i = 0; i < count; i++) {
 		DWORD sec_address = sink->sdhc_card ? sector : sector * SD_BLOCK_SIZE;
-		res |= sdcard_block_write(sink->sd_card_regs, sec_address, buff);
+		res |= sdcard_block_write(sink->sd_card_regs, sink->sd_card_dma,
+				sec_address, buff);
 		buff += SD_BLOCK_SIZE;
 		sector++;
 	}

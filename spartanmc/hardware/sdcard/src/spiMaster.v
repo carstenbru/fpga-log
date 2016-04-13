@@ -16,6 +16,7 @@
 ////                                                              ////
 //// Author(s):                                                   ////
 //// - Steve Fielding, sfielding@base2designs.com                 ////
+//// - changed by Carsten Bruns, bruns@lichttechnik.tu-darmstadt.de //
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////
@@ -53,9 +54,8 @@ module spiMaster(
   address_i,
   data_i,
   data_o,
-  strobe_i,
+  select,
   we_i,
-  ack_o,
 
   // SPI logic clock
   spiSysClk,
@@ -64,19 +64,21 @@ module spiMaster(
   spiClkOut,
   spiDataIn,
   spiDataOut,
-  spiCS_n
+  spiCS_n,
+  
+  do_peri, di_peri, addr_peri, mem_clk, mem_access, store_access, addr_high
 );
 parameter SDCARD_CLOCK = 16000000;
+parameter DMA_ADR = 18'h19c00;     //1024 addresses below IO ports
 
-//Wishbone bus
+//SpartanMC bus
 input clk_i;
 input rst_i;
 input [7:0] address_i;
 input [17:0] data_i;
 output [17:0] data_o;
-input strobe_i;
+input select;
 input we_i;
-output ack_o;
 
 // SPI logic clock
 input spiSysClk;
@@ -86,6 +88,18 @@ output spiClkOut;
 input spiDataIn;
 output spiDataOut;
 output spiCS_n;
+
+//*** Connections to SpartanMC Core (do not change) ***
+
+        input           [17:0]  do_peri;        //Data Bus  from MC
+        output          [17:0]  di_peri;        //Data Bus  to MC
+        input           [9:0]   addr_peri;      //Address Bus from MC
+
+        // BlockRAM interface
+        input                   mem_clk;        //BRAM clk
+        input                   mem_access;
+        input                   store_access;
+        input            [7:0]  addr_high;
 
 // local wires and regs
 wire spiSysClk;
@@ -127,44 +141,27 @@ wire spiCS_nFromRWSDBlock;
 wire spiCS_nFromSpiCtrl;
 wire SDInitReq;
 
+//fifo wires
+wire forceEmptyRd;
+wire forceEmptyWr;
+
 
 assign spiCS_n = spiCS_nFromRWSDBlock & spiCS_nFromSpiCtrl;
 assign spiClkDelay = SDInitReq ? `SLOW_SPI_CLK : spiClkDelayFromCtrlStsReg;
 
 // -----------------------------------
-// Instance of Module: wishBoneBI
-// -----------------------------------
-spiMasterWishBoneBI u_spiMasterWishBoneBI(
-  .ack_o(               ack_o                 ),
-  .address(             address_i             ),
-  .clk(                 clk_i                 ),
-  .ctrlStsRegSel(       ctrlStsRegSel         ),
-  .dataFromCtrlStsReg(  dataFromCtrlStsReg    ),
-  .dataFromRxFifo(      dataFromRxFifo        ),
-  .dataFromTxFifo(      dataFromTxFifo        ),
-  .dataIn(              data_i                ),
-  .dataOut(             data_o                ),
-  .rst(                 rst_i                 ),
-  .rxFifoSel(           rxFifoSel             ),
-  .strobe_i(            strobe_i              ),
-  .txFifoSel(           txFifoSel             ),
-  .writeEn(             we_i                  )
-	);
-
-// -----------------------------------
 // Instance of Module: ctrlStsRegBI
 // -----------------------------------
-ctrlStsRegBI u_ctrlStsRegBI(
+spiMasterSpmcBI u_spiMasterSpmcBI(
   .busClk(              clk_i                 ),
   .spiSysClk(           spiSysClk             ),
   .rstSyncToBusClkOut(  rstSyncToBusClk       ),
   .rstSyncToSpiClkOut(  rstSyncToSpiClk       ),
   .rstFromWire(         rst_i                 ),
   .address(             address_i             ),
-  .strobe_i(            strobe_i              ),
+  .select(              select                ),
   .dataIn(              data_i                ),
-  .dataOut(             dataFromCtrlStsReg    ),
-  .ctrlStsRegSel(       ctrlStsRegSel         ),
+  .dataOut(             data_o                ),
   .spiTransType(        spiTransType          ),
   .spiTransCtrl(        spiTransCtrl          ), 
   .spiTransStatus(      spiTransSts           ),
@@ -175,7 +172,10 @@ ctrlStsRegBI u_ctrlStsRegBI(
   .SDReadError(         SDReadError           ),
   .SDInitError(         `INIT_NO_ERROR        ),
   .SDAddr(              SDAddr                ),
-  .spiClkDelay(         spiClkDelayFromCtrlStsReg)
+  .spiClkDelay(         spiClkDelayFromCtrlStsReg),
+  
+  .forceEmptyWrSyncToSpiClk(forceEmptyWr), 
+  .forceEmptyRdSyncToSpiClk(forceEmptyRd)
 	);
 
 // -----------------------------------
@@ -299,36 +299,24 @@ readWriteSPIWireData u_readWriteSPIWireData(
   .txDataEmpty(         txDataEmptyFromRWSPIWireData)
 	);
 
-sm_TxFifo #(`TX_FIFO_DEPTH, `TX_FIFO_ADDR_WIDTH) u_sm_txFifo (
-  .spiSysClk(spiSysClk), 
-  .busClk(clk_i), 
-  .rstSyncToBusClk(rstSyncToBusClk), 
-  .rstSyncToSpiClk(rstSyncToSpiClk), 
-  .fifoREn(txFifoRE), 
-  .fifoEmpty(hostTxFifoEmpty),
-  .busAddress(address_i[2:0]), 
-  .busWriteEn(we_i), 
-  .busStrobe_i(strobe_i),
-  .busFifoSelect(txFifoSel),
-  .busDataIn(data_i), 
-  .busDataOut(dataFromTxFifo),
-  .fifoDataOut(txFifoDataOut) );
-
-
-sm_RxFifo #(`RX_FIFO_DEPTH, `RX_FIFO_ADDR_WIDTH) u_sm_rxFifo(
-  .spiSysClk(spiSysClk), 
-  .busClk(clk_i),
-  .rstSyncToBusClk(rstSyncToBusClk), 
-  .rstSyncToSpiClk(rstSyncToSpiClk), 
+sm_fifoDMA #(`FIFO_DEPTH, `FIFO_ADDR_WIDTH, DMA_ADR) u_sm_fifo(
+  .fifoClk(spiSysClk), 
+  .reset(rstSyncToSpiClk), 
+  .dataIn(rxFifoDataIn), 
+  .dataOut(txFifoDataOut), 
   .fifoWEn(rRxFifoWE), 
-  .fifoFull(hostRxFifoFull),
-  .busAddress(address_i[2:0]), 
-  .busWriteEn(we_i), 
-  .busStrobe_i(strobe_i),
-  .busFifoSelect(rxFifoSel),
-  .busDataIn(data_i), 
-  .busDataOut(dataFromRxFifo),
-  .fifoDataIn(rxFifoDataIn)  );
+  .fifoREn(txFifoRE), 
+  .forceEmptyWr(forceEmptyWr), 
+  .forceEmptyRd(forceEmptyRd), 
+  
+  .do_peri(do_peri),
+  .di_peri(di_peri),
+  .addr_peri(addr_peri),
+  .mem_clk(mem_clk),
+  .mem_access(mem_access),
+  .store_access(store_access),
+  .addr_high(addr_high)
+  );
 
 endmodule
 

@@ -86,8 +86,8 @@ static void sink_sd_card_check_return_code(sink_sd_card_t* const sink,
 void sink_sd_card_open_file(sink_sd_card_t* const sink_sd_card, sd_file_t* file);
 
 void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
-		sdcard_regs_t* const sd_card, unsigned int sync_interval_packages,
-		sd_file_t* file, int id) {
+		sdcard_regs_t* const sd_card, sdcard_dma_t* const sd_card_dma,
+		unsigned int sync_interval_packages, sd_file_t* file, int id) {
 	datastream_source_init(&sink_sd_card->super, id);  //call parents init function
 	/*
 	 * set method pointer(s) of super-"class" to sub-class function(s)
@@ -121,6 +121,7 @@ void sink_sd_card_init(sink_sd_card_t* const sink_sd_card,
 	pdrv_resolve[used_volumes++] = sink_sd_card;
 
 	sink_sd_card->sd_card_regs = sd_card;
+	sink_sd_card->sd_card_dma = sd_card_dma;
 
 	_formatter_set_write_dest(file->formatter, sink_sd_write_byte, sink_sd_card);
 
@@ -271,7 +272,7 @@ static void sink_sd_card_send_data(void* const _sink_sd_card,
 		sink->error_out->new_data(sink->error_out->parent, &package);
 	}
 
-	if (sink->sd_error_code != SD_NO_ERROR) {	//TODO
+	if (sink->sd_error_code != SD_NO_ERROR) {  //TODO
 		int i;
 		for (i = 0; i < 3; i++) {  //check for init,read and write errors (see hardware specification)
 			byte = (sink->sd_error_code >> (i * 2)) & 3;
