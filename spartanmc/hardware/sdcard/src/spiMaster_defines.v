@@ -19,21 +19,14 @@
 //`define SPI_SYS_CLK_30MHZ
 `define SPI_SYS_CLK_16MHZ
 
-//memoryMap
-`define CTRL_STS_REG_BASE 8'h00
-`define RX_FIFO_BASE 8'h10
-`define TX_FIFO_BASE 8'h20
-
-`define ADDRESS_DECODE_MASK 8'hf0
-
-`define SPI_MASTER_VERSION_REG 8'h00
-`define SPI_MASTER_CONTROL_REG 8'h01
-`define TRANS_CTRL_REG 8'h02
-`define TRANS_ERROR_REG 8'h03
-`define DIRECT_ACCESS_DATA_REG 8'h04
-`define SD_ADDR_17_0_REG 8'h05
-`define SD_ADDR_31_18_REG 8'h06
-`define SPI_CLK_DEL_REG 8'h07
+`define SPI_MASTER_VERSION_REG 3'd0
+`define SPI_MASTER_CONTROL_REG 3'd1
+`define TRANS_CTRL_REG 3'd2
+`define TRANS_ERROR_REG 3'd3
+`define DIRECT_ACCESS_DATA_REG 3'd4
+`define SD_ADDR_17_0_REG 3'd5
+`define SD_ADDR_31_18_REG 3'd6
+`define SPI_CLK_DEL_REG 3'd7
 
 
 //FifoAddresses

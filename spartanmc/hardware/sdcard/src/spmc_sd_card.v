@@ -38,13 +38,13 @@ module spmc_sd_card(
   wire select;
   // Address decoder generates the select sinal out of the upper part of the peripheral address.
   pselect iCSL (
-                .addr           (       addr_peri[9:6]  ),
+                .addr           (       addr_peri[9:3]  ),
                 .activ_peri     (       access_peri     ),
                 .select         (       select          )
                 );
-  defparam iCSL.ADDR_WIDTH  = 4;
-  defparam iCSL.BASE_WIDTH  = 4;
-  defparam iCSL.BASE_ADDR   = BASE_ADR >> 6;      //BASE_ADR has to be divisible by 64
+  defparam iCSL.ADDR_WIDTH  = 7;
+  defparam iCSL.BASE_WIDTH  = 7;
+  defparam iCSL.BASE_ADDR   = BASE_ADR >> 3;      //BASE_ADR has to be divisible by 8
 
   //delay read signal by one cycle (for new pipeline), data is already generated in this cycle by sdcard module
   reg reg_read;
@@ -67,7 +67,7 @@ module spmc_sd_card(
   spiMaster sdcard(
     .clk_i(clk_peri),
     .rst_i(reset),
-    .address_i(addr_peri[5:0]),
+    .address_i(addr_peri[2:0]),
     .data_i(do_peri[17:0]),
     .data_o(sd_dat_out),
     .select(select),

@@ -73,7 +73,7 @@ module spiMasterSpmcBI (
 parameter SDCARD_CLOCK = 16000000;
 
 input [17:0] dataIn;
-input [7:0] address;
+input [2:0] address;
 input writeEn;
 input select;
 input busClk;
@@ -100,7 +100,7 @@ output forceEmptyWrSyncToSpiClk;
 output forceEmptyRdSyncToSpiClk;
 
 wire [17:0] dataIn;
-wire [7:0] address;
+wire [2:0] address;
 wire writeEn;
 wire select;
 wire clk;

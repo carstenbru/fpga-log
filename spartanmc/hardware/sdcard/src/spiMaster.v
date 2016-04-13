@@ -74,7 +74,7 @@ parameter DMA_ADR = 18'h19c00;     //1024 addresses below IO ports
 //SpartanMC bus
 input clk_i;
 input rst_i;
-input [7:0] address_i;
+input [2:0] address_i;
 input [17:0] data_i;
 output [17:0] data_o;
 input select;

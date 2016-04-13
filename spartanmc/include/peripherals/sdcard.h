@@ -45,32 +45,13 @@ typedef enum {
 
 typedef struct {
 	volatile unsigned int version;
-	volatile unsigned int control;
+	volatile unsigned int control_reg;
 	volatile unsigned int trans_ctrl;
 	volatile unsigned int trans_error;
 	volatile unsigned int direct_acces_data;
 	volatile unsigned int sd_addr_17_0;
 	volatile unsigned int sd_addr_31_18;
 	volatile unsigned int spi_clk_del;
-
-	volatile unsigned int gap0[4];
-	volatile unsigned int gap1[4]; /* gap fields only used to get right address mapping of hardware registers */
-
-	volatile unsigned int rx_fifo_data;
-
-	volatile unsigned int gap2;
-
-	volatile unsigned int rx_fifo_data_count_msb;
-	volatile unsigned int rx_fifo_data_count_lsb;
-	volatile unsigned int rx_fifo_control;
-
-	volatile unsigned int gap3[11];
-
-	volatile unsigned int tx_fifo_data;
-
-	volatile unsigned int gap4[3];
-
-	volatile unsigned int tx_fifo_control;
 } sdcard_regs_t;
 
 typedef struct {
