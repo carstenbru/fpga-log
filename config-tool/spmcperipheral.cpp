@@ -13,6 +13,7 @@ std::map<std::string, std::string> SpmcPeripheral::peripheralXMLs;
 SpmcPeripheral::SpmcPeripheral(string name, DataType *type, CObject* parentObject, DataLogger* dataLogger) :
     name(name),
     dataLogger(dataLogger),
+    hasDMAmemory(false),
     dataType(type),
     parentObject(parentObject)
 {
@@ -263,6 +264,8 @@ void SpmcPeripheral::readPortsElement(QXmlStreamReader& reader, std::string dire
 }
 
 void SpmcPeripheral::readPeripheralXML() {
+    hasDMAmemory = false;
+
     QFile file(QString(getFileName().c_str()));
     if (!file.open(QIODevice::ReadOnly)) {
         cerr << "unable to open peripheral module xml file: " << dataType->getName() << endl;
@@ -278,6 +281,8 @@ void SpmcPeripheral::readPeripheralXML() {
         } else if (reader.name().compare("ports") == 0) {
             string diretion = reader.attributes().value("direction").toString().toStdString();
             readPortsElement(reader, diretion);
+        } else if (reader.name().compare("memory") == 0) {
+            hasDMAmemory = true;
         } else
             reader.skipCurrentElement();
     }

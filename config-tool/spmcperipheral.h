@@ -63,6 +63,7 @@ public:
     std::string getParentName();
     CObject* getParentObject() { return parentObject; }
     DataType* getDataType() { return dataType; }
+    bool hasDMA() {return hasDMAmemory; }
 
     static void loadPeripheralXMLs();
 
@@ -80,6 +81,7 @@ private:
 
     std::string name;
     DataLogger* dataLogger;
+    bool hasDMAmemory;
 
     DataType* dataType;
     std::list<CParameter*> parameters;

@@ -183,7 +183,7 @@ TARGET_NODE
                 </node>
                 <node id="PROGRAM_RAM">
                     <attribute id="mem_auto" xml:space="preserve">FALSE</attribute>
-                    <attribute id="mem_size" xml:space="preserve">0x7000</attribute>
+                    <attribute id="mem_size" xml:space="preserve">0x8000</attribute>
                     <attribute id="mem_start" xml:space="preserve">0x0</attribute>
                     <attribute id="value" xml:space="preserve">0x0</attribute>
                 </node>

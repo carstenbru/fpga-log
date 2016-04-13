@@ -55,7 +55,7 @@
     </register>
   </registers>
   
-  <memory instance="DMARAM%02d" size="1024"/>
+  <memory instance="sdcard/u_sm_fifo/fifo_mem" size="1024"/>
   
 </peripheral>
 

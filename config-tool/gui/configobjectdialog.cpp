@@ -194,7 +194,7 @@ void ConfigObjectDialog::addReqParametersGroup(QLayout *parent) {
     QFormLayout* layout = new QFormLayout();
     for (; i != parameters->end(); i++) {
         DataType* type = (*i).getDataType();
-        if (!type->hasSuffix("_regs_t")) {
+        if (!type->hasSuffix("_regs_t") && !type->hasSuffix("_dma_t")) {
             if (!(*i).getHideFromUser()) {
                 QWidget* widget = type->getConfigWidget(dataLogger, &*i);
                 widget->setToolTip(i->getDescription().c_str());

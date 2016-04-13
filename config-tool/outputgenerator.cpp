@@ -233,7 +233,7 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
                     writeObjectInit(stream, paramObject, objects, initDone);
                 }
             } catch (exception) {
-                if ((*i).getDataType()->hasSuffix("_regs_t")) {
+                if ((*i).getDataType()->hasSuffix("_regs_t") || (*i).getDataType()->hasSuffix("_dma_t")) {
                     writeCast(tmpStream, &(*i));
                     value = object->getName() + "_" + (*i).getName();
                     transform(value.begin(), value.end(), value.begin(), ::toupper);
@@ -531,6 +531,9 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
     }
 
     writeSpmcConnections(writer);
+    if (peripheral->hasDMA()) {
+        writeDMAConnections(writer);
+    }
 
     writer.writeEndElement();
 }
@@ -575,6 +578,15 @@ void OutputGenerator::writeSpmcConnections(QXmlStreamWriter& writer) {
     writePortConnection(writer, "reset", "SUBSYSTEM/SPARTANMC/#PORT.reset", 0);
     writePortConnection(writer, "wr_peri", "SUBSYSTEM/SPARTANMC/#PORT.wr_peri", 0);
     writePortConnection(writer, "di_peri", "SUBSYSTEM/SPARTANMC/#PORT.di_peri", 0);
+}
+
+void OutputGenerator::writeDMAConnections(QXmlStreamWriter& writer) {
+    writePortConnection(writer, "addr_high", "SUBSYSTEM/SPARTANMC/#PORT.addr_high", 0);
+    writePortConnection(writer, "mem_access", "SUBSYSTEM/SPARTANMC/#PORT.mem_access", 0);
+    writePortConnection(writer, "mem_clk", "SUBSYSTEM/SPARTANMC/#PORT.mem_clk", 0);
+    writePortConnection(writer, "store_access", "SUBSYSTEM/SPARTANMC/#PORT.store_access", 0);
+    writePortConnection(writer, "store_access_high", "SUBSYSTEM/SPARTANMC/#PORT.store_access_high", 0);
+    writePortConnection(writer, "store_access_low", "SUBSYSTEM/SPARTANMC/#PORT.store_access_low", 0);
 }
 
 void OutputGenerator::writeClkPin(QXmlStreamWriter& writer) {
