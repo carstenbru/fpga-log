@@ -123,6 +123,7 @@ void OutputGenerator::generateConfigFiles() {
 }
 
 void OutputGenerator::synthesizeSystem() {
+    timingError = false;
     generateConfigFiles();
 
     exec("make all");
@@ -669,5 +670,6 @@ void OutputGenerator::definePeripheralForSimulation(std::string name, DataType* 
 }
 
 void OutputGenerator::flash() {
+    timingError = false;
     exec("./flash.sh");
 }
