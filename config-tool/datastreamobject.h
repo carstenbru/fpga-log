@@ -29,9 +29,6 @@ public:
     void setPosition(QPoint pos);
     QPoint getPosition();
 
-    void setSpartanMcCore(int core) { spartanMcCore = core; }
-    int getSpartanMcCore() { return spartanMcCore; }
-
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DatastreamObject& dObject);
 private:
     void findPorts();
@@ -50,7 +47,6 @@ private:
     std::list<DataPortOut*> dataOutPorts;
 
     QPoint position;
-    int spartanMcCore;
 private slots:
     void portConnected();
     void portDisconnected(Port *port);

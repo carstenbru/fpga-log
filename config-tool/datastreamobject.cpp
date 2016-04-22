@@ -7,24 +7,21 @@ using namespace std;
 
 DatastreamObject::DatastreamObject(string name, DataTypeStruct *type, DataLogger* dataLogger) :
     CObject(name, type, dataLogger),
-    position(QPoint(0,0)),
-    spartanMcCore(0)
+    position(QPoint(0,0))
 {
     findPorts();
 }
 
 DatastreamObject::DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger, std::string name, bool ignorePins) :
     CObject(in, dataLogger, false, name, ignorePins),
-    position(QPoint(0,0)),
-    spartanMcCore(0)
+    position(QPoint(0,0))
 {
     findPorts();
 }
 
 DatastreamObject::DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger, std::map<PortOut *, stringPair> &connections) :
     CObject(in, dataLogger, in.readNextStartElement()),
-    position(QPoint(0,0)),
-    spartanMcCore(0)
+    position(QPoint(0,0))
 {
     findPorts();
 
@@ -42,9 +39,6 @@ DatastreamObject::DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger,
             } else {
                 dataLogger->addDefinitionsUpdatedModule(getName());
             }
-        } else if (in.name().compare("spartanMcCore") == 0) {
-            spartanMcCore = (in.attributes().value("value").toString().toInt());
-            in.skipCurrentElement();
         } else
             in.skipCurrentElement();
     }
@@ -248,9 +242,6 @@ QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DatastreamObject& dObject) {
     out.writeEndElement();
     out.writeStartElement("y");
     out.writeAttribute("value", to_string(dObject.position.y()).c_str());
-    out.writeEndElement();
-    out.writeStartElement("spartanMcCore");
-    out.writeAttribute("value", to_string(dObject.spartanMcCore).c_str());
     out.writeEndElement();
 
     for (list<ControlPortIn*>::iterator i = dObject.controlInPorts.begin(); i != dObject.controlInPorts.end(); i++) {

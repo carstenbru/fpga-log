@@ -33,6 +33,9 @@ public:
     void setDefinitionsUpdated(bool state) {definitionsUpdated = state;}
     bool getDefinitionsUpdated() {return definitionsUpdated;}
 
+    void setSpartanMcCore(int core) { spartanMcCore = core; }
+    int getSpartanMcCore() { return spartanMcCore; }
+
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CObject& cObject);
 protected:
     void readTimestampPinsFromModuleXml();
@@ -50,6 +53,8 @@ protected:
     std::list<CMethod*> advancedConfig;
 
     bool definitionsUpdated;
+
+    int spartanMcCore;
 public slots:
     void removeAdvancedConfig(int methodId);
 signals:

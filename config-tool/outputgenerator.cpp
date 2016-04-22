@@ -411,6 +411,15 @@ void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id) {
     subTemplateFile.close();
 }
 
+set<int> OutputGenerator::getUsedProcessorIDs() {
+    set<int> processorSet;
+    map<string, CObject*> objects = dataLogger->getObjectsMap();
+    for (map<string, CObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
+        processorSet.insert(i->second->getSpartanMcCore());
+    }
+    return processorSet;
+}
+
 void OutputGenerator::generateSystemXML() {
     ifstream templateFile("../config-tool-files/template.xml");
     if (!templateFile.is_open()) {
@@ -445,8 +454,10 @@ void OutputGenerator::generateSystemXML() {
         } else if (line.compare("2000HZ_DIV_VALUE_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << (dataLogger->getPeriClk() / 2000) << "</attribute>" << endl;
         } else if (line.compare("SUBSYSTEMS") == 0) {
-            generateSpmcSubsystem(file, 0); //TODO
-            generateSpmcSubsystem(file, 1);
+            set<int> processorSet = getUsedProcessorIDs();
+            for (set<int>::iterator i = processorSet.begin(); i != processorSet.end(); i++) {
+                generateSpmcSubsystem(file, *i);
+            }
         } else if (line.compare("FPGA_PINS") == 0) {
             QString pins;
             QXmlStreamWriter pinsWriter(&pins);
@@ -577,9 +588,11 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
 void OutputGenerator::writePeripherals(QXmlStreamWriter& writer, string subsystemID, int subsystemNumber) {
     map<string, CObject*> objects = dataLogger->getObjectsMap();
     for (map<string, CObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
-        list<SpmcPeripheral*> peripherals = i->second->getPeripherals();
-        for (list<SpmcPeripheral*>::iterator ip = peripherals.begin(); ip != peripherals.end(); ip++) {
-            writePeripheral(writer, *ip, subsystemID);
+        if ((i->second->getSpartanMcCore() == subsystemNumber)) {
+            list<SpmcPeripheral*> peripherals = i->second->getPeripherals();
+            for (list<SpmcPeripheral*>::iterator ip = peripherals.begin(); ip != peripherals.end(); ip++) {
+                writePeripheral(writer, *ip, subsystemID);
+            }
         }
     }
 }

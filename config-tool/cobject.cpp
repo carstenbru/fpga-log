@@ -9,7 +9,8 @@ CObject::CObject(std::string name, DataTypeStruct* dataType, DataLogger* dataLog
     name(name),
     type(dataType),
     initMethod(NULL),
-    definitionsUpdated(false)
+    definitionsUpdated(false),
+    spartanMcCore(0)
 {
     if (type->isInstantiableObject()) {
         initMethod = new CMethod(*type->getMethod("init"));
@@ -92,6 +93,9 @@ CObject::CObject(QXmlStreamReader& in, DataLogger* dataLogger, bool, string name
             }
 
             in.skipCurrentElement();
+        } else if (in.name().compare("spartanMcCore") == 0) {
+            spartanMcCore = (in.attributes().value("value").toString().toInt());
+            in.skipCurrentElement();
         } else
             in.skipCurrentElement();
     }
@@ -145,6 +149,11 @@ QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CObject& cObject) {
 
     out.writeAttribute("name", cObject.name.c_str());
     out.writeAttribute("type", cObject.type->getName().c_str());
+
+    out.writeStartElement("spartanMcCore");
+    out.writeAttribute("value", to_string(cObject.spartanMcCore).c_str());
+    out.writeEndElement();
+
     out << *cObject.initMethod;
 
     for (list<SpmcPeripheral*>::iterator i = cObject.peripherals.begin(); i != cObject.peripherals.end(); i++) {

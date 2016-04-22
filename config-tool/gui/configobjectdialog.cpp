@@ -78,12 +78,12 @@ void ConfigObjectDialog::addNameGroup(QLayout* parent) {
 
     connect(objectName, SIGNAL(editingFinished()), this, SLOT(nameEdited()));
 
-    DatastreamObject* datastreamObject = dynamic_cast<DatastreamObject*>(object);
-    if (datastreamObject != NULL) {
+    //DatastreamObject* datastreamObject = dynamic_cast<DatastreamObject*>(object);
+    //if (datastreamObject != NULL) {
         spartanMcCoreEdit = new QSpinBox();
-        spartanMcCoreEdit->setValue(datastreamObject->getSpartanMcCore());
+        spartanMcCoreEdit->setValue(object->getSpartanMcCore());
         layout->addRow("Prozessor", spartanMcCoreEdit);
-    }
+    //}
 
     addGroup(parent, "Objekt",layout);
 }
@@ -252,10 +252,10 @@ void ConfigObjectDialog::nameEdited() {
 }
 
 void ConfigObjectDialog::storeParams() {
-    DatastreamObject* datastreamObject = dynamic_cast<DatastreamObject*>(object);
-    if (datastreamObject != NULL) {
-        datastreamObject->setSpartanMcCore(spartanMcCoreEdit->value());
-    }
+    //DatastreamObject* datastreamObject = dynamic_cast<DatastreamObject*>(object);
+    //if (datastreamObject != NULL) {
+        object->setSpartanMcCore(spartanMcCoreEdit->value());
+    //}
 
     for (map<CParameter*, QWidget*>::iterator i = paramWidgets.begin(); i != paramWidgets.end(); i++) {
         try {

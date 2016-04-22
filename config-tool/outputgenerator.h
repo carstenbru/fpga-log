@@ -71,6 +71,8 @@ private:
     void writeClkPin(QXmlStreamWriter& writer);
     void writePins(QXmlStreamWriter& writer);
 
+    std::set<int> getUsedProcessorIDs();
+
     void definePeripheralForSimulation(std::string name, DataType* dataType);
 
     void exec(std::string cmd);
