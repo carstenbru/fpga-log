@@ -364,6 +364,53 @@ void OutputGenerator::writeAdvancedConfig(std::ostream& stream) {
     stream << "}" << endl;
 }
 
+void OutputGenerator::writeTimestampGen(QXmlStreamWriter& writer,string subsystemID) {
+    usedTimestampSources = max(1, usedTimestampSources);
+    SpmcPeripheral timestampGen("TIMESTAMP_GEN", DataType::getType("timestamp_gen_regs_t"), NULL, dataLogger);
+    timestampGen.getParameter("SOURCES")->setValue(to_string(usedTimestampSources).c_str());
+    timestampGen.getParameter("PIN_SOURCES")->setValue(to_string(max(1, usedTimestampPinSources)).c_str());
+    timestampGen.getParameter("INVERTED_SOURCES_MASK")->setValue(to_string(timestampInvertMask).c_str());
+
+    addTimestampPinConnections(timestampGen.getPort("Timestamp capture sources", "pin_source"));
+
+    writePeripheral(writer, &timestampGen, subsystemID);
+}
+
+void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id) {
+    ifstream subTemplateFile("../config-tool-files/template_subsystem.xml");
+    if (!subTemplateFile.is_open()) {
+        string s = "Subsystem Template XML konnte nicht geöffnet werden.";
+        cerr << s << endl;
+        emit errorFound(s);
+        return;
+    }
+
+    string subsystemName = "SUBSYSTEM_" + to_string(id);
+
+    while (!subTemplateFile.eof()) {
+        string line;
+        getline(subTemplateFile, line);
+         if (line.compare("FPGA-LOG_PERIPHERALS") == 0) {
+            QString peripherals; //TODO pass subsystem ID, only write these!
+            QXmlStreamWriter peripheralsWriter(&peripherals);
+            peripheralsWriter.setAutoFormatting(true);
+            writeTimestampGen(peripheralsWriter, subsystemName);
+            writePeripherals(peripheralsWriter, subsystemName, id);
+
+            stream << peripherals.toStdString() << endl;
+        } else if (line.compare("SUBSYSTEM_HEADER") == 0) {
+            stream << "<processor_module id=\""<< subsystemName << "\">" << endl;
+        } else if (line.compare("FIRMWARE_LOC") == 0) {
+             stream << "<attribute id=\"firmware\" xml:space=\"preserve\">./firmware_" << id << "</attribute>" << endl;
+        } else if (line.compare("SUBSYSTEM_NAME") == 0) {
+             stream << "<attribute id=\"name\" xml:space=\"preserve\">subsystem_"<< id << "</attribute>" << endl;
+         }else {
+            stream << line << endl;
+        }
+    }
+    subTemplateFile.close();
+}
+
 void OutputGenerator::generateSystemXML() {
     ifstream templateFile("../config-tool-files/template.xml");
     if (!templateFile.is_open()) {
@@ -382,31 +429,11 @@ void OutputGenerator::generateSystemXML() {
     targetWriter.setAutoFormatting(true);
     writeTargetNode(targetWriter);
 
-    QString peripherals;
-    QXmlStreamWriter peripheralsWriter(&peripherals);
-    peripheralsWriter.setAutoFormatting(true);
-    writePeripherals(peripheralsWriter);
-
-    QString timestampConnections;
-    QXmlStreamWriter timestampConnectionsWriter(&timestampConnections);
-    timestampConnectionsWriter.setAutoFormatting(true);
-    usedTimestampSources = max(1, usedTimestampSources);
-    writeTimestampPins(timestampConnectionsWriter);
-
-    QString pins;
-    QXmlStreamWriter pinsWriter(&pins);
-    pinsWriter.setAutoFormatting(true);
-    writePins(pinsWriter);
-
     while (!templateFile.eof()) {
         string line;
         getline(templateFile, line);
         if (line.compare("TARGET_NODE") == 0) {
             stream << targetNode.toStdString() << endl;
-        } else if (line.compare("FPGA-LOG_PERIPHERALS") == 0) {
-            stream << peripherals.toStdString() << endl;
-        } else if (line.compare("PERI_CLOCK_ATTRIBUTE") == 0) {
-            stream << "<attribute id=\"value\">" << dataLogger->getPeriClk() << "</attribute>" << endl;
         } else if (line.compare("CLOCK_PERIOD_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << (1000000000.0f / dataLogger->getClk()) << "</attribute>" << endl;
         } else if (line.compare("SYSTEM_CLOCK_PERIOD_ATTRIBUTE") == 0) {
@@ -415,18 +442,17 @@ void OutputGenerator::generateSystemXML() {
             stream << "<attribute id=\"value\">" << dataLogger->getClkDivide() << "</attribute>" << endl;
         } else if (line.compare("CLOCK_MULTIPLY_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << dataLogger->getClkMultiply() << "</attribute>" << endl;
-        } else if (line.compare("TIMESTAMP_GEN_SOURCES_ATTRIBUTE") == 0) {
-            stream << "<attribute id=\"value\">" << usedTimestampSources << "</attribute>" << endl;
-        } else if (line.compare("TIMESTAMP_GEN_PIN_SOURCES_ATTRIBUTE") == 0) {
-            stream << "<attribute id=\"value\">" << max(1, usedTimestampPinSources) << "</attribute>" << endl;
-        } else if (line.compare("TIMESTAMP_GEN_INVERTED_SOURCES_MASK_ATTRIBUTE") == 0) {
-            stream << "<attribute id=\"value\">" << timestampInvertMask << "</attribute>" << endl;
-        } else if (line.compare("FPGA_PINS") == 0) {
-            stream << pins.toStdString() << endl;
-        } else if (line.compare("TIMESTAMP_GEN_PIN_CONNECTIONS") == 0) {
-            stream << timestampConnections.toStdString() << endl;
         } else if (line.compare("2000HZ_DIV_VALUE_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << (dataLogger->getPeriClk() / 2000) << "</attribute>" << endl;
+        } else if (line.compare("SUBSYSTEMS") == 0) {
+            generateSpmcSubsystem(file, 0); //TODO
+            generateSpmcSubsystem(file, 1);
+        } else if (line.compare("FPGA_PINS") == 0) {
+            QString pins;
+            QXmlStreamWriter pinsWriter(&pins);
+            pinsWriter.setAutoFormatting(true);
+            writePins(pinsWriter);
+            stream << pins.toStdString() << endl;
         } else {
             stream << line << endl;
         }
@@ -465,7 +491,7 @@ void OutputGenerator::writeParameter(QXmlStreamWriter& writer, CParameter* param
     writer.writeEndElement();
 }
 
-void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* peripheral) {
+void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* peripheral, string subsystemID) {
     writer.writeStartElement("peripheral");
     string peripheralName = peripheral->getCompleteName().c_str();
     std::transform(peripheralName.begin(), peripheralName.end(), peripheralName.begin(), ::tolower);
@@ -509,17 +535,26 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
                         string destName = destination.toStdString();
                         int slash = destName.find("/");
                         destName.erase(slash, destName.length());
-                        destName = "SUBSYSTEM/" + peripheral->getParentName() + "_" + destName;
+                        destName = subsystemID + "/" + peripheral->getParentName() + "_" + destName;
                         transform(destName.begin(), destName.end(), destName.begin(), ::toupper);
                         destination.remove(0, slash);
                         destination = destName.c_str() + destination;
-                    } else if (destination.compare("TIMESTAMP_GEN") == 0) { //timestamp generator source
-                        destination = "SUBSYSTEM/TIMESTAMP_GEN/#PORT.internal_source";
+                    } else if (destination.startsWith("../")) { //other entity of this subsystem as destination
+                        destination.remove(0, 3);
+                        string destName = destination.toStdString();
+                        int slash = destName.find("/");
+                        destName.erase(slash, destName.length());
+                        destName = subsystemID + "/" + destName;
+                        transform(destName.begin(), destName.end(), destName.begin(), ::toupper);
+                        destination.remove(0, slash);
+                        destination = destName.c_str() + destination;
+                    }else if (destination.compare("TIMESTAMP_GEN") == 0) { //timestamp generator source
+                        destination = (subsystemID + "/TIMESTAMP_GEN/#PORT.internal_source").c_str();
                         string param = (*portIt)->getName();
                         peripheral->getParentObject()->getInitMethod()->getParameter(param)->setValue(to_string(++usedTimestampSources));
                         pcTimestampCaptureStream << ", " << peripheralNameUpper;
                     }
-                    writeConnection(writer, destination.toStdString(), lsb++);
+                    writeConnection(writer, destination.toStdString(), lsb);
                 } else {
                     if (!(*portIt)->getHideFromUser()) {
                         emit errorFound("Pin " + portName + " (" + groupIt->first + ") im Modul " + peripheral->getParentName() + " nicht zugewiesen");
@@ -531,20 +566,20 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
         }
     }
 
-    writeSpmcConnections(writer);
+    writeSpmcConnections(writer, subsystemID);
     if (peripheral->hasDMA()) {
-        writeDMAConnections(writer);
+        writeDMAConnections(writer, subsystemID);
     }
 
     writer.writeEndElement();
 }
 
-void OutputGenerator::writePeripherals(QXmlStreamWriter& writer) {
+void OutputGenerator::writePeripherals(QXmlStreamWriter& writer, string subsystemID, int subsystemNumber) {
     map<string, CObject*> objects = dataLogger->getObjectsMap();
     for (map<string, CObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
         list<SpmcPeripheral*> peripherals = i->second->getPeripherals();
         for (list<SpmcPeripheral*>::iterator ip = peripherals.begin(); ip != peripherals.end(); ip++) {
-            writePeripheral(writer, *ip);
+            writePeripheral(writer, *ip, subsystemID);
         }
     }
 }
@@ -571,23 +606,23 @@ void OutputGenerator::writePortConnection(QXmlStreamWriter& writer, std::string 
     writer.writeEndElement();
 }
 
-void OutputGenerator::writeSpmcConnections(QXmlStreamWriter& writer) {
-    writePortConnection(writer, "access_peri", "SUBSYSTEM/SPARTANMC/#PORT.access_peri", 0);
-    writePortConnection(writer, "addr_peri", "SUBSYSTEM/SPARTANMC/#PORT.addr_peri", 0);
-    writePortConnection(writer, "clk_peri", "SUBSYSTEM/SPARTANMC/#PORT.clk_peri", 0);
-    writePortConnection(writer, "do_peri", "SUBSYSTEM/SPARTANMC/#PORT.do_peri", 0);
-    writePortConnection(writer, "reset", "SUBSYSTEM/SPARTANMC/#PORT.reset", 0);
-    writePortConnection(writer, "wr_peri", "SUBSYSTEM/SPARTANMC/#PORT.wr_peri", 0);
-    writePortConnection(writer, "di_peri", "SUBSYSTEM/SPARTANMC/#PORT.di_peri", 0);
+void OutputGenerator::writeSpmcConnections(QXmlStreamWriter& writer, string subsystemID) {
+    writePortConnection(writer, "access_peri", subsystemID + "/SPARTANMC/#PORT.access_peri", 0);
+    writePortConnection(writer, "addr_peri", subsystemID + "/SPARTANMC/#PORT.addr_peri", 0);
+    writePortConnection(writer, "clk_peri", subsystemID + "/SPARTANMC/#PORT.clk_peri", 0);
+    writePortConnection(writer, "do_peri", subsystemID + "/SPARTANMC/#PORT.do_peri", 0);
+    writePortConnection(writer, "reset", subsystemID + "/SPARTANMC/#PORT.reset", 0);
+    writePortConnection(writer, "wr_peri", subsystemID + "/SPARTANMC/#PORT.wr_peri", 0);
+    writePortConnection(writer, "di_peri", subsystemID + "/SPARTANMC/#PORT.di_peri", 0);
 }
 
-void OutputGenerator::writeDMAConnections(QXmlStreamWriter& writer) {
-    writePortConnection(writer, "addr_high", "SUBSYSTEM/SPARTANMC/#PORT.addr_high", 0);
-    writePortConnection(writer, "mem_access", "SUBSYSTEM/SPARTANMC/#PORT.mem_access", 0);
-    writePortConnection(writer, "mem_clk", "SUBSYSTEM/SPARTANMC/#PORT.mem_clk", 0);
-    writePortConnection(writer, "store_access", "SUBSYSTEM/SPARTANMC/#PORT.store_access", 0);
-    writePortConnection(writer, "store_access_high", "SUBSYSTEM/SPARTANMC/#PORT.store_access_high", 0);
-    writePortConnection(writer, "store_access_low", "SUBSYSTEM/SPARTANMC/#PORT.store_access_low", 0);
+void OutputGenerator::writeDMAConnections(QXmlStreamWriter& writer, string subsystemID) {
+    writePortConnection(writer, "addr_high", subsystemID + "/SPARTANMC/#PORT.addr_high", 0);
+    writePortConnection(writer, "mem_access", subsystemID + "/SPARTANMC/#PORT.mem_access", 0);
+    writePortConnection(writer, "mem_clk", subsystemID + "/SPARTANMC/#PORT.mem_clk", 0);
+    writePortConnection(writer, "store_access", subsystemID + "/SPARTANMC/#PORT.store_access", 0);
+    writePortConnection(writer, "store_access_high", subsystemID + "/SPARTANMC/#PORT.store_access_high", 0);
+    writePortConnection(writer, "store_access_low", subsystemID + "/SPARTANMC/#PORT.store_access_low", 0);
 }
 
 void OutputGenerator::writeClkPin(QXmlStreamWriter& writer) {
@@ -639,7 +674,7 @@ void OutputGenerator::writePins(QXmlStreamWriter& writer) {
     }
 }
 
-void OutputGenerator::writeTimestampPins(QXmlStreamWriter& writer) {
+void OutputGenerator::addTimestampPinConnections(PeripheralPort* timestampPinPort) {
     map<string, CObject*> objects = dataLogger->getObjectsMap();
     for (map<string, CObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
         map<string, CParameter*> timestampPins = i->second->getTimestampPins();
@@ -652,7 +687,9 @@ void OutputGenerator::writeTimestampPins(QXmlStreamWriter& writer) {
             usedPins.push_back(FpgaPin(destination.toStdString(), "INPUT", "PULLUP"));
             destination = "#PIN." + destination;
 
-            writeConnection(writer, destination.toStdString(), usedTimestampPinSources++);  
+            CParameter* c = new CParameter("pin_source_" + to_string(usedTimestampPinSources++), DataTypePin::getPinType(), false, destination.toStdString());
+            timestampPinPort->newWidth(to_string(usedTimestampPinSources));
+            timestampPinPort->setLine(c);
         }
     }
 }

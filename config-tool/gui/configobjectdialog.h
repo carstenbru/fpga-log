@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QLineEdit>
+#include <QSpinBox>
 #include <QFormLayout>
 #include <map>
 #include <list>
@@ -48,6 +49,8 @@ private:
     CObject* object;
     DataLogger* dataLogger;
     QLineEdit* objectName;
+
+    QSpinBox* spartanMcCoreEdit;
 
     std::map<CParameter*, QWidget*> paramWidgets;
     std::map<CParameter*, DataType*> paramTypes;

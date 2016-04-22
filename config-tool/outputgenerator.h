@@ -41,6 +41,7 @@ private:
 
     void generateCSource();
     void generateSystemXML();
+    void generateSpmcSubsystem(std::ostream &stream, int id);
 
     void writeVariableDefinitions(std::ostream& stream);
     void writeInitFunction(std::ostream& stream);
@@ -60,11 +61,12 @@ private:
     void writeConnection(QXmlStreamWriter& writer, std::string destination, int lsb);
     void writePortConnection(QXmlStreamWriter& writer, std::string port, std::string destination, int lsb);
     void writeParameter(QXmlStreamWriter& writer, CParameter* parameter);
-    void writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* peripheral);
-    void writePeripherals(QXmlStreamWriter& writer);
-    void writeSpmcConnections(QXmlStreamWriter& writer);
-    void writeDMAConnections(QXmlStreamWriter& writer);
-    void writeTimestampPins(QXmlStreamWriter& writer);
+    void writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* peripheral, std::__cxx11::string subsystemID);
+    void writeTimestampGen(QXmlStreamWriter& writer, std::string subsystemID);
+    void writePeripherals(QXmlStreamWriter& writer, std::string subsystemID, int subsystemNumber);
+    void writeSpmcConnections(QXmlStreamWriter& writer, std::string subsystemID);
+    void writeDMAConnections(QXmlStreamWriter& writer, std::string subsystemID);
+    void addTimestampPinConnections(PeripheralPort *timestampPinPort);
 
     void writeClkPin(QXmlStreamWriter& writer);
     void writePins(QXmlStreamWriter& writer);

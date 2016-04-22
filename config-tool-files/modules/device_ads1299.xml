@@ -3,7 +3,7 @@
     <parameter name="SPI_SS" hide="TRUE" />
     
     <port group="Physical SPI-Mastere interrupt" name="intr" hide="TRUE" />
-    <port group="Physical SPI-Master CLK Input >= 400 KHz (1MHz)" name="clk_spi" destination="SUBSYSTEM/SPARTANMC/#PORT.clk_peri" hide="TRUE" />
+    <port group="Physical SPI-Master CLK Input >= 400 KHz (1MHz)" name="clk_spi" destination="../SPARTANMC/#PORT.clk_peri" hide="TRUE" />
   </peripheral>
   <timestamp_pin name="DRDY" parameter="drdy_id" invert="TRUE" />
 </module>
