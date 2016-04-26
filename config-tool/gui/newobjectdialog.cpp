@@ -75,13 +75,16 @@ void NewObjectDialog::genrateTypeView(DataTypeStruct* type) {
             if (dt->hasPrefix("device_")) {
                 generateItem(device, i->second, false);
             } else if (dt->hasPrefix("dm_")) {
-                generateItem(dm, i->second, false);
+                if (dt->getName().find("core_connector") == string::npos) {
+                    generateItem(dm, i->second, false);
+                }
             } else if (dt->hasPrefix("sink_")) {
                 generateItem(sink, i->second, false);
             } else {
                 if (dt->getSuperType() == NULL) {
-                    if (dt->getName().compare("datastream_object_t") != 0) //filter out datastream_object_t since these types are covered by the other fields
+                    if (dt->getName().compare("datastream_object_t") != 0) { //filter out datastream_object_t since these types are covered by the other fields
                         generateItem(other, i->second, true);
+                    }
                 }
             }
         }

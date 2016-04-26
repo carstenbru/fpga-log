@@ -21,6 +21,15 @@ DataLogger::DataLogger() :
     loadTargetPins();
 }
 
+DataLogger::DataLogger(DataLogger& other) : QObject() {
+    //TODO better implementation
+    QString loggerTmp;
+    QXmlStreamWriter writer(&loggerTmp);
+    writer << other;
+    QXmlStreamReader reader(loggerTmp);
+    reader >> *this;
+}
+
 DataLogger::~DataLogger() {
     std::list<DatastreamObject*>::iterator i;
     for (i = datastreamObjects.begin(); i != datastreamObjects.end(); i++) {
@@ -83,6 +92,10 @@ string DataLogger::newObject(DataTypeStruct *type) {
         emit otherModulesChanged();
     }
     return name;
+}
+
+void DataLogger::addDataStreamObject(DatastreamObject *dso) {
+    datastreamObjects.push_back(dso);
 }
 
 template <typename T>

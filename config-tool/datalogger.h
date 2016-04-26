@@ -15,9 +15,11 @@ class DataLogger : public QObject
 
 public:
     DataLogger();
+    DataLogger(DataLogger& other);
     ~DataLogger();
 
     std::string newObject(DataTypeStruct *type);
+    void addDataStreamObject(DatastreamObject *dso);
     void addObject(std::string name, bool isDataStreamObject, QXmlStreamReader& description, QPoint pos = QPoint(0,0));
     void deleteObject(CObject* object);
     std::list<DatastreamObject*> getDatastreamModules() { return datastreamObjects; }

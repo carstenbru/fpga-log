@@ -30,6 +30,7 @@ class OutputGenerator : public QObject
 
 public:
     OutputGenerator(DataLogger* dataLogger, std::string directory);
+    ~OutputGenerator();
 
     void generateConfigFiles();
     void synthesizeSystem();
@@ -42,6 +43,9 @@ private:
     void generateCSource();
     void generateSystemXML();
     void generateSpmcSubsystem(std::ostream &stream, int id);
+
+    void addCoreConnectors();
+    void addCoreConnector(DatastreamObject* module,PortOut* port, bool contolStream);
 
     void writeVariableDefinitions(std::ostream& stream);
     void writeInitFunction(std::ostream& stream);

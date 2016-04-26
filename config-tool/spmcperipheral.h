@@ -58,6 +58,7 @@ public:
     CParameter* getParameter(std::string name);
     bool setParameter(CParameter* newValue);
     PeripheralPort* getPort(std::string group, std::string name);
+    void setFirstPortLine(std::string group, std::string name, std::string value);
     std::map<std::string, std::list<PeripheralPort*> > getPorts() { return ports; }
     std::string getCompleteName();
     std::string getParentName();

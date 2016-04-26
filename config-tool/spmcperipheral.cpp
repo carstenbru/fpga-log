@@ -369,6 +369,10 @@ std::string SpmcPeripheral::getParentName() {
     }
 }
 
+void SpmcPeripheral::setFirstPortLine(string group, string name, string value) {
+    (*(getPort(group, name)->getLines().begin()))->setValue(value);
+}
+
 void SpmcPeripheral::saveToXml(QXmlStreamWriter& out) {
     out.writeStartElement("SpmcPeripheral");
 
