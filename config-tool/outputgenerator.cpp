@@ -641,7 +641,10 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
                     writeConnection(writer, destination.toStdString(), lsb);
                 } else {
                     if (!(*portIt)->getHideFromUser()) {
-                        emit errorFound("Pin " + portName + " (" + groupIt->first + ") im Modul " + peripheral->getParentName() + " nicht zugewiesen");
+                        if ((peripheral->getParentName().find("_connector") == string::npos) &&
+                                (!peripheral->getParentName().empty())) {
+                            emit errorFound("Pin " + portName + " (" + groupIt->first + ") im Modul " + peripheral->getParentName() + " nicht zugewiesen");
+                        }
                     }
                 }
             }
