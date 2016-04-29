@@ -14,8 +14,6 @@ OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     dataLogger(new DataLogger(*dataLogger)),
     directory(directory),
     usedIdCounter(0),
-    usedTimestampSources(0),
-    usedTimestampPinSources(0),
     process(this),
     busy(false),
     error(false),
@@ -156,8 +154,6 @@ void OutputGenerator::generateCSource(int subsystemID) {
     pcPeripheralIdCounter = 0;
     pcPeripheralsStream.clear();
     pcPeripheralsStream.str("");
-    pcTimestampCaptureStream.clear();
-    pcTimestampCaptureStream.str();
     pcPeripheralCompareCounter = 0;
     pcPeripheralTimerCounter = 0;
 
@@ -192,8 +188,8 @@ void OutputGenerator::generateCSource(int subsystemID) {
     file << "#define TIMER_COUNT " << pcPeripheralTimerCounter << endl;
     file << "#define COMPARE_COUNT " << pcPeripheralCompareCounter << endl << endl;
     file << pcPeripheralsStream.str() << endl;
-    file << "#define TIMESTAMP_CAPTURE_SIGNALS_COUNT " << usedTimestampSources << endl;
-    string tscs = pcTimestampCaptureStream.str();
+    file << "#define TIMESTAMP_CAPTURE_SIGNALS_COUNT " << usedTimestampSources[subsystemID] << endl;
+    string tscs = pcTimestampCaptureStream[subsystemID].str();
     tscs.erase(0, 2);
     file << "#define TIMESTAMP_CAPTURE_SIGNALS {" << tscs << "}" << endl;
     file << endl << "#endif" << endl;
@@ -422,16 +418,16 @@ void OutputGenerator::writeAdvancedConfig(std::ostream& stream, int subsystemID)
     stream << "}" << endl;
 }
 
-void OutputGenerator::writeTimestampGen(QXmlStreamWriter& writer,string subsystemID) {
-    usedTimestampSources = max(1, usedTimestampSources);
+void OutputGenerator::writeTimestampGen(QXmlStreamWriter& writer,string subsystemID, int subsystemNumber) {
+    usedTimestampSources[subsystemNumber] = max(1, usedTimestampSources[subsystemNumber]);
     SpmcPeripheral timestampGen("TIMESTAMP_GEN", DataType::getType("timestamp_gen_regs_t"), NULL, dataLogger);
-    timestampGen.getParameter("SOURCES")->setValue(to_string(usedTimestampSources).c_str());
-    timestampGen.getParameter("PIN_SOURCES")->setValue(to_string(max(1, usedTimestampPinSources)).c_str());
+    timestampGen.getParameter("SOURCES")->setValue(to_string(usedTimestampSources[subsystemNumber]).c_str());
+    timestampGen.getParameter("PIN_SOURCES")->setValue(to_string(max(1, usedTimestampPinSources[subsystemNumber])).c_str());
     timestampGen.getParameter("INVERTED_SOURCES_MASK")->setValue(to_string(timestampInvertMask).c_str());
 
-    addTimestampPinConnections(timestampGen.getPort("Timestamp capture sources", "pin_source"));
+    addTimestampPinConnections(timestampGen.getPort("Timestamp capture sources", "pin_source"), subsystemNumber);
 
-    writePeripheral(writer, &timestampGen, subsystemID);
+    writePeripheral(writer, &timestampGen, subsystemID, subsystemNumber);
 }
 
 void OutputGenerator::writeClkConnection(std::ostream& stream, std::string destination) {
@@ -445,6 +441,10 @@ void OutputGenerator::writeClkConnection(std::ostream& stream, std::string desti
 }
 
 void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id) {
+    usedTimestampSources[id] = 0;
+    usedTimestampPinSources[id] = 0;
+    timestampInvertMask = 0;
+
     ifstream subTemplateFile("../config-tool-files/template_subsystem.xml");
     if (!subTemplateFile.is_open()) {
         string s = "Subsystem Template XML konnte nicht geöffnet werden.";
@@ -462,8 +462,8 @@ void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id) {
             QString peripherals;
             QXmlStreamWriter peripheralsWriter(&peripherals);
             peripheralsWriter.setAutoFormatting(true);
-            writeTimestampGen(peripheralsWriter, subsystemName);
             writePeripherals(peripheralsWriter, subsystemName, id);
+            writeTimestampGen(peripheralsWriter, subsystemName, id);
 
             stream << peripherals.toStdString() << endl;
         } else if (line.compare("SUBSYSTEM_HEADER") == 0) {
@@ -646,7 +646,7 @@ void OutputGenerator::writeParameter(QXmlStreamWriter& writer, CParameter* param
     writer.writeEndElement();
 }
 
-void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* peripheral, string subsystemID) {
+void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* peripheral, string subsystemID, int subsystemNumber) {
     writer.writeStartElement("peripheral");
     string peripheralName = peripheral->getCompleteName().c_str();
     std::transform(peripheralName.begin(), peripheralName.end(), peripheralName.begin(), ::tolower);
@@ -706,8 +706,8 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
                     }else if (destination.compare("TIMESTAMP_GEN") == 0) { //timestamp generator source
                         destination = (subsystemID + "/TIMESTAMP_GEN/#PORT.internal_source").c_str();
                         string param = (*portIt)->getName();
-                        peripheral->getParentObject()->getInitMethod()->getParameter(param)->setValue(to_string(++usedTimestampSources));
-                        pcTimestampCaptureStream << ", " << peripheralNameUpper;
+                        peripheral->getParentObject()->getInitMethod()->getParameter(param)->setValue(to_string(++usedTimestampSources[subsystemNumber]));
+                        pcTimestampCaptureStream[subsystemNumber] << ", " << peripheralNameUpper;
                     }
                     writeConnection(writer, destination.toStdString(), lsb);
                 } else {
@@ -738,7 +738,7 @@ void OutputGenerator::writePeripherals(QXmlStreamWriter& writer, string subsyste
         if ((i->second->getSpartanMcCore() == subsystemNumber)) {
             list<SpmcPeripheral*> peripherals = i->second->getPeripherals();
             for (list<SpmcPeripheral*>::iterator ip = peripherals.begin(); ip != peripherals.end(); ip++) {
-                writePeripheral(writer, *ip, subsystemID);
+                writePeripheral(writer, *ip, subsystemID, subsystemNumber);
             }
         }
     }
@@ -834,21 +834,21 @@ void OutputGenerator::writePins(QXmlStreamWriter& writer) {
     }
 }
 
-void OutputGenerator::addTimestampPinConnections(PeripheralPort* timestampPinPort) {
+void OutputGenerator::addTimestampPinConnections(PeripheralPort* timestampPinPort, int id) {
     map<string, CObject*> objects = dataLogger->getObjectsMap();
     for (map<string, CObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
         map<string, CParameter*> timestampPins = i->second->getTimestampPins();
         for (map<string, CParameter*>::iterator itp = timestampPins.begin(); itp != timestampPins.end(); itp++) {
-            i->second->getInitMethod()->getParameter(itp->first)->setValue(to_string(usedTimestampSources+usedTimestampPinSources+1));
-            timestampInvertMask |= (i->second->getTimestampPinInvert(itp->first)) << (usedTimestampSources+usedTimestampPinSources);
+            i->second->getInitMethod()->getParameter(itp->first)->setValue(to_string(usedTimestampSources[id]+usedTimestampPinSources[id]+1));
+            timestampInvertMask |= (i->second->getTimestampPinInvert(itp->first)) << (usedTimestampSources[id]+usedTimestampPinSources[id]);
 
             QString destination = itp->second->getValue().c_str();
             destination.replace(":", "_");
             usedPins.push_back(FpgaPin(destination.toStdString(), "INPUT", "PULLUP"));
             destination = "#PIN." + destination;
 
-            CParameter* c = new CParameter("pin_source_" + to_string(usedTimestampPinSources++), DataTypePin::getPinType(), false, destination.toStdString());
-            timestampPinPort->newWidth(to_string(usedTimestampPinSources));
+            CParameter* c = new CParameter("pin_source_" + to_string(usedTimestampPinSources[id]++), DataTypePin::getPinType(), false, destination.toStdString());
+            timestampPinPort->newWidth(to_string(usedTimestampPinSources[id]));
             timestampPinPort->setLine(c);
         }
     }

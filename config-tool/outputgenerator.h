@@ -68,12 +68,12 @@ private:
     void writeConnection(QXmlStreamWriter& writer, std::string destination, int lsb);
     void writePortConnection(QXmlStreamWriter& writer, std::string port, std::string destination, int lsb);
     void writeParameter(QXmlStreamWriter& writer, CParameter* parameter);
-    void writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* peripheral, std::__cxx11::string subsystemID);
-    void writeTimestampGen(QXmlStreamWriter& writer, std::string subsystemID);
+    void writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* peripheral, std::__cxx11::string subsystemID, int subsystemNumber);
+    void writeTimestampGen(QXmlStreamWriter& writer, std::string subsystemID, int subsystemNumber);
     void writePeripherals(QXmlStreamWriter& writer, std::string subsystemID, int subsystemNumber);
     void writeSpmcConnections(QXmlStreamWriter& writer, std::string subsystemID);
     void writeDMAConnections(QXmlStreamWriter& writer, std::string subsystemID);
-    void addTimestampPinConnections(PeripheralPort *timestampPinPort);
+    void addTimestampPinConnections(PeripheralPort *timestampPinPort, int id);
     void writeClkConnection(std::ostream& stream, std::string destination);
 
     void writeClkPin(QXmlStreamWriter& writer);
@@ -95,8 +95,8 @@ private:
 
     int usedIdCounter;
     std::list<FpgaPin> usedPins;
-    int usedTimestampSources;
-    int usedTimestampPinSources;
+    std::map<int, int> usedTimestampSources;
+    std::map<int, int> usedTimestampPinSources;
 
     QProcess process;
     std::list<std::string> pending;
@@ -106,7 +106,7 @@ private:
 
     int pcPeripheralIdCounter;
     std::stringstream pcPeripheralsStream;
-    std::stringstream pcTimestampCaptureStream;
+    std::map<int,std::stringstream> pcTimestampCaptureStream;
     int pcPeripheralCompareCounter;
     int pcPeripheralTimerCounter;
 
