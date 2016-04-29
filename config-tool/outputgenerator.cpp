@@ -30,6 +30,7 @@ OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     connect(&process, SIGNAL(readyReadStandardError()), this, SLOT(newChildErrOut()));
     connect(&process, SIGNAL(finished(int)), this, SLOT(processFinished()));
 
+    calculateUsedProcessorIDs();
     copyProjectTemplate();
 }
 
@@ -47,10 +48,20 @@ void OutputGenerator::copyProjectTemplate() {
             newPath.remove(0, path.length());
             newPath = (directory + "/").c_str() + newPath;
 
-            QDir().mkpath(QFileInfo(newPath).dir().absolutePath());
-            if (dirIter.fileName().compare("main.c") == 0) {
-                copyMainC(dirIter.filePath(), newPath);
+            if (dirIter.filePath().contains("firmware")) {
+                for (set<int>::iterator i = processorSet.begin(); i != processorSet.end(); i++) {
+                    QString newPathSubst = newPath;
+                    newPathSubst.insert(newPath.indexOf("firmware")+8, QString("_") + to_string(*i).c_str());
+
+                    QDir().mkpath(QFileInfo(newPathSubst).dir().absolutePath());
+                    if (dirIter.fileName().compare("main.c") == 0) {
+                        copyMainC(dirIter.filePath(), newPathSubst);
+                    } else {
+                        QFile::copy(dirIter.filePath(), newPathSubst);
+                    }
+                }
             } else {
+                QDir().mkpath(QFileInfo(newPath).dir().absolutePath());
                 QFile::copy(dirIter.filePath(), newPath);
             }
         }
@@ -122,7 +133,7 @@ void OutputGenerator::generateConfigFiles() {
 
     addCoreConnectors();
     generateSystemXML();
-    generateCSource();;
+    generateCSources();;
 
     exec("make jconfig +args=\"--generate system.xml\"");
 }
@@ -141,9 +152,18 @@ void OutputGenerator::synthesizeOnly() {
     exec("make all");
 }
 
-void OutputGenerator::generateCSource() {
+void OutputGenerator::generateCSource(int subsystemID) {
+    pcPeripheralIdCounter = 0;
+    pcPeripheralsStream.clear();
+    pcPeripheralsStream.str("");
+    pcTimestampCaptureStream.clear();
+    pcTimestampCaptureStream.str();
+    pcPeripheralCompareCounter = 0;
+    pcPeripheralTimerCounter = 0;
+
+    string firmwareFolder = "/firmware_" + to_string(subsystemID);
     ofstream file;
-    file.open(directory + "/firmware/src/logger_config.c");
+    file.open(directory + firmwareFolder + "/src/logger_config.c");
 
     ostream& stream = file;
 
@@ -152,20 +172,20 @@ void OutputGenerator::generateCSource() {
 
     stringstream tmpFile;
 
-    writeVariableDefinitions(tmpFile);
+    writeVariableDefinitions(tmpFile, subsystemID);
     tmpFile << endl;
-    writeInitFunction(tmpFile);
+    writeInitFunction(tmpFile, subsystemID);
     tmpFile << endl;
-    writeConnectPorts(tmpFile);
+    writeConnectPorts(tmpFile, subsystemID);
     tmpFile << endl;
-    writeAdvancedConfig(tmpFile);
+    writeAdvancedConfig(tmpFile, subsystemID);
 
     writeHeaderIncludes(stream);
     stream << endl << tmpFile.str();
 
     file.close();
 
-    file.open(directory + "/firmware/include/pc_peripherals.h");
+    file.open(directory + firmwareFolder + "/include/pc_peripherals.h");
     writePreamble(file);
     file << endl << "#ifndef PERIPHERALS_SIM_H_" << endl << "#define PERIPHERALS_SIM_H_" << endl << endl;
     file << "#define PIPE_COUNT " << pcPeripheralIdCounter << endl << endl;
@@ -178,27 +198,56 @@ void OutputGenerator::generateCSource() {
     file << "#define TIMESTAMP_CAPTURE_SIGNALS {" << tscs << "}" << endl;
     file << endl << "#endif" << endl;
     file.close();
-
-    cout << "C-Konfigurationsdatei erfolgreich geschrieben." << endl;
 }
 
-void OutputGenerator::writeVariableDefinitions(std::ostream& stream) {
+void OutputGenerator::generateCSources() {
+    usedHeaders.clear();
+    determineHeaders();
+
+    for (set<int>::iterator i = processorSet.begin(); i != processorSet.end(); i++) {
+        generateCSource(*i);
+    }
+
+    cout << "C-Konfigurationsdateien erfolgreich geschrieben." << endl;
+}
+
+void OutputGenerator::determineHeaders() {
     map<string, CObject*> objects = dataLogger->getObjectsMap();
 
     for (map<string, CObject *>::iterator i = objects.begin(); i != objects.end(); i++) {
-        putUsedHeader(i->second->getType()->getHeaderName(), i->second->getType()->isGlobal());
-        stream << i->second->getType()->getName() << "\t" << i->first << ";" << endl;
+        CObject* object = i->second;
+        putUsedHeader(object->getType()->getHeaderName(), object->getType()->isGlobal());
+        putUsedHeader(object->getInitMethod()->getHeaderName(), object->getType()->isGlobal());
+
+        list<CMethod*> methods = object->getAdvancedConfig();
+        for (list<CMethod*>::iterator mIt = methods.begin(); mIt != methods.end(); mIt++) {
+            CMethod* method = *mIt;
+            putUsedHeader(method->getHeaderName(), object->getType()->isGlobal());
+        }
     }
 }
 
-void OutputGenerator::writeInitFunction(ostream& stream) {
+void OutputGenerator::writeVariableDefinitions(std::ostream& stream, int subsystemID) {
+    map<string, CObject*> objects = dataLogger->getObjectsMap();
+
+    for (map<string, CObject *>::iterator i = objects.begin(); i != objects.end(); i++) {
+        if (i->second->getSpartanMcCore() == subsystemID) {
+          //putUsedHeader(i->second->getType()->getHeaderName(), i->second->getType()->isGlobal());
+          stream << i->second->getType()->getName() << "\t" << i->first << ";" << endl;
+        }
+    }
+}
+
+void OutputGenerator::writeInitFunction(ostream& stream, int subsystemID) {
     map<string, CObject*> objects = dataLogger->getObjectsMap();
 
     stream << "void init_objects(void) {" << endl;
 
     map<string, bool> initDone;
     for (map<string, CObject *>::iterator i = objects.begin(); i != objects.end(); i++) {
-        writeObjectInit(stream, i->second, objects, initDone);
+        if (i->second->getSpartanMcCore() == subsystemID) {
+            writeObjectInit(stream, i->second, objects, initDone);
+        }
     }
 
     stream << "}" << endl;
@@ -222,7 +271,7 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
         stringstream tmpStream;
 
         CMethod* init = object->getInitMethod();
-        putUsedHeader(init->getHeaderName(), object->getType()->isGlobal());
+        //putUsedHeader(init->getHeaderName(), object->getType()->isGlobal());
         list<CParameter>* params = init->getParameters();
         tmpStream << "  " << object->getType()->getCleanedName() << "_"
                   << init->getName() << "(&" << object->getName();
@@ -263,33 +312,35 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
     }
 }
 
-void OutputGenerator::writeConnectPorts(ostream& stream) {
+void OutputGenerator::writeConnectPorts(ostream& stream, int subsystemID) {
     stream << "void connect_ports(void) {" << endl;
 
     list<DatastreamObject*> modules = dataLogger->getDatastreamModules();
     for (list<DatastreamObject*>::iterator i = modules.begin(); i != modules.end(); i++) {
-        DatastreamObject* module = *i;
+        if ((*i)->getSpartanMcCore() == subsystemID) {
+            DatastreamObject* module = *i;
 
-        list<PortOut*> ports = module->getOutPorts(PORT_TYPE_DATA_OUT);
-        list<PortOut*> portsC = module->getOutPorts(PORT_TYPE_CONTROL_OUT);
-        ports.insert(ports.end(), portsC.begin(), portsC.end());
+            list<PortOut*> ports = module->getOutPorts(PORT_TYPE_DATA_OUT);
+            list<PortOut*> portsC = module->getOutPorts(PORT_TYPE_CONTROL_OUT);
+            ports.insert(ports.end(), portsC.begin(), portsC.end());
 
-        for (list<PortOut*>::iterator portIt = ports.begin(); portIt != ports.end(); portIt++) {
-            PortOut* port = *portIt;
-            if (port->isConnected()) {
-                Port* destinationPort = port->getDestination();
-                DatastreamObject* destinationModule = destinationPort->getParent();
+            for (list<PortOut*>::iterator portIt = ports.begin(); portIt != ports.end(); portIt++) {
+                PortOut* port = *portIt;
+                if (port->isConnected()) {
+                    Port* destinationPort = port->getDestination();
+                    DatastreamObject* destinationModule = destinationPort->getParent();
 
-                stream << "  " << module->getType()->getCleanedName();
-                if (!port->isMultiPort())
-                    stream << "_set_";
-                else
-                    stream << "_add_";
-                stream << port->getName() << "(";
-                stream << "&" << module->getName() << ", ";
-                stream << destinationModule->getType()->getCleanedName() << "_get_" << destinationPort->getName();
-                stream << "(&" << destinationModule->getName() << ")";
-                stream << ");" << endl;
+                    stream << "  " << module->getType()->getCleanedName();
+                    if (!port->isMultiPort())
+                        stream << "_set_";
+                    else
+                        stream << "_add_";
+                    stream << port->getName() << "(";
+                    stream << "&" << module->getName() << ", ";
+                    stream << destinationModule->getType()->getCleanedName() << "_get_" << destinationPort->getName();
+                    stream << "(&" << destinationModule->getName() << ")";
+                    stream << ");" << endl;
+                }
             }
         }
     }
@@ -324,7 +375,7 @@ void OutputGenerator::putUsedHeader(std::string headerName, bool global) {
 }
 
 void OutputGenerator::writeMethod(std::ostream& stream, CObject* object, CMethod* method, map<string, CObject *>& objects) {
-    putUsedHeader(method->getHeaderName(), object->getType()->isGlobal());
+    //putUsedHeader(method->getHeaderName(), object->getType()->isGlobal());
     list<CParameter>* params = method->getParameters();
     string methodName = method->getCompleteName();
     if (methodName.empty()) {
@@ -353,16 +404,18 @@ void OutputGenerator::writeMethod(std::ostream& stream, CObject* object, CMethod
     stream << ");" << endl;
 }
 
-void OutputGenerator::writeAdvancedConfig(std::ostream& stream) {
+void OutputGenerator::writeAdvancedConfig(std::ostream& stream, int subsystemID) {
     stream << "void advanced_config(void) {" << endl;
 
     map<string, CObject*> objects = dataLogger->getObjectsMap();
 
     for (map<string, CObject *>::iterator i = objects.begin(); i != objects.end(); i++) {
-        CObject* object = i->second;
-        list<CMethod*> methods = object->getAdvancedConfig();
-        for (list<CMethod*>::iterator mIt = methods.begin(); mIt != methods.end(); mIt++) {
-            writeMethod(stream, object, *mIt, objects);
+        if (i->second->getSpartanMcCore() == subsystemID) {
+            CObject* object = i->second;
+            list<CMethod*> methods = object->getAdvancedConfig();
+            for (list<CMethod*>::iterator mIt = methods.begin(); mIt != methods.end(); mIt++) {
+                writeMethod(stream, object, *mIt, objects);
+            }
         }
     }
 
@@ -381,6 +434,16 @@ void OutputGenerator::writeTimestampGen(QXmlStreamWriter& writer,string subsyste
     writePeripheral(writer, &timestampGen, subsystemID);
 }
 
+void OutputGenerator::writeClkConnection(std::ostream& stream, std::string destination) {
+    QString clkConnection;
+    QXmlStreamWriter clkConnectionWriter(&clkConnection);
+    clkConnectionWriter.setAutoFormatting(true);
+
+    writeConnection(clkConnectionWriter, "SYSCLK/#PORT." + destination, 0);
+
+    stream << clkConnection.toStdString() << endl;
+}
+
 void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id) {
     ifstream subTemplateFile("../config-tool-files/template_subsystem.xml");
     if (!subTemplateFile.is_open()) {
@@ -396,7 +459,7 @@ void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id) {
         string line;
         getline(subTemplateFile, line);
          if (line.compare("FPGA-LOG_PERIPHERALS") == 0) {
-            QString peripherals; //TODO pass subsystem ID, only write these!
+            QString peripherals;
             QXmlStreamWriter peripheralsWriter(&peripherals);
             peripheralsWriter.setAutoFormatting(true);
             writeTimestampGen(peripheralsWriter, subsystemName);
@@ -409,7 +472,17 @@ void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id) {
              stream << "<attribute id=\"firmware\" xml:space=\"preserve\">./firmware_" << id << "</attribute>" << endl;
         } else if (line.compare("SUBSYSTEM_NAME") == 0) {
              stream << "<attribute id=\"name\" xml:space=\"preserve\">subsystem_"<< id << "</attribute>" << endl;
-         }else {
+        } else if (line.compare("CONNECTION_CLK1") == 0) {
+             writeClkConnection(stream, "clk1");
+        } else if (line.compare("CONNECTION_CLK2") == 0) {
+             writeClkConnection(stream, "clk2");
+        } else if (line.compare("CONNECTION_CLK2X") == 0) {
+             writeClkConnection(stream, "clk2x");
+        } else if (line.compare("CONNECTION_LOCKED") == 0) {
+             writeClkConnection(stream, "locked");
+        } else if (line.compare("CONNECTION_PHASE") == 0) {
+             writeClkConnection(stream, "phase");
+        } else {
             stream << line << endl;
         }
     }
@@ -484,13 +557,12 @@ void OutputGenerator::addCoreConnectors() {
     }
 }
 
-set<int> OutputGenerator::getUsedProcessorIDs() {
-    set<int> processorSet;
+void OutputGenerator::calculateUsedProcessorIDs() {
+    processorSet.clear();
     map<string, CObject*> objects = dataLogger->getObjectsMap();
     for (map<string, CObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
         processorSet.insert(i->second->getSpartanMcCore());
     }
-    return processorSet;
 }
 
 void OutputGenerator::generateSystemXML() {
@@ -527,7 +599,6 @@ void OutputGenerator::generateSystemXML() {
         } else if (line.compare("2000HZ_DIV_VALUE_ATTRIBUTE") == 0) {
             stream << "<attribute id=\"value\">" << (dataLogger->getPeriClk() / 2000) << "</attribute>" << endl;
         } else if (line.compare("SUBSYSTEMS") == 0) {
-            set<int> processorSet = getUsedProcessorIDs();
             for (set<int>::iterator i = processorSet.begin(); i != processorSet.end(); i++) {
                 generateSpmcSubsystem(file, *i);
             }

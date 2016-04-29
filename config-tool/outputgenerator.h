@@ -40,17 +40,20 @@ private:
     void copyProjectTemplate();
     void copyMainC(QString src, QString dest);
 
-    void generateCSource();
+    void generateCSources();
+    void generateCSource(int subsystemID);
     void generateSystemXML();
     void generateSpmcSubsystem(std::ostream &stream, int id);
 
     void addCoreConnectors();
     void addCoreConnector(DatastreamObject* module,PortOut* port, bool contolStream);
 
-    void writeVariableDefinitions(std::ostream& stream);
-    void writeInitFunction(std::ostream& stream);
-    void writeConnectPorts(std::ostream& stream);
-    void writeAdvancedConfig(std::ostream& stream);
+    void determineHeaders();
+
+    void writeVariableDefinitions(std::ostream& stream, int subsystemID);
+    void writeInitFunction(std::ostream& stream, int subsystemID);
+    void writeConnectPorts(std::ostream& stream, int subsystemID);
+    void writeAdvancedConfig(std::ostream& stream, int subsystemID);
     void writePreamble(std::ostream& stream);
     void writeHeaderIncludes(std::ostream& stream);
 
@@ -71,11 +74,12 @@ private:
     void writeSpmcConnections(QXmlStreamWriter& writer, std::string subsystemID);
     void writeDMAConnections(QXmlStreamWriter& writer, std::string subsystemID);
     void addTimestampPinConnections(PeripheralPort *timestampPinPort);
+    void writeClkConnection(std::ostream& stream, std::string destination);
 
     void writeClkPin(QXmlStreamWriter& writer);
     void writePins(QXmlStreamWriter& writer);
 
-    std::set<int> getUsedProcessorIDs();
+    void calculateUsedProcessorIDs();
 
     void definePeripheralForSimulation(std::string name, DataType* dataType);
 
@@ -110,6 +114,8 @@ private:
 
     bool timingError;
     bool synthesisSuccessful;
+
+    std::set<int> processorSet;
 private slots:
     void newChildStdOut();
     void newChildErrOut();

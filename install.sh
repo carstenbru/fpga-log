@@ -61,7 +61,7 @@ then
   
   #compile library
   cd $SPARTANMC_ROOT/spartanmc/lib_obj/
-  #make
+  make
   
   #build config-tool
   mkdir $fpga_log_dir/$CONFIG_TOOL_BUILD_DIR

@@ -19,7 +19,7 @@ SUBSYSTEM_NAME
                 </parameter>
                 <parameter id="#PARAM.RAMBLOCKS">
                     <attribute id="name" xml:space="preserve">RAMBLOCKS</attribute>
-                    <attribute id="value" xml:space="preserve">8</attribute>
+                    <attribute id="value" xml:space="preserve">6</attribute>
                 </parameter>
                 <parameter id="#PARAM.RESET_VECTOR">
                     <attribute id="name" xml:space="preserve">RESET_VECTOR</attribute>
@@ -64,26 +64,17 @@ SUBSYSTEM_NAME
                 <port id="#PORT.clk1">
                     <attribute id="name" xml:space="preserve">clk1</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#2B4B">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SYSCLK/#PORT.clk1</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
+CONNECTION_CLK1
                 </port>
                 <port id="#PORT.clk2">
                     <attribute id="name" xml:space="preserve">clk2</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#600D">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SYSCLK/#PORT.clk2</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
+CONNECTION_CLK2
                 </port>
                 <port id="#PORT.clk2x">
                     <attribute id="name" xml:space="preserve">clk2x</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#984A">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SYSCLK/#PORT.clk2x</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
+CONNECTION_CLK2X
                 </port>
                 <port id="#PORT.clk_peri">
                     <attribute id="name" xml:space="preserve">clk_peri</attribute>
@@ -116,10 +107,7 @@ SUBSYSTEM_NAME
                 <port id="#PORT.locked">
                     <attribute id="name" xml:space="preserve">locked</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#2FF0">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SYSCLK/#PORT.locked</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
+CONNECTION_LOCKED
                 </port>
                 <port id="#PORT.mem_access">
                     <attribute id="name" xml:space="preserve">mem_access</attribute>
@@ -132,10 +120,7 @@ SUBSYSTEM_NAME
                 <port id="#PORT.phase">
                     <attribute id="name" xml:space="preserve">phase</attribute>
                     <attribute id="route_external" xml:space="preserve">0</attribute>
-                    <connection id="#6332">
-                        <attribute id="connected_port" xml:space="preserve">/TOP_MODULE/SYSCLK/#PORT.phase</attribute>
-                        <attribute id="lsb_index" xml:space="preserve">0</attribute>
-                    </connection>
+CONNECTION_PHASE
                 </port>
                 <port id="#PORT.reset">
                     <attribute id="name" xml:space="preserve">reset</attribute>
