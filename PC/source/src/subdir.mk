@@ -25,6 +25,7 @@ C_SRCS += \
 ../source/src/device_ads1115.c \
 ../source/src/device_ads1299.c \
 ../source/src/device_chr_um7.c \
+../source/src/device_contrast_box.c \
 ../source/src/device_gps_nmea.c \
 ../source/src/device_hct99.c \
 ../source/src/device_input_pins.c \
@@ -36,7 +37,12 @@ C_SRCS += \
 ../source/src/device_uart_raw.c \
 ../source/src/device_vl6180.c \
 ../source/src/divsi3.c \
+../source/src/dm_core_connector_control_sink.c \
+../source/src/dm_core_connector_control_source.c \
+../source/src/dm_core_connector_data_sink.c \
+../source/src/dm_core_connector_data_source.c \
 ../source/src/dm_event_timer.c \
+../source/src/dm_fahrtest_control.c \
 ../source/src/dm_filter.c \
 ../source/src/dm_package_buffer.c \
 ../source/src/dm_splitter_control.c \
@@ -79,6 +85,7 @@ OBJS += \
 ./source/src/device_ads1115.o \
 ./source/src/device_ads1299.o \
 ./source/src/device_chr_um7.o \
+./source/src/device_contrast_box.o \
 ./source/src/device_gps_nmea.o \
 ./source/src/device_hct99.o \
 ./source/src/device_input_pins.o \
@@ -90,7 +97,12 @@ OBJS += \
 ./source/src/device_uart_raw.o \
 ./source/src/device_vl6180.o \
 ./source/src/divsi3.o \
+./source/src/dm_core_connector_control_sink.o \
+./source/src/dm_core_connector_control_source.o \
+./source/src/dm_core_connector_data_sink.o \
+./source/src/dm_core_connector_data_source.o \
 ./source/src/dm_event_timer.o \
+./source/src/dm_fahrtest_control.o \
 ./source/src/dm_filter.o \
 ./source/src/dm_package_buffer.o \
 ./source/src/dm_splitter_control.o \
@@ -133,6 +145,7 @@ C_DEPS += \
 ./source/src/device_ads1115.d \
 ./source/src/device_ads1299.d \
 ./source/src/device_chr_um7.d \
+./source/src/device_contrast_box.d \
 ./source/src/device_gps_nmea.d \
 ./source/src/device_hct99.d \
 ./source/src/device_input_pins.d \
@@ -144,7 +157,12 @@ C_DEPS += \
 ./source/src/device_uart_raw.d \
 ./source/src/device_vl6180.d \
 ./source/src/divsi3.d \
+./source/src/dm_core_connector_control_sink.d \
+./source/src/dm_core_connector_control_source.d \
+./source/src/dm_core_connector_data_sink.d \
+./source/src/dm_core_connector_data_source.d \
 ./source/src/dm_event_timer.d \
+./source/src/dm_fahrtest_control.d \
 ./source/src/dm_filter.d \
 ./source/src/dm_package_buffer.d \
 ./source/src/dm_splitter_control.d \

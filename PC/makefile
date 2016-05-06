@@ -38,7 +38,7 @@ fpga-log: $(OBJS) $(USER_OBJS)
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) fpga-log
+	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) fpga-log
 	-@echo ' '
 
 .PHONY: all clean dependents

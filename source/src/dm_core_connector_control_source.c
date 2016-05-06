@@ -46,7 +46,7 @@ static void dm_core_connector_control_source_update(
 	slave_core_connector_regs_t* core_connector =
 			core_connector_control_source->core_connector;
 
-	if (core_connector->status != SLAVE_FIFO_EMPTY) {
+	while (core_connector->status != SLAVE_FIFO_EMPTY) {
 		int length = core_connector->data_in;
 		int count = length;
 		control_parameter_t* buf = core_connector_control_source->buf;

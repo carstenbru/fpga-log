@@ -17,7 +17,7 @@
  * @brief struct describing a core_connector_control_sink
  */
 typedef struct {
-	control_port_t control_in; /**< control port, this can be set at a control output to direct the control stream to this splitter */
+	control_port_t control_in; /**< control port, this can be set at a control output to direct the control stream to this module */
 
 	master_core_connector_regs_t* core_connector; /**< pointer to core connector (master) hardware registers */
 } dm_core_connector_control_sink_t;
