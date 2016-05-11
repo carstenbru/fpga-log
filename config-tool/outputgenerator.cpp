@@ -28,6 +28,12 @@ OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     connect(&process, SIGNAL(readyReadStandardError()), this, SLOT(newChildErrOut()));
     connect(&process, SIGNAL(finished(int)), this, SLOT(processFinished()));
 
+    // reset core_IDs of objects
+    vector<CObject*> objects = this->dataLogger->getOtherObjects();
+    for (vector<CObject*>::iterator it = objects.begin(); it != objects.end(); it++) {
+        (*it)->setSpartanMcCore(-1);
+    }
+
     calculateUsedProcessorIDs();
     copyProjectTemplate();
 }
@@ -167,11 +173,14 @@ void OutputGenerator::generateCSource(int subsystemID) {
     stream << endl;
 
     stringstream tmpFile;
+    stringstream tmpInit;
+
+    //we need to do the initialization first as it sets core-IDs of objects (not datastream modules)
+    writeInitFunction(tmpInit, subsystemID);
+    tmpInit << endl;
 
     writeVariableDefinitions(tmpFile, subsystemID);
-    tmpFile << endl;
-    writeInitFunction(tmpFile, subsystemID);
-    tmpFile << endl;
+    tmpFile << endl << tmpInit.str();
     writeConnectPorts(tmpFile, subsystemID);
     tmpFile << endl;
     writeAdvancedConfig(tmpFile, subsystemID);
@@ -202,6 +211,15 @@ void OutputGenerator::generateCSources() {
 
     for (set<int>::iterator i = processorSet.begin(); i != processorSet.end(); i++) {
         generateCSource(*i);
+    }
+
+    vector<CObject*> objects = dataLogger->getOtherObjects();
+    for (vector<CObject*>::iterator it = objects.begin(); it != objects.end(); it++) {
+        if ((*it)->getSpartanMcCore() == -1) {
+            string s = "Objekt " + (*it)->getName() + " nicht verwendet";
+            cerr << "WARNUNG: " << s << "!" << endl;
+            emit errorFound(s);
+        }
     }
 
     cout << "C-Konfigurationsdateien erfolgreich geschrieben." << endl;
@@ -281,6 +299,15 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
                 if ((*i).isPointer())
                   tmpStream << "&";
                 if (!initDone[value]) {
+                    int coreId = object->getSpartanMcCore();
+                    int oldCoreId = paramObject->getSpartanMcCore();
+                    if ((oldCoreId != -1) && (oldCoreId != coreId)) {
+                        error = true;
+                        string s = "Objekt " + paramObject->getName() + " auf mehreren SpartanMC Cores verwendet";
+                        cerr << "FEHLER: " << s << "!" << endl;
+                        emit errorFound(s);
+                    }
+                    paramObject->setSpartanMcCore(coreId);
                     writeObjectInit(stream, paramObject, objects, initDone);
                 }
             } catch (exception) {
@@ -561,7 +588,10 @@ void OutputGenerator::calculateUsedProcessorIDs() {
     processorSet.clear();
     map<string, CObject*> objects = dataLogger->getObjectsMap();
     for (map<string, CObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
-        processorSet.insert(i->second->getSpartanMcCore());
+        int id = i->second->getSpartanMcCore();
+        if (id >= 0) {
+            processorSet.insert(id);
+        }
     }
 }
 

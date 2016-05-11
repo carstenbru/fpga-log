@@ -39,6 +39,9 @@ DatastreamObject::DatastreamObject(QXmlStreamReader& in, DataLogger* dataLogger,
             } else {
                 dataLogger->addDefinitionsUpdatedModule(getName());
             }
+        } else if (in.name().compare("spartanMcCore") == 0) {
+            spartanMcCore = (in.attributes().value("value").toString().toInt());
+            in.skipCurrentElement();
         } else
             in.skipCurrentElement();
     }
@@ -242,6 +245,10 @@ QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DatastreamObject& dObject) {
     out.writeEndElement();
     out.writeStartElement("y");
     out.writeAttribute("value", to_string(dObject.position.y()).c_str());
+    out.writeEndElement();
+
+    out.writeStartElement("spartanMcCore");
+    out.writeAttribute("value", to_string(dObject.spartanMcCore).c_str());
     out.writeEndElement();
 
     for (list<ControlPortIn*>::iterator i = dObject.controlInPorts.begin(); i != dObject.controlInPorts.end(); i++) {
