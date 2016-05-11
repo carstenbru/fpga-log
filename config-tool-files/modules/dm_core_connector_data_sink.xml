@@ -1,0 +1,6 @@
+<module name="dm_core_connector_data_sink">
+  <peripheral name="core_connector" >
+    <parameter name="FIFO_WIDTH" value="18" />
+    <parameter name="FIFO_DEPTH" value="64" />
+  </peripheral>
+</module>
