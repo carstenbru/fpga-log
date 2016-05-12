@@ -9,6 +9,9 @@
 #include <QProcess>
 #include <sstream>
 
+#define MAX_BLOCK_RAMS 42
+#define OPTIMIZE_BLOCK_RAMS true
+
 class FpgaPin {
 public:
     FpgaPin(std::string name, std::string direction, std::string constraints) : name(name), direction(direction), constraints(constraints) {}
@@ -42,8 +45,8 @@ private:
 
     void generateCSources();
     void generateCSource(int subsystemID);
-    void generateSystemXML();
-    void generateSpmcSubsystem(std::ostream &stream, int id);
+    void generateSystemXML(bool useMaxBlockRAMs);
+    void generateSpmcSubsystem(std::ostream &stream, int id, bool useMaxBlockRAMs);
 
     void addCoreConnectors();
     void addCoreConnector(DatastreamObject* module,PortOut* port, bool contolStream);
@@ -87,6 +90,9 @@ private:
 
     void checkSynthesisMessage(std::string message);
 
+    std::string readLastLine(std::string fileName);
+    int determineMinBlockRAMcount(int cpuID);
+
     DataLogger* dataLogger;
 
     std::string directory;
@@ -116,6 +122,8 @@ private:
     bool synthesisSuccessful;
 
     std::set<int> processorSet;
+
+    bool optimizeBlockRAMcount;
 private slots:
     void newChildStdOut();
     void newChildErrOut();

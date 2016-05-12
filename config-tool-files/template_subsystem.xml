@@ -17,10 +17,7 @@ SUBSYSTEM_NAME
                     <attribute id="name" xml:space="preserve">PERIPHERIE_REGS</attribute>
                     <attribute id="value" xml:space="preserve">2</attribute>
                 </parameter>
-                <parameter id="#PARAM.RAMBLOCKS">
-                    <attribute id="name" xml:space="preserve">RAMBLOCKS</attribute>
-                    <attribute id="value" xml:space="preserve">6</attribute>
-                </parameter>
+RAMBLOCKS_PARAM
                 <parameter id="#PARAM.RESET_VECTOR">
                     <attribute id="name" xml:space="preserve">RESET_VECTOR</attribute>
                     <attribute id="value" xml:space="preserve">0x0</attribute>

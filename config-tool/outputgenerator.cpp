@@ -20,7 +20,8 @@ OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     pcPeripheralIdCounter(0),
     pcPeripheralCompareCounter(0),
     pcPeripheralTimerCounter(0),
-    timestampInvertMask(0)
+    timestampInvertMask(0),
+    optimizeBlockRAMcount(OPTIMIZE_BLOCK_RAMS)
 {
     cout << directory << endl;
     process.setWorkingDirectory(directory.c_str());
@@ -103,8 +104,14 @@ void OutputGenerator::processFinished() {
         busy = false;
         emit finished(error || timingError, timingError);
     } else {
-        process.start(QString(pending.front().c_str()));
+        string next = pending.front();
         pending.pop_front();
+        if (next.compare("generateSystemXML(false)") != 0) {
+            process.start(QString(next.c_str()));
+        } else {
+            generateSystemXML(false);
+            processFinished();
+        }
     }
 }
 
@@ -136,10 +143,17 @@ void OutputGenerator::generateConfigFiles() {
     synthesisSuccessful = false;
 
     addCoreConnectors();
-    generateSystemXML();
-    generateCSources();;
+    generateSystemXML(true); //re-generate System-XML with large BlockRam counts
+    generateCSources();
 
     exec("make jconfig +args=\"--generate system.xml\"");
+
+    if (optimizeBlockRAMcount) {
+        exec("make constraints"); //generate contraints file to see neccessary BlockRAM count in each subsystem
+        exec("generateSystemXML(false)"); //re-generate System-XML with real BlockRam counts,
+                                          //we use our asynchronous "exec" function so it will be executed after the previous task only
+        exec("make jconfig +args=\"--generate system.xml\""); //update generated files
+    }
 }
 
 void OutputGenerator::synthesizeSystem() {
@@ -467,7 +481,7 @@ void OutputGenerator::writeClkConnection(std::ostream& stream, std::string desti
     stream << clkConnection.toStdString() << endl;
 }
 
-void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id) {
+void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id, bool useMaxBlockRAMs) {
     usedTimestampSources[id] = 0;
     usedTimestampPinSources[id] = 0;
     timestampInvertMask = 0;
@@ -509,6 +523,20 @@ void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id) {
              writeClkConnection(stream, "locked");
         } else if (line.compare("CONNECTION_PHASE") == 0) {
              writeClkConnection(stream, "phase");
+        } else if (line.compare("RAMBLOCKS_PARAM") == 0) {
+             QString bparamString;
+             QXmlStreamWriter bparamWriter(&bparamString);
+             bparamWriter.setAutoFormatting(true);
+
+             CParameter bparam("RAMBLOCKS", DataTypeNumber::getType("int"));
+             if (useMaxBlockRAMs) {
+                 bparam.setValue(to_string(MAX_BLOCK_RAMS));
+             } else {
+                 bparam.setValue(to_string(determineMinBlockRAMcount(id)));
+             }
+             writeParameter(bparamWriter, &bparam);
+
+             stream << bparamString.toStdString() << endl;
         } else {
             stream << line << endl;
         }
@@ -595,7 +623,7 @@ void OutputGenerator::calculateUsedProcessorIDs() {
     }
 }
 
-void OutputGenerator::generateSystemXML() {
+void OutputGenerator::generateSystemXML(bool useMaxBlockRAMs) {
     ifstream templateFile("../config-tool-files/template.xml");
     if (!templateFile.is_open()) {
         string s = "System Template XML konnte nicht geöffnet werden.";
@@ -630,7 +658,7 @@ void OutputGenerator::generateSystemXML() {
             stream << "<attribute id=\"value\">" << (dataLogger->getPeriClk() / 2000) << "</attribute>" << endl;
         } else if (line.compare("SUBSYSTEMS") == 0) {
             for (set<int>::iterator i = processorSet.begin(); i != processorSet.end(); i++) {
-                generateSpmcSubsystem(file, *i);
+                generateSpmcSubsystem(file, *i, useMaxBlockRAMs);
             }
         } else if (line.compare("FPGA_PINS") == 0) {
             QString pins;
@@ -894,6 +922,47 @@ void OutputGenerator::definePeripheralForSimulation(std::string name, DataType* 
     } else {
         pcPeripheralsStream << "#define " << name << " " << pcPeripheralIdCounter++ << endl;
     }
+}
+
+/*
+ * code adapted from:
+ * http://stackoverflow.com/questions/11876290/c-fastest-way-to-read-only-last-line-of-text-file
+ */
+std::string OutputGenerator::readLastLine(std::string fileName) {
+    ifstream file;
+    cerr << " !!!!!!!!!!!!!!!!!!!! " << endl << fileName << endl;
+    file.open(fileName);
+
+    if (file.is_open()) {
+        file.seekg(0,std::ios_base::end);
+        char ch = ' ';
+        while(ch != '\n') {
+            file.seekg(-2,std::ios_base::cur);
+            if((int)file.tellg() <= 0){
+                file.seekg(0);
+                break;
+            }
+            file.get(ch);
+        }
+    }
+    string res;
+    getline(file, res);
+    file.close();
+    return res;
+}
+
+int OutputGenerator::determineMinBlockRAMcount(int cpuID) {
+    string contraintFileFolder = "/build/firmware/subsystem_" + to_string(cpuID);
+    string line = readLastLine(directory + contraintFileFolder + "/spartanmc_0.ucf");
+
+    int start = line.find('[')+1;
+    int end = line.find(']');
+    line = line.substr(start, end-start);
+
+    cerr << " !!!!!!!!!!!!!!!!!!!! " << endl << line << endl;
+
+    return atoi(line.c_str()) + 1; //TODO this
+    //TODO write error of could not determined
 }
 
 void OutputGenerator::flash() {
