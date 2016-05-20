@@ -15,6 +15,7 @@ public:
     AutomaticCoreAssigner();
 
     void calculateModuleWeights();
+    void readModuleWeights();
 private:
     void saveLogger(DataLogger* dataLogger);
     void addObject(DataLogger* logger, DataTypeStruct* dataType);

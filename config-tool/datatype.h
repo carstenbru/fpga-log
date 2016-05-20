@@ -63,6 +63,9 @@ public:
 
     std::string getDescription() {return description;}
 
+    void setWeight(int weight) {this->weight = weight;}
+    int getWeight() {return weight;}
+
     virtual QWidget* getConfigWidget(DataLogger* dataLogger, CParameter* param);
     virtual std::string getConfigData(QWidget* widget);
 
@@ -75,6 +78,7 @@ private:
     std::list<CMethod*> methods;
 
     std::string description;
+    int weight;
 
     static std::map<std::string, DataTypeStruct*> types;
 };

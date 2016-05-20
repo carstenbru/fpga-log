@@ -114,3 +114,28 @@ void AutomaticCoreAssigner::calculateModuleWeights() {
     connect(outputGenerator, SIGNAL(firmwareSizeResult(int)), this, SLOT(firmwareSizeResult(int)));
     outputGenerator->measureFirmwareSize();
 }
+
+void AutomaticCoreAssigner::readModuleWeights() {
+    QFile file("../config-tool-files/module-weights.xml");
+    file.open(QIODevice::ReadOnly);
+
+    if (file.isOpen()) {
+        QXmlStreamReader reader(&file);
+        reader.readNextStartElement();
+
+        while (reader.readNextStartElement()) {
+            const QXmlStreamAttributes& a = reader.attributes();
+            string name = a.value("name").toString().toStdString();
+            int weight = a.value("weight").toString().toInt();
+            if (name.compare("base") != 0) {
+                DataTypeStruct* type = DataTypeStruct::getType(name);
+                type->setWeight(weight);
+            }
+            reader.skipCurrentElement();
+        }
+
+        file.close();
+    } else {
+        cerr << "Could not open module weight file" << endl;
+    }
+}

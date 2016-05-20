@@ -4,6 +4,7 @@
 #include <QProcessEnvironment>
 #include <cmath>
 #include "headerparser.h"
+#include "automaticcoreassigner.h"
 
 using namespace std;
 
@@ -42,6 +43,9 @@ int main(int argc, char *argv[])
         hp.addFolder("../source/include/sink", true);
         hp.parseFiles();
     }
+
+    AutomaticCoreAssigner aca;
+    aca.readModuleWeights();
 
     QApplication a(argc, argv);
     MainWindow w;
