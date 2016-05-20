@@ -14,7 +14,7 @@
    <string>fpga-log</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../icons.qrc">
+   <iconset>
     <normaloff>:/icons/logo</normaloff>:/icons/logo</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -157,6 +157,8 @@
      <string>Too&amp;ls</string>
     </property>
     <addaction name="actionPinOverview"/>
+    <addaction name="separator"/>
+    <addaction name="actionDeveloperTools"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuObjects"/>
@@ -311,13 +313,16 @@
   </action>
   <action name="actionSynthesizeOnly">
    <property name="text">
-    <string>Synthese starten</string>
+    <string>&amp;Synthese starten</string>
+   </property>
+  </action>
+  <action name="actionDeveloperTools">
+   <property name="text">
+    <string>Entwicklertools</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="../icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

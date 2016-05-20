@@ -10,7 +10,7 @@
 
 using namespace std;
 
-OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
+OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory, bool changeOtherModulesCodeID) :
     dataLogger(new DataLogger(*dataLogger)),
     directory(directory),
     usedIdCounter(0),
@@ -21,18 +21,20 @@ OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory) :
     pcPeripheralCompareCounter(0),
     pcPeripheralTimerCounter(0),
     timestampInvertMask(0),
-    optimizeBlockRAMcount(OPTIMIZE_BLOCK_RAMS)
+    optimizeBlockRAMcount(OPTIMIZE_BLOCK_RAMS),
+    firmwareSizeMeasurement(false)
 {
-    cout << directory << endl;
     process.setWorkingDirectory(directory.c_str());
     connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(newChildStdOut()));
     connect(&process, SIGNAL(readyReadStandardError()), this, SLOT(newChildErrOut()));
     connect(&process, SIGNAL(finished(int)), this, SLOT(processFinished()));
 
     // reset core_IDs of objects
-    vector<CObject*> objects = this->dataLogger->getOtherObjects();
-    for (vector<CObject*>::iterator it = objects.begin(); it != objects.end(); it++) {
-        (*it)->setSpartanMcCore(-1);
+    if (changeOtherModulesCodeID) {
+        vector<CObject*> objects = this->dataLogger->getOtherObjects();
+        for (vector<CObject*>::iterator it = objects.begin(); it != objects.end(); it++) {
+            (*it)->setSpartanMcCore(-1);
+        }
     }
 
     calculateUsedProcessorIDs();
@@ -107,6 +109,9 @@ void OutputGenerator::processFinished() {
         string next = pending.front();
         pending.pop_front();
         if (next.compare("generateSystemXML(false)") != 0) {
+            if (next.find("spmc-size") != string::npos) {
+                firmwareSizeMeasurement = true;
+            }
             process.start(QString(next.c_str()));
         } else {
             generateSystemXML(false);
@@ -127,15 +132,36 @@ void OutputGenerator::checkSynthesisMessage(string message) {
     }
 }
 
+void OutputGenerator::checkFirmwareSizeMessage(string message) {
+    firmwareSizeMeasurement = false;
+
+    QRegExp rx("[ ]");// match a space
+    QStringList list = QString(message.c_str()).split(rx, QString::SkipEmptyParts);
+    emit firmwareSizeResult(list.at(8).toInt());
+}
+
 void OutputGenerator::newChildStdOut() {
     string s = QString(process.readAllStandardOutput()).toStdString();
     cout << s;
     checkSynthesisMessage(s);
+    if (firmwareSizeMeasurement) {
+        checkFirmwareSizeMessage(s);
+    }
 }
 
 void OutputGenerator::newChildErrOut() {
     string s = QString(process.readAllStandardError()).toStdString();
     cerr << s;
+}
+
+void OutputGenerator::measureFirmwareSize() {
+    optimizeBlockRAMcount = false;
+    generateConfigFiles();
+    exec("make firmware");
+
+    string elf = QFileInfo((directory + "/build/firmware/subsystem_0/main.elf").c_str()).dir().absolutePath().toStdString();
+    string spmc_root = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();
+    exec(spmc_root + "/bin/spmc-size " + elf + "/main.elf");
 }
 
 void OutputGenerator::generateConfigFiles() {
@@ -620,6 +646,13 @@ void OutputGenerator::calculateUsedProcessorIDs() {
         if (id >= 0) {
             processorSet.insert(id);
         }
+    }
+    if (processorSet.empty()) {
+        string s = "WARNUNG: Kein Prozessor verwendet. Sehr wahrscheinlich ist der Datenlogger leer!";
+        cerr << s << endl;
+        emit errorFound(s);
+
+        processorSet.insert(0);
     }
 }
 

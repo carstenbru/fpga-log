@@ -32,13 +32,14 @@ class OutputGenerator : public QObject
     Q_OBJECT
 
 public:
-    OutputGenerator(DataLogger* dataLogger, std::string directory);
+    OutputGenerator(DataLogger* dataLogger, std::string directory, bool changeOtherModulesCodeID = true);
     ~OutputGenerator();
 
     void generateConfigFiles();
     void synthesizeSystem();
     void synthesizeOnly();
     void flash();
+    void measureFirmwareSize();
 private:
     void copyProjectTemplate();
     void copyMainC(QString src, QString dest);
@@ -89,6 +90,7 @@ private:
     void exec(std::string cmd);
 
     void checkSynthesisMessage(std::string message);
+    void checkFirmwareSizeMessage(std::string message);
 
     std::string readLastLine(std::string fileName);
     int determineMinBlockRAMcount(int cpuID);
@@ -124,6 +126,8 @@ private:
     std::set<int> processorSet;
 
     bool optimizeBlockRAMcount;
+
+    bool firmwareSizeMeasurement;
 private slots:
     void newChildStdOut();
     void newChildErrOut();
@@ -131,6 +135,7 @@ private slots:
 signals:
     void finished(bool errorOccured, bool timingError);
     void errorFound(std::string message);
+    void firmwareSizeResult(int size);
 };
 
 #endif // OUTPUTGENERATOR_H

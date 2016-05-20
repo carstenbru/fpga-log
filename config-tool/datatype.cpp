@@ -4,6 +4,7 @@
 #include <QLineEdit>
 #include <QHBoxLayout>
 #include <sstream>
+#include <math.h>
 #include "datalogger.h"
 #include "gui/pinbox.h"
 

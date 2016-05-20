@@ -60,6 +60,8 @@ public slots:
     void synthesizeOnly();
     void flash();
 
+    void developerTools();
+
     void newLogger();
     void open();
     void save();

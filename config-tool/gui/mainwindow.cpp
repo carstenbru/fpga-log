@@ -10,6 +10,7 @@
 #include <QInputDialog>
 #include "consoleredirector.h"
 #include "targetconfigdialog.h"
+#include "developertools.h"
 #include "datalogger.h"
 #include "pinoverview.h"
 
@@ -43,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAs()));
 
     connect(ui->actionPinOverview, SIGNAL(triggered()), this, SLOT(pinOverview()));
+    connect(ui->actionDeveloperTools, SIGNAL(triggered()), this, SLOT(developerTools()));
 
     ui->listView->setModel(&otherModel);
     connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(otherObjectConfig(QModelIndex)));
@@ -143,6 +145,11 @@ void MainWindow::showConfigDialog(CObject& object) {
         dataLogger->deleteObject(&object);
     }
     dataLoggerChanged();
+}
+
+void MainWindow::developerTools() {
+    DeveloperTools dialog(this);
+    dialog.exec();
 }
 
 void MainWindow::targetConfig() {

@@ -35,7 +35,9 @@ SOURCES += main.cpp\
     gui/targetconfigdialog.cpp \
     outputgenerator.cpp \
     gui/newmethoddialog.cpp \
-    gui/pinoverview.cpp
+    gui/pinoverview.cpp \
+    automaticcoreassigner.cpp \
+    gui/developertools.cpp
 
 HEADERS  += gui/mainwindow.h \
     datastreamobject.h \
@@ -58,14 +60,17 @@ HEADERS  += gui/mainwindow.h \
     gui/targetconfigdialog.h \
     outputgenerator.h \
     gui/newmethoddialog.h \
-    gui/pinoverview.h
+    gui/pinoverview.h \
+    automaticcoreassigner.h \
+    gui/developertools.h
 
 FORMS    += gui/mainwindow.ui \
     gui/newobjectdialog.ui \
     gui/configobjectdialog.ui \
     gui/targetconfigdialog.ui \
     gui/newmethoddialog.ui \
-    gui/pinoverview.ui
+    gui/pinoverview.ui \
+    gui/developertools.ui
 
 RESOURCES += \
     icons.qrc
