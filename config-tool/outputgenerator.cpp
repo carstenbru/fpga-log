@@ -530,7 +530,9 @@ void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id, bool useMax
             QXmlStreamWriter peripheralsWriter(&peripherals);
             peripheralsWriter.setAutoFormatting(true);
             writePeripherals(peripheralsWriter, subsystemName, id);
-            writeTimestampGen(peripheralsWriter, subsystemName, id);
+            if ((usedTimestampPinSources[id] > 0) || (usedTimestampSources[id] > 0)) {
+                writeTimestampGen(peripheralsWriter, subsystemName, id);
+            }
 
             stream << peripherals.toStdString() << endl;
         } else if (line.compare("SUBSYSTEM_HEADER") == 0) {

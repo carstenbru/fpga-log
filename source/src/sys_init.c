@@ -14,7 +14,9 @@ void sys_init(unsigned long int periperhal_clock, timestamp_gen_regs_t* tsgen) {
 	timerstamp_gen = tsgen;
 	peri_clock = periperhal_clock;
 
-	timerstamp_gen->control = TIMESTAMP_GEN_FIFO_CLEAR;
+	if (timerstamp_gen != 0) {
+		timerstamp_gen->control = TIMESTAMP_GEN_FIFO_CLEAR;
+	}
 }
 
 unsigned long int get_peri_clock(void) {
