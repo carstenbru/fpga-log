@@ -64,7 +64,8 @@ QWidget* DataType::getConfigWidget(DataLogger*, CParameter*) {
 DataTypeStruct::DataTypeStruct(std::string name, string headerFile, bool globalType, string description) :
     DataType(name, headerFile, globalType),
     super(NULL),
-    description(description)
+    description(description),
+    weight(-1)
 {
     types[name] = this;
 }

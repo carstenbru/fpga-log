@@ -49,9 +49,6 @@ private:
     void generateSystemXML(bool useMaxBlockRAMs);
     void generateSpmcSubsystem(std::ostream &stream, int id, bool useMaxBlockRAMs);
 
-    void addCoreConnectors();
-    void addCoreConnector(DatastreamObject* module,PortOut* port, bool contolStream);
-
     void determineHeaders();
 
     void writeVariableDefinitions(std::ostream& stream, int subsystemID);

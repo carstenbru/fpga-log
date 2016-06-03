@@ -168,7 +168,7 @@ void OutputGenerator::generateConfigFiles() {
     timingError = false;
     synthesisSuccessful = false;
 
-    addCoreConnectors();
+    dataLogger->addCoreConnectors();
     generateSystemXML(true); //re-generate System-XML with large BlockRam counts
     generateCSources();
 
@@ -570,74 +570,6 @@ void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id, bool useMax
         }
     }
     subTemplateFile.close();
-}
-
-void OutputGenerator::addCoreConnector(DatastreamObject *module, PortOut* port, bool contolStream) {
-    Port* destinationPort = port->getDestination();
-    DatastreamObject* destinationModule = destinationPort->getParent();
-
-    string sinkName = module->getName() + "_" + port->getName() + "_connector";
-    DataTypeStruct* sinkType;
-    DataTypeStruct* sourceType;
-    if (contolStream) {
-        sinkType = DataTypeStruct::getType("dm_core_connector_control_sink_t");
-        sourceType = DataTypeStruct::getType("dm_core_connector_control_source_t");
-    } else {
-        sinkType = DataTypeStruct::getType("dm_core_connector_data_sink_t");
-        sourceType = DataTypeStruct::getType("dm_core_connector_data_source_t");
-    }
-    DatastreamObject* coreConnectorSink = new DatastreamObject(sinkName, sinkType, dataLogger);
-    dataLogger->addDataStreamObject(coreConnectorSink);
-    coreConnectorSink->setSpartanMcCore(module->getSpartanMcCore());
-
-    DatastreamObject* coreConnectorSource = new DatastreamObject(destinationModule->getName() + "_" + destinationPort->getName() + "_connector", sourceType, dataLogger);
-    dataLogger->addDataStreamObject(coreConnectorSource);
-    coreConnectorSource->setSpartanMcCore(destinationModule->getSpartanMcCore());
-
-    if (contolStream) {
-        port->connectPort(coreConnectorSink->getPort("control_in"));
-        destinationPort->connectPort(coreConnectorSource->getPort("control_out"));
-    } else {
-        port->connectPort(coreConnectorSink->getPort("data_in"));
-        destinationPort->connectPort(coreConnectorSource->getPort("data_out"));
-    }
-
-    transform(sinkName.begin(), sinkName.end(), sinkName.begin(), ::toupper);
-    string sourcePrefix = "SUBSYSTEM_" + to_string(module->getSpartanMcCore()) + "/" + sinkName + "_CORE_CONNECTOR/#PORT.";
-    SpmcPeripheral* conPeriph = *coreConnectorSource->getPeripherals().begin();
-    conPeriph->setFirstPortLine("Signals to connector-master", "read_enable", sourcePrefix+"read_enable");
-    conPeriph->setFirstPortLine("Signals from connector-master", "data_from_master", sourcePrefix+"data_to_slave");
-    conPeriph->setFirstPortLine("Signals from connector-master", "free_entries", sourcePrefix+"free_entries");
-    conPeriph->setFirstPortLine("Signals from connector-master", "used_entries", sourcePrefix+"used_entries");
-}
-
-void OutputGenerator::addCoreConnectors() {
-    list<DatastreamObject*> modules = dataLogger->getDatastreamModules();
-    for (list<DatastreamObject*>::iterator i = modules.begin(); i != modules.end(); i++) {
-        DatastreamObject* module = *i;
-
-        list<PortOut*> portsData = module->getOutPorts(PORT_TYPE_DATA_OUT);
-        list<PortOut*> portsContol = module->getOutPorts(PORT_TYPE_CONTROL_OUT);
-
-        for (list<PortOut*>::iterator portIt = portsContol.begin(); portIt != portsContol.end(); portIt++) {
-            PortOut* port = *portIt;
-            if (port->isConnected()) {
-                if (module->getSpartanMcCore() != port->getDestination()->getParent()->getSpartanMcCore()) {
-                    cout << "control core connector needed:" << module->getName() << " -> " << port->getDestination()->getParent()->getName() << endl;
-                    addCoreConnector(module, port, true);
-                }
-            }
-        }
-        for (list<PortOut*>::iterator portIt = portsData.begin(); portIt != portsData.end(); portIt++) {
-            PortOut* port = *portIt;
-            if (port->isConnected()) {
-                if (module->getSpartanMcCore() != port->getDestination()->getParent()->getSpartanMcCore()) {
-                    cout << "data core connector needed:" << module->getName() << " -> " << port->getDestination()->getParent()->getName() << endl;
-                    addCoreConnector(module, port, false);
-                }
-            }
-        }
-    }
 }
 
 void OutputGenerator::calculateUsedProcessorIDs() {

@@ -4,11 +4,17 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QApplication>
+#include <math.h>
 #include "outputgenerator.h"
 
 using namespace std;
 
-AutomaticCoreAssigner::AutomaticCoreAssigner() {
+int AutomaticCoreAssigner::averageWeight;
+
+AutomaticCoreAssigner::AutomaticCoreAssigner() :
+    maxCores(DEFAULT_MAX_CORES),
+    minCores(1),
+    maxWeightPerCore(DEFAULT_MAX_WEIGHT_PER_CORE) {
 
 }
 
@@ -119,6 +125,9 @@ void AutomaticCoreAssigner::readModuleWeights() {
     QFile file("../config-tool-files/module-weights.xml");
     file.open(QIODevice::ReadOnly);
 
+    averageWeight = 0;
+    int valCount = 0;
+
     if (file.isOpen()) {
         QXmlStreamReader reader(&file);
         reader.readNextStartElement();
@@ -130,6 +139,9 @@ void AutomaticCoreAssigner::readModuleWeights() {
             if (name.compare("base") != 0) {
                 DataTypeStruct* type = DataTypeStruct::getType(name);
                 type->setWeight(weight);
+
+                averageWeight +=weight;
+                valCount++;
             }
             reader.skipCurrentElement();
         }
@@ -138,4 +150,220 @@ void AutomaticCoreAssigner::readModuleWeights() {
     } else {
         cerr << "Could not open module weight file" << endl;
     }
+    averageWeight /= valCount;
+}
+
+int AutomaticCoreAssigner::getRealObjectWeight(CObject* object, map<string, CObject*> objects) {
+    CMethod* init = object->getInitMethod();
+    list<CParameter>* params = init->getParameters();
+
+    int weight = object->getType()->getWeight();
+    if (weight == -1) {
+        weight = averageWeight;
+        string s = QString::fromUtf8(("WARNUNG: Kein Gewicht für Typ \"" + object->getType()->getName() + "\" gefunden! Wahrscheinlich ist die Datei \"module-weights.xml\" veraltet. Verwende Durchschnittswert.").c_str()).toStdString();
+        cerr << s << endl;
+        emit warningFound(s);
+    }
+    for (list<CParameter>::iterator i = ++params->begin(); i != params->end(); i++) {
+        string value  = (*i).getValue();
+        try {
+            CObject* paramObject = objects.at(value);
+
+            weight += getRealObjectWeight(paramObject, objects);
+        } catch (exception) {
+        }
+    }
+    return weight;
+}
+
+map<CObject*, int> AutomaticCoreAssigner::getRealDatastreamModuleWeights(DataLogger* dataLogger, int& totalWeight) {
+    map<string, CObject*> objects = dataLogger->getObjectsMap();
+    map<CObject*, int> result;
+
+    list<DatastreamObject*> datastreamModules = dataLogger->getDatastreamModules();
+    for (list<DatastreamObject*>::iterator it = datastreamModules.begin(); it != datastreamModules.end(); it++) {
+        int weight = getRealObjectWeight(*it, objects);
+        result[*it] = weight;
+        totalWeight += weight;
+        cout << "weight of " << (*it)->getName() << ": " << to_string(weight) << endl; //TODO
+    }
+
+    return result;
+}
+
+DatastreamObject* AutomaticCoreAssigner::findNextObject(list<DatastreamObject*> currentSet, std::unordered_set<DatastreamObject*>& done, list<DatastreamObject*>& queue, map<DatastreamObject*, map<DatastreamObject*, int>>& connections) {
+    int worst = 0;
+    DatastreamObject* nextObject = queue.front();
+
+    for (list<DatastreamObject*>::iterator it = currentSet.begin(); it != currentSet.end(); it++) {
+        DatastreamObject* current = *it;
+        for (map<DatastreamObject*, int>::iterator conIt = connections[current].begin(); conIt != connections[current].end(); conIt++) {
+            if (done.find(conIt->first) == done.end()) {
+              int value = conIt->second;
+              if (value > worst) {
+                  nextObject = conIt->first;
+                  worst = value;
+              }
+            }
+        }
+    }
+
+    queue.remove(nextObject);
+    done.insert(nextObject);
+    return nextObject;
+}
+
+float AutomaticCoreAssigner::evaluatePartition(map<int, list<DatastreamObject*>>& sets, map<DatastreamObject*, map<DatastreamObject*, int>>& connections, map<int, int>& setWeights, int totalWeight, int cores) {
+    float weightDistribution = 1.0f;
+
+    for (int curCore = 0; curCore < cores; curCore++) {
+        float localWeightDistribution = cores*setWeights[curCore] / (float)totalWeight;
+        weightDistribution *= localWeightDistribution;
+    }
+
+    int connectorWeight = 0;
+
+    for (int curCore = 0; curCore < cores; curCore++) {
+        list<DatastreamObject*> curSet = sets[curCore];
+        for (list<DatastreamObject*>::iterator setIt = curSet.begin(); setIt != curSet.end(); setIt++) {
+            DatastreamObject* dobject = *setIt;
+            map<DatastreamObject*, int> con = connections[dobject];
+            for (map<DatastreamObject*, int>::iterator conIt = con.begin(); conIt != con.end(); conIt++) {
+                DatastreamObject* dest = conIt->first;
+                int contains = false;
+                for (list<DatastreamObject*>::iterator it = curSet.begin(); it != curSet.end(); it++) {
+                    if (*it == dest) {
+                        contains = true;
+                        break;
+                    }
+                }
+                if (!contains) {
+                    connectorWeight += conIt->second;
+                }
+            }
+        }
+    }
+    connectorWeight /= 2; //we count every connection twice
+
+    cout << "found solution:" << endl;
+    cout << "weight Distribution: " << to_string(weightDistribution) << endl;
+    cout << "connector weight: " << to_string(connectorWeight) << endl;
+    float totalScore = 1.0f/weightDistribution * (connectorWeight+1);
+    cout << "total weight: " << to_string(totalScore) << endl << endl;
+    return totalScore;
+}
+
+map<int, list<DatastreamObject*>> AutomaticCoreAssigner::generatePartition(DataLogger* dataLogger, int cores, map<CObject*, int> weights, int weightPerCore, map<DatastreamObject*, map<DatastreamObject*, int>>& connections, int shuffle, int totalWeight, float& score) {
+    list<DatastreamObject*> queue = dataLogger->getDatastreamModules();
+
+    while (shuffle--) {
+        queue.push_back(queue.front());
+        queue.pop_front();
+    }
+
+    unordered_set<DatastreamObject*> done;
+    map<int, list<DatastreamObject*>> sets;
+    map<int, int> setWeights;
+
+    for (int curCore = 0; curCore < cores; curCore++) {
+        DatastreamObject* dobject = queue.front();
+        queue.pop_front();
+        done.insert(dobject);
+        int weightSum = weights.at(dobject);
+        sets[curCore].push_back(dobject);
+        while (((weightSum < weightPerCore) || (curCore == cores-1)) && !queue.empty()) {
+            dobject = findNextObject(sets[curCore], done, queue, connections);
+            sets[curCore].push_back(dobject);
+            weightSum += weights.at(dobject);
+        }
+        setWeights[curCore] = weightSum;
+        if (queue.empty()) {
+            break;
+        }
+    }
+    score = evaluatePartition(sets, connections, setWeights, totalWeight, cores);
+    return sets;
+}
+
+bool AutomaticCoreAssigner::assignCores(DataLogger* dataLogger, map<CObject*, int> weights, int totalWeight, map<DatastreamObject*, map<DatastreamObject*, int>>& connections, int cores) {
+    int weightPerCore = totalWeight / cores;
+
+    //if the total divided by the number of cores is larger than the totalWeight we have no chance to find a solution
+    if (weightPerCore > maxWeightPerCore) {
+        return false;
+    }
+
+    cout << "using " << to_string(cores) << " CPU core(s)" << endl;
+
+    map<int, list<DatastreamObject*>> bestSets;
+    float bestScore = numeric_limits<float>::max();
+    for (unsigned int shuffle = 0; shuffle < dataLogger->getDatastreamModules().size(); shuffle++) {
+      float score;
+      map<int, list<DatastreamObject*>> sets = generatePartition(dataLogger, cores, weights, weightPerCore, connections, shuffle, totalWeight, score);
+      if (score < bestScore) {
+          bestSets = sets;
+          bestScore = score;
+      }
+    }
+
+    cout << "partition result: (score: " << to_string(bestScore) << ")" << endl;
+    for (map<int, list<DatastreamObject*>>::iterator it = bestSets.begin(); it != bestSets.end(); it++) {
+        list<DatastreamObject*> l = it->second;
+        cout << "set " << to_string(it->first) << ": " << endl;
+        for (list<DatastreamObject*>::iterator a = l.begin(); a != l.end(); a++) {
+            cout << "\t" << (*a)->getName() << endl;
+        }
+    }
+
+
+    return true;
+}
+
+void AutomaticCoreAssigner::analyzeConnections(DataLogger* dataLogger, map<DatastreamObject*, map<DatastreamObject*, int>>& connections) {
+    list<DatastreamObject*> datastreamModules = dataLogger->getDatastreamModules();
+    for (list<DatastreamObject*>::iterator it = datastreamModules.begin(); it != datastreamModules.end(); it++) {
+        DatastreamObject* current = *it;
+        list<ControlPortOut*> coutPorts = current->getControlOutPorts();
+        list<DataPortOut*> dout = current->getDataOutPorts();
+
+        for (list<ControlPortOut*>::iterator coutIt = coutPorts.begin(); coutIt != coutPorts.end(); coutIt++) {
+            PortOut* p = *coutIt;
+            if (p->isConnected()) {
+                DatastreamObject* dest = p->getDestination()->getParent();
+                connections[current][dest] += CONTROL_STREAM_WEIGHT;
+                connections[dest][current] += CONTROL_STREAM_WEIGHT;
+            }
+        }
+        for (list<DataPortOut*>::iterator doutIt = dout.begin(); doutIt != dout.end(); doutIt++) {
+            PortOut* p = *doutIt;
+            if (p->isConnected()) {
+                DatastreamObject* dest = p->getDestination()->getParent();
+                connections[current][dest] += DATA_STREAM_WEIGHT;
+                connections[dest][current] += DATA_STREAM_WEIGHT;
+            }
+        }
+    }
+}
+
+bool AutomaticCoreAssigner::assignCores(DataLogger* dataLogger) {
+    cout << endl << "starting automatic core assignment" << endl;
+
+    int totalWeight = 0;
+    map<CObject*, int> weights = getRealDatastreamModuleWeights(dataLogger, totalWeight);
+    cout << "total weight of system: " << to_string(totalWeight) << endl << endl;
+
+    map<DatastreamObject*, map<DatastreamObject*, int>> connections;
+    analyzeConnections(dataLogger, connections);
+
+    cout << "searching for partitioning solutions" << endl
+         << "(weight Distribution should be close to 1)" << endl
+         << "(connector weight should be small)" << endl
+         << "(total weight should be small)" << endl;
+
+    for (int cores = minCores; cores <= DEFAULT_MAX_CORES; cores++) {
+        if (assignCores(dataLogger, weights, totalWeight, connections, cores)) {
+            return true;
+        }
+    }
+    return false;
 }
