@@ -7,6 +7,7 @@
 #include <QCoreApplication>
 #include <QDirIterator>
 #include "cobject.h"
+#include "datalogger.h"
 
 using namespace std;
 
@@ -186,7 +187,7 @@ void OutputGenerator::synthesizeSystem() {
     timingError = false;
     generateConfigFiles();
 
-    exec("make all");
+    //exec("make all"); //TODO
 }
 
 void OutputGenerator::synthesizeOnly() {

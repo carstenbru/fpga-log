@@ -30,6 +30,7 @@ private:
     QWidget* widget;
     QWidget* clockPinWidget;
     QWidget* clockFreqWidget;
+    QWidget* expertModeWidget;
 
     QComboBox* systemClkSelect;
 

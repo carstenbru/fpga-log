@@ -8,6 +8,7 @@
 #include "datatype.h"
 #include "cobject.h"
 #include "datastreamobject.h"
+#include "automaticcoreassigner.h"
 
 class DataLogger : public QObject
 {
@@ -35,11 +36,17 @@ public:
 
     void loadTargetPins();
 
+    void addCoreConnectors();
+    void addCoreConnector(DatastreamObject* module,PortOut* port, bool contolStream);
+
     CParameter* getTarget() { return &target; }
     CParameter* getClockPin() { return &clockPin; }
     CParameter* getClockFreq() { return &clockFreq; }
     CParameter* getClockDivideParam() { return &clockDivide; }
     CParameter* getClockMultiplyParam() { return &clockMultiply; }
+    CParameter* getExpertMode() { return &expertMode; }
+
+    bool isExpertMode() { return expertMode.getValue().compare("TRUE") == 0; }
 
     void setDefinitionsUpdated(bool state) {definitionsUpdated = state;}
     bool getDefinitionsUpdated() {return definitionsUpdated;}
@@ -51,6 +58,8 @@ public:
 
     static void loadTragetXMLs();
     static std::string getTargetXML(std::string target) { return targetXMLs.at(target); }
+
+    AutomaticCoreAssigner* getAutomaticCoreAssigner() { return &automaticCoreAssigner; }
 
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DataLogger& dataLogger);
     friend QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger);
@@ -75,6 +84,8 @@ private:
     CParameter clockDivide;
     CParameter clockMultiply;
 
+    CParameter expertMode;
+
     std::list<DatastreamObject*> datastreamObjects;
     std::vector<CObject*> otherObjects;
 
@@ -82,9 +93,12 @@ private:
 
     bool definitionsUpdated;
     std::string definitionsUpdatedModules;
+
+    AutomaticCoreAssigner automaticCoreAssigner;
 private slots:
     void moduleConnectionsChanged();
     void viaChanged();
+    void expertModeParamChanged(std::string value);
 public slots:
     void parameterChanged();
     void pinParamterChanged();
@@ -96,6 +110,7 @@ signals:
     void criticalParameterChanged();
     void pinChanged();
     void storePins();
+    void expertModeChanged(bool expertMode);
 };
 
 #endif // DATALOGGER_H

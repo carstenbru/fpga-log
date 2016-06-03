@@ -14,7 +14,7 @@
    <string>fpga-log</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../icons.qrc">
     <normaloff>:/icons/logo</normaloff>:/icons/logo</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -153,6 +153,9 @@
     <addaction name="actionSynthesizeOnly"/>
    </widget>
    <widget class="QMenu" name="menuTools">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="title">
      <string>Too&amp;ls</string>
     </property>
@@ -285,6 +288,9 @@
    </property>
   </action>
   <action name="actionPinOverview">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset theme="document-properties">
      <normaloff>.</normaloff>.</iconset>
@@ -294,6 +300,9 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionPasteModule">
@@ -318,11 +327,13 @@
   </action>
   <action name="actionDeveloperTools">
    <property name="text">
-    <string>Entwicklertools</string>
+    <string>&amp;Entwicklertools</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

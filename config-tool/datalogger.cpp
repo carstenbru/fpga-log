@@ -16,9 +16,11 @@ DataLogger::DataLogger() :
     clockFreq("Taktfrequenz", DataType::getType("peripheral_int"), false, "32000000"),
     clockDivide("clock divide", DataType::getType("sysclk_regs_t_CLKFX_DIVIDE"), false, "4"),
     clockMultiply("clock multiply", DataType::getType("sysclk_regs_t_CLKFX_MULTIPLY"), false, "2"),
+    expertMode("expert mode", DataType::getType("bool"), false, "FALSE"),
     definitionsUpdated(false)
 {
     loadTargetPins();
+    connect(&expertMode, SIGNAL(valueChanged(std::string)), this, SLOT(expertModeParamChanged(std::string)));
 }
 
 DataLogger::DataLogger(DataLogger& other) : QObject() {
@@ -308,6 +310,11 @@ QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DataLogger& dataLogger) {
 
     out << dataLogger.target << dataLogger.clockPin << dataLogger.clockFreq;
     out << dataLogger.clockDivide << dataLogger.clockMultiply;
+    out << dataLogger.expertMode;
+
+    if (dataLogger.isExpertMode()) {
+        out << dataLogger.automaticCoreAssigner;
+    }
 
     for (list<DatastreamObject*>::iterator i = dataLogger.datastreamObjects.begin(); i != dataLogger.datastreamObjects.end(); i++) {
         out << **i;
@@ -336,7 +343,7 @@ QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger) {
         return in;
     }
 
-    in >> dataLogger.target >> dataLogger.clockPin >> dataLogger.clockFreq;    
+    in >> dataLogger.target >> dataLogger.clockPin >> dataLogger.clockFreq;
     dataLogger.loadTargetPins();
 
     map<PortOut*, stringPair> connections;
@@ -354,7 +361,11 @@ QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger) {
                 dataLogger.clockDivide.loadFromXmlStream(in);
             } else if (in.attributes().value("name").compare("clock multiply") == 0) {
                 dataLogger.clockMultiply.loadFromXmlStream(in);
+            } else if (in.attributes().value("name").compare("expert mode") == 0) {
+                dataLogger.expertMode.loadFromXmlStream(in);
             }
+        } else if (in.name().compare("AutomaticCoreAssigner") == 0) {
+            in >> dataLogger.automaticCoreAssigner;
         } else
             in.skipCurrentElement();
     }
@@ -365,6 +376,8 @@ QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger) {
         if (dest != NULL)
             p->connectPort(dest);
     }
+
+    dataLogger.expertModeParamChanged(dataLogger.getExpertMode()->getValue());
 
     emit dataLogger.datastreamModulesChanged();
     emit dataLogger.otherModulesChanged();
@@ -386,4 +399,75 @@ void DataLogger::addObject(string name, bool isDataStreamObject, QXmlStreamReade
         otherObjects.push_back(co);
         emit otherModulesChanged();
     }
+}
+
+void DataLogger::addCoreConnector(DatastreamObject *module, PortOut* port, bool contolStream) {
+    Port* destinationPort = port->getDestination();
+    DatastreamObject* destinationModule = destinationPort->getParent();
+
+    string sinkName = module->getName() + "_" + port->getName() + "_connector";
+    DataTypeStruct* sinkType;
+    DataTypeStruct* sourceType;
+    if (contolStream) {
+        sinkType = DataTypeStruct::getType("dm_core_connector_control_sink_t");
+        sourceType = DataTypeStruct::getType("dm_core_connector_control_source_t");
+    } else {
+        sinkType = DataTypeStruct::getType("dm_core_connector_data_sink_t");
+        sourceType = DataTypeStruct::getType("dm_core_connector_data_source_t");
+    }
+    DatastreamObject* coreConnectorSink = new DatastreamObject(sinkName, sinkType, this);
+    addDataStreamObject(coreConnectorSink);
+    coreConnectorSink->setSpartanMcCore(module->getSpartanMcCore());
+
+    DatastreamObject* coreConnectorSource = new DatastreamObject(destinationModule->getName() + "_" + destinationPort->getName() + "_connector", sourceType, this);
+    addDataStreamObject(coreConnectorSource);
+    coreConnectorSource->setSpartanMcCore(destinationModule->getSpartanMcCore());
+
+    if (contolStream) {
+        port->connectPort(coreConnectorSink->getPort("control_in"));
+        destinationPort->connectPort(coreConnectorSource->getPort("control_out"));
+    } else {
+        port->connectPort(coreConnectorSink->getPort("data_in"));
+        destinationPort->connectPort(coreConnectorSource->getPort("data_out"));
+    }
+
+    transform(sinkName.begin(), sinkName.end(), sinkName.begin(), ::toupper);
+    string sourcePrefix = "SUBSYSTEM_" + to_string(module->getSpartanMcCore()) + "/" + sinkName + "_CORE_CONNECTOR/#PORT.";
+    SpmcPeripheral* conPeriph = *coreConnectorSource->getPeripherals().begin();
+    conPeriph->setFirstPortLine("Signals to connector-master", "read_enable", sourcePrefix+"read_enable");
+    conPeriph->setFirstPortLine("Signals from connector-master", "data_from_master", sourcePrefix+"data_to_slave");
+    conPeriph->setFirstPortLine("Signals from connector-master", "free_entries", sourcePrefix+"free_entries");
+    conPeriph->setFirstPortLine("Signals from connector-master", "used_entries", sourcePrefix+"used_entries");
+}
+
+void DataLogger::addCoreConnectors() {
+    for (list<DatastreamObject*>::iterator i = datastreamObjects.begin(); i != datastreamObjects.end(); i++) {
+        DatastreamObject* module = *i;
+
+        list<PortOut*> portsData = module->getOutPorts(PORT_TYPE_DATA_OUT);
+        list<PortOut*> portsContol = module->getOutPorts(PORT_TYPE_CONTROL_OUT);
+
+        for (list<PortOut*>::iterator portIt = portsContol.begin(); portIt != portsContol.end(); portIt++) {
+            PortOut* port = *portIt;
+            if (port->isConnected()) {
+                if (module->getSpartanMcCore() != port->getDestination()->getParent()->getSpartanMcCore()) {
+                    cout << "control core connector needed:" << module->getName() << " -> " << port->getDestination()->getParent()->getName() << endl;
+                    addCoreConnector(module, port, true);
+                }
+            }
+        }
+        for (list<PortOut*>::iterator portIt = portsData.begin(); portIt != portsData.end(); portIt++) {
+            PortOut* port = *portIt;
+            if (port->isConnected()) {
+                if (module->getSpartanMcCore() != port->getDestination()->getParent()->getSpartanMcCore()) {
+                    cout << "data core connector needed:" << module->getName() << " -> " << port->getDestination()->getParent()->getName() << endl;
+                    addCoreConnector(module, port, false);
+                }
+            }
+        }
+    }
+}
+
+void DataLogger::expertModeParamChanged(string value) {
+    emit expertModeChanged(value.compare("TRUE") == 0);
 }

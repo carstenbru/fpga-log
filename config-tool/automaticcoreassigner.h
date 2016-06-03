@@ -5,14 +5,16 @@
 #include <QFile>
 #include <map>
 #include <unordered_set>
-#include "datalogger.h"
 #include "datatype.h"
 #include "outputgenerator.h"
+#include "datastreamobject.h"
 
 #define DEFAULT_MAX_WEIGHT_PER_CORE 40000 //TODO adjust
 #define DEFAULT_MAX_CORES 128
-#define DATA_STREAM_WEIGHT 3
-#define CONTROL_STREAM_WEIGHT 2
+#define DEFAULT_DATA_STREAM_WEIGHT 3
+#define DEFAULT_CONTROL_STREAM_WEIGHT 2
+
+class DataLogger;
 
 class AutomaticCoreAssigner : public QObject
 {
@@ -27,6 +29,9 @@ public:
     void setMaxWeightPerCore(int maxWeightPerCore) { this->maxWeightPerCore = maxWeightPerCore; }
     bool assignCores(DataLogger* dataLogger);
     bool assignCores(DataLogger* dataLogger, std::map<CObject *, int> weights, int totalWeight, std::map<DatastreamObject *, std::map<DatastreamObject *, int> > &connections, int cores);
+
+    friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, AutomaticCoreAssigner& aco);
+    friend QXmlStreamReader& operator>>(QXmlStreamReader& in, AutomaticCoreAssigner& aco);
 private:
     void saveLogger(DataLogger* dataLogger);
     void addObject(DataLogger* logger, DataTypeStruct* dataType);
@@ -62,6 +67,8 @@ private:
     int maxCores;
     int minCores;
     int maxWeightPerCore;
+    int dataStreamWeight;
+    int controlStreamWeight;
 
     static int averageWeight;
 signals:

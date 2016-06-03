@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <math.h>
 #include "outputgenerator.h"
+#include "datalogger.h"
 
 using namespace std;
 
@@ -14,7 +15,10 @@ int AutomaticCoreAssigner::averageWeight;
 AutomaticCoreAssigner::AutomaticCoreAssigner() :
     maxCores(DEFAULT_MAX_CORES),
     minCores(1),
-    maxWeightPerCore(DEFAULT_MAX_WEIGHT_PER_CORE) {
+    maxWeightPerCore(DEFAULT_MAX_WEIGHT_PER_CORE),
+    dataStreamWeight(DEFAULT_DATA_STREAM_WEIGHT),
+    controlStreamWeight(DEFAULT_CONTROL_STREAM_WEIGHT)
+{
 
 }
 
@@ -311,6 +315,8 @@ bool AutomaticCoreAssigner::assignCores(DataLogger* dataLogger, map<CObject*, in
         list<DatastreamObject*> l = it->second;
         cout << "set " << to_string(it->first) << ": " << endl;
         for (list<DatastreamObject*>::iterator a = l.begin(); a != l.end(); a++) {
+            (*a)->setSpartanMcCore(it->first);
+
             cout << "\t" << (*a)->getName() << endl;
         }
     }
@@ -330,16 +336,16 @@ void AutomaticCoreAssigner::analyzeConnections(DataLogger* dataLogger, map<Datas
             PortOut* p = *coutIt;
             if (p->isConnected()) {
                 DatastreamObject* dest = p->getDestination()->getParent();
-                connections[current][dest] += CONTROL_STREAM_WEIGHT;
-                connections[dest][current] += CONTROL_STREAM_WEIGHT;
+                connections[current][dest] += controlStreamWeight;
+                connections[dest][current] += controlStreamWeight;
             }
         }
         for (list<DataPortOut*>::iterator doutIt = dout.begin(); doutIt != dout.end(); doutIt++) {
             PortOut* p = *doutIt;
             if (p->isConnected()) {
                 DatastreamObject* dest = p->getDestination()->getParent();
-                connections[current][dest] += DATA_STREAM_WEIGHT;
-                connections[dest][current] += DATA_STREAM_WEIGHT;
+                connections[current][dest] += dataStreamWeight;
+                connections[dest][current] += dataStreamWeight;
             }
         }
     }
@@ -360,10 +366,35 @@ bool AutomaticCoreAssigner::assignCores(DataLogger* dataLogger) {
          << "(connector weight should be small)" << endl
          << "(total weight should be small)" << endl;
 
-    for (int cores = minCores; cores <= DEFAULT_MAX_CORES; cores++) {
+    for (int cores = minCores; cores <= maxCores; cores++) {
         if (assignCores(dataLogger, weights, totalWeight, connections, cores)) {
             return true;
         }
     }
     return false;
+}
+
+QXmlStreamWriter& operator<<(QXmlStreamWriter& out, AutomaticCoreAssigner& aco) {
+    out.writeStartElement("AutomaticCoreAssigner");
+
+    out.writeAttribute("minCores", to_string(aco.minCores).c_str());
+    out.writeAttribute("maxCores", to_string(aco.maxCores).c_str());
+    out.writeAttribute("maxWeightPerCore", to_string(aco.maxWeightPerCore).c_str());
+    out.writeAttribute("dataStreamWeight", to_string(aco.dataStreamWeight).c_str());
+    out.writeAttribute("controlStreamWeight", to_string(aco.controlStreamWeight).c_str());
+
+    out.writeEndElement();
+    return out;
+}
+
+QXmlStreamReader& operator>>(QXmlStreamReader& in, AutomaticCoreAssigner& aco) {
+    const QXmlStreamAttributes& a = in.attributes();
+    aco.minCores = a.value("minCores").toString().toInt();
+    aco.maxCores = a.value("maxCores").toString().toInt();
+    aco.maxWeightPerCore = a.value("maxWeightPerCore").toString().toInt();
+    aco.dataStreamWeight = a.value("dataStreamWeight").toString().toInt();
+    aco.controlStreamWeight = a.value("controlStreamWeight").toString().toInt();
+
+    in.skipCurrentElement();
+    return in;
 }

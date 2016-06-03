@@ -51,6 +51,10 @@ void TargetConfigDialog::generateUi() {
     freqChanged(clockFreqValue);
 
     layout->addRow("Systemtaktfrequenz", systemClkSelect);
+
+    CParameter* expertMode = dataLogger->getExpertMode();
+    expertModeWidget = expertMode->getDataType()->getConfigWidget(dataLogger, expertMode);
+    layout->addRow("Expertenmodus", expertModeWidget);
 }
 
 void TargetConfigDialog::targetChanged(QString newTarget) {
@@ -133,6 +137,9 @@ void TargetConfigDialog::storeParams() {
     pair<int, int> c = freqCoefficients.at(freq);
     dataLogger->getClockDivideParam()->setValue(to_string(c.first));
     dataLogger->getClockMultiplyParam()->setValue(to_string(c.second));
+
+    CParameter* expertMode = dataLogger->getExpertMode();
+    expertMode->setValue(expertMode->getDataType()->getConfigData(expertModeWidget));
 
     if (systemClkSelect->currentText().startsWith("(")) {
         QString text = QString::fromUtf8("Sie haben eine nicht empfohlene Taktfrequenz gewählt. Dies kann zu unerwünschtem Verhalten führen! Nutzen sie diese Frequenz nur wenn sie sicher sind was sie tun!");

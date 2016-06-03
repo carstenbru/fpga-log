@@ -1,16 +1,18 @@
 #ifndef OUTPUTGENERATOR_H
 #define OUTPUTGENERATOR_H
 
-#include "datalogger.h"
 #include <iostream>
 #include <map>
 #include <set>
 #include <QObject>
 #include <QProcess>
 #include <sstream>
+#include "cobject.h"
 
 #define MAX_BLOCK_RAMS 42
 #define OPTIMIZE_BLOCK_RAMS true
+
+class DataLogger;
 
 class FpgaPin {
 public:

@@ -13,6 +13,7 @@
 #include "developertools.h"
 #include "datalogger.h"
 #include "pinoverview.h"
+#include "automaticcoreassigner.h"
 
 using namespace std;
 
@@ -23,7 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     dataLoggerSaved(true),
     bitfileGenerated(false),
     outputGenerator(NULL),
-    otherModel()
+    otherModel(),
+    expertMenu(NULL)
 {
     ui->setupUi(this);
     new ConsoleRedirector(cout, ui->textBrowser, "Black");
@@ -171,6 +173,10 @@ bool MainWindow::newOutputGenerator() {
 
     clearErrorList();
 
+    if (!dataLogger->isExpertMode()) {
+        coreAssigner();
+    }
+
     outputGenerator = new OutputGenerator(dataLogger, QFileInfo(dataLoggerPath.c_str()).dir().absolutePath().toStdString());
     connect(outputGenerator, SIGNAL(finished(bool, bool)), this, SLOT(outputGeneratorFinished(bool, bool)));
     connect(outputGenerator, SIGNAL(errorFound(std::string)), this, SLOT(addErrorToList(std::string)));
@@ -303,6 +309,9 @@ void MainWindow::newLogger() {
         connect(dataLogger, SIGNAL(viasChanged()), this, SLOT(dataLoggerChanged()));
         connect(dataLogger, SIGNAL(datastreamModulesChanged()), this, SLOT(dataLoggerChanged()));
         connect(dataLogger, SIGNAL(otherModulesChanged()), this, SLOT(dataLoggerChanged()));
+
+        connect(dataLogger, SIGNAL(expertModeChanged(bool)), this, SLOT(expertModeChanged(bool)));
+        expertModeChanged(dataLogger->isExpertMode());
 
         datastreamView->setDataLogger(dataLogger);
         datastreamView->redrawModules();
@@ -462,4 +471,25 @@ void MainWindow::clearErrorList() {
 
 void MainWindow::addErrorToList(std::string message) {
     ui->errorList->addItem(message.c_str());
+}
+
+void MainWindow::coreAssigner() {
+    AutomaticCoreAssigner* aco = dataLogger->getAutomaticCoreAssigner();
+    connect(aco, SIGNAL(warningFound(std::string)), this, SLOT(addErrorToList(std::string)));
+    aco->assignCores(dataLogger);
+}
+
+void MainWindow::expertModeChanged(bool expertMode) {
+    if (expertMode) {
+        if (expertMenu == NULL) {
+            expertMenu = ui->menuBar->addMenu("Experte");
+            QAction* coreAssigner = expertMenu->addAction("CoreAssigner");
+            connect(coreAssigner, SIGNAL(triggered()), this, SLOT(coreAssigner()));
+        }
+    } else {
+        if (expertMenu != NULL) {
+            delete expertMenu;
+            expertMenu = NULL;
+        }
+    }
 }

@@ -5,6 +5,7 @@
 #include <map>
 #include <QModelIndex>
 #include <string>
+#include <QMenu>
 #include "cobject.h"
 #include "datastreamview.h"
 #include "datatype.h"
@@ -46,6 +47,8 @@ private:
     DataLoggerOtherModel otherModel;
 
     std::string clipboardObjectDescription;
+
+    QMenu* expertMenu;
 public slots:
     void closeEvent(QCloseEvent* event);
 
@@ -61,6 +64,7 @@ public slots:
     void flash();
 
     void developerTools();
+    void coreAssigner();
 
     void newLogger();
     void open();
@@ -78,6 +82,7 @@ private slots:
     void otherObjectCopy();
     void outputGeneratorFinished(bool errorOccured, bool timingError);
     void dataLoggerChanged();
+    void expertModeChanged(bool expertMode);
 };
 
 #endif // MAINWINDOW_H
