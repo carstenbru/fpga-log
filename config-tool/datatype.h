@@ -145,6 +145,16 @@ private:
     static DataTypeEnumeration controlParameterType;
 };
 
+class DataTypeBoolean : public DataTypeEnumeration {
+public:
+    DataTypeBoolean(std::string name, bool globalType);
+    DataTypeBoolean(std::string name, std::string headerFile, bool globalType);
+    virtual ~DataTypeBoolean() {}
+
+    virtual QWidget* getConfigWidget(DataLogger*dataLogger, CParameter* param);
+    virtual std::string getConfigData(QWidget* widget);
+};
+
 class DataTypeString : public DataType {
 public:
     DataTypeString(std::string name, bool globalType) : DataType(name, globalType) {}

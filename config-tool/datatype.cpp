@@ -2,6 +2,7 @@
 #include <iostream>
 #include <QSpinBox>
 #include <QLineEdit>
+#include <QCheckBox>
 #include <QHBoxLayout>
 #include <sstream>
 #include <math.h>
@@ -260,6 +261,38 @@ std::string DataTypeEnumeration::getValueReference(std::string enumerationValue)
     }
     return "";
 }
+
+DataTypeBoolean::DataTypeBoolean(std::string name, bool globalType) :
+    DataTypeEnumeration(name, globalType)
+{
+    addValue("FALSE");
+    addValue("TRUE");
+}
+
+DataTypeBoolean::DataTypeBoolean(std::string name, string headerFile, bool globalType) :
+    DataTypeEnumeration(name, headerFile, globalType)
+{
+    addValue("FALSE");
+    addValue("TRUE");
+}
+
+std::string DataTypeBoolean::getConfigData(QWidget* widget) {
+    QCheckBox* cbox = dynamic_cast<QCheckBox*>(widget);
+    return cbox->isChecked() ? "TRUE" : "FALSE";
+}
+
+QWidget* DataTypeBoolean::getConfigWidget(DataLogger* dataLogger, CParameter *param) {
+    QCheckBox* cbox = new QCheckBox();
+    if (param->getValue().compare("TRUE") == 0) {
+        cbox->setChecked(true);
+    }
+    if (param->getCritical()) {
+        QObject::connect(cbox, SIGNAL(toggled(bool)), dataLogger, SLOT(parameterChanged()));
+    }
+
+    return cbox;
+}
+
 
 QWidget* DataTypeString::getConfigWidget(DataLogger*, CParameter *param) {
     QLineEdit* lEdit = new QLineEdit();
