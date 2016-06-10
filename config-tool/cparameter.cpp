@@ -1,3 +1,10 @@
+/**
+ * @file cparameter.cpp
+ * @brief CParameter class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "cparameter.h"
 #include "datatype.h"
 #include <iostream>

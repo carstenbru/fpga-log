@@ -1,3 +1,10 @@
+/**
+ * @file datalogger.cpp
+ * @brief DataLogger class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "datalogger.h"
 #include <sstream>
 #include <iostream>

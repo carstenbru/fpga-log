@@ -1,3 +1,10 @@
+/**
+ * @file port.cpp
+ * @brief various port classes (module connections)
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "port.h"
 #include "datastreamobject.h"
 

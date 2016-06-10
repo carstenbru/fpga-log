@@ -1,6 +1,7 @@
 .directory
 /.settings
 /doc
+/doc-config-tool
 
 jconfig.log
 /testsystem/build

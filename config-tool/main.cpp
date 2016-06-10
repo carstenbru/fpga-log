@@ -1,3 +1,10 @@
+/**
+ * @file main.cpp
+ * @brief config-tool main file
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "gui/mainwindow.h"
 #include <QApplication>
 #include <iostream>
@@ -8,11 +15,10 @@
 
 using namespace std;
 
-int main(int argc, char *argv[])
-{
-    DataLogger::loadTragetXMLs();
-    SpmcPeripheral::loadPeripheralXMLs();
-
+/**
+ * @brief creates the general data types used later in the program (e.g. for datalogger parameters)
+ */
+void createDataTypes() {
     new DataType("void", true);
     new DataTypeBoolean("bool", true);
     new DataTypeChar("char", true);
@@ -27,10 +33,26 @@ int main(int argc, char *argv[])
     new DataTypeNumber("peripheral_int", -2147483648, 2147483647, true);
     new DataTypeFloat("coefficient_t", -9.9999, 9.9999, 4, true, true);
 
+}
+
+/**
+ * @brief main program main function
+ * @param argc argument count
+ * @param argv commmand line arguments
+ * @return program result code
+ */
+int main(int argc, char *argv[]) {
+    DataLogger::loadTragetXMLs();
+    SpmcPeripheral::loadPeripheralXMLs();
+
+    createDataTypes();
+
     //create a dummy peripheral of dummy type sysclk_regs_t to force loading of clock divider and multiply data types
     new DataType("sysclk_regs_t", true);
     SpmcPeripheral("clk_dummy", DataType::getType("sysclk_regs_t"), NULL, NULL);
 
+
+    //parse all header files to learn the fpga-log modules and other properties
     HeaderParser hp = HeaderParser(true);
     string spmc_root = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();
     if (!spmc_root.empty()) {
@@ -42,9 +64,11 @@ int main(int argc, char *argv[])
         hp.parseFiles();
     }
 
+    //read in module weights used for automatic core assignment
     AutomaticCoreAssigner aca;
     aca.readModuleWeights();
 
+    //start GUI
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
