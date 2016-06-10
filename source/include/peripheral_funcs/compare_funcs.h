@@ -2,7 +2,7 @@
  * @file compare_funcs.h
  * @brief functions to control SpartanMC's compare peripheral
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef COMPARE_H_

@@ -2,7 +2,7 @@
  * @file pwm.h
  * @brief pwm peripheral registers
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef __PWM_H

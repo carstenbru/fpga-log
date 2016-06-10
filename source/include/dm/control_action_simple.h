@@ -5,7 +5,7 @@
  * This can be used for example as an action performed on a trigger or timer event.
  * Use this as super-"class" for more complex conditions.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef CONTROL_ACTION_SIMPLE_H_

@@ -4,7 +4,7 @@
  * 
  * This should be used as super-"class" for formatter implementations.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef FORMATTER_H_

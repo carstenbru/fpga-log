@@ -4,7 +4,7 @@
  *
  * This module is transparent to the user, usually instantiated automatically by the config-tool.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/dm/dm_core_connector_data_source.h>

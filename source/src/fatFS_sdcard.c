@@ -2,7 +2,7 @@
  * @file fatFS_sdcard.c
  * @brief FatFs disk I/O layer for sdcard peripheral
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/FatFs/ff.h>

@@ -2,7 +2,7 @@
  * @file device_PANdrive.h
  * @brief device driver (UART) for PANdrive motors of trinamic
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DEVICE_PANDRIVE_H_

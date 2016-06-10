@@ -2,7 +2,7 @@
  * @file datastream_source.h
  * @brief datastream_source as super-class for data sources (devices), send_data function for all datastream_sources
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DATASTREAMS_SOURCE_H_

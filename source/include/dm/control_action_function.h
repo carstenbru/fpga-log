@@ -4,7 +4,7 @@
  *
  * This can be used for example as an action performed on a trigger or timer event.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef CONTROL_ACTION_FUNCTION_H_

@@ -2,7 +2,7 @@
  * @file pc_compatibility.h
  * @brief defintions needed to run and simulate the code natively on a PC
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef PC_COMPATIBILITY_H_

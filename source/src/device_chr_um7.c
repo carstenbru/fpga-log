@@ -2,7 +2,7 @@
  * @file device_chr_um7.c
  * @brief CHR-UM7 orientation sensor device driver (Binary protocol)
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/device/device_chr_um7.h>

@@ -2,7 +2,7 @@
  * @file control_protocol_ascii.c
  * @brief ASCII control protocol
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/sink/control_protocol_ascii.h>

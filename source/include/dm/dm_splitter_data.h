@@ -4,7 +4,7 @@
  *
  * This module can be used to split a data-stream and send it to multiple targets.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DM_SPLITTER_DATA_H_

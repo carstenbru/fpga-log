@@ -5,7 +5,7 @@
  * This can be used for example as function for a control_action_function
  * Use this as super-"class" for function implementations.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef FUNCTION_GEN_H_

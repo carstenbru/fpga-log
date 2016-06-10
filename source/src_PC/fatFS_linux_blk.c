@@ -2,7 +2,7 @@
  * @file fatFS_linux_blk.c
  * @brief FatFs disk I/O layer for linux block devices
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <time.h>

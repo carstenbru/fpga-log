@@ -4,7 +4,7 @@
  *
  * This can be used for example as an action performed on a trigger or timer event.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/dm/control_action_function.h>

@@ -4,7 +4,7 @@
  *
  * These functions are needed to fix some problems in the SpartanMC long int support.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 /**

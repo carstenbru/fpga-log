@@ -2,7 +2,7 @@
  * @file control_port.h
  * @brief control_port structure to realize control interface to device drivers
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef CONTROL_PORT_H_

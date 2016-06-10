@@ -2,7 +2,7 @@
  * @file formatter_raw.c
  * @brief output log formatter which outputs the received values directly (without additional data, e.g. for GPS messages)
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <stdio.h>

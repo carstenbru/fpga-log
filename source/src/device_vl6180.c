@@ -2,7 +2,7 @@
  * @file device_vl6180.c
  * @brief VL6180 proximity and ambient light sensor
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/device/device_vl6180.h>

@@ -2,7 +2,7 @@
  * @file control_protocol.c
  * @brief abstract control protocol super-"class"
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/sink/control_protocol.h>

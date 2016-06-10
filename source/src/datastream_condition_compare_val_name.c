@@ -7,7 +7,7 @@
  *
  * The compare string can include '*' for an unknown number of don't care characters
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/dm/datastream_condition_compare_val_name.h>

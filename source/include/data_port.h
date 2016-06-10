@@ -2,7 +2,7 @@
  * @file data_port.h
  * @brief data_port and data_package structures to realize datastreams from devices to sinks
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DATA_PORT_H_

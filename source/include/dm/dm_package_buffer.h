@@ -2,7 +2,7 @@
  * @file dm_package_buffer.h
  * @brief module to buffer data_packages until requested
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 //TODO build a module around this!!!

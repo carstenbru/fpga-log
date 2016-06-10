@@ -5,7 +5,7 @@
  * This module can be used to trigger a measurement (on the control-port)
  * on a specific condition on the data-port.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DM_TRIGGER_H_

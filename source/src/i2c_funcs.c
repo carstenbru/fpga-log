@@ -2,7 +2,7 @@
  * @file src/i2c_funcs.c
  * @brief functions to control SpartanMC's i2c-master peripheral
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/peripheral_funcs/i2c_funcs.h>

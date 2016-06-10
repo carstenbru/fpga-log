@@ -2,7 +2,7 @@
  * @file control_protocol.h
  * @brief abstract control protocol super-"class"
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef CONTROL_PROTOCOL_H_

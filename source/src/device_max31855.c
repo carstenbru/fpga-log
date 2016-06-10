@@ -2,7 +2,7 @@
  * @file device_max31855.c
  * @brief MAX31855 thermocouple-to-digital device driver
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/device/device_max31855.h>

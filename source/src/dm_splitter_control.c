@@ -4,7 +4,7 @@
  *
  * This module can be used to split a control-stream and send it to multiple targets.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/dm/dm_splitter_control.h>

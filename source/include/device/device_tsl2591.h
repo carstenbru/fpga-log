@@ -2,7 +2,7 @@
  * @file device_tsl2591.h
  * @brief TSL2591 two channel ambient light sensor (full spectrum, infrared)
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DEVICE_TSL2591_H_

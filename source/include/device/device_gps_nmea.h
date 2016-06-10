@@ -2,7 +2,7 @@
  * @file device_gps_nmea.h
  * @brief GPS receiver device driver (NMEA protocol)
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DEVICE_GPS_NMEA_H_

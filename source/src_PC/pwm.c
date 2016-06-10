@@ -4,7 +4,7 @@
  *
  * The simulation prints the configuration calls to a pipe.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <stdio.h>

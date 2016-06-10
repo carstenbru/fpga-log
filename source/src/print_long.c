@@ -2,7 +2,7 @@
  * @file print_long.c
  * @brief long integer print function
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <stdio.h>

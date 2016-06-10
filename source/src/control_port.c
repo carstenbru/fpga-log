@@ -2,7 +2,7 @@
  * @file control_port.c
  * @brief control_port implementations to realize control interface to device drivers
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/control_port.h>

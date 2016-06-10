@@ -2,7 +2,7 @@
  * @file sys_init.c
  * @brief system initialization
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/sys_init.h>

@@ -8,7 +8,7 @@
  * For controlling by a PC via an ASCII protocol the usage of the 'c'-parameter is recommended, for
  * internal control commands using the command code as parameter type is recommended.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/device/device_PANdrvie.h>

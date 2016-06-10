@@ -2,7 +2,7 @@
  * @file uart_light_funcs.h
  * @brief additional functions for SpartanMC's uart_light peripheral
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef UART_LIGHT_FUNCS_H_

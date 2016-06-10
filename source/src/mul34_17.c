@@ -2,7 +2,7 @@
  * @file mul34_17.c
  * @brief 34-bit * 17-bit multiplication (truncated to 34-bit)
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/long_int.h>

@@ -2,7 +2,7 @@
  * @file simple_float.h
  * @brief simple floating point implementation (base 10)
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef SIMPLE_FLOAT_H_

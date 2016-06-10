@@ -4,7 +4,7 @@
  *
  * This module is transparent to the user, usually instantiated automatically by the config-tool.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DM_CORE_CONNECTOR_CONTROL_SOURCE_H_

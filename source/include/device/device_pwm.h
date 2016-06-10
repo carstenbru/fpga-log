@@ -2,7 +2,7 @@
  * @file device_pwm.h
  * @brief pwm device driver (only control in)
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DEVICE_PWM_H_

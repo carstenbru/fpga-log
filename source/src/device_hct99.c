@@ -2,7 +2,7 @@
  * @file device_hct99.c
  * @brief HCT-99 optometer device driver
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/device/device_hct99.h>

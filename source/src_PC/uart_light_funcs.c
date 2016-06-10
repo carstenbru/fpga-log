@@ -2,7 +2,7 @@
  * @file src_PC/uart_light_funcs.c
  * @brief native PC functions to simulate SpartanMC's uart light peripheral
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <uart.h>

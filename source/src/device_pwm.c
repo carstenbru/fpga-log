@@ -2,7 +2,7 @@
  * @file device_pwm.c
  * @brief pwm device driver (only control in)
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/device/device_pwm.h>

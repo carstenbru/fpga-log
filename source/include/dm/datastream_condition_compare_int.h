@@ -6,7 +6,7 @@
  * The new value is compared with a reference value.
  * The condition can also be set on the source id instead the measured value.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DATASTREAM_CONDITION_COMPARE_INT_H_

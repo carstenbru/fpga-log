@@ -2,7 +2,7 @@
  * @file main.c
  * @brief main source file containing main routine
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <system/peripherals.h>

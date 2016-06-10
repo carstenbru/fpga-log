@@ -2,7 +2,7 @@
  * @file logger_config.h
  * @brief configuration of the datalogger modules
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef LOGGER_CONFIG_H_

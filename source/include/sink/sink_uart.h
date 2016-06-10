@@ -2,7 +2,7 @@
  * @file sink_uart.h
  * @brief uart data sink, e.g. as interface to PC
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef SINK_UART_H_

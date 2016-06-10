@@ -2,7 +2,7 @@
  * @file sdcard.h
  * @brief sd card peripheral registers
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef __SDCARD_H

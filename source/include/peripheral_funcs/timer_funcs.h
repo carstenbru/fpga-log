@@ -2,7 +2,7 @@
  * @file timer_funcs.h
  * @brief functions to control SpartanMC's timer peripheral
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef TIMER_H_

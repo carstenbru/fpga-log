@@ -2,7 +2,7 @@
  * @file device_max5825.h
  * @brief MAX5825 12-bit 8-channel DAC device driver
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DEVICE_MAX5825_H_

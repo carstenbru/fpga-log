@@ -2,7 +2,7 @@
  * @file sys_init.h
  * @brief system initialization
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef SYS_INIT_H_

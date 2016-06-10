@@ -2,7 +2,7 @@
  * @file sink_sd_card.c
  * @brief sd card sink, supports FAT filesystems
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/sink/sink_sd_card.h>

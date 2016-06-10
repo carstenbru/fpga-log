@@ -2,7 +2,7 @@
  * @file sink_uart.c
  * @brief uart data sink, e.g. as interface to PC
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/sink/sink_uart.h>

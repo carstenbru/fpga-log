@@ -2,7 +2,7 @@
  * @file datastream_object.h
  * @brief datastream_object as super-class for sinks/devices, update function to update all datastream_objects
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DATASTREAMS_OBJECT_H_

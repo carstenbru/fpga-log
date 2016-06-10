@@ -2,7 +2,7 @@
  * @file timestamp_gen.h
  * @brief timestamp generator peripheral registers
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef __TIMESTAMP_GEN_H

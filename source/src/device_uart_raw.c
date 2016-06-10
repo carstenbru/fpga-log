@@ -2,7 +2,7 @@
  * @file device_uart_raw.c
  * @brief simple raw uart logging device driver
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/device/device_uart_raw.h>

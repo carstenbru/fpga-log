@@ -2,7 +2,7 @@
  * @file control_protocol_ascii.h
  * @brief ASCII control protocol
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef CONTROL_PROTOCOL_ASCII_H_

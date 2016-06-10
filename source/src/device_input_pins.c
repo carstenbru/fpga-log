@@ -2,7 +2,7 @@
  * @file device_input_pins.c
  * @brief simple Pin input device (e.g. to connect switches)
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/device/device_input_pins.h>

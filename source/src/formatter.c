@@ -2,7 +2,7 @@
  * @file formatter.c
  * @brief output log formatter
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <stdio.h>

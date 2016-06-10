@@ -2,7 +2,7 @@
  * @file spi_funcs.h
  * @brief additional functions to control SpartanMC's spi-master peripheral
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef SPI_FUNCS_H_

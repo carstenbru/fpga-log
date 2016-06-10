@@ -2,7 +2,7 @@
  * @file formatter_simple.h
  * @brief simple output log formatter which only outputs a message count and the value
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef FORMATTER_SIMPLE_H_

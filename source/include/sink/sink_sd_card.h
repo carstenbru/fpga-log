@@ -2,7 +2,7 @@
  * @file sink_sd_card.h
  * @brief sd card sink, supports FAT filesystems
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef SINK_SD_CARD_H_

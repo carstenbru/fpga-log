@@ -2,7 +2,7 @@
  * @file sd_file.h
  * @brief sd card file object
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef SD_FILE_H_

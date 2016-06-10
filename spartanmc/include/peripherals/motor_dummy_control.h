@@ -2,7 +2,7 @@
  * @file motor_dummy_control.h
  * @brief motor_dummy_control peripheral registers
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef __MOTOR_DUMMY_CONTROL_H

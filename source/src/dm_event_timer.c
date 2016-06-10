@@ -4,7 +4,7 @@
  *
  * This module can be used to generate control commands with various timings.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/dm/dm_event_timer.h>

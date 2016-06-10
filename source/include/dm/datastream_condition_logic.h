@@ -4,7 +4,7 @@
  *
  * This can be used to create more complex conditions
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DATASTREAM_CONDITION_LOGIC_H_

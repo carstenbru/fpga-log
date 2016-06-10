@@ -5,7 +5,7 @@
  * These functions are needed to fix some problems in the SpartanMC long int support.
  * This is the PC implementation.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 unsigned long int cast_to_ulong(unsigned int i) {

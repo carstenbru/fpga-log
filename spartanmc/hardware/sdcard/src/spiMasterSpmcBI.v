@@ -13,7 +13,7 @@
 ////                                                              ////
 //// Author(s):                                                   ////
 //// - Steve Fielding, sfielding@base2designs.com                 ////
-//// - changed by Carsten Bruns, bruns@lichttechnik.tu-darmstadt.de //
+//// - changed by Carsten Bruns, carst.bruns@gmx.de               ////
 ////                                                              ////
 //////////////////////////////////////////////////////////////////////
 ////                                                              ////

@@ -4,7 +4,7 @@
  *
  * This module can be used to generate periodic measurements.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DM_TIMER_H_

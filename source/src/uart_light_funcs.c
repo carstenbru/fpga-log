@@ -2,7 +2,7 @@
  * @file src/uart_light_funcs.c
  * @brief additional functions for SpartanMC's uart_light peripheral
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/peripheral_funcs/uart_light_funcs.h>

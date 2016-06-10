@@ -5,7 +5,7 @@
  * This can be used for example as trigger or filter conditions.
  * Use this as super-"class" for more complex conditions.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DATASTREAM_CONDITION_H_

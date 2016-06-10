@@ -4,7 +4,7 @@
  *
  * This module can be used to filter a datastream with a specific condition.
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/dm/dm_filter.h>

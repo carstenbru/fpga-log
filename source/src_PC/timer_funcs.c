@@ -2,7 +2,7 @@
  * @file src_PC/timer_funcs.c
  * @brief native PC functions to simulate SpartanMC's timer peripheral
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include "peripheral_funcs/timer_funcs.h"

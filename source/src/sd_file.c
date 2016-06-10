@@ -2,7 +2,7 @@
  * @file sd_file.c
  * @brief sd card file object
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <fpga-log/sink/sd_file.h>

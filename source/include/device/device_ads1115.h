@@ -2,7 +2,7 @@
  * @file device_ads1115.h
  * @brief ADS1115 16-bit 4-channel (single-ended, alternatively 2-channel differential) ADC device driver
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DEVICE_ADS1115_H_

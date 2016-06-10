@@ -2,7 +2,7 @@
  * @file device_hct99.h
  * @brief HCT-99 optometer device driver
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef DEVICE_HCT99_H_

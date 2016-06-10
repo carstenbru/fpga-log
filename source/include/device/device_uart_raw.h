@@ -2,7 +2,7 @@
  * @file device_uart_raw.h
  * @brief simple raw uart logging device driver
  * 
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #ifndef UART_RAW_H_

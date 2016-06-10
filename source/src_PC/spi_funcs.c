@@ -2,7 +2,7 @@
  * @file src_PC/spi_funcs.c
  * @brief native PC functions to simulate SpartanMC's spi-master peripheral
  *
- * @author Carsten Bruns (bruns@lichttechnik.tu-darmstadt.de)
+ * @author Carsten Bruns (carst.bruns@gmx.de)
  */
 
 #include <spi.h>
