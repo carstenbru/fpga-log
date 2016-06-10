@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = config-tool
 TEMPLATE = app
+TRANSLATIONS = $${TARGET}_de.ts
 
 QMAKE_CXXFLAGS += -std=c++11
 
@@ -77,3 +78,6 @@ FORMS    += gui/mainwindow.ui \
 
 RESOURCES += \
     icons.qrc
+
+DISTFILES += \
+    config-tool_de.qm

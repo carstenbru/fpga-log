@@ -74,7 +74,7 @@ void ConfigObjectDialog::addNameGroup(QLayout* parent) {
 
     objectName = new QLineEdit();
     objectName->setText(QString(object->getName().c_str()));
-    layout->addRow("Objektname", objectName);
+    layout->addRow(tr("Object name"), objectName);
 
     connect(objectName, SIGNAL(editingFinished()), this, SLOT(nameEdited()));
 
@@ -83,11 +83,11 @@ void ConfigObjectDialog::addNameGroup(QLayout* parent) {
         if (datastreamObject != NULL) {
             spartanMcCoreEdit = new QSpinBox();
             spartanMcCoreEdit->setValue(object->getSpartanMcCore());
-            layout->addRow("Prozessor", spartanMcCoreEdit);
+            layout->addRow(tr("Processor"), spartanMcCoreEdit);
         }
     }
 
-    addGroup(parent, "Objekt",layout);
+    addGroup(parent, tr("Object").toStdString(),layout);
 }
 
 void ConfigObjectDialog::addPortsGroup(QLayout *parent, string groupName, list<PeripheralPort *>& ports) {
@@ -179,7 +179,7 @@ void ConfigObjectDialog::addHardwareParametersGroup(QLayout *parent) {
             addPortsGroup(pinLayout, i->first, i->second);
         }
     }
-    addGroup(layout, "Pins", pinLayout);
+    addGroup(layout, tr("Pins").toStdString(), pinLayout);
 
     QWidget* tpWidget = new QWidget();
     QFormLayout* tpLayout = new QFormLayout();
@@ -193,7 +193,7 @@ void ConfigObjectDialog::addHardwareParametersGroup(QLayout *parent) {
         widget->deleteLater();
     }
 
-    addGroup(parent, "Hardware Parameter", layout);
+    addGroup(parent, tr("Hardware parameters").toStdString(), layout);
 }
 
 void ConfigObjectDialog::addReqParametersGroup(QLayout *parent) {
@@ -218,16 +218,16 @@ void ConfigObjectDialog::addReqParametersGroup(QLayout *parent) {
             }
         }
     }
-    addGroup(parent, "benötigte Parameter", layout);
+    addGroup(parent, tr("Mandatory parameters").toStdString(), layout);
 }
 
 void ConfigObjectDialog::addAdvancedConfigGroup(QLayout *parent) {
     if (!getAdvancedConfigMethods().empty()) {
         QVBoxLayout* layout = new QVBoxLayout();
-        QPushButton* addBtn = new QPushButton(QIcon::fromTheme("list-add"), QString::fromUtf8("Hinzufügen"));
+        QPushButton* addBtn = new QPushButton(QIcon::fromTheme("list-add"), tr("Add"));
         connect(addBtn, SIGNAL(clicked()), this, SLOT(addAdvancedConfig()));
         layout->addWidget(addBtn);
-        addGroup(parent, "erweiterte Konfiguration",layout);
+        addGroup(parent, tr("additional configuration").toStdString(),layout);
 
         signalMapper = new QSignalMapper(this);
         connect(signalMapper, SIGNAL(mapped(int)), object, SLOT(removeAdvancedConfig(int)));
@@ -235,7 +235,7 @@ void ConfigObjectDialog::addAdvancedConfigGroup(QLayout *parent) {
         list<CMethod*> methods = object->getAdvancedConfig();
         int id = 0;
         for (list<CMethod*>::iterator i = methods.begin(); i != methods.end(); i++) {
-            QPushButton* delBtn = new QPushButton(QIcon::fromTheme("list-remove"), QString::fromUtf8("Entfernen"));
+            QPushButton* delBtn = new QPushButton(QIcon::fromTheme("list-remove"), tr("Remove"));
             signalMapper->setMapping(delBtn, id++);
             connect(delBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
 
@@ -320,8 +320,8 @@ void ConfigObjectDialog::copyObjectButton() {
     emit copyObject(s.toStdString());
 
     QMessageBox dialog(QMessageBox::Information,
-                       QString::fromUtf8("Objekt kopieren"),
-                       QString::fromUtf8("Objekt erfolgreich in Zwischenablage kopiert.\nZum einfügen unter \"Objekte\" den Punkt \"einfügen\" nutzen"),
+                       tr("copy Object"),
+                       tr("Successfully copied object to clipboard.\nUse \"Paste\" in \"Objects\" menu to paste the module"),
                        QMessageBox::Ok);
     dialog.exec();
 }

@@ -12,8 +12,8 @@ NewMethodDialog::NewMethodDialog(std::list<CMethod *> methods, QWidget *parent) 
     ui->setupUi(this);
 
     QStandardItemModel* model = new QStandardItemModel();
-    model->setHorizontalHeaderItem( 0, new QStandardItem(QString::fromUtf8("Methodenname")));
-    model->setHorizontalHeaderItem( 1, new QStandardItem(QString::fromUtf8("Beschreibung")));
+    model->setHorizontalHeaderItem( 0, new QStandardItem(tr("Method name")));
+    model->setHorizontalHeaderItem( 1, new QStandardItem(tr("Description")));
 
     int pos = 0;
     for (list<CMethod*>::iterator i = methods.begin(); i != methods.end(); i++) {

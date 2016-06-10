@@ -11,12 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Neues Objekt hinzufügen</string>
+   <string>Add new object</string>
   </property>
   <property name="windowIcon">
    <iconset theme="list-add">
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

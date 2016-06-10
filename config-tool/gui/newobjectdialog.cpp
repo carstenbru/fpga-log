@@ -51,19 +51,19 @@ void NewObjectDialog::genrateTypeView(DataTypeStruct* type) {
     QStandardItemModel* model = new QStandardItemModel();
 
     if (type == NULL) {
-        QStandardItem* device = new QStandardItem(QString::fromUtf8("Geräte"));
+        QStandardItem* device = new QStandardItem(tr("Devices"));
         device->setEditable(false);
         device->setSelectable(false);
         model->setItem(0, device);
-        QStandardItem* dm = new QStandardItem(QString("Datastrom Module"));
+        QStandardItem* dm = new QStandardItem(tr("Datastream modules"));
         dm->setEditable(false);
         dm->setSelectable(false);
         model->setItem(1, dm);
-        QStandardItem* sink = new QStandardItem(QString("Senken"));
+        QStandardItem* sink = new QStandardItem(tr("Sinks"));
         sink->setEditable(false);
         sink->setSelectable(false);
         model->setItem(2, sink);
-        QStandardItem* other = new QStandardItem(QString("Andere"));
+        QStandardItem* other = new QStandardItem(tr("Other"));
         other->setEditable(false);
         other->setSelectable(false);
         model->setItem(3, other);
@@ -96,7 +96,7 @@ void NewObjectDialog::genrateTypeView(DataTypeStruct* type) {
         }
     }
 
-    model->setHorizontalHeaderItem( 0, new QStandardItem("Objekte"));
+    model->setHorizontalHeaderItem( 0, new QStandardItem(tr("Objects")));
     ui->treeView->setModel(model);
 }
 

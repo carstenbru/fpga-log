@@ -72,7 +72,7 @@
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
-         <string>Ausgabefenster</string>
+         <string>Output</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
@@ -89,7 +89,7 @@
        </widget>
        <widget class="QWidget" name="tab_2">
         <attribute name="title">
-         <string>Fehlermeldungen</string>
+         <string>Errors</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
@@ -113,7 +113,7 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>Datei</string>
+     <string>Fi&amp;le</string>
     </property>
     <addaction name="actionNew"/>
     <addaction name="separator"/>
@@ -131,7 +131,7 @@
      <bool>false</bool>
     </property>
     <property name="title">
-     <string>Ob&amp;jekte</string>
+     <string>Ob&amp;jects</string>
     </property>
     <property name="separatorsCollapsible">
      <bool>false</bool>
@@ -144,7 +144,7 @@
      <bool>true</bool>
     </property>
     <property name="title">
-     <string>&amp;Generieren</string>
+     <string>&amp;Generate</string>
     </property>
     <addaction name="actionSynthesize"/>
     <addaction name="actionFlash"/>
@@ -157,7 +157,7 @@
      <bool>true</bool>
     </property>
     <property name="title">
-     <string>Too&amp;ls</string>
+     <string>Tools</string>
     </property>
     <addaction name="actionPinOverview"/>
     <addaction name="separator"/>
@@ -174,7 +174,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>&amp;Beenden</string>
+    <string>Exit</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -186,7 +186,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>&amp;Neues Objekt</string>
+    <string>New object</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+M</string>
@@ -198,7 +198,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>&amp;Zielplattform</string>
+    <string>Target platform</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+T</string>
@@ -206,7 +206,7 @@
   </action>
   <action name="actionGenerate">
    <property name="text">
-    <string>&amp;Dateien erzeugen / Fehler prüfen</string>
+    <string>Create files/check errors</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
@@ -221,7 +221,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>&amp;Bitfile erstellen</string>
+    <string>Create Bitfile</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
@@ -233,7 +233,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>&amp;Upload</string>
+    <string>Upload</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+U</string>
@@ -245,7 +245,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>&amp;Neu</string>
+    <string>New</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -257,7 +257,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>&amp;Öffnen</string>
+    <string>Open</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -269,7 +269,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>&amp;Speichern</string>
+    <string>Save</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -281,7 +281,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Speichern &amp;unter</string>
+    <string>Save as</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -296,7 +296,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>&amp;Pin Planner</string>
+    <string>Pin Planner</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
@@ -314,7 +314,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>&amp;Einfügen</string>
+    <string>Paste</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
@@ -322,12 +322,12 @@
   </action>
   <action name="actionSynthesizeOnly">
    <property name="text">
-    <string>&amp;Synthese starten</string>
+    <string>Start synthesis</string>
    </property>
   </action>
   <action name="actionDeveloperTools">
    <property name="text">
-    <string>&amp;Entwicklertools</string>
+    <string>Developper tools</string>
    </property>
   </action>
  </widget>

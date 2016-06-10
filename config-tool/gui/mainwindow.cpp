@@ -67,7 +67,7 @@ void MainWindow::show() {
 
     string spmc_root = QProcessEnvironment::systemEnvironment().value("SPARTANMC_ROOT").toStdString();
     if (spmc_root.empty()) {
-        cerr << "SpartanMC root nicht gesetzt. Bitte setzen sie die $SPARTANMC_ROOT Umgebungsvariable." << endl;
+        cerr << tr("SpartanMC root not set. Please set the $SPARTANMC_ROOT environment variable.").toStdString() << endl;
     }
 }
 
@@ -134,7 +134,7 @@ void MainWindow::otherObjectCopy() {
 void MainWindow::otherObjectMenu(QPoint pos) {
     if (!ui->listView->selectionModel()->selectedIndexes().isEmpty()) {
         QMenu *menu = new QMenu(ui->listView);
-        QAction* action = new QAction(QString::fromUtf8("Objekt kopieren"), this);
+        QAction* action = new QAction(tr("Copy object"), this);
         connect(action, SIGNAL(triggered(bool)), this, SLOT(otherObjectCopy()));
         menu->addAction(action);
         menu->popup(ui->listView->mapToGlobal(pos));
@@ -215,8 +215,8 @@ void MainWindow::flash() {
     if (outputGenerator == NULL) {
         if (!bitfileGenerated) {
             QMessageBox dialog(QMessageBox::Warning,
-                               "Bitfile nicht aktuell",
-                               "Das Bitfile ist nicht aktuell.\nSoll der Datenlogger vor dem Flashen synthetisiert werden?",
+                               tr("Bitfile not up-to-date"),
+                               tr("The Bitfile is not up-to-date.\nShould the datalogger be synthesized before flashing?"),
                                QMessageBox::Yes | QMessageBox::No | QMessageBox::Abort);
             dialog.setWindowIcon(QIcon::fromTheme("media-flash"));
             dialog.exec();
@@ -246,12 +246,12 @@ void MainWindow::outputGeneratorFinished(bool errorOccured, bool timingError) {
     ui->actionFlash->setEnabled(true);
 
     if (errorOccured) {
-        cerr << "Fehler bei Taskbearbeitung." << endl;
+        cerr << tr("Error in task processing.").toStdString() << endl;
     } else {
-        cout << "Task erfolgreich abgeschlossen." << endl;
+        cout << tr("Task successfully completed.").toStdString() << endl;
     }
     if (timingError) {
-        cerr << QString::fromUtf8("Die gewählte Taktfrequenz ist zu hoch. Bitte wählen sie unter \"Datei->Zielplattform\" eine niedrigere Taktfrequenz.").toStdString() << endl;
+        cerr << tr("The chosen clock frequency is too high. Please choose a lower one in \"File->Traget platform\".").toStdString() << endl;
     }
 }
 
@@ -276,8 +276,8 @@ void MainWindow::refreshWindowTitle() {
 bool MainWindow::checkAndAskSave() {
     if (!dataLoggerSaved) {
         QMessageBox dialog(QMessageBox::Warning,
-                           "Datenlogger nicht gespeichert",
-                           "Der Datenlogger wurde nicht gespeichert.\nSoll der Datenlogger zuerst gespeichert werden?",
+                           tr("Datalogger not saved"),
+                           tr("The Datalogger is not saved. Should it be saved before proceeding?"),
                            QMessageBox::Yes | QMessageBox::No | QMessageBox::Abort);
         dialog.setWindowIcon(QIcon::fromTheme("document-save"));
         dialog.exec();
@@ -324,7 +324,7 @@ void MainWindow::open() {
     newLogger();
 
     QString fileName = QFileDialog::getOpenFileName(this,
-                                                    QString::fromUtf8("Öffnen"),
+                                                    tr("Open"),
                                                     QDir::currentPath() +
                                                     "/../projects/",
                                                     "fpga-log XML (*.xml)");
@@ -341,22 +341,22 @@ void MainWindow::open() {
             file.close();
             dataLoggerSaved = true;
             refreshWindowTitle();
-            cout << "Datei " + dataLoggerPath + " geladen!" << endl;
+            cout << tr("Loaded file %1!").arg(dataLoggerPath.c_str()).toStdString() << endl;
 
             if (dataLogger->getDefinitionsUpdated()) {
-                QString changedText = QString::fromUtf8("Einige Parameter der folgenden Module haben sich geändert:")
-                        + QString(dataLogger->getDefinitionsUpdatedModules().c_str())
-                        + QString::fromUtf8("\n\nBitte überprüfen sie daher alle Parameter dieser Module!");
+                QString changedText = tr("Some parameters of the following modules changed:")
+                        + QString(dataLogger->getDefinitionsUpdatedModules().c_str()) + "\n\n"
+                        + tr("Please check all parameters of these modules!");
                 cout << changedText.toStdString() << endl;
                 QMessageBox dialog(QMessageBox::Warning,
-                                   QString::fromUtf8("geänderte Parameter"),
+                                   tr("changed parameters"),
                                    changedText,
                                    QMessageBox::Ok);
                 dialog.exec();
                 dataLogger->setDefinitionsUpdated(false);
             }
         } else {
-            cerr << "Fehler: Datei konnte nicht geöffnet werden." << endl;
+            cerr << tr("Error: could not open file.").toStdString() << endl;
         }
     }
 }
@@ -382,15 +382,15 @@ void MainWindow::save() {
 
         dataLoggerSaved = true;
         refreshWindowTitle();
-        cout << "Datenlogger unter " + dataLoggerPath + " gespeichert!" << endl;
+        cout << tr("Datalogger saved in %1!").arg(dataLoggerPath.c_str()).toStdString() << endl;
     } else {
-        cerr << "Fehler: Zieldatei konnte nicht geschrieben werden." << endl;
+        cerr << tr("Error: could not open destination file.").toStdString() << endl;
     }
 }
 
 void MainWindow::saveAs() {
     QString fileName = QFileDialog::getSaveFileName(this,
-                                                    "Speichern unter",
+                                                    tr("Save as"),
                                                     QDir::currentPath() +
                                                     "/../projects/",
                                                     "fpga-log XML (*.xml)");
@@ -457,9 +457,7 @@ void MainWindow::pasteModule(QPoint pos) {
     QInputDialog* inputDialog = new QInputDialog();
     inputDialog->setOptions(QInputDialog::NoButtons);
 
-    name =  inputDialog->getText(NULL ,QString::fromUtf8("Modul einfügen"),
-                                          "Objekt Name:", QLineEdit::Normal,
-                                          name, &ok);
+    name =  inputDialog->getText(NULL, tr("Paste module"), tr("Object name"), QLineEdit::Normal, name, &ok);
 
     if (ok && !name.isEmpty()) {
         dataLogger->addObject(name.toStdString(), dataStreamObject, object, pos);
@@ -488,10 +486,10 @@ void MainWindow::coreAssignerParameters() {
 void MainWindow::expertModeChanged(bool expertMode) {
     if (expertMode) {
         if (expertMenu == NULL) {
-            expertMenu = ui->menuBar->addMenu("Experte");
-            QAction* coreAssigner = expertMenu->addAction(QString::fromUtf8("CoreAssigner ausführen"));
+            expertMenu = ui->menuBar->addMenu(tr("Expert"));
+            QAction* coreAssigner = expertMenu->addAction(tr("run CoreAssigner"));
             connect(coreAssigner, SIGNAL(triggered()), this, SLOT(coreAssigner()));
-            QAction* coreAssignerParameters = expertMenu->addAction(QString::fromUtf8("CoreAssigner Parameter"));
+            QAction* coreAssignerParameters = expertMenu->addAction(tr("CoreAssigner parameters"));
             connect(coreAssignerParameters, SIGNAL(triggered()), this, SLOT(coreAssignerParameters()));
         }
     } else {

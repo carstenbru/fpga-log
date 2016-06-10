@@ -24,10 +24,10 @@ PinOverview::PinOverview(QWidget *parent, DataLogger* dataLogger, string dataLog
     items.clear();
 
     QStandardItemModel* model = new QStandardItemModel();
-    model->setHorizontalHeaderItem( 0, new QStandardItem(QString::fromUtf8("Pin")));
-    model->setHorizontalHeaderItem( 1, new QStandardItem(QString::fromUtf8("Modul")));
-    model->setHorizontalHeaderItem( 2, new QStandardItem(QString::fromUtf8("Gruppe")));
-    model->setHorizontalHeaderItem( 3, new QStandardItem(QString::fromUtf8("Funktion")));
+    model->setHorizontalHeaderItem( 0, new QStandardItem(tr("Pin")));
+    model->setHorizontalHeaderItem( 1, new QStandardItem(tr("Module")));
+    model->setHorizontalHeaderItem( 2, new QStandardItem(tr("Group")));
+    model->setHorizontalHeaderItem( 3, new QStandardItem(tr("Function")));
 
     int pos = 0;
     list<string> pinGroups = DataTypePin::getPinType()->getGroups();
@@ -80,8 +80,8 @@ PinOverview::PinOverview(QWidget *parent, DataLogger* dataLogger, string dataLog
 
 void PinOverview::readPinAssignments() {
     pendingAssignmentsModel = new QStandardItemModel();
-    pendingAssignmentsModel->setHorizontalHeaderItem( 0, new QStandardItem(QString::fromUtf8("Modul/Gruppe")));
-    pendingAssignmentsModel->setHorizontalHeaderItem( 1, new QStandardItem(QString::fromUtf8("Funktion")));
+    pendingAssignmentsModel->setHorizontalHeaderItem( 0, new QStandardItem(tr("Module/Group")));
+    pendingAssignmentsModel->setHorizontalHeaderItem( 1, new QStandardItem(tr("Function")));
     int pos = 0;
     QStandardItem* module;
 
@@ -178,8 +178,8 @@ void PinOverview::writeHTMLtable(ofstream& file) {
 void PinOverview::exportOverview() {
     if (dataLoggerPath.empty()) {
         QMessageBox dialog(QMessageBox::Critical,
-                           "Datenlogger nicht gespeichert",
-                           "Der Datenlogger muss zuerst gespeichert werden.",
+                           tr("Datalogger not saved"),
+                           tr("The datalogger has to be saved first."),
                            QMessageBox::Ok);
         dialog.exec();
         return;
@@ -197,8 +197,8 @@ void PinOverview::exportOverview() {
 
     string name = dataLoggerPath.erase(0, dataLoggerPath.rfind("/")+1);
     name.erase(dataLoggerPath.rfind("."), dataLoggerPath.length());
-    file << "<h1>" << "Projekt: " << name << "</h1>" << endl;
-    file << "Zielplattform: " << dataLogger->getTarget()->getValue() << endl;
+    file << "<h1>" << tr("Project:").toStdString() << " " << name << "</h1>" << endl;
+    file << tr("Target Platform:").toStdString() << " " << dataLogger->getTarget()->getValue() << endl;
 
     writeHTMLtable(file);
 
@@ -206,8 +206,8 @@ void PinOverview::exportOverview() {
     file.close();
 
     QMessageBox dialog(QMessageBox::Information,
-                       "Pinbelegung exportiert",
-                       ("Die Pinbelegung wurde erfolgreich in die Datei " + path + "/pinout.html exportiert.").c_str(),
+                       tr("Pinout exportet"),
+                       tr("The pinout was exportet successfully to the file %1/pinout.html.").arg(path.c_str()),
                        QMessageBox::Ok);
     dialog.exec();
 }
@@ -327,5 +327,4 @@ void PinOverview::assignPin() {
             return;
         }
     }
-    //TODO
 }

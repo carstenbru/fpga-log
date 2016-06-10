@@ -168,11 +168,11 @@ string DataLogger::findObjectName(bool isDataStreamObject, DataType* dataType) {
 
 bool DataLogger::changeObjectName(CObject* object, std::string newName) {
     if (newName.empty()) {
-        cerr << "leerer Modulname ist nicht erlaubt" << endl;
+        cerr << tr("empty module name not allowed").toStdString() << endl;
         return false;
     }
     if (containsObjectName(datastreamObjects, newName) || containsObjectName(otherObjects, newName)) {
-        cerr << "Modulname bereits vergeben" << endl;
+        cerr << tr("module name already used").toStdString() << endl;
         return false;
     }
     object->setName(newName);
@@ -211,8 +211,8 @@ std::map<std::string, CObject*> DataLogger::getObjectsMap() {
 string DataLogger::readTargetNameFromFile(string fileName) {
     QFile file(QString(fileName.c_str()));
     if (!file.open(QIODevice::ReadOnly)) {
-        cerr << "unable to open target xml file: " << fileName << endl;
-        return "unable to open";
+        cerr << tr("unable to open target xml file:").toStdString() << " " << fileName << endl;
+        return tr("unable to open").toStdString();
     }
     QXmlStreamReader reader(&file);
     reader.readNextStartElement();
@@ -346,7 +346,7 @@ QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger) {
     in.readNextStartElement();
 
     if (in.name().compare("datalogger") != 0) {
-        cerr << "Fehler: Datei ist kein fpga-log Datenlogger!" << endl;
+        cerr << QObject::tr("Error: File is not a fpga-log datalogger!").toStdString() << endl;
         return in;
     }
 
@@ -458,7 +458,7 @@ void DataLogger::addCoreConnectors() {
             PortOut* port = *portIt;
             if (port->isConnected()) {
                 if (module->getSpartanMcCore() != port->getDestination()->getParent()->getSpartanMcCore()) {
-                    cout << "control core connector needed:" << module->getName() << " -> " << port->getDestination()->getParent()->getName() << endl;
+                    cout << tr("control core connector needed:").toStdString() << module->getName() << " -> " << port->getDestination()->getParent()->getName() << endl;
                     addCoreConnector(module, port, true);
                 }
             }
@@ -467,7 +467,7 @@ void DataLogger::addCoreConnectors() {
             PortOut* port = *portIt;
             if (port->isConnected()) {
                 if (module->getSpartanMcCore() != port->getDestination()->getParent()->getSpartanMcCore()) {
-                    cout << "data core connector needed:" << module->getName() << " -> " << port->getDestination()->getParent()->getName() << endl;
+                    cout << tr("data core connector needed:").toStdString() << module->getName() << " -> " << port->getDestination()->getParent()->getName() << endl;
                     addCoreConnector(module, port, false);
                 }
             }

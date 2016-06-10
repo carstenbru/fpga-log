@@ -141,8 +141,8 @@ PeripheralPort* SpmcPeripheral::getPort(std::string group, std::string name) {
 std::string SpmcPeripheral::readModuleNameFromFile(std::string fileName) {
     QFile file(QString(fileName.c_str()));
     if (!file.open(QIODevice::ReadOnly)) {
-        cerr << "unable to open peripheral module xml file: " << fileName << endl;
-        return "unable to open";
+        cerr << QObject::tr("unable to open peripheral module xml file:").toStdString() << " " << fileName << endl;
+        return QObject::tr("unable to open").toStdString();
     }
     QXmlStreamReader reader(&file);
     reader.readNextStartElement();
@@ -176,8 +176,8 @@ string SpmcPeripheral::getFileName() {
     try {
         return peripheralXMLs.at(periName);
     } catch (exception) {
-        cerr << "unable to find peripheral module xml file: " << dataType->getName() << endl;
-        return "not found";
+        cerr << QObject::tr("unable to find peripheral module xml file:").toStdString() << " " << dataType->getName() << endl;
+        return QObject::tr("not found").toStdString();
     }
 }
 
@@ -268,7 +268,7 @@ void SpmcPeripheral::readPeripheralXML() {
 
     QFile file(QString(getFileName().c_str()));
     if (!file.open(QIODevice::ReadOnly)) {
-        cerr << "unable to open peripheral module xml file: " << dataType->getName() << endl;
+        cerr << QObject::tr("unable to open peripheral module xml file:").toStdString() << " " << dataType->getName() << endl;
         return;
     }
     QXmlStreamReader reader(&file);

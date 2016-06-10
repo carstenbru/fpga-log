@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>90</width>
-    <height>37</height>
+    <width>96</width>
+    <height>46</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,10 +17,11 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Zielplattform</string>
+   <string>Target platform</string>
   </property>
   <property name="windowIcon">
-   <iconset theme="preferences-system"/>
+   <iconset theme="preferences-system">
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <property name="windowOpacity">
    <double>1.000000000000000</double>

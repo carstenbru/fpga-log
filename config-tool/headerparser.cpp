@@ -240,11 +240,11 @@ void HeaderParser::parseFileForMethods(string filename) {
                                 } catch (exception e) {
                                 }
                             } catch (exception) {
-                                cerr << "unknown type: " << returnType << endl;
+                                cerr << QObject::tr("unknown type:").toStdString() << " " << returnType << endl;
                             }
                         }
                     } catch (exception) {
-                        cerr << "unknown type: " << type << endl;
+                        cerr << QObject::tr("unknown type:").toStdString() << " " << type << endl;
                     }
                 }
                 if (!wasMethod) {
@@ -311,7 +311,7 @@ void HeaderParser::parseMethodParameter(CMethod* method, std::string parameter, 
         }
         method->addParameter(param);
     } catch (exception e) {
-        cerr << "method parameter parsing error: unknown type: " << type << endl;
+        cerr << QObject::tr("method parameter parsing error: unknown type:").toStdString() << " " << type << endl;
         throw e;
     }
 }
@@ -352,7 +352,7 @@ std::string HeaderParser::getDefinedString(std::string name) {
     try {
         return defines.at(name);
     } catch (exception) {
-        cerr << "symbol " << name << " is not defined" << endl;
+        cerr << QObject::tr("symbol %1 is not defined").arg(name.c_str()).toStdString() << endl;
         return "";
     }
 }
@@ -361,7 +361,7 @@ int HeaderParser::getDefinedInteger(std::string name) {
     try {
         return atoi(getDefinedString(name).c_str());
     } catch (exception) {
-        cerr << "symbol " << name << " is not a number" << endl;
+        cerr << QObject::tr("symbol %1 is not a number").arg(name.c_str()).toStdString() << endl;
         return 0;
     }
 }

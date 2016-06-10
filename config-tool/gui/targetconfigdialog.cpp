@@ -41,7 +41,7 @@ void TargetConfigDialog::generateUi() {
 
     CParameter* clockFreq = dataLogger->getClockFreq();
     clockFreqWidget = clockFreq->getDataType()->getConfigWidget(dataLogger, clockFreq);
-    layout->addRow("Eingangstakt", clockFreqWidget);
+    layout->addRow(tr("Input clock"), clockFreqWidget);
 
     QSpinBox* freqSpinBox =(QSpinBox*)clockFreqWidget;
     connect(freqSpinBox, SIGNAL(valueChanged(int)), this, SLOT(freqChanged(int)));
@@ -50,11 +50,11 @@ void TargetConfigDialog::generateUi() {
     int clockFreqValue = atoi(clockFreq->getValue().c_str());
     freqChanged(clockFreqValue);
 
-    layout->addRow("Systemtaktfrequenz", systemClkSelect);
+    layout->addRow(tr("System clock frequency"), systemClkSelect);
 
     CParameter* expertMode = dataLogger->getExpertMode();
     expertModeWidget = expertMode->getDataType()->getConfigWidget(dataLogger, expertMode);
-    layout->addRow("Expertenmodus", expertModeWidget);
+    layout->addRow(tr("Expert mode"), expertModeWidget);
 }
 
 void TargetConfigDialog::targetChanged(QString newTarget) {
@@ -142,10 +142,10 @@ void TargetConfigDialog::storeParams() {
     expertMode->setValue(expertMode->getDataType()->getConfigData(expertModeWidget));
 
     if (systemClkSelect->currentText().startsWith("(")) {
-        QString text = QString::fromUtf8("Sie haben eine nicht empfohlene Taktfrequenz gewählt. Dies kann zu unerwünschtem Verhalten führen! Nutzen sie diese Frequenz nur wenn sie sicher sind was sie tun!");
-        cerr << "WARNUNG: " << text.toStdString() << endl;
+        QString text = tr("You chose a not recommended clock frequency. This could lead to unexpected behaviour. Use this frequency only if you are sure what you are doing!");
+        cerr << tr("WARNING:").toStdString() << " " << text.toStdString() << endl;
         QMessageBox dialog(QMessageBox::Warning,
-                           QString::fromUtf8("ungünstige Taktfrequenz"),
+                           tr("not recommended clock frequency"),
                            text,
                            QMessageBox::Ok);
         dialog.exec();

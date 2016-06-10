@@ -27,7 +27,7 @@ void DatastreamView::mouseReleaseEvent(QGraphicsSceneMouseEvent * mouseEvent) {
                 lastMenuPos = mouseEvent->scenePos().toPoint();
 
                 QMenu *menu = new QMenu(view);
-                QAction* action = new QAction(QString::fromUtf8("Objekt Einfügen"), this);
+                QAction* action = new QAction(tr("Paste object"), this);
                 connect(action, SIGNAL(triggered(bool)), this, SLOT(pasteModule()));
                 menu->addAction(action);
                 menu->popup(view->mapToGlobal(mouseEvent->scenePos().toPoint() - p));

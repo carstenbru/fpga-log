@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Objekt konfigurieren</string>
+   <string>Configure Object</string>
   </property>
   <property name="windowIcon">
    <iconset theme="preferences-other">
@@ -55,7 +55,7 @@
      <item>
       <widget class="QPushButton" name="deleteButton">
        <property name="text">
-        <string>Modul löschen</string>
+        <string>Delete module</string>
        </property>
        <property name="icon">
         <iconset theme="edit-delete">
@@ -66,10 +66,11 @@
      <item>
       <widget class="QPushButton" name="copyButton">
        <property name="text">
-        <string>Kopieren</string>
+        <string>Copy</string>
        </property>
        <property name="icon">
-        <iconset theme="edit-copy"/>
+        <iconset theme="edit-copy">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>

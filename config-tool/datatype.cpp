@@ -58,7 +58,7 @@ std::string DataType::getCleanedName() {
 }
 
 QWidget* DataType::getConfigWidget(DataLogger*, CParameter*) {
-    cerr << "Konfigurationselement fuer nicht konfigurierbaren Typ angefragt: " << name << endl;
+    cerr << QObject::tr("Configuaration element for not configurable element requested:").toStdString() << " " << name << endl;
     return NULL;
 }
 

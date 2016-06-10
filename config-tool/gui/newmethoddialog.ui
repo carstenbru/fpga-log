@@ -17,12 +17,11 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Hinzufügen</string>
+   <string>Add method</string>
   </property>
   <property name="windowIcon">
    <iconset theme="list-add">
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="sizeConstraint">

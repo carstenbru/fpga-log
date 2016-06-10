@@ -9,6 +9,9 @@
 #include <QApplication>
 #include <iostream>
 #include <QProcessEnvironment>
+#include <QTranslator>
+#include <QLibraryInfo>
+#include <QTextCodec>
 #include <cmath>
 #include "headerparser.h"
 #include "automaticcoreassigner.h"
@@ -68,8 +71,25 @@ int main(int argc, char *argv[]) {
     AutomaticCoreAssigner aca;
     aca.readModuleWeights();
 
-    //start GUI
+    //create application
     QApplication a(argc, argv);
+
+    //install translators for i18n
+    QString locale = QLocale::system().name(); //TODO
+
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+
+    QTranslator qtTranslator;
+    qtTranslator.load("qt_" + locale,
+            QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    a.installTranslator(&qtTranslator);
+
+    QTranslator configToolTranslator;
+    configToolTranslator.load(QCoreApplication::applicationName() + "_" + locale, QCoreApplication::applicationDirPath()+"/../config-tool/");
+    a.installTranslator(&configToolTranslator);
+
+    //start GUI
     MainWindow w;
     w.show();
 
