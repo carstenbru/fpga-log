@@ -16,6 +16,18 @@
 
 class DataLogger;
 
+class WeightHeuristic {
+public:
+    virtual float calculateTotalScore(float weightDistribution, int connectorWeight) = 0;
+};
+
+class WeightHeuristicDefault : public WeightHeuristic {
+public:
+    virtual float calculateTotalScore(float weightDistribution, int connectorWeight) {
+        return 1.0f/weightDistribution * (connectorWeight+1);
+    }
+};
+
 class AutomaticCoreAssigner : public QObject
 {
 Q_OBJECT
@@ -79,6 +91,8 @@ private:
     int maxWeightPerCore;
     int dataStreamWeight;
     int controlStreamWeight;
+
+    WeightHeuristic* heuristic;
 
     static int averageWeight;
 signals:

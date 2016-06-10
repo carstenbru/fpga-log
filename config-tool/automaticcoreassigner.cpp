@@ -17,7 +17,8 @@ AutomaticCoreAssigner::AutomaticCoreAssigner() :
     minCores(1),
     maxWeightPerCore(DEFAULT_MAX_WEIGHT_PER_CORE),
     dataStreamWeight(DEFAULT_DATA_STREAM_WEIGHT),
-    controlStreamWeight(DEFAULT_CONTROL_STREAM_WEIGHT)
+    controlStreamWeight(DEFAULT_CONTROL_STREAM_WEIGHT),
+    heuristic(new WeightHeuristicDefault())
 {
 
 }
@@ -252,7 +253,7 @@ float AutomaticCoreAssigner::evaluatePartition(map<int, list<DatastreamObject*>>
     cout << "found solution:" << endl;
     cout << "weight Distribution: " << to_string(weightDistribution) << endl;
     cout << "connector weight: " << to_string(connectorWeight) << endl;
-    float totalScore = 1.0f/weightDistribution * (connectorWeight+1);
+    float totalScore = heuristic->calculateTotalScore(weightDistribution, connectorWeight);
     cout << "total weight: " << to_string(totalScore) << endl << endl;
     return totalScore;
 }
