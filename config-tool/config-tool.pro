@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     gui/newmethoddialog.cpp \
     gui/pinoverview.cpp \
     automaticcoreassigner.cpp \
-    gui/developertools.cpp
+    gui/developertools.cpp \
+    gui/acoparametersdialog.cpp
 
 HEADERS  += gui/mainwindow.h \
     datastreamobject.h \
@@ -62,7 +63,8 @@ HEADERS  += gui/mainwindow.h \
     gui/newmethoddialog.h \
     gui/pinoverview.h \
     automaticcoreassigner.h \
-    gui/developertools.h
+    gui/developertools.h \
+    gui/acoparametersdialog.h
 
 FORMS    += gui/mainwindow.ui \
     gui/newobjectdialog.ui \
@@ -70,7 +72,8 @@ FORMS    += gui/mainwindow.ui \
     gui/targetconfigdialog.ui \
     gui/newmethoddialog.ui \
     gui/pinoverview.ui \
-    gui/developertools.ui
+    gui/developertools.ui \
+    gui/acoparametersdialog.ui
 
 RESOURCES += \
     icons.qrc

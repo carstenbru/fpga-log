@@ -14,9 +14,6 @@ int main(int argc, char *argv[])
     SpmcPeripheral::loadPeripheralXMLs();
 
     new DataType("void", true);
-    //DataTypeEnumeration* boolType = new DataTypeEnumeration("bool", true);
-    //boolType->addValue("FALSE");
-    //boolType->addValue("TRUE");
     new DataTypeBoolean("bool", true);
     new DataTypeChar("char", true);
     new DataTypeString("string", true);

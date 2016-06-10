@@ -25,8 +25,18 @@ public:
     void calculateModuleWeights();
     void readModuleWeights();
 
+    void setMinCores(int minCores) { this->minCores = minCores; }
     void setMaxCores(int maxCores) { this->maxCores = maxCores; }
     void setMaxWeightPerCore(int maxWeightPerCore) { this->maxWeightPerCore = maxWeightPerCore; }
+    void setDataStreamWeight(int dataStreamWeight) { this->dataStreamWeight = dataStreamWeight; }
+    void setControlStreamWeight(int controlStreamWeight) { this->controlStreamWeight = controlStreamWeight; }
+
+    int getMinCores() { return minCores; }
+    int getMaxCores() { return maxCores; }
+    int getMaxWeightPerCore() { return maxWeightPerCore; }
+    int getDataStreamWeight() { return dataStreamWeight; }
+    int getControlStreamWeight() { return controlStreamWeight; }
+
     bool assignCores(DataLogger* dataLogger);
     bool assignCores(DataLogger* dataLogger, std::map<CObject *, int> weights, int totalWeight, std::map<DatastreamObject *, std::map<DatastreamObject *, int> > &connections, int cores);
 

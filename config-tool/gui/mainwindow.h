@@ -65,6 +65,7 @@ public slots:
 
     void developerTools();
     void coreAssigner();
+    void coreAssignerParameters();
 
     void newLogger();
     void open();

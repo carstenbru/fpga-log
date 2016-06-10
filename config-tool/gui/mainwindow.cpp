@@ -3,6 +3,7 @@
 #include "headerparser.h"
 #include "newobjectdialog.h"
 #include "configobjectdialog.h"
+#include "acoparametersdialog.h"
 #include <iostream>
 #include <QProcessEnvironment>
 #include <QMessageBox>
@@ -479,12 +480,19 @@ void MainWindow::coreAssigner() {
     aco->assignCores(dataLogger);
 }
 
+void MainWindow::coreAssignerParameters() {
+    AcoParametersDialog acoDialog(dataLogger->getAutomaticCoreAssigner());
+    acoDialog.exec();
+}
+
 void MainWindow::expertModeChanged(bool expertMode) {
     if (expertMode) {
         if (expertMenu == NULL) {
             expertMenu = ui->menuBar->addMenu("Experte");
-            QAction* coreAssigner = expertMenu->addAction("CoreAssigner");
+            QAction* coreAssigner = expertMenu->addAction(QString::fromUtf8("CoreAssigner ausführen"));
             connect(coreAssigner, SIGNAL(triggered()), this, SLOT(coreAssigner()));
+            QAction* coreAssignerParameters = expertMenu->addAction(QString::fromUtf8("CoreAssigner Parameter"));
+            connect(coreAssignerParameters, SIGNAL(triggered()), this, SLOT(coreAssignerParameters()));
         }
     } else {
         if (expertMenu != NULL) {
