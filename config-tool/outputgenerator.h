@@ -71,7 +71,7 @@ private:
     void writeConnection(QXmlStreamWriter& writer, std::string destination, int lsb);
     void writePortConnection(QXmlStreamWriter& writer, std::string port, std::string destination, int lsb);
     void writeParameter(QXmlStreamWriter& writer, CParameter* parameter);
-    void writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* peripheral, std::__cxx11::string subsystemID, int subsystemNumber);
+    void writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* peripheral, std::string subsystemID, int subsystemNumber);
     void writeTimestampGen(QXmlStreamWriter& writer, std::string subsystemID, int subsystemNumber);
     void writePeripherals(QXmlStreamWriter& writer, std::string subsystemID, int subsystemNumber);
     void writeSpmcConnections(QXmlStreamWriter& writer, std::string subsystemID);
