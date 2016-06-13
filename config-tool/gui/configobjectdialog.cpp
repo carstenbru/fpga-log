@@ -254,9 +254,11 @@ void ConfigObjectDialog::nameEdited() {
 }
 
 void ConfigObjectDialog::storeParams() {
-    DatastreamObject* datastreamObject = dynamic_cast<DatastreamObject*>(object);
-    if (datastreamObject != NULL) {
-        object->setSpartanMcCore(spartanMcCoreEdit->value());
+    if (dataLogger->isExpertMode()) {
+        DatastreamObject* datastreamObject = dynamic_cast<DatastreamObject*>(object);
+        if (datastreamObject != NULL) {
+            object->setSpartanMcCore(spartanMcCoreEdit->value());
+        }
     }
 
     for (map<CParameter*, QWidget*>::iterator i = paramWidgets.begin(); i != paramWidgets.end(); i++) {
