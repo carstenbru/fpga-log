@@ -35,6 +35,104 @@
     </message>
 </context>
 <context>
+    <name>AutomaticCoreAssigner</name>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="41"/>
+        <source>Error: Could not write target file.</source>
+        <translation>Fehler: Zieldatei konnte nicht geschrieben werden.</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="90"/>
+        <source>%1 has weight %2</source>
+        <translation>%1 hat Gewicht %2</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="104"/>
+        <source>calculating module weights!</source>
+        <translation>Berechen Modulgewichte!</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="156"/>
+        <source>Could not open module weight file</source>
+        <translation>Konnte Datei mit Modulgewichten nicht öffnen</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="168"/>
+        <source>WARNING: Did not find weight for type &quot;%1&quot;! Very likely the file &quot;module-weights.xml&quot; is outdated. Using average value.</source>
+        <translation>WARNUNG: Kein Gewicht für Typ \&quot;%1\&quot; gefunden! Wahrscheinlich ist die Datei \&quot;module-weights.xml\&quot; veraltet. Verwende Durchschnittswert.</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="193"/>
+        <source>weight of %1: %2</source>
+        <translation>Gewicht von %1: %2</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="253"/>
+        <source>found solution:</source>
+        <translation>Lösung gefunden:</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="254"/>
+        <source>weight Distribution:</source>
+        <translation>Gewichtsverteilung:</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="255"/>
+        <source>connector weight:</source>
+        <translation>connector Gewicht:</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="257"/>
+        <source>total weight:</source>
+        <translation>Gesamtgewicht:</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="301"/>
+        <source>using %1 CPU core(s)</source>
+        <translation>nutze %1 CPU Kern(e)</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="314"/>
+        <source>partition result: (score: %1)</source>
+        <translation>Ergebnis der Partitionierung: (score: %1)</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="317"/>
+        <source>set</source>
+        <translation>set</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="356"/>
+        <source>starting automatic core assignment</source>
+        <translation>starte automatische Zuweisung von Prozessoren</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="360"/>
+        <source>total weight of system:</source>
+        <translation>Gesamtgewicht des Systems:</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="365"/>
+        <source>searching for partitioning solutions</source>
+        <translation>Suche nach möglichen Partitionierungen</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="366"/>
+        <source>(weight Distribution should be close to 1)</source>
+        <translation>(Gewichtsverteilung sollte nahe 1 sein)</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="367"/>
+        <source>(connector weight should be small)</source>
+        <translation>(connector Gewicht sollte klein sein)</translation>
+    </message>
+    <message>
+        <location filename="automaticcoreassigner.cpp" line="368"/>
+        <source>(total weight should be small)</source>
+        <translation>(Gesamtgewicht sollte möglichst klein sein)</translation>
+    </message>
+</context>
+<context>
     <name>ConfigObjectDialog</name>
     <message>
         <location filename="gui/configobjectdialog.ui" line="14"/>
@@ -97,12 +195,12 @@
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="gui/configobjectdialog.cpp" line="323"/>
+        <location filename="gui/configobjectdialog.cpp" line="325"/>
         <source>copy Object</source>
         <translation>Objekt kopieren</translation>
     </message>
     <message>
-        <location filename="gui/configobjectdialog.cpp" line="324"/>
+        <location filename="gui/configobjectdialog.cpp" line="326"/>
         <source>Successfully copied object to clipboard.
 Use &quot;Paste&quot; in &quot;Objects&quot; menu to paste the module</source>
         <translation>Objekt erfolgreich in Zwischenablage kopiert.
@@ -494,6 +592,76 @@ Soll der Datenlogger zuerst gespeichert werden?</translation>
         <location filename="gui/newobjectdialog.cpp" line="99"/>
         <source>Objects</source>
         <translation>Objekte</translation>
+    </message>
+</context>
+<context>
+    <name>OutputGenerator</name>
+    <message>
+        <location filename="outputgenerator.cpp" line="131"/>
+        <source>clock frequency too high</source>
+        <translation>Taktfrequenz zu hoch</translation>
+    </message>
+    <message>
+        <location filename="outputgenerator.cpp" line="260"/>
+        <source>Object %1 not used</source>
+        <translation>Objekt %1 nicht verwendet</translation>
+    </message>
+    <message>
+        <location filename="outputgenerator.cpp" line="261"/>
+        <source>WARNING:</source>
+        <translation>WARNUNG:</translation>
+    </message>
+    <message>
+        <location filename="outputgenerator.cpp" line="266"/>
+        <source>Successfully wrote C-configuration files.</source>
+        <translation>C-Konfigurationsdateien erfolgreich geschrieben.</translation>
+    </message>
+    <message>
+        <location filename="outputgenerator.cpp" line="345"/>
+        <source>Object %1 used on multiple SpartanMC cores</source>
+        <translation>Objekt %1 auf mehreren SpartanMC Cores verwendet</translation>
+    </message>
+    <message>
+        <location filename="outputgenerator.cpp" line="346"/>
+        <location filename="outputgenerator.cpp" line="366"/>
+        <location filename="outputgenerator.cpp" line="459"/>
+        <source>ERROR:</source>
+        <translation>FEHLER:</translation>
+    </message>
+    <message>
+        <location filename="outputgenerator.cpp" line="365"/>
+        <source>Parameter %1 of object %2 not set</source>
+        <translation>Parameter %1 von Objekt %2 nicht gesetzt</translation>
+    </message>
+    <message>
+        <location filename="outputgenerator.cpp" line="458"/>
+        <source>Parameter % 1 of object %2 not set</source>
+        <translation>Parameter % 1 von Objekt %2 nicht gesetzt</translation>
+    </message>
+    <message>
+        <location filename="outputgenerator.cpp" line="515"/>
+        <source>Could not open Subsystem template XML</source>
+        <translation>Subsystem Template XML konnte nicht geöffnet werden</translation>
+    </message>
+    <message>
+        <location filename="outputgenerator.cpp" line="583"/>
+        <source>WARNING: No processor used. Very likely the datalogger is empty!</source>
+        <translation>WARNUNG: Kein Prozessor verwendet. Sehr wahrscheinlich ist der Datenlogger leer!</translation>
+    </message>
+    <message>
+        <location filename="outputgenerator.cpp" line="594"/>
+        <source>Could not open System template XML.</source>
+        <translation>System Template XML konnte nicht geöffnet werden.</translation>
+    </message>
+    <message>
+        <location filename="outputgenerator.cpp" line="639"/>
+        <source>Successfully wrote system configuration file.</source>
+        <translation>System Konfigurationsdatei erfolgreich geschrieben.</translation>
+    </message>
+    <message>
+        <location filename="outputgenerator.cpp" line="740"/>
+        <source>Pin %1 (%2) in module %3 not assigned</source>
+        <translation>Pin %1 (%2) im Modul %3 nicht zugewiesen</translation>
     </message>
 </context>
 <context>
