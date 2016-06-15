@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<peripheral xmlns="soc-library" xmlns:xi="http://www.w3.org/2001/XInclude" document-type="soc-peripheral-1.0">
+    <header category="Interface" label="dcf77" name="dcf77">
+      <description>
+        This is an application specific module: encode the dcf77 time signal
+      </description>
+    </header>
+    
+    <hdl lang="verilog" toplevel="spmc_dcf77">
+        <sources toolchain="xilinx">
+            <modules />
+            <files>spmc_dcf77.v</files>
+        </sources>
+    </hdl>
+    
+    <parameters>
+        <parameter name="CLOCK_FREQUENCY" type="int" value="16000000" />
+    </parameters>
+    
+    <xi:include href="../defaults/peripheral.xml" />
+    <ports group="DCF77" direction="input" >
+        <port name="dcf77_non_inverted" descr="non inverted input of the dcf77, internally pulled up" />
+    </ports>
+    <ports group="timestamp" direction="output">
+        <port name="signal_valid" descr="generate a timestamp if the time signal is valid and correctly received"/>
+    </ports>
+    
+    <registers>
+        <register access="write" name="CONTROL" offset="0">
+            <description>control register</description>
+        </register>
+        <register access="read" name="DAY" offset="1">
+            <description>saves the day</description>
+        </register>
+        <register access="read" name="MONTH" offset="2">
+            <description>saves the month</description>
+        </register>
+        <register access="read" name="YEAR" offset="3">
+            <description>saves the year</description>
+        </register>
+        <register access="read" name="HOUR" offset="4">
+            <description>saves the hour</description>
+        </register>
+        <register access="read" name="MINUTE" offset="5">
+            <description>saves the minute</description>
+        </register>
+        <register access="read" name="WEEKDAY" offset="6">
+            <description>saves the week day</description>
+        </register>
+        <register access="read" name="STARTBITS" offset="7">
+            <description>saves the first general bits</description>
+        </register>
+    </registers>
+</peripheral>

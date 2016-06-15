@@ -1,0 +1,6 @@
+<module name="device_dcf77">
+  <peripheral name="dcf77_peri" >
+    <port group="timestamp" name="signal_valid" destination="TIMESTAMP_GEN" parameter="id" hide="TRUE" />
+    <port group="DCF77" name="dcf77_non_inverted" constraints="PULLUP" />
+  </peripheral>
+</module>
