@@ -128,7 +128,7 @@ void OutputGenerator::checkSynthesisMessage(string message) {
     if (message.find("Timing: Completed") != string::npos) {
         if (message.find("Timing: Completed - No errors found.") == string::npos) {
             timingError = true;
-            emit errorFound("Taktfrequenz zu hoch");
+            emit errorFound(tr("clock frequency too high").toStdString());
         }
     }
 }
@@ -187,7 +187,7 @@ void OutputGenerator::synthesizeSystem() {
     timingError = false;
     generateConfigFiles();
 
-    //exec("make all"); //TODO
+    exec("make all");
 }
 
 void OutputGenerator::synthesizeOnly() {
@@ -257,13 +257,13 @@ void OutputGenerator::generateCSources() {
     vector<CObject*> objects = dataLogger->getOtherObjects();
     for (vector<CObject*>::iterator it = objects.begin(); it != objects.end(); it++) {
         if ((*it)->getSpartanMcCore() == -1) {
-            string s = "Objekt " + (*it)->getName() + " nicht verwendet";
-            cerr << "WARNUNG: " << s << "!" << endl;
+            string s = tr("Object %1 not used").arg((*it)->getName().c_str()).toStdString();
+            cerr << tr("WARNING:").toStdString() << " " << s << "!" << endl;
             emit errorFound(s);
         }
     }
 
-    cout << "C-Konfigurationsdateien erfolgreich geschrieben." << endl;
+    cout << tr("Successfully wrote C-configuration files.").toStdString() << endl;
 }
 
 void OutputGenerator::determineHeaders() {
@@ -287,7 +287,6 @@ void OutputGenerator::writeVariableDefinitions(std::ostream& stream, int subsyst
 
     for (map<string, CObject *>::iterator i = objects.begin(); i != objects.end(); i++) {
         if (i->second->getSpartanMcCore() == subsystemID) {
-          //putUsedHeader(i->second->getType()->getHeaderName(), i->second->getType()->isGlobal());
           stream << i->second->getType()->getName() << "\t" << i->first << ";" << endl;
         }
     }
@@ -326,7 +325,6 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
         stringstream tmpStream;
 
         CMethod* init = object->getInitMethod();
-        //putUsedHeader(init->getHeaderName(), object->getType()->isGlobal());
         list<CParameter>* params = init->getParameters();
         tmpStream << "  " << object->getType()->getCleanedName() << "_"
                   << init->getName() << "(&" << object->getName();
@@ -344,8 +342,8 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
                     int oldCoreId = paramObject->getSpartanMcCore();
                     if ((oldCoreId != -1) && (oldCoreId != coreId)) {
                         error = true;
-                        string s = "Objekt " + paramObject->getName() + " auf mehreren SpartanMC Cores verwendet";
-                        cerr << "FEHLER: " << s << "!" << endl;
+                        string s = tr("Object %1 used on multiple SpartanMC cores").arg(paramObject->getName().c_str()).toStdString();
+                        cerr << tr("ERROR:").toStdString() << " " << s << "!" << endl;
                         emit errorFound(s);
                     }
                     paramObject->setSpartanMcCore(coreId);
@@ -364,8 +362,8 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
 
             if (value.empty()) {
                 error = true;
-                string s = "Parameter " + (*i).getName() + " von Objekt " + object->getName() + " nicht gesetzt";
-                cerr << "FEHLER: " << s << "!" << endl;
+                string s = tr("Parameter %1 of object %2 not set").arg((*i).getName().c_str()).arg(object->getName().c_str()).toStdString();
+                cerr << tr("ERROR:").toStdString() << " " << s << "!" << endl;
                 emit errorFound(s);
             }
 
@@ -439,7 +437,6 @@ void OutputGenerator::putUsedHeader(std::string headerName, bool global) {
 }
 
 void OutputGenerator::writeMethod(std::ostream& stream, CObject* object, CMethod* method, map<string, CObject *>& objects) {
-    //putUsedHeader(method->getHeaderName(), object->getType()->isGlobal());
     list<CParameter>* params = method->getParameters();
     string methodName = method->getCompleteName();
     if (methodName.empty()) {
@@ -458,8 +455,8 @@ void OutputGenerator::writeMethod(std::ostream& stream, CObject* object, CMethod
 
         if (value.empty()) {
             error = true;
-            string s = "Parameter " + (*i).getName() + " von Objekt " + object->getName() + " nicht gesetzt";
-            cerr << "FEHLER: " << s << "!" << endl;
+            string s = tr("Parameter % 1 of object %2 not set").arg((*i).getName().c_str()).arg(object->getName().c_str()).toStdString();
+            cerr << tr("ERROR:").toStdString() << " " << s << "!" << endl;
             emit errorFound(s);
         }
 
@@ -515,7 +512,7 @@ void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id, bool useMax
 
     ifstream subTemplateFile("../config-tool-files/template_subsystem.xml");
     if (!subTemplateFile.is_open()) {
-        string s = "Subsystem Template XML konnte nicht geöffnet werden.";
+        string s = tr("Could not open Subsystem template XML").toStdString();
         cerr << s << endl;
         emit errorFound(s);
         return;
@@ -583,7 +580,7 @@ void OutputGenerator::calculateUsedProcessorIDs() {
         }
     }
     if (processorSet.empty()) {
-        string s = "WARNUNG: Kein Prozessor verwendet. Sehr wahrscheinlich ist der Datenlogger leer!";
+        string s = tr("WARNING: No processor used. Very likely the datalogger is empty!").toStdString();
         cerr << s << endl;
         emit errorFound(s);
 
@@ -594,7 +591,7 @@ void OutputGenerator::calculateUsedProcessorIDs() {
 void OutputGenerator::generateSystemXML(bool useMaxBlockRAMs) {
     ifstream templateFile("../config-tool-files/template.xml");
     if (!templateFile.is_open()) {
-        string s = "System Template XML konnte nicht geöffnet werden.";
+        string s = tr("Could not open System template XML.").toStdString();
         cerr << s << endl;
         emit errorFound(s);
         return;
@@ -639,7 +636,7 @@ void OutputGenerator::generateSystemXML(bool useMaxBlockRAMs) {
         }
     }
     file.close();
-    cout << "System Konfigurationsdatei erfolgreich geschrieben." << endl;
+    cout << tr("Successfully wrote system configuration file.").toStdString() << endl;
 }
 
 void OutputGenerator::writeAttributeElement(QXmlStreamWriter& writer, QString id, QString text) {
@@ -740,7 +737,7 @@ void OutputGenerator::writePeripheral(QXmlStreamWriter& writer, SpmcPeripheral* 
                     if (!(*portIt)->getHideFromUser()) {
                         if ((peripheral->getParentName().find("_connector") == string::npos) &&
                                 (!peripheral->getParentName().empty())) {
-                            emit errorFound("Pin " + portName + " (" + groupIt->first + ") im Modul " + peripheral->getParentName() + " nicht zugewiesen");
+                            emit errorFound(tr("Pin %1 (%2) in module %3 not assigned").arg(portName.c_str()).arg(groupIt->first.c_str()).arg(peripheral->getParentName().c_str()).toStdString());
                         }
                     }
                 }
@@ -898,7 +895,6 @@ void OutputGenerator::definePeripheralForSimulation(std::string name, DataType* 
  */
 std::string OutputGenerator::readLastLine(std::string fileName) {
     ifstream file;
-    cerr << " !!!!!!!!!!!!!!!!!!!! " << endl << fileName << endl;
     file.open(fileName);
 
     if (file.is_open()) {
@@ -927,10 +923,7 @@ int OutputGenerator::determineMinBlockRAMcount(int cpuID) {
     int end = line.find(']');
     line = line.substr(start, end-start);
 
-    cerr << " !!!!!!!!!!!!!!!!!!!! " << endl << line << endl;
-
-    return atoi(line.c_str()) + 1; //TODO this
-    //TODO write error of could not determined
+    return atoi(line.c_str()) + 1;
 }
 
 void OutputGenerator::flash() {

@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
     //install translators for i18n
-    QString locale = QLocale::system().name(); //TODO
+    QString locale = QLocale::system().name();
 
     //QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
     //QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));

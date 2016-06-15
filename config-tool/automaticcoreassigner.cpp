@@ -38,7 +38,7 @@ void AutomaticCoreAssigner::saveLogger(DataLogger* dataLogger) {
 
         file.close();
     } else {
-        cerr << "Fehler: Zieldatei konnte nicht geschrieben werden." << endl;
+        cerr << tr("Error: Could not write target file.").toStdString() << endl;
     }
 }
 
@@ -87,7 +87,7 @@ void AutomaticCoreAssigner::measureNextModule() {
 void AutomaticCoreAssigner::firmwareSizeResult(int size) {
     size -= baseSize;
 
-    cout << lastMeasuredModule << " has weight "  << to_string(size) << endl;
+    cout << tr("%1 has weight %2").arg(lastMeasuredModule.c_str()).arg(size).toStdString() << endl;
     weightWriter->writeStartElement("module");
     weightWriter->writeAttribute("name", lastMeasuredModule.c_str());
     weightWriter->writeAttribute("weight", to_string(size).c_str());
@@ -101,7 +101,7 @@ void AutomaticCoreAssigner::firmwareSizeResult(int size) {
 }
 
 void AutomaticCoreAssigner::calculateModuleWeights() {
-    cout << "calculating module weights!" << endl;
+    cout << tr("calculating module weights!").toStdString() << endl;
     outputGenerator = NULL;
     baseSize = 0;
 
@@ -153,7 +153,7 @@ void AutomaticCoreAssigner::readModuleWeights() {
 
         file.close();
     } else {
-        cerr << "Could not open module weight file" << endl;
+        cerr << tr("Could not open module weight file").toStdString() << endl;
     }
     averageWeight /= valCount;
 }
@@ -165,7 +165,7 @@ int AutomaticCoreAssigner::getRealObjectWeight(CObject* object, map<string, CObj
     int weight = object->getType()->getWeight();
     if (weight == -1) {
         weight = averageWeight;
-        string s = QString::fromUtf8(("WARNUNG: Kein Gewicht für Typ \"" + object->getType()->getName() + "\" gefunden! Wahrscheinlich ist die Datei \"module-weights.xml\" veraltet. Verwende Durchschnittswert.").c_str()).toStdString();
+        string s = tr("WARNING: Did not find weight for type \"%1\"! Very likely the file \"module-weights.xml\" is outdated. Using average value.").arg(object->getType()->getName().c_str()).toStdString();
         cerr << s << endl;
         emit warningFound(s);
     }
@@ -190,7 +190,7 @@ map<CObject*, int> AutomaticCoreAssigner::getRealDatastreamModuleWeights(DataLog
         int weight = getRealObjectWeight(*it, objects);
         result[*it] = weight;
         totalWeight += weight;
-        cout << "weight of " << (*it)->getName() << ": " << to_string(weight) << endl; //TODO
+        cout << tr("weight of %1: %2").arg((*it)->getName().c_str()).arg(weight).toStdString() << endl; //TODO
     }
 
     return result;
@@ -250,11 +250,11 @@ float AutomaticCoreAssigner::evaluatePartition(map<int, list<DatastreamObject*>>
     }
     connectorWeight /= 2; //we count every connection twice
 
-    cout << "found solution:" << endl;
-    cout << "weight Distribution: " << to_string(weightDistribution) << endl;
-    cout << "connector weight: " << to_string(connectorWeight) << endl;
+    cout << tr("found solution:").toStdString() << endl;
+    cout << tr("weight Distribution:").toStdString() << " " << to_string(weightDistribution) << endl;
+    cout << tr("connector weight:").toStdString() << " " << to_string(connectorWeight) << endl;
     float totalScore = heuristic->calculateTotalScore(weightDistribution, connectorWeight);
-    cout << "total weight: " << to_string(totalScore) << endl << endl;
+    cout << tr("total weight:").toStdString() << " " << to_string(totalScore) << endl << endl;
     return totalScore;
 }
 
@@ -298,7 +298,7 @@ bool AutomaticCoreAssigner::assignCores(DataLogger* dataLogger, map<CObject*, in
         return false;
     }
 
-    cout << "using " << to_string(cores) << " CPU core(s)" << endl;
+    cout << tr("using %1 CPU core(s)").arg(cores).toStdString() << endl;
 
     map<int, list<DatastreamObject*>> bestSets;
     float bestScore = numeric_limits<float>::max();
@@ -311,10 +311,10 @@ bool AutomaticCoreAssigner::assignCores(DataLogger* dataLogger, map<CObject*, in
       }
     }
 
-    cout << "partition result: (score: " << to_string(bestScore) << ")" << endl;
+    cout << tr("partition result: (score: %1)").arg(bestScore).toStdString() << endl;
     for (map<int, list<DatastreamObject*>>::iterator it = bestSets.begin(); it != bestSets.end(); it++) {
         list<DatastreamObject*> l = it->second;
-        cout << "set " << to_string(it->first) << ": " << endl;
+        cout << tr("set").toStdString() << " " << to_string(it->first) << ": " << endl;
         for (list<DatastreamObject*>::iterator a = l.begin(); a != l.end(); a++) {
             (*a)->setSpartanMcCore(it->first);
 
@@ -353,19 +353,19 @@ void AutomaticCoreAssigner::analyzeConnections(DataLogger* dataLogger, map<Datas
 }
 
 bool AutomaticCoreAssigner::assignCores(DataLogger* dataLogger) {
-    cout << endl << "starting automatic core assignment" << endl;
+    cout << endl << tr("starting automatic core assignment").toStdString() << endl;
 
     int totalWeight = 0;
     map<CObject*, int> weights = getRealDatastreamModuleWeights(dataLogger, totalWeight);
-    cout << "total weight of system: " << to_string(totalWeight) << endl << endl;
+    cout << tr("total weight of system:").toStdString() << " " << to_string(totalWeight) << endl << endl;
 
     map<DatastreamObject*, map<DatastreamObject*, int>> connections;
     analyzeConnections(dataLogger, connections);
 
-    cout << "searching for partitioning solutions" << endl
-         << "(weight Distribution should be close to 1)" << endl
-         << "(connector weight should be small)" << endl
-         << "(total weight should be small)" << endl;
+    cout << tr("searching for partitioning solutions").toStdString() << endl
+         << tr("(weight Distribution should be close to 1)").toStdString() << endl
+         << tr("(connector weight should be small)").toStdString() << endl
+         << tr("(total weight should be small)").toStdString() << endl;
 
     for (int cores = minCores; cores <= maxCores; cores++) {
         if (assignCores(dataLogger, weights, totalWeight, connections, cores)) {
