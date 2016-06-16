@@ -42,6 +42,7 @@ public:
     void synthesizeOnly();
     void flash();
     void measureFirmwareSize();
+    void stopTasks();
 private:
     void copyProjectTemplate();
     void copyMainC(QString src, QString dest);

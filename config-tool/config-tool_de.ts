@@ -269,276 +269,319 @@ Zum Einfügen unter &quot;Objekte&quot; den Punkt &quot;Einfügen&quot; nutzen</
         <translation>fpga-log</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="75"/>
+        <location filename="gui/mainwindow.ui" line="84"/>
         <source>Output</source>
         <translation>Ausgabefenster</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="92"/>
+        <location filename="gui/mainwindow.ui" line="101"/>
         <source>Errors</source>
         <translation>Fehlermeldungen</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="116"/>
+        <location filename="gui/mainwindow.ui" line="125"/>
         <source>Fi&amp;le</source>
         <oldsource>File</oldsource>
         <translation>D&amp;atei</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="134"/>
+        <location filename="gui/mainwindow.ui" line="143"/>
         <source>Ob&amp;jects</source>
         <translation>Ob&amp;jekte</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="147"/>
+        <location filename="gui/mainwindow.ui" line="156"/>
         <source>&amp;Generate</source>
         <translation>&amp;Generieren</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="160"/>
-        <source>Tools</source>
-        <oldsource>Too&amp;ls</oldsource>
-        <translation>Tools</translation>
+        <location filename="gui/mainwindow.ui" line="170"/>
+        <source>&amp;Tools</source>
+        <translation>&amp;Tools</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="177"/>
+        <location filename="gui/mainwindow.ui" line="187"/>
         <source>Exit</source>
+        <oldsource>&amp;Exit</oldsource>
         <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="180"/>
+        <location filename="gui/mainwindow.ui" line="199"/>
+        <source>New object</source>
+        <oldsource>&amp;New object</oldsource>
+        <translation>Neues Objekt</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="211"/>
+        <source>Target platform</source>
+        <oldsource>&amp;Target platform</oldsource>
+        <translation>Zielplattform</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="219"/>
+        <source>Create &amp;files/check errors</source>
+        <translation>Dateien erzeugen / &amp;Fehler prüfen</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="234"/>
+        <source>&amp;Create Bitfile</source>
+        <translation>&amp;Bitfile erstellen</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="246"/>
+        <source>&amp;Upload</source>
+        <translation>&amp;Upload</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="258"/>
+        <source>New</source>
+        <oldsource>&amp;New</oldsource>
+        <translation>Neu</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="270"/>
+        <location filename="gui/mainwindow.cpp" line="332"/>
+        <source>Open</source>
+        <oldsource>&amp;Open</oldsource>
+        <translation>Öffnen</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="282"/>
+        <source>&amp;Save</source>
+        <translation>&amp;Speichern</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="294"/>
+        <location filename="gui/mainwindow.cpp" line="398"/>
+        <source>Save as</source>
+        <oldsource>Save &amp;as</oldsource>
+        <translation>Speichern unter</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="309"/>
+        <source>&amp;Pin Planner</source>
+        <translation>&amp;Pin Planner</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="327"/>
+        <source>Paste</source>
+        <oldsource>&amp;Paste</oldsource>
+        <translation>Einfügen</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="335"/>
+        <source>Start synthesis</source>
+        <oldsource>&amp;Start synthesis</oldsource>
+        <translation>Synthese starten</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="340"/>
+        <source>Developper tools</source>
+        <oldsource>&amp;Developper tools</oldsource>
+        <translation>Entwicklertools</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="348"/>
+        <source>Stop current task</source>
+        <translation>Aktuellen Task beenden</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="351"/>
+        <source>Ctrl+D</source>
+        <translation>Ctrl+D</translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <oldsource>Too&amp;ls</oldsource>
+        <translation type="obsolete">Tools</translation>
+    </message>
+    <message>
+        <location filename="gui/mainwindow.ui" line="190"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="189"/>
-        <source>New object</source>
-        <translation>Neues Objekt</translation>
-    </message>
-    <message>
-        <location filename="gui/mainwindow.ui" line="192"/>
+        <location filename="gui/mainwindow.ui" line="202"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="201"/>
-        <source>Target platform</source>
-        <translation>Zielplattform</translation>
-    </message>
-    <message>
-        <location filename="gui/mainwindow.ui" line="204"/>
+        <location filename="gui/mainwindow.ui" line="214"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="209"/>
         <source>Create files/check errors</source>
-        <translation>Dateien erzeugen / Fehler prüfen</translation>
+        <translation type="obsolete">Dateien erzeugen / Fehler prüfen</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="212"/>
+        <location filename="gui/mainwindow.ui" line="222"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="224"/>
         <source>Create Bitfile</source>
-        <translation>Bitfile erstellen</translation>
+        <translation type="obsolete">Bitfile erstellen</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="227"/>
+        <location filename="gui/mainwindow.ui" line="237"/>
         <source>Ctrl+G</source>
         <translation>Ctrl+G</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="236"/>
         <source>Upload</source>
-        <translation>Upload</translation>
+        <translation type="obsolete">Upload</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="239"/>
+        <location filename="gui/mainwindow.ui" line="249"/>
         <source>Ctrl+U</source>
         <translation>Ctrl+U</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="248"/>
-        <source>New</source>
-        <translation>Neu</translation>
-    </message>
-    <message>
-        <location filename="gui/mainwindow.ui" line="251"/>
+        <location filename="gui/mainwindow.ui" line="261"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="260"/>
-        <location filename="gui/mainwindow.cpp" line="327"/>
-        <source>Open</source>
-        <translation>Öffnen</translation>
-    </message>
-    <message>
-        <location filename="gui/mainwindow.ui" line="263"/>
+        <location filename="gui/mainwindow.ui" line="273"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="272"/>
         <source>Save</source>
-        <translation>Speichern</translation>
+        <translation type="obsolete">Speichern</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="275"/>
+        <location filename="gui/mainwindow.ui" line="285"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="284"/>
-        <location filename="gui/mainwindow.cpp" line="393"/>
-        <source>Save as</source>
-        <translation>Speichern unter</translation>
-    </message>
-    <message>
-        <location filename="gui/mainwindow.ui" line="287"/>
+        <location filename="gui/mainwindow.ui" line="297"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="299"/>
         <source>Pin Planner</source>
-        <translation>Pin Planner</translation>
+        <translation type="obsolete">Pin Planner</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="302"/>
+        <location filename="gui/mainwindow.ui" line="312"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="317"/>
-        <source>Paste</source>
-        <translation>Einfügen</translation>
-    </message>
-    <message>
-        <location filename="gui/mainwindow.ui" line="320"/>
+        <location filename="gui/mainwindow.ui" line="330"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.ui" line="325"/>
-        <source>Start synthesis</source>
-        <translation>Synthese starten</translation>
-    </message>
-    <message>
-        <location filename="gui/mainwindow.ui" line="330"/>
-        <source>Developper tools</source>
-        <translation>Entwicklertools</translation>
-    </message>
-    <message>
-        <location filename="gui/mainwindow.cpp" line="70"/>
+        <location filename="gui/mainwindow.cpp" line="71"/>
         <source>SpartanMC root not set. Please set the $SPARTANMC_ROOT environment variable.</source>
         <translation>SpartanMC root nicht gesetzt. Bitte setzen sie die $SPARTANMC_ROOT Umgebungsvariable.</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="137"/>
+        <location filename="gui/mainwindow.cpp" line="138"/>
         <source>Copy object</source>
         <translation>Objekt kopieren</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="218"/>
+        <location filename="gui/mainwindow.cpp" line="221"/>
         <source>Bitfile not up-to-date</source>
         <translation>Bitfile nicht aktuell</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="219"/>
+        <location filename="gui/mainwindow.cpp" line="222"/>
         <source>The Bitfile is not up-to-date.
 Should the datalogger be synthesized before flashing?</source>
         <translation>Das Bitfile ist nicht aktuell.
 Soll der Datenlogger vor dem Flashen synthetisiert werden?</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="249"/>
+        <location filename="gui/mainwindow.cpp" line="254"/>
         <source>Error in task processing.</source>
         <oldsource>Error in task processing</oldsource>
         <translation>Fehler bei Taskbearbeitung.</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="251"/>
+        <location filename="gui/mainwindow.cpp" line="256"/>
         <source>Task successfully completed.</source>
         <oldsource>Task successfully completed</oldsource>
         <translation>Task erfolgreich abgeschlossen.</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="254"/>
+        <location filename="gui/mainwindow.cpp" line="259"/>
         <source>The chosen clock frequency is too high. Please choose a lower one in &quot;File-&gt;Traget platform&quot;.</source>
         <translation>Die gewählte Taktfrequenz ist zu hoch. Bitte wählen sie unter &quot;Datei-&gt;Zielplattform&quot; eine niedrigere Taktfrequenz.</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="279"/>
+        <location filename="gui/mainwindow.cpp" line="284"/>
         <source>Datalogger not saved</source>
         <translation>Datenlogger nicht gespeichert</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="280"/>
+        <location filename="gui/mainwindow.cpp" line="285"/>
         <source>The Datalogger is not saved. Should it be saved before proceeding?</source>
         <translation>Der Datenlogger wurde nicht gespeichert.
 Soll der Datenlogger zuerst gespeichert werden?</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="344"/>
+        <location filename="gui/mainwindow.cpp" line="349"/>
         <source>Loaded file %1!</source>
         <translation>Datei %1 geladen!</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="347"/>
+        <location filename="gui/mainwindow.cpp" line="352"/>
         <source>Some parameters of the following modules changed:</source>
         <translation>Einige Parameter der folgenden Module haben sich geändert:</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="349"/>
+        <location filename="gui/mainwindow.cpp" line="354"/>
         <source>Please check all parameters of these modules!</source>
         <translation>Bitte überprüfen sie daher alle Parameter dieser Module!</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="352"/>
+        <location filename="gui/mainwindow.cpp" line="357"/>
         <source>changed parameters</source>
         <translation>geänderte Parameter</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="359"/>
+        <location filename="gui/mainwindow.cpp" line="364"/>
         <source>Error: could not open file.</source>
         <translation>Fehler: Datei konnte nicht geöffnet werden.</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="385"/>
+        <location filename="gui/mainwindow.cpp" line="390"/>
         <source>Datalogger saved in %1!</source>
         <translation>Datenlogger unter %1 gespeichert!</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="387"/>
+        <location filename="gui/mainwindow.cpp" line="392"/>
         <source>Error: could not open destination file.</source>
         <translation>Fehler: Zieldatei konnte nicht geschrieben werden.</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="460"/>
+        <location filename="gui/mainwindow.cpp" line="465"/>
         <source>Paste module</source>
         <translation>Modul einfügen</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="460"/>
+        <location filename="gui/mainwindow.cpp" line="465"/>
         <source>Object name</source>
         <translation>Objektname</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="489"/>
+        <location filename="gui/mainwindow.cpp" line="494"/>
         <source>Expert</source>
         <translation>Experte</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="490"/>
+        <location filename="gui/mainwindow.cpp" line="495"/>
         <source>run CoreAssigner</source>
         <translation>CoreAssigner ausführen</translation>
     </message>
     <message>
-        <location filename="gui/mainwindow.cpp" line="492"/>
+        <location filename="gui/mainwindow.cpp" line="497"/>
         <source>CoreAssigner parameters</source>
         <translation>CoreAssigner Parameter</translation>
     </message>

@@ -930,3 +930,10 @@ void OutputGenerator::flash() {
     timingError = false;
     exec("./flash.sh");
 }
+
+void OutputGenerator::stopTasks() {
+    pending.empty();
+    process.terminate();
+
+    error = true;
+}

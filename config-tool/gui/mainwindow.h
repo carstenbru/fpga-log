@@ -62,6 +62,7 @@ public slots:
     void synthesize();
     void synthesizeOnly();
     void flash();
+    void stopTask();
 
     void developerTools();
     void coreAssigner();

@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSynthesize, SIGNAL(triggered()), this, SLOT(synthesize()));
     connect(ui->actionSynthesizeOnly, SIGNAL(triggered()), this, SLOT(synthesizeOnly()));
     connect(ui->actionFlash, SIGNAL(triggered()), this, SLOT(flash()));
+    connect(ui->actionStop, SIGNAL(triggered()), this, SLOT(stopTask()));
 
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newLogger()));
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
@@ -171,6 +172,8 @@ bool MainWindow::newOutputGenerator() {
     ui->actionSynthesize->setEnabled(false);
     ui->actionGenerate->setEnabled(false);
     ui->actionFlash->setEnabled(false);
+    ui->actionSynthesizeOnly->setEnabled(false);
+    ui->actionStop->setEnabled(true);
 
     clearErrorList();
 
@@ -244,6 +247,8 @@ void MainWindow::outputGeneratorFinished(bool errorOccured, bool timingError) {
     ui->actionSynthesize->setEnabled(true);
     ui->actionGenerate->setEnabled(true);
     ui->actionFlash->setEnabled(true);
+    ui->actionSynthesizeOnly->setEnabled(true);
+    ui->actionStop->setEnabled(false);
 
     if (errorOccured) {
         cerr << tr("Error in task processing.").toStdString() << endl;
@@ -497,5 +502,11 @@ void MainWindow::expertModeChanged(bool expertMode) {
             delete expertMenu;
             expertMenu = NULL;
         }
+    }
+}
+
+void MainWindow::stopTask() {
+    if (outputGenerator != NULL) {
+        outputGenerator->stopTasks();
     }
 }
