@@ -2,7 +2,6 @@ module spmc_timestamp_gen #(
             parameter SOURCES = 2,        //number of timestamp capture sources
             parameter PIN_SOURCES = 2,        //number of timestamp capture pin sources
             parameter INVERTED_SOURCES_MASK = 0,  //mask if sources to invert (so trigger on a negative edge instead of a positive edge)
-            parameter CLOCK_FREQUENCY = 16000000, //input clock frequency
             parameter BASE_ADR = 10'h0) ( 
         //*** Connections to SpartanMC Core (do not change) ***
         input wire              clk_peri,       //System-Clock
@@ -15,6 +14,10 @@ module spmc_timestamp_gen #(
         //*** Connections to SpartanMC Core which can be changed ***
         input wire              reset,          //Reset-Signal (could be external)
 
+        //*** timestamp counter input ***
+        input wire [35:0] lpt_counter, //low precision counter input
+        input wire [35:0] hpt_counter, //high precision counter input
+        
         //*** io interface ***
         input wire [SOURCES-1:0] internal_source,
         input wire [PIN_SOURCES-1:0] pin_source
@@ -67,15 +70,6 @@ module spmc_timestamp_gen #(
   reg [35:0] hpt_capture;  
   wire capture_ready;
   
-  //counter registers
-  reg [35:0] lpt_counter;
-  reg [35:0] hpt_counter;
-  
-  //counter write register
-  reg [35:0] lpt_counter_write;
-  reg [35:0] hpt_counter_write;
-  reg counter_write_req;
-  
   wire [17:0] dat_out;
   
   //delay read signals by one cycle (for new pipeline)
@@ -106,7 +100,6 @@ module spmc_timestamp_gen #(
   always @(posedge clk_peri) begin
     if (reset) begin
       fifo_ts_read <= 7'd0;
-      counter_write_req <= 1'b0;
     end else begin
       if (select & wr_peri) begin
         case (addr_peri[2:0])
@@ -120,37 +113,10 @@ module spmc_timestamp_gen #(
 	
 	    sw_source_change <= do_peri[15:0];
 	  end
-	  3'b000: lpt_counter_write[17:0] = do_peri[17:0];
-	  3'b001: lpt_counter_write[35:18] = do_peri[17:0];
-	  3'b010: hpt_counter_write[17:0] = do_peri[17:0];
-	  3'b011: begin
-	      hpt_counter_write[35:18] = do_peri[17:0]; 
-	      counter_write_req <= 1'b1;
-	    end
         endcase
       end else begin
-        counter_write_req <= 1'b0;
         if (capture_ready)
           sw_source_change <= 16'd0;
-      end
-    end
-  end
-  
-  //counter logic
-  always @(posedge clk_peri) begin
-    if (reset) begin
-      hpt_counter <= 18'd0; //reset counters to 0
-      lpt_counter <= 18'd0;
-    end else begin
-      if (counter_write_req == 1'b1)begin
-        hpt_counter <= hpt_counter_write;
-        lpt_counter <= lpt_counter_write;
-      end else begin
-        if (hpt_counter == CLOCK_FREQUENCY-1) begin
-	  hpt_counter <= 18'd0; //reset high precision counter if max value reached
-	  lpt_counter <= lpt_counter + 1; //increment low precision counter
-        end else
-	  hpt_counter <= hpt_counter + 1; //otherwise increment high precision counter
       end
     end
   end

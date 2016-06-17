@@ -25,15 +25,16 @@
       <range min="0" max="262144"/>
     </parameter>
     <parameter name="INVERTED_SOURCES_MASK" type="int" value="0" />
-    <parameter name="CLOCK_FREQUENCY" type="int" value="16000000" >
-      <range min="1" max="68719476736"/>
-    </parameter>
   </parameters>
   
   <xi:include href="../defaults/peripheral.xml"/>
   <ports group="Timestamp capture sources" direction="input">
     <port name="internal_source" descr="%Insert port description here%" width="${SOURCES}"/>
     <port name="pin_source" descr="%Insert port description here%" width="${PIN_SOURCES}"/>
+  </ports>
+  <ports group="counter input" direction="input">
+    <port name="lpt_counter" descr="%Insert port description here%" width="36" />
+    <port name="hpt_counter" descr="%Insert port description here%" width="36" />
   </ports>
   
   <registers>

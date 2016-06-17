@@ -8,7 +8,6 @@
 #include <fpga-log/device/device_gps_nmea.h>
 #include <fpga-log/peripheral_funcs/uart_light_funcs.h>
 #include <fpga-log/long_int.h>
-#include <fpga-log/sys_init.h>
 
 //TODO fix error on "course" field being reported when not present...just on real hardware
 //TODO time gets negative -> overflow? perhaps only a print (formatter_simple) problem, %d is used but can be too small
@@ -39,7 +38,7 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 static void device_gps_nmea_update(void* const _gps_nmea);
 
 void device_gps_nmea_init(device_gps_nmea_t* const gps_nmea,
-		uart_light_regs_t* const uart_light, device_gps_sync_mode sync_logger_time,
+		uart_light_regs_t* const uart_light, device_gps_sync_mode sync_logger_time, timestamp_counter_regs_t* timestamp_counter,
 		const int id) {
 	datastream_source_init(&gps_nmea->super, id);  //call parents init function
 	/*
@@ -53,6 +52,7 @@ void device_gps_nmea_init(device_gps_nmea_t* const gps_nmea,
 
 	gps_nmea->sync_logger_time = sync_logger_time;
 	gps_nmea->uart_light = uart_light;
+	gps_nmea->timestamp_counter = timestamp_counter;
 
 	gps_nmea->timestamp_miss_counter = 0;
 	gps_nmea->timestamp_miss_assumption =
@@ -209,13 +209,12 @@ static void device_gps_nmea_send_data(void* const _gps_nmea,
 										gps_nmea->time_parsed = 0;
 									}
 									if (gps_nmea->time_parse_position == 7) {
-										timestamp_gen_regs_t* timestamp_gen = get_timestamp_gen();
-										timestamp_gen->timestamp.lpt_union.lpt =
+										gps_nmea->timestamp_counter->timestamp.lpt_union.lpt =
 												gps_nmea->time_parsed_sec;
 										unsigned long int lpt = mul34_17(get_peri_clock(),
 												gps_nmea->time_parsed);
 										lpt /= 10;
-										timestamp_gen->timestamp.hpt_union.hpt = lpt;
+										gps_nmea->timestamp_counter->timestamp.hpt_union.hpt = lpt;
 									}
 								}
 								gps_nmea->time_parse_position++;

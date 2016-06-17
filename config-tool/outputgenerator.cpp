@@ -168,9 +168,10 @@ void OutputGenerator::measureFirmwareSize() {
 void OutputGenerator::generateConfigFiles() {
     timingError = false;
     synthesisSuccessful = false;
+    timestampCounterPeripheralCore = -1;
 
     dataLogger->addCoreConnectors();
-    generateSystemXML(true); //re-generate System-XML with large BlockRam counts
+    generateSystemXML(true); //generate System-XML with large BlockRam counts
     generateCSources();
 
     exec("make jconfig +args=\"--generate system.xml\"");
@@ -350,11 +351,16 @@ void OutputGenerator::writeObjectInit(std::ostream& stream, CObject* object, std
                     writeObjectInit(stream, paramObject, objects, initDone);
                 }
             } catch (exception) {
-                if ((*i).getDataType()->hasSuffix("_regs_t") || (*i).getDataType()->hasSuffix("_dma_t")) {
-                    writeCast(tmpStream, &(*i));
-                    value = object->getName() + "_" + (*i).getName();
-                    transform(value.begin(), value.end(), value.begin(), ::toupper);
-                    definePeripheralForSimulation(value, (*i).getDataType());
+                DataType* type = (*i).getDataType();
+                if (type->hasSuffix("_regs_t") || type->hasSuffix("_dma_t")) {
+                    if (type != DataType::getType("timestamp_counter_regs_t")) {
+                        writeCast(tmpStream, &(*i));
+                        value = object->getName() + "_" + (*i).getName();
+                        transform(value.begin(), value.end(), value.begin(), ::toupper);
+                        definePeripheralForSimulation(value, (*i).getDataType());
+                    } else {
+                        value = "TIMESTAMP_COUNTER";
+                    }
                 } else {
                     value = (*i).getCValue();
                 }
@@ -490,6 +496,9 @@ void OutputGenerator::writeTimestampGen(QXmlStreamWriter& writer,string subsyste
     timestampGen.getParameter("PIN_SOURCES")->setValue(to_string(max(1, usedTimestampPinSources[subsystemNumber])).c_str());
     timestampGen.getParameter("INVERTED_SOURCES_MASK")->setValue(to_string(timestampInvertMask).c_str());
 
+    timestampGen.setFirstPortLine("counter input", "hpt_counter", "SUBSYSTEM_" + to_string(timestampCounterPeripheralCore) + "/TIMESTAMP_COUNTER/#PORT.hpt_counter");
+    timestampGen.setFirstPortLine("counter input", "lpt_counter", "SUBSYSTEM_" + to_string(timestampCounterPeripheralCore) + "/TIMESTAMP_COUNTER/#PORT.lpt_counter");
+
     addTimestampPinConnections(timestampGen.getPort("Timestamp capture sources", "pin_source"), subsystemNumber);
 
     writePeripheral(writer, &timestampGen, subsystemID, subsystemNumber);
@@ -528,6 +537,10 @@ void OutputGenerator::generateSpmcSubsystem(ostream& stream, int id, bool useMax
             QXmlStreamWriter peripheralsWriter(&peripherals);
             peripheralsWriter.setAutoFormatting(true);
             writePeripherals(peripheralsWriter, subsystemName, id);
+            if (timestampCounterPeripheralCore == id) {
+                SpmcPeripheral counterPeripheral("TIMESTAMP_COUNTER", DataType::getType("timestamp_counter_regs_t"), NULL, dataLogger);
+                writePeripheral(peripheralsWriter, &counterPeripheral, subsystemName, id);
+            }
             if ((usedTimestampPinSources[id] > 0) || (usedTimestampSources[id] > 0)) {
                 writeTimestampGen(peripheralsWriter, subsystemName, id);
             }
@@ -605,6 +618,8 @@ void OutputGenerator::generateSystemXML(bool useMaxBlockRAMs) {
     QXmlStreamWriter targetWriter(&targetNode);
     targetWriter.setAutoFormatting(true);
     writeTargetNode(targetWriter);
+
+    determineTimestampCounterPeripheralCore();
 
     while (!templateFile.eof()) {
         string line;
@@ -936,4 +951,22 @@ void OutputGenerator::stopTasks() {
     process.terminate();
 
     error = true;
+}
+
+void OutputGenerator::determineTimestampCounterPeripheralCore() {
+    timestampCounterPeripheralCore = -1;
+    map<string, CObject*> objects = dataLogger->getObjectsMap();
+    for (map<string, CObject*>::iterator i = objects.begin(); i != objects.end(); i++) {
+        if (i->second->getWritesSystemTime()) {
+            if (timestampCounterPeripheralCore == -1) {
+                timestampCounterPeripheralCore = i->second->getSpartanMcCore();
+            } else {
+                error = true;
+                emit errorFound(tr("The timestamp counter is modified from two different cores. This is not supported. Please ensure that all modules setting the system time are on the same core.").toStdString());
+            }
+        }
+    }
+    if (timestampCounterPeripheralCore == -1) {
+        timestampCounterPeripheralCore = *processorSet.begin();
+    }
 }

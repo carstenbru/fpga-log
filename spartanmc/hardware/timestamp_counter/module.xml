@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<peripheral document-type="soc-peripheral-1.0" xmlns="soc-library" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <header category="Timer/Counter" label="Timestamp counter" name="timestamp_counter">
+    <description>
+      The timestamp counter is a helper module for the timestamp generator. By extracting the counter from the generator multiple timestamp generator can work with the same counter.
+    </description>
+  </header>
+  <hdl lang="verilog" toplevel="spmc_timestamp_counter">
+    <sources toolchain="xilinx">
+      <modules/>
+      <files>
+	spmc_timestamp_counter.v
+      </files>
+    </sources>
+  </hdl>
+  
+  <parameters>
+    <parameter name="CLOCK_FREQUENCY" type="int" value="16000000" >
+      <range min="1" max="68719476736"/>
+    </parameter>
+  </parameters>
+ 
+  <xi:include href="../defaults/peripheral.xml"/>
+  <ports group="counter output" direction="output">
+    <port name="lpt_counter" descr="%Insert port description here%" width="36" />
+    <port name="hpt_counter" descr="%Insert port description here%" width="36" />
+  </ports>
+  
+  <registers>
+    <register access="write" name="LPT_LOW" offset="0">
+      <description>Contains the low-precision timer value.</description>
+    </register>
+    <register access="write" name="LPT_HIGH" offset="1">
+      <description>Contains the low-precision timer value.</description>
+    </register>
+    <register access="write" name="HPT_LOW" offset="2">
+      <description>Contains the high-precision timer value.</description>
+    </register>
+    <register access="write" name="HPT_HIGH" offset="3">
+      <description>Contains the high-precision timer value.</description>
+    </register>
+  </registers>
+</peripheral>

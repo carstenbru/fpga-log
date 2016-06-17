@@ -94,6 +94,7 @@ private:
 
     std::string readLastLine(std::string fileName);
     int determineMinBlockRAMcount(int cpuID);
+    void determineTimestampCounterPeripheralCore();
 
     DataLogger* dataLogger;
 
@@ -105,6 +106,7 @@ private:
     std::list<FpgaPin> usedPins;
     std::map<int, int> usedTimestampSources;
     std::map<int, int> usedTimestampPinSources;
+    int timestampCounterPeripheralCore;
 
     QProcess process;
     std::list<std::string> pending;

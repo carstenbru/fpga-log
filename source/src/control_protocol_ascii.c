@@ -37,6 +37,7 @@ void control_protocol_ascii_set_special_chars(
 	control_protocol_ascii->out_select_char = out_sel_char;
 }
 
+#include <peripherals/timestamp_counter.h>
 static void control_protocol_ascii_parse(void* const _protocol,
 		unsigned char new_byte) {
 	control_protocol_ascii_t* protocol = (control_protocol_ascii_t*) _protocol;

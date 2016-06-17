@@ -13,6 +13,7 @@
 #include <fpga-log/datastream_source.h>
 #include <fpga-log/data_port.h>
 #include <fpga-log/simple_float.h>
+#include <peripherals/timestamp_counter.h>
 
 #define NMEA_RMC_NAMES { "time", "status", "latitude_rmc", "N/S" , "longitude_rmc", "E/W", "speed", "course", "date", "magnetic variation", "variation E/W", "mode"}
 #define NMEA_GGA_NAMES { "time", "latitude", "N/S" , "longitude", "E/W", "fix indicator", "satellites", "HDOP", "altitude", "units", "geoid seperation", "units 2", "age of diff. corr.", "ref. station ID"}
@@ -57,6 +58,7 @@ typedef struct {
 	unsigned int max_bytes_per_call;
 
 	uart_light_regs_t* uart_light; /**< pointer to UART hardware registers */
+	timestamp_counter_regs_t* timestamp_counter; /**< pointer to timestamp counter peripheral (to update system time) */
 } device_gps_nmea_t;
 
 /**
@@ -67,7 +69,7 @@ typedef struct {
  * @param id		id of the new device (for log output, etc)
  */
 void device_gps_nmea_init(device_gps_nmea_t* const gps_nmea,
-		uart_light_regs_t* const uart_light, device_gps_sync_mode sync_logger_time, const int id);
+		uart_light_regs_t* const uart_light, device_gps_sync_mode sync_logger_time, timestamp_counter_regs_t* timestamp_counter, const int id);
 
 /**
  * @brief connects the raw data output port of a gps device to a given destination

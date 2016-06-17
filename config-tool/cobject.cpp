@@ -10,17 +10,24 @@ CObject::CObject(std::string name, DataTypeStruct* dataType, DataLogger* dataLog
     type(dataType),
     initMethod(NULL),
     definitionsUpdated(false),
-    spartanMcCore(0)
+    spartanMcCore(0),
+    writesSystemTime(false)
 {
     if (type->isInstantiableObject()) {
         initMethod = new CMethod(*type->getMethod("init"));
 
+        DataType* timestampCounterType = DataType::getType("timestamp_counter_regs_t");
         list<CParameter>* parameters = initMethod->getParameters();
         list<CParameter>::iterator i = parameters->begin();
         i++;
         for (; i != parameters->end(); i++) {
-            if ((*i).getDataType()->hasSuffix("_regs_t")) {
-                peripherals.push_back(new SpmcPeripheral((*i).getName(), (*i).getDataType(), this, dataLogger));
+            DataType* type = (*i).getDataType();
+            if (type->hasSuffix("_regs_t")) {
+                if ((type != timestampCounterType)) {
+                    peripherals.push_back(new SpmcPeripheral((*i).getName(), type, this, dataLogger));
+                } else {
+                    writesSystemTime = true;
+                }
             }
         }
         connect(this, SIGNAL(advancedConfigRemoved()), dataLogger, SLOT(parameterChanged()));

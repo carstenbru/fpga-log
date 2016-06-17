@@ -36,6 +36,8 @@ public:
     void setSpartanMcCore(int core) { spartanMcCore = core; }
     int getSpartanMcCore() { return spartanMcCore; }
 
+    bool getWritesSystemTime() { return writesSystemTime; }
+
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CObject& cObject);
 protected:
     void readTimestampPinsFromModuleXml();
@@ -55,6 +57,7 @@ protected:
     bool definitionsUpdated;
 
     int spartanMcCore;
+    bool writesSystemTime;
 public slots:
     void removeAdvancedConfig(int methodId);
 signals:
