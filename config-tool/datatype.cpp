@@ -1,3 +1,10 @@
+/**
+ * @file datatype.cpp
+ * @brief classes representing the used fpga-log datatypes (e.g. of module parameters)
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "datatype.h"
 #include <iostream>
 #include <QSpinBox>
