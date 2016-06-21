@@ -1,3 +1,11 @@
+/**
+ * @file device_contrast_box.c
+ * @brief Implement a contrast box with automatic increasing LED output
+ * 		  input switches can increase or decrease the LED output
+ *
+ * @author Stefan Klir (s.klir@gmx.de)
+ */
+
 #include "fpga-log/device/device_contrast_box.h"
 
 static void device_contrast_box_send_data(

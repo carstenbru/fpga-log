@@ -2,7 +2,7 @@
  * @file dcf77.h
  * @brief DCF77 peripheral registers
  * 
- * @author Stefan Klir (Stefan.Klir@web.de)
+ * @author Stefan Klir (s.klir@gmx.de)
  */
 
 #ifndef __DCF77_H

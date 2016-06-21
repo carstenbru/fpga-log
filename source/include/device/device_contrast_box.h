@@ -2,7 +2,7 @@
  * @file device_contrast_box.h
  * @brief Contrast Box LED/Switch output/input
  *
- * @author Stefan Klir (klir@lichttechnik.tu-darmstadt.de)
+ * @author Stefan Klir (s.klir@gmx.de)
  */
 
 #ifndef CONTRAST_BOX_H_

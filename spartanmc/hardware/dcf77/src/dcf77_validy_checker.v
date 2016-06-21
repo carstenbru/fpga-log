@@ -13,8 +13,9 @@ module dcf77_validy_checker #(parameter CLOCK_FREQUENCY = 16000000
         input wire              clk,       	//Clock
         input wire              reset,          //Reset-Signal
         input wire [58:0] dcf_bits,
+	input wire dcf_new_sec,
 
-	output reg signal_valid
+	output wire signal_valid
 );  
 
   wire parity_min;
@@ -25,16 +26,7 @@ module dcf77_validy_checker #(parameter CLOCK_FREQUENCY = 16000000
   assign parity_hour = (^dcf_bits[34:29] == dcf_bits[35]);
   assign parity_date = (^dcf_bits[57:36] == dcf_bits[58]);
 
-  //assign signal_valid = (parity_min && parity_hour && parity_date && (dcf_bits[0] == 1'b0) && (dcf_bits[20] == 1'b1));
-  //TODO signal nur für 1 takt auf 1 danach wieder 0
-  always@(posedge clk or posedge reset) begin
-	if(reset) signal_valid <= 1'b0;
-	else begin
-		if(parity_min && parity_hour && parity_date && (dcf_bits[0] == 1'b0) && (dcf_bits[20] == 1'b1)) signal_valid <= 1'b1;
-		else signal_valid <= 1'b0;
-	end
-  end
-		
+  assign signal_valid = (parity_min && parity_hour && parity_date && (dcf_bits[0] == 1'b0) && (dcf_bits[20] == 1'b1) && dcf_new_sec);		
 
   //TODO redundace check with previous data
 endmodule

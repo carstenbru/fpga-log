@@ -23,6 +23,16 @@
 unsigned long int cast_to_ulong(unsigned int i);
 
 /**
+ * @brief addition unsigned 36-bit value with a unsigned 36-bit value, result is truncated to 36-bit
+ * overflow is not transmitted
+ *
+ * @param a_36 	36-bit operand
+ * @param b_36	36-bit operand
+ * @return	addition result, truncated to 36-bit
+ */
+unsigned long int addu36(unsigned long int a_36, unsigned long int b_36);
+
+/**
  * @brief multiplies unsigned 34-bit value with a unsigned 17-bit value, result is truncated to 34-bit
  *
  * The SpartanMC core offers only a signed multiply so this function uses 17-bit values to make

@@ -15,7 +15,6 @@ module dcf77_encoder #(parameter CLOCK_FREQUENCY = 16000000
         input wire dcf77_non_inverted,
 
 	output reg dcf_sec,
-	output reg debug,
 	output reg [58:0] dcf_outputbits
 
 );  
@@ -35,7 +34,6 @@ module dcf77_encoder #(parameter CLOCK_FREQUENCY = 16000000
 		dcf_sec <= 1'b0;
 		cnt <= 0;
 		dcf_edge <= 3'b0;
-		debug <= 1'b0;
 	end else begin
 		dcf_edge <= {dcf_edge[1:0], dcf77_non_inverted};
 	
@@ -55,11 +53,9 @@ module dcf77_encoder #(parameter CLOCK_FREQUENCY = 16000000
 		if(dcf_edge[2:1] == 2'b10) begin
 			if(cnt < CNT_SAMPLE) begin
 				dcf_bits <= {1'b0, dcf_bits[59:1]};	//check if cnt if < 150ms or above 150ms
-				debug <= 1'b0;
 			end
 			else begin
 				dcf_bits <= {1'b1, dcf_bits[59:1]};
-				debug <= 1'b1;
 			end	
 		end
 	end
