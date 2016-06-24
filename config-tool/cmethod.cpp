@@ -1,3 +1,10 @@
+/**
+ * @file cmethod.cpp
+ * @brief CMethod class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "cmethod.h"
 #include "cobject.h"
 

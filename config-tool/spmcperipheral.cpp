@@ -1,3 +1,10 @@
+/**
+ * @file spmcperipheral.cpp
+ * @brief SpmcPeripheral and PeripheralPort classes
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "spmcperipheral.h"
 #include <QFile>
 #include <iostream>

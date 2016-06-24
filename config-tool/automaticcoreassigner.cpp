@@ -1,3 +1,10 @@
+/**
+ * @file automaticcoreassigner.cpp
+ * @brief AutomaticCoreAssigner class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "automaticcoreassigner.h"
 #include <iostream>
 #include <QFile>

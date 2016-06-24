@@ -1,3 +1,10 @@
+/**
+ * @file cobject.cpp
+ * @brief CObject class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "cobject.h"
 #include "datalogger.h"
 #include <QFile>

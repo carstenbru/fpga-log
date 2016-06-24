@@ -1,3 +1,10 @@
+/**
+ * @file datastreamobject.cpp
+ * @brief DatastreamObject class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "datastreamobject.h"
 #include <list>
 #include "headerparser.h"

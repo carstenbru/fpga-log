@@ -1,3 +1,11 @@
+/**
+ * @file outputgenerator.cpp
+ * @brief OutputGenerator class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
+
 #include "outputgenerator.h"
 #include <list>
 #include <string>
@@ -11,7 +19,7 @@
 
 using namespace std;
 
-OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory, bool changeOtherModulesCodeID) :
+OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory, bool changeOtherModulesCoreID) :
     dataLogger(new DataLogger(*dataLogger)),
     directory(directory),
     usedIdCounter(0),
@@ -31,7 +39,7 @@ OutputGenerator::OutputGenerator(DataLogger *dataLogger, string directory, bool 
     connect(&process, SIGNAL(finished(int)), this, SLOT(processFinished()));
 
     // reset core_IDs of objects
-    if (changeOtherModulesCodeID) {
+    if (changeOtherModulesCoreID) {
         vector<CObject*> objects = this->dataLogger->getOtherObjects();
         for (vector<CObject*>::iterator it = objects.begin(); it != objects.end(); it++) {
             (*it)->setSpartanMcCore(-1);

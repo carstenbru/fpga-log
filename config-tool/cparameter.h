@@ -193,6 +193,11 @@ private:
     DataType* dataType;
     bool pointer;
 signals:
+    /**
+     * @brief signal triggered when the parameters value changed
+     *
+     * @param value the new value of the parameter
+     */
     void valueChanged(std::string value);
 };
 

@@ -1,3 +1,10 @@
+/**
+ * @file headerparser.cpp
+ * @brief HeaderParser class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "headerparser.h"
 #include <iostream>
 #include <sstream>

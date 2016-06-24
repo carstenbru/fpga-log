@@ -18,6 +18,9 @@ typedef std::pair<std::string, std::string> stringPair;
 
 class DatastreamObject;
 
+/**
+ * @brief enumeration of the different port types
+ */
 typedef enum {
     PORT_TYPE_DATA_OUT = 0, /**< data output port */
     PORT_TYPE_CONTROL_IN, /**< control input port */
