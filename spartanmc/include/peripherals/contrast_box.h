@@ -2,7 +2,7 @@
  * @file contrast_box.h
  * @brief contrast_box peripheral registers
  * 
- * @author Stefan Klir (klir@lichttechnik.tu-darmstadt.de)
+ * @author Stefan Klir (s.klir@gmx.de)
  */
 
 #ifndef __CONTRAST_BOX_H

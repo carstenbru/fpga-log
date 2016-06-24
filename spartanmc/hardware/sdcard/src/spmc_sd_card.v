@@ -93,7 +93,7 @@ module spmc_sd_card(
   
   defparam sdcard.SDCARD_CLOCK = CLOCK_FREQUENCY;
   defparam sdcard.u_readWriteSDBlock.SDCARD_CLOCK = CLOCK_FREQUENCY;
-  defparam sdcard.u_ctrlStsRegBI.SDCARD_CLOCK = CLOCK_FREQUENCY;
+  defparam sdcard.u_spiMasterSpmcBI.SDCARD_CLOCK = CLOCK_FREQUENCY;
   defparam sdcard.DMA_ADR = DMA_BASE_ADR;
   
 endmodule

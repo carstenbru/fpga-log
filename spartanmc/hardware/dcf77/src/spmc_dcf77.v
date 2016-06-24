@@ -95,6 +95,7 @@ assign  rd_start_bits_19_1	= reg_read[STARTBITS_ADR];		// Lesen
   wire dcf77_reset_enable;
   wire [58:0] dcf_bits;
   wire dcf_signal_valid;
+  wire dcf_new_sec;
 
   reg [18:0] start_bits_19_1;
   reg [3:0] minute_1;
@@ -113,8 +114,7 @@ assign  rd_start_bits_19_1	= reg_read[STARTBITS_ADR];		// Lesen
         .clk(clk_peri),
         .reset(dcf77_reset_enable),
         .dcf77_non_inverted(dcf77_non_inverted),
-	.dcf_sec(),
-	.debug(),
+	.dcf_sec(dcf_new_sec),
 	.dcf_outputbits(dcf_bits)
   ); 
 
@@ -122,6 +122,7 @@ assign  rd_start_bits_19_1	= reg_read[STARTBITS_ADR];		// Lesen
         .clk(clk_peri),
         .reset(dcf77_reset_enable),
         .dcf_bits(dcf_bits),
+	.dcf_new_sec(dcf_new_sec),
 	.signal_valid(dcf_signal_valid)
   );  
 
@@ -174,14 +175,14 @@ assign  rd_start_bits_19_1	= reg_read[STARTBITS_ADR];		// Lesen
     end
   end
 
-  //Send PWM_ON_TIME values to spartan MC
-  assign di_peri = (rd_minute) ?  {7'b0, minute_10, 4'b0, minute_1}  : 
-		   (rd_hour) ?  {8'b0, hour_10, 4'b0, hour_1} : 
-		   (rd_day) ?  {8'b0, day_10, 4'b0, day_1} : 
-		   (rd_month) ?  {9'b0, month_10, 4'b0, month_1} : 
-		   (rd_year) ?  {6'b0, year_10, 4'b0, year_1} : 
-		   (rd_weekday) ?  {start_bits_19_1[18], 14'b0, weekDay} : 
-		   (rd_start_bits_19_1) ?  {start_bits_19_1[17:0]} : 
+  //Send values to spartan MC
+  assign di_peri = (rd_minute) ? {7'b0, minute_10, 4'b0, minute_1}  : 
+		   (rd_hour) ? {8'b0, hour_10, 4'b0, hour_1} : 
+		   (rd_day) ? {8'b0, day_10, 4'b0, day_1} : 
+		   (rd_month) ? {9'b0, month_10, 4'b0, month_1} : 
+		   (rd_year) ? {6'b0, year_10, 4'b0, year_1} : 
+		   (rd_weekday) ? {start_bits_19_1[18], 14'b0, weekDay} : 
+		   (rd_start_bits_19_1) ? {start_bits_19_1[17:0]} : 
 		   18'b0;  
 
 
