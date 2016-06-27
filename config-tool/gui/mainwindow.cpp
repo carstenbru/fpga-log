@@ -1,3 +1,10 @@
+/**
+ * @file mainwindow.cpp
+ * @brief MainWindow GUI class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "headerparser.h"

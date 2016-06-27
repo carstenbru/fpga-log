@@ -1,3 +1,10 @@
+/**
+ * @file developertools.cpp
+ * @brief DeveloperTools GUI class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "developertools.h"
 #include "ui_developertools.h"
 

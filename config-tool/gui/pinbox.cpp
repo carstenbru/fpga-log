@@ -1,3 +1,10 @@
+/**
+ * @file pinbox.cpp
+ * @brief PinBox class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "pinbox.h"
 #include <list>
 #include "datatype.h"

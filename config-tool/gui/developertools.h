@@ -1,3 +1,10 @@
+/**
+ * @file developertools.h
+ * @brief DeveloperTools GUI class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #ifndef DEVELOPERTOOLS_H
 #define DEVELOPERTOOLS_H
 
@@ -7,11 +14,19 @@ namespace Ui {
 class DeveloperTools;
 }
 
+/**
+ * @brief developer tools dialog
+ */
 class DeveloperTools : public QDialog
 {
     Q_OBJECT
 
 public:
+    /**
+     * @brief constructor
+     *
+     * @param parent parent widget
+     */
     explicit DeveloperTools(QWidget *parent = 0);
     ~DeveloperTools();
 
@@ -19,6 +34,9 @@ private:
     Ui::DeveloperTools *ui;
 
 public slots:
+    /**
+     * @brief slot for triggering
+     */
     void calculateModuleWeights();
 };
 

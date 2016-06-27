@@ -1,3 +1,10 @@
+/**
+ * @file configobjectdialog.h
+ * @brief ConfigObjectDialog GUI class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #ifndef CONFIGOBJECTDIALOG_H
 #define CONFIGOBJECTDIALOG_H
 
@@ -17,16 +24,31 @@ class ConfigObjectDialog;
 }
 class MainWindow;
 
-
+// custom event code indicating a neccessary reload of the dialog
 #define ConfigObjectDialogReloadEvent 1774
 
+/**
+ * @brief datalogger object configuration dialog
+ *
+ * This dialog lets the user edit all configurable parameters of an object and also copy or delete it.
+ */
 class ConfigObjectDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    enum DialogCode { DeleteResult = 2 };
+    /**
+     * @brief enumeration of possible (custom) dialog result codes
+     */
+    enum DialogCode { DeleteResult = 2 /**< delete the object after closing the dialog */};
 
+    /**
+     * @brief constuctor
+     *
+     * @param parent parent window
+     * @param object object which should be configured
+     * @param dataLogger datalogger the object belongs to
+     */
     explicit ConfigObjectDialog(MainWindow *parent, CObject* object, DataLogger *dataLogger);
     ~ConfigObjectDialog();
 private:
@@ -59,7 +81,16 @@ private:
 
     CParameter* objectRequestedForParam;
 signals:
+    /**
+     * @brief emitted when a new object of a specific type should be created
+     */
     void newObjectRequest(DataTypeStruct*,ConfigObjectDialog*);
+
+    /**
+     * @brief emitted when the object should be copied
+     *
+     * @param objectDescription XML representation of the object
+     */
     void copyObject(std::string objectDescription);
 private slots:
     void nameEdited();
@@ -75,6 +106,12 @@ private slots:
 
     void copyObjectButton();
 public slots:
+    /**
+     * @brief slot to receive message of object creation finished
+     * @see newObjectRequest
+     *
+     * @param name name of the new object
+     */
     void objectCreationFinished(std::string name);
 };
 

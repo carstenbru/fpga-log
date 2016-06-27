@@ -1,3 +1,10 @@
+/**
+ * @file pinoverview.cpp
+ * @brief PinOverview GUI class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "pinoverview.h"
 #include "ui_pinoverview.h"
 
@@ -8,8 +15,6 @@
 #include <QDir>
 
 using namespace std;
-
-//TODO maybe direction could be interesting for user? other values maybe not..
 
 PinOverview::PinOverview(QWidget *parent, DataLogger* dataLogger, string dataLoggerPath) :
     QDialog(parent),

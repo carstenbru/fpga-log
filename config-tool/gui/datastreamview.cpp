@@ -1,3 +1,10 @@
+/**
+ * @file datastreamview.cpp
+ * @brief DatastreamView and DatastreamViewScene GUI classes
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "datastreamview.h"
 #include "moveablebutton.h"
 #include <QScrollBar>
@@ -281,15 +288,6 @@ void DatastreamView::refineVIAs(list<pair<QPoint, bool>>& viaList) {
     }
 }
 
-/*
- * redraws the streams in the DatastreamView
- *
- * @param addVia if true the Via specified in newVia will be added (if on a connection)
- * @param newVia position at which a Via should be added
- * @param keepViaBtns if true keep the old Buttons for Vias (necessary if Vias moved), if false generate new ones (necessary if Vias changed)
- *
- * @return true if a VIA was successfully added
- */
 bool DatastreamView::redrawStreams(bool addVia, QPoint newVia, bool keepViaBtns) {
     bool addedVia = false;
     if (!keepViaBtns) {

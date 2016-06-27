@@ -1,3 +1,10 @@
+/**
+ * @file portbutton.cpp
+ * @brief PortButton and inherited PortOutButton, ControlPortInButton, DataPortInButton, ControlPortOutButton and DataPortOutButton classes
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "portbutton.h"
 
 PortButton::PortButton(QWidget* parent, Port *port, DatastreamObject *dso) :

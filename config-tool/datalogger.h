@@ -208,21 +208,21 @@ public:
     bool isExpertMode() { return expertMode.getValue().compare("TRUE") == 0; }
 
     /**
-     * @brief sets the \ref definitionsUpdated flag
+     * @brief sets the definitionsUpdated flag
      *
      * @param state the new state
      */
     void setDefinitionsUpdated(bool state) {definitionsUpdated = state;}
 
     /**
-     * @brief gets the \ref definitionsUpdated flag
+     * @brief gets the definitionsUpdated flag
      *
      * @return the definitions updated flag
      */
     bool getDefinitionsUpdated() {return definitionsUpdated;}
 
     /**
-     * @brief adds a module to the list of updated modules, sets the \ref definitionsUpdated flag
+     * @brief adds a module to the list of updated modules, sets the definitionsUpdated flag
      * @param moduleName
      */
     void addDefinitionsUpdatedModule(std::string moduleName) {definitionsUpdatedModules += "\n" + moduleName; definitionsUpdated = true;}
@@ -282,7 +282,7 @@ public:
      * @brief writes (stores) a datalogger in a XML writer
      *
      * @param out the destination writer
-     * @param datalogger the datalogger to store
+     * @param dataLogger the datalogger to store
      * @return reference to the XML writer (to chain the operator)
      */
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DataLogger& dataLogger);

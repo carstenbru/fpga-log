@@ -1,3 +1,10 @@
+/**
+ * @file targetconfigdialog.h
+ * @brief TargetConfigDialog GUI class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #ifndef TARGETCONFIGDIALOG_H
 #define TARGETCONFIGDIALOG_H
 
@@ -12,11 +19,20 @@ namespace Ui {
 class TargetConfigDialog;
 }
 
+/**
+ * @brief dialog for configuration target parameters
+ */
 class TargetConfigDialog : public QDialog
 {
     Q_OBJECT
 
 public:
+    /**
+     * @brief constructor
+     *
+     * @param parent parent widget
+     * @param dataLogger datalogger for which the target should be configured
+     */
     explicit TargetConfigDialog(QWidget *parent, DataLogger* dataLogger);
     ~TargetConfigDialog();
 

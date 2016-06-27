@@ -1,3 +1,10 @@
+/**
+ * @file newobjectdialog.cpp
+ * @brief NewObjectDialog GUI class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "newobjectdialog.h"
 #include "ui_newobjectdialog.h"
 

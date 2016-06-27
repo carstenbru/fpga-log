@@ -1,3 +1,10 @@
+/**
+ * @file acoparametersdialog.cpp
+ * @brief AcoParametersDialog GUI class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "acoparametersdialog.h"
 #include "ui_acoparametersdialog.h"
 

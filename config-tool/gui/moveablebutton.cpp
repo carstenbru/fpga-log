@@ -1,3 +1,10 @@
+/**
+ * @file moveablebutton.cpp
+ * @brief MoveableButton class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "moveablebutton.h"
 
 MoveableButton::MoveableButton(QWidget *parent) :

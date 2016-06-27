@@ -1,3 +1,10 @@
+/**
+ * @file targetconfigdialog.cpp
+ * @brief TargetConfigDialog GUI class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "targetconfigdialog.h"
 #include "ui_targetconfigdialog.h"
 #include <iostream>

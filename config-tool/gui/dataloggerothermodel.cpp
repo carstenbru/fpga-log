@@ -1,3 +1,10 @@
+/**
+ * @file dataloggerothermodel.cpp
+ * @brief DataLoggerOtherModel class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "dataloggerothermodel.h"
 #include "cobject.h"
 

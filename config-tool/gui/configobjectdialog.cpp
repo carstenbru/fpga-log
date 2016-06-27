@@ -1,3 +1,10 @@
+/**
+ * @file configobjectdialog.cpp
+ * @brief ConfigObjectDialog GUI class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "configobjectdialog.h"
 #include "ui_configobjectdialog.h"
 #include <QPushButton>

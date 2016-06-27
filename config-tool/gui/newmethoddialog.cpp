@@ -1,3 +1,10 @@
+/**
+ * @file newmethoddialog.cpp
+ * @brief NewMethodDialog GUI class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #include "newmethoddialog.h"
 #include "ui_newmethoddialog.h"
 

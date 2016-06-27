@@ -1,3 +1,10 @@
+/**
+ * @file pinoverview.h
+ * @brief PinOverview GUI class
+ *
+ * @author Carsten Bruns (carst.bruns@gmx.de)
+ */
+
 #ifndef PINOVERVIEW_H
 #define PINOVERVIEW_H
 
@@ -9,11 +16,21 @@ namespace Ui {
 class PinOverview;
 }
 
+/**
+ * @brief dialog showing an overview of the systems pins and enabling assignment of pins
+ */
 class PinOverview : public QDialog
 {
     Q_OBJECT
 
 public:
+    /**
+     * @brief constructor
+     *
+     * @param parent parent widget
+     * @param dataLogger datalogger for which the pins should be shown
+     * @param dataLoggerPath path of the datalogger (for HTML export)
+     */
     explicit PinOverview(QWidget *parent, DataLogger *dataLogger, std::string dataLoggerPath);
     ~PinOverview();
 private slots:
