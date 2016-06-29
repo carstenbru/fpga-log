@@ -177,47 +177,125 @@ public:
      */
     friend QXmlStreamReader& operator>>(QXmlStreamReader& in, AutomaticCoreAssigner& aco);
 private:
+    /**
+     * @brief saves a created test datalogger as test system
+     *
+     * @see calculateModuleWeights
+     * @param dataLogger the datalogger to save
+     */
     void saveLogger(DataLogger* dataLogger);
+    /**
+     * @brief adds an object to the logger and sets all parameters to "0"
+     *
+     * @param logger the logger to change
+     * @param dataType type of the new object
+     */
     void addObject(DataLogger* logger, DataTypeStruct* dataType);
+    /**
+     * @brief starts size measurement of the next module
+     */
     void measureNextModule();
+
+    /**
+     * @brief starts the automatic core assignment for a datalogger
+     *
+     * @param dataLogger datalogger to assign the objects to cores
+     * @param weights weights of the used modules, including sub-modules/used objects
+     * @param totalWeight total system weight
+     * @param connections map of module connections (key1: source, key2: destination, value: connections weight between the objects in the keys)
+     * @param cores number of cores to try the assignment for
+     * @return true if the assignment was successful
+     */
     bool assignCores(DataLogger* dataLogger, std::map<CObject *, int> weights, int totalWeight, std::map<DatastreamObject *, std::map<DatastreamObject *, int> > &connections, int cores);
 
-    /*
-     * calculates the real weights of all DatastreamModules in the DataLogger, including their helper modules
-     * (e.g. formatter and control_protocol for a sink_uart_t) which have to be on the same core
+    /**
+     * @brief calculates the real weights of all DatastreamModules in the DataLogger, including their helper modules
+     *
+     * e.g. formatter and control_protocol for a sink_uart_t) which have to be on the same core
+     *
+     * @param dataLogger datalogger to work on
+     * @param totalWeight total system weight to add up (will be changed!)
+     * @return map of weights to all objects in the system
      */
     std::map<CObject*, int> getRealDatastreamModuleWeights(DataLogger* dataLogger, int &totalWeight);
-    /*
-     * calculates the real weight of one object, including its helper objects which have to be on the same core
+    /**
+     * @brief calculates the real weight of one object, including its helper objects which have to be on the same core
+     *
+     * @param object object to calculate the weight of
+     * @param objects map of all objects in the system
+     * @return weight value of the pbject
      */
     int getRealObjectWeight(CObject* object, std::map<std::string, CObject*> objects);
 
+    /**
+     * @brief analyzes the connections in the system and assignes weight values to all module pairings (i.e. the cost of seperating them)
+     *
+     * @param dataLogger datalogger to work on
+     * @param connections map of module connections (key1: source, key2: destination, value: connections weight between the objects in the keys)
+     */
     void analyzeConnections(DataLogger* dataLogger, std::map<DatastreamObject *, std::map<DatastreamObject *, int> > &connections);
+    /**
+     * @brief generates a partioning of the system into sets of objects
+     *
+     * @param dataLogger datalogger to work on
+     * @param cores number of cores in the system
+     * @param weights map of weights to all objects in the system, see getRealDatastreamModuleWeights
+     * @param weightPerCore approximate weight that should be on one core after partitioning
+     * @param connections connections map of module connections (key1: source, key2: destination, value: connections weight between the objects in the keys)
+     * @param shuffle shuffle flag as seed to start the algorithm with different start values to find the best result
+     * @param totalWeight total weigth of the system
+     * @param score quality score of the found solution (return value)
+     * @return partioning of the system into sets of objects (key: set, value: list of objects in this set)
+     */
     std::map<int, std::list<DatastreamObject*>> generatePartition(DataLogger* dataLogger, int cores, std::map<CObject*, int> weights, int weightPerCore, std::map<DatastreamObject*, std::map<DatastreamObject*, int>>& connections, int shuffle, int totalWeight, float &score);
+    /**
+     * @brief finds the object that fits best to a set and therefore should be added to it
+     *
+     * @param currentSet current set of objects
+     * @param done set of objects which are already assigned
+     * @param queue list of objects to assign
+     * @param connections connections map of module connections (key1: source, key2: destination, value: connections weight between the objects in the keys)
+     * @return the object that fits best to a set and therefore should be added to it
+     */
     DatastreamObject* findNextObject(std::list<DatastreamObject*> currentSet, std::unordered_set<DatastreamObject*>& done, std::list<DatastreamObject*>& queue, std::map<DatastreamObject*, std::map<DatastreamObject*, int>>& connections);
+    /**
+     * @brief evaluates a partition, i.e. calculates a score value for it
+     *
+     * @param sets partitioning into sets of objects
+     * @param connections connections map of module connections (key1: source, key2: destination, value: connections weight between the objects in the keys)
+     * @param setWeights accumulated weight values of each set (key: set, value: weight)
+     * @param totalWeight total weight of the system
+     * @param cores number of cores in the assignment
+     * @return score for the partition
+     */
     float evaluatePartition(std::map<int, std::list<DatastreamObject*>>& sets, std::map<DatastreamObject*, std::map<DatastreamObject*, int>>& connections, std::map<int, int>& setWeights, int totalWeight, int cores);
 private slots:
+    /**
+     * @brief slot for receiving the result of a firmware size measurement
+     *
+     * @param size measured firmware size
+     */
     void firmwareSizeResult(int size);
 
 private:
-    QXmlStreamWriter* weightWriter;
-    QFile* weightFile;
-    std::string lastMeasuredModule;
-    OutputGenerator* outputGenerator;
-    std::map<std::string, DataTypeStruct*> types;
-    std::map<std::string, DataTypeStruct*>::iterator modulesPending;
-    std::map<std::string, DataTypeStruct*>::iterator modulesPendingEnd;
-    int baseSize;
+    QXmlStreamWriter* weightWriter; /**< weight file XML writer */
+    QFile* weightFile; /**< weight file */
+    std::string lastMeasuredModule; /**< name of the last measured module (to write in result file) */
+    OutputGenerator* outputGenerator; /**< used output generator (for module size measurement) */
+    std::map<std::string, DataTypeStruct*> types; /**< map of all known data types (for module size measurement) */
+    std::map<std::string, DataTypeStruct*>::iterator modulesPending; /**< iterator to next type to measure (for size measurement) */
+    std::map<std::string, DataTypeStruct*>::iterator modulesPendingEnd; /**< iterator pointing at the last type to measure (size measurement) */
+    int baseSize; /**< base firmware size without any modules */
 
-    int maxCores;
-    int minCores;
-    int maxWeightPerCore;
-    int dataStreamWeight;
-    int controlStreamWeight;
+    int maxCores; /**< maximum number of cores to use */
+    int minCores; /**< minimum number of cores to use */
+    int maxWeightPerCore; /**< maximum weight for one core */
+    int dataStreamWeight; /**< weight of a data stream conector */
+    int controlStreamWeight; /**< weight of a control stream conector */
 
-    WeightHeuristic* heuristic;
+    WeightHeuristic* heuristic; /**< instance of the used heuristic object */
 
-    static int averageWeight;
+    static int averageWeight; /**< average weight of all modules (to use for unknown objects) */
 signals:
     /**
      * @brief emitted when a warning was found during core assignment
