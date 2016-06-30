@@ -59,10 +59,10 @@ public:
      */
     std::string getConstraints() { return constraints; }
 private:
-    std::string name;
-    std::string direction;
+    std::string name; /**< pin name */
+    std::string direction; /**< pin direction */
 
-    std::string constraints;
+    std::string constraints; /**< defined contraints (e.g. PULLUP) */
 };
 
 /**

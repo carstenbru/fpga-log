@@ -135,18 +135,24 @@ public:
      */
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, CMethod& cMethod);
 private:
+    /**
+     * @brief updates a parameter of a method to a new value
+     *
+     * @param newValue the new value of that parameter
+     * @return true if the parameter could be found and was updated successfully
+     */
     bool setParameter(CParameter& newValue);
 
-    std::string completeName;
+    std::string completeName; /**< complete method name, including object prefix, etc. */
 
-    std::string name;
-    std::string headerFile;
-    std::string description;
+    std::string name; /**< real name of the mehtod */
+    std::string headerFile; /**< header file in which the method was found */
+    std::string description; /**< readable method description (e.g. to show in GUI) */
 
-    CParameter returnType;
-    std::list<CParameter> parameters;
+    CParameter returnType; /**< return data type of the method */
+    std::list<CParameter> parameters; /**< method parameters */
 
-    bool hideFromUser;
+    bool hideFromUser; /**< flag indicating whether or not the method schould be hidden from the user,  i.e. not shown in GUI dialogs  */
 };
 
 #endif // CMETHOD_H

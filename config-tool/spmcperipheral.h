@@ -131,15 +131,20 @@ public:
      */
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, PeripheralPort& port);
 private:
-    std::string name;
-    std::string direction;
+    std::string name; /**< port name */
+    std::string direction; /**< port direction */
 
-    std::string widthRef;
+    std::string widthRef; /**< port width reference to a parameter */
 
-    std::list<CParameter*> lines;
+    std::list<CParameter*> lines; /**< port line parameters (connections) */
 
-    std::string constraints;
+    std::string constraints; /**< port constraints for destination pins of this port */
 public slots:
+    /**
+     * @brief slot to notify about a port width change
+     *
+     * @param widthVal new port width value
+     */
     void newWidth(std::string widthVal);
 };
 
@@ -266,27 +271,60 @@ public:
      */
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, SpmcPeripheral& peripheral);
 private:
+    /**
+     * @brief gets the SpartanMC peripheral XML file name
+     *
+     * @return the SpartanMC peripheral XML file name
+     */
     std::string getFileName();
+    /**
+     * @brief reads a parameter element in a SpartanMC peripheral XML file
+     *
+     * @param reader source reader
+     */
     void readParameterElement(QXmlStreamReader& reader);
+    /**
+     * @brief reads a ports element in a SpartanMC peripheral XML file
+     *
+     * @param reader source reader
+     * @param direction port direction obtained before (as attribute in parent tag)
+     */
     void readPortsElement(QXmlStreamReader& reader, std::string direction);
+    /**
+     * @brief reads the SpartanMC peripheral XML file for this peripheral
+     */
     void readPeripheralXML();
+    /**
+     * @brief reads additional information about this peripheral from the parent objects fpga-log module XML file
+     */
     void readModuleXML();
 
+    /**
+     * @brief reads the peripheral name from a SpartanMC peripheral XML file
+     *
+     * @param fileName file name
+     * @return the requested peripheral name
+     */
     static std::string readModuleNameFromFile(std::string fileName);
 
+    /**
+     * @brief saves the peripheral to a fpga-log XML file
+     *
+     * @param out destination writer
+     */
     void saveToXml(QXmlStreamWriter& out);
 
-    std::string name;
-    DataLogger* dataLogger;
-    bool hasDMAmemory;
+    std::string name; /**< peripheral name */
+    DataLogger* dataLogger; /**< parent datalogger */
+    bool hasDMAmemory; /**< flag indicating if the peripheral uses DMA */
 
-    DataType* dataType;
-    std::list<CParameter*> parameters;
-    std::map<std::string, std::list<PeripheralPort*> > ports;
+    DataType* dataType; /**< datatype of the peripheral */
+    std::list<CParameter*> parameters; /**< list of all peripheral parameters (e.g. pins, baudrate,...) */
+    std::map<std::string, std::list<PeripheralPort*> > ports; /**< map of all peripheral ports (key: group, value: list of ports in this group) */
 
-    CObject* parentObject;
+    CObject* parentObject; /**< parent object */
 
-    static std::map<std::string, std::string> peripheralXMLs;
+    static std::map<std::string, std::string> peripheralXMLs; /**< map of all peripheral XML files (key: peripheral type, value: XML file) */
 };
 
 #endif // SPMCPERIPHERAL_H

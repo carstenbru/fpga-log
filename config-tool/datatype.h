@@ -149,12 +149,12 @@ public:
      */
     static void removeLocalTypes();
 private:
-    std::string name;
-    std::string headerFile;
+    std::string name; /**< name of the type */
+    std::string headerFile; /**< header file in which the type was found */
 
-    bool globalType;
+    bool globalType; /**< true for global type, false for a local project type */
 
-    static std::map<std::string, DataType*> types;
+    static std::map<std::string, DataType*> types; /**< static map of all known data types (key: name, value: type class */
 };
 
 /**
@@ -280,15 +280,15 @@ public:
      */
     static std::map<std::string, DataTypeStruct*> getTypes() { return types; }
 private:
-    DataTypeStruct* super;
+    DataTypeStruct* super; /**< superclass type */
 
-    std::list<DataTypeStruct*> childs;
-    std::list<CMethod*> methods;
+    std::list<DataTypeStruct*> childs; /**< child (sub-) classes */
+    std::list<CMethod*> methods; /**< methods of the type */
 
-    std::string description;
-    int weight;
+    std::string description; /**< readable description of the type (e.g. to show in GUI) */
+    int weight; /**< weight value for heuristic of automatic core assigner */
 
-    static std::map<std::string, DataTypeStruct*> types;
+    static std::map<std::string, DataTypeStruct*> types; /**< map of know struct data types (classe) (key: name, value: type class) */
 };
 
 /**
@@ -325,8 +325,8 @@ public:
     virtual std::string getConfigData(QWidget* widget);
     virtual std::string getDefaultValue() { return std::to_string((min < 0) ? 0 : min); }
 private:
-    long min;
-    long max;
+    long min; /**< minimum value of the type */
+    long max; /**< maximum value of the type */
 };
 
 /**
@@ -351,10 +351,10 @@ public:
     virtual std::string getConfigData(QWidget* widget);
     virtual std::string getDefaultValue() { return std::to_string((min < 0) ? 0 : min); }
 private:
-    double min;
-    double max;
-    int decimals;
-    bool outputAsInt;
+    double min; /**< minimum value of the type */
+    double max; /**< maximum value of the type */
+    int decimals; /**< number of decimal digits the type stores */
+    bool outputAsInt; /**< true to store and output the value (in the code) as integer (e.g. for fixed-point types) */
 };
 
 /**
@@ -441,9 +441,9 @@ public:
      */
     QComboBox* getConfigBox(DataLogger* dataLogger, CParameter *param);
 private:
-    std::list<enumVal> values;
+    std::list<enumVal> values; /**< list of possible enumeration values */
 
-    static DataTypeEnumeration controlParameterType;
+    static DataTypeEnumeration controlParameterType; /**< static type: enumeration of all logger control commands (for control streams) */
 };
 
 /**
@@ -576,10 +576,10 @@ public:
      */
     static std::string getPinFromFullName(std::string fullName);
 private:
-    std::string name;
+    std::string name; /**< name of the pin */
 
-    std::string freq;
-    std::string loc;
+    std::string freq; /**< frequency of the pins input clock */
+    std::string loc; /**< FPGA location of the pin */
 };
 
 /**
@@ -655,12 +655,12 @@ public:
      */
     static DataTypePin* getPinType() { return &pinType; }
 private:
-    static DataTypePin pinType;
-    std::map<std::string, std::list<Pin> > pins;
+    static DataTypePin pinType; /**< static type: current target pins */
+    std::map<std::string, std::list<Pin> > pins; /**< map of all pins (key: group, value: list of pins */
 };
 
 /**
- * @brief datatype representing a function
+ * @brief datatype representing a groups of functions with the same signature
  */
 class DataTypeFunction : public DataType {
 public:
@@ -693,9 +693,9 @@ public:
      */
     static DataType* getType(std::string signature);
 private:
-    std::list<std::string> functionNames;
+    std::list<std::string> functionNames; /**<  names of all functions fitting this signature class */
 
-    static std::map<std::string, DataTypeFunction*> types;
+    static std::map<std::string, DataTypeFunction*> types; /**< map of known function types: (key: function signature, value: function type */
 };
 
 #endif // DATATYPE_H

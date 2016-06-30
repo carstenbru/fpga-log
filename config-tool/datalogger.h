@@ -297,39 +297,90 @@ public:
     friend QXmlStreamReader& operator>>(QXmlStreamReader& in, DataLogger& dataLogger);
 private:
     template <typename T>
+    /**
+     * @brief checks if an object with a specific name is contained in a list
+     *
+     * @param searchList list to search in for the objects name
+     * @param name name of the object to search
+     * @return true if the object name is contained in the list
+     */
     bool containsObjectName(T searchList, std::string name);
     template <typename T>
+    /**
+     * @brief determines a valid, not yet used, object name
+     *
+     * @param searchList list to search in for used names
+     * @param dataType data type of the new object
+     * @return  determined object name
+     */
     std::string findObjectName(T searchList, DataType* dataType);
     template <typename T>
+    /**
+     * @brief adds all instances of objects in the searchList to the destList which are subclass of dataType
+     *
+     * @param searchList list to search for instances
+     * @param destList result list of instances
+     * @param dataType superclass data type
+     */
     void addInstancesToList(T searchList, std::list<CObject*>& destList,  DataTypeStruct* dataType);
     template <typename T>
+    /**
+     * @brief deletes an object from a list
+     *
+     * @param searchList list to search for the object
+     * @param object object to remove
+     * @return true if the object was found and deleted successfully
+     */
     bool deleteObject(T& searchList, CObject* object);
 
+    /**
+     * @brief gets a datastream object by name
+     *
+     * @param name the name to search for
+     * @return the requested datastream object
+     */
     DatastreamObject* getDatastreamObject(std::string name);
 
+    /**
+     * @brief reads a target name (and just that) from a SpartanMC target XML file
+     *
+     * @param fileName name of the file to read
+     * @return the read file name
+     */
     static std::string readTargetNameFromFile(std::string fileName);
 
-    CParameter target;
-    CParameter clockPin;
-    CParameter clockFreq;
+    CParameter target; /**< target platform parameter */
+    CParameter clockPin; /**< clock pin configuration parameter */
+    CParameter clockFreq; /**< clock frequency parameter */
 
-    CParameter clockDivide;
-    CParameter clockMultiply;
+    CParameter clockDivide; /**< clock division parameter */
+    CParameter clockMultiply; /**< clock multiply parameter */
 
-    CParameter expertMode;
+    CParameter expertMode; /**< parameter indicating if the GUI for datalogger should be in expert mode or not */
 
-    std::list<DatastreamObject*> datastreamObjects;
-    std::vector<CObject*> otherObjects;
+    std::list<DatastreamObject*> datastreamObjects; /**< list of all datastream objects in the logger */
+    std::vector<CObject*> otherObjects; /**< list of all other objects (non-datastream) in the logger */
 
-    static std::map<std::string, std::string> targetXMLs;
+    static std::map<std::string, std::string> targetXMLs; /**< map of all targets to their XML files */
 
     bool definitionsUpdated; /**< definitions update flag, set if a module definition changed for a loaded logger */
-    std::string definitionsUpdatedModules; /**< list of changed module definitions when loading a logger */
+    std::string definitionsUpdatedModules; /**< list of changed module definitions when loading a logger (key: name, value: file) */
 
-    AutomaticCoreAssigner automaticCoreAssigner;
+    AutomaticCoreAssigner automaticCoreAssigner; /**< instance of the automatic core assigner used for the logger, includes the core assinment parameters */
 private slots:
+    /**
+     * @brief slot to notify about a connection change between datastream modules
+     */
     void moduleConnectionsChanged();
+    /**
+     * @brief slot for a change of a connection VIA (move, delete, add)
+     */
     void viaChanged();
+    /**
+     * @brief slot for a change in the expert mode setting
+     *
+     * @param value new expert mode value
+     */
     void expertModeParamChanged(std::string value);
 public slots:
     /**

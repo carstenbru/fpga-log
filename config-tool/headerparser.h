@@ -56,16 +56,41 @@ public:
      */
     static int getDefinedInteger(std::string name);
 private:
+    /**
+     * @brief parses a file for datatypes
+     *
+     * @param filename file to parse
+     * @param inheritanceList map of inheritances which should be established later (as the referenced type might not exist yet) (key: type, value: super data type)
+     */
     void parseFileForDataTypes(std::string filename, std::map<DataTypeStruct *, std::string> &inheritanceList);
+    /**
+     * @brief parses a file for methods
+     *
+     * @param filename file to parse
+     */
     void parseFileForMethods(std::string filename);
 
+    /**
+     * @brief pareses the parameter definition of a method
+     *
+     * @param method destination method
+     * @param parameters parameters string to parse
+     * @param paramDescMap map of parameter descriptions obtained from code documentation (key: paramter name, value: description)
+     */
     void parseMethodParameters(CMethod* method, std::string parameters, std::map<std::string, std::string> &paramDescMap);
+    /**
+     * @brief parses a single parameter definition
+     *
+     * @param method destination method
+     * @param parameter parameter string to parse
+     * @param paramDescMap map of parameter descriptions obtained from code documentation (key: paramter name, value: description)
+     */
     void parseMethodParameter(CMethod* method, std::string parameter, std::map<std::string, std::string> &paramDescMap);
 
-    bool globalFiles;
-    std::list<std::string> files;
+    bool globalFiles; /**< true if the files parsed with this instance are global headers of fpga-log, false if they are custom user header for a specific system */
+    std::list<std::string> files; /**< list of files to parse */
 
-    static std::map<std::string, std::string> defines;
+    static std::map<std::string, std::string> defines; /**< static map of all defines found in the headers (key: name, value: defined value for the key)*/
 };
 
 #endif // HEADERPARSER_H

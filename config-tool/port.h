@@ -229,6 +229,9 @@ protected:
 
     std::list<QPoint> vias; /**< list of VIA positions on the connection */
 private slots:
+    /**
+     * @brief slot to notify when the destination of this port was disconnected (so this port is disconnected to)
+     */
     void destDisconnected();
 };
 
@@ -282,9 +285,37 @@ public:
     virtual int connectPort(Port* port);
 };
 
+/**
+ * @brief control input port XML write function
+ *
+ * @param out destination XML writer
+ * @param port port to write
+ * @return reference to the XML writer (to chain the operator)
+ */
 QXmlStreamWriter& operator<<(QXmlStreamWriter& out, ControlPortIn& port);
+/**
+ * @brief control output port XML write function
+ *
+ * @param out destination XML writer
+ * @param port port to write
+ * @return reference to the XML writer (to chain the operator)
+ */
 QXmlStreamWriter& operator<<(QXmlStreamWriter& out, ControlPortOut& port);
+/**
+ * @brief data input port XML write function
+ *
+ * @param out destination XML writer
+ * @param port port to write
+ * @return reference to the XML writer (to chain the operator)
+ */
 QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DataPortIn& port);
+/**
+ * @brief data output port XML write function
+ *
+ * @param out destination XML writer
+ * @param port port to write
+ * @return reference to the XML writer (to chain the operator)
+ */
 QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DataPortOut& port);
 
 #endif // PORT_H

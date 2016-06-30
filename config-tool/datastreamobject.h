@@ -131,25 +131,73 @@ public:
      */
     friend QXmlStreamWriter& operator<<(QXmlStreamWriter& out, DatastreamObject& dObject);
 private:
+    /**
+     * @brief finds the ports of the datastream module from the objects provided methods
+     */
     void findPorts();
     template <typename T>
+    /**
+     * @brief reorders a newly unconnected port to the end of ports (for multi-ports, "add" function)
+     *
+     * @param ports list of ports to search in
+     * @param port port to put to the end
+     * @return true if the port was found
+     */
     bool reorderUnconnectedPort(std::list<T*>& ports, Port* port);
+    /**
+     * @brief gets the first output port which is not connected and belongs to the port of "name"
+     *
+     * @param name name of the port to search for unconnected lines
+     * @param connections map indicating connections which should be established later
+     * @return the requested port
+     */
     PortOut* getFirstNotConnectedOutPort(std::string name, std::map<PortOut*, stringPair>& connections);
 
+    /**
+     * @brief adds a control input port to the object
+     *
+     * @param port the port to add
+     */
     void addPort(ControlPortIn* port);
+    /**
+     * @brief adds a control output port to the object
+     *
+     * @param port the port to add
+     */
     void addPort(ControlPortOut* port);
+    /**
+     * @brief adds a data input port to the object
+     *
+     * @param port the port to add
+     */
     void addPort(DataPortIn* port);
+    /**
+     * @brief adds a data output port to the object
+     *
+     * @param port the port to add
+     */
     void addPort(DataPortOut* port);
 
-    std::list<ControlPortIn*> controlInPorts;
-    std::list<ControlPortOut*> controlOutPorts;
-    std::list<DataPortIn*> dataInPorts;
-    std::list<DataPortOut*> dataOutPorts;
+    std::list<ControlPortIn*> controlInPorts; /**< list of all control input ports of the module */
+    std::list<ControlPortOut*> controlOutPorts; /**< list of all control output ports of the module */
+    std::list<DataPortIn*> dataInPorts; /**< list of all data input ports of the module */
+    std::list<DataPortOut*> dataOutPorts; /**< list of all data output ports of the module */
 
-    QPoint position;
+    QPoint position; /**< graphical position of the module */
 private slots:
+    /**
+     * @brief slot which should be notified when a port got connected
+     */
     void portConnected();
+    /**
+     * @brief slot for a port disconnect
+     *
+     * @param port disconnected port
+     */
     void portDisconnected(Port *port);
+    /**
+     * @brief slot for a change in the VIAs (add, delete, move)
+     */
     void portViasChanged();
 signals:
     /**

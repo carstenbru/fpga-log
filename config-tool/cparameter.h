@@ -183,15 +183,15 @@ public:
      */
     void loadFromXmlStream(QXmlStreamReader& in);
 private:
-    std::string name;
-    std::string value;
-    std::string description;
+    std::string name; /**< parameter name */
+    std::string value; /**< parameter value */
+    std::string description; /**< readable parameter description (e.g. to show in GUI) */
 
-    bool hideFromUser;
-    bool critical;
+    bool hideFromUser; /**< flag indicating whether or not the parameter schould be hidden from the user,  i.e. not shown in GUI dialogs  */
+    bool critical; /**< critical flag: when set this parameter influences other things in the datalogger and should therefore notify about changes */
 
-    DataType* dataType;
-    bool pointer;
+    DataType* dataType; /**< data type of the parameter */
+    bool pointer; /**< true if the parameter is a pointer, false for direct values */
 signals:
     /**
      * @brief signal triggered when the parameters value changed
