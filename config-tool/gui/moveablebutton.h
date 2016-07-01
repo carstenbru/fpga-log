@@ -30,9 +30,9 @@ private:
     virtual void mousePressEvent(QMouseEvent *e);
     virtual void mouseReleaseEvent(QMouseEvent *e);
 
-    QPoint clickPos;
-    bool isClick;
-    bool isRightClick;
+    QPoint clickPos; /**< click position */
+    bool isClick; /**< flag indicating if the current action is a (left) click */
+    bool isRightClick; /**< flag indicating if the current action is a right click */
 signals:
     /**
      * @brief triggered whenever the button was moved

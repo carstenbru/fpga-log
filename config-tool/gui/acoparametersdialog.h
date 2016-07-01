@@ -33,9 +33,9 @@ public:
     ~AcoParametersDialog();
 
 private:
-    Ui::AcoParametersDialog *ui;
+    Ui::AcoParametersDialog *ui; /**< UI */
 
-    AutomaticCoreAssigner* aco;
+    AutomaticCoreAssigner* aco; /**< automatic core assigner to work on */
 
 private slots:
     void storeValues(int resultCode);

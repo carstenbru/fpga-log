@@ -40,7 +40,7 @@ public:
     std::string getSelectedMethod();
 
 private:
-    Ui::NewMethodDialog *ui;
+    Ui::NewMethodDialog *ui; /**< UI */
 };
 
 #endif // NEWMETHODDIALOG_H

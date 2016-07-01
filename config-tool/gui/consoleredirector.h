@@ -58,11 +58,11 @@ protected:
     virtual std::streamsize xsputn(const char *p, std::streamsize n);
 
 private:
-    std::ostream &stream;
-    std::streambuf *oldBuf;
-    QTextEdit* logWindow;
+    std::ostream &stream; /**< stream to redirect */
+    std::streambuf *oldBuf; /**< old output buffer to forward messages */
+    QTextEdit* logWindow; /**< output window to redirect to */
 
-    std::string htmlColor;
+    std::string htmlColor; /**< color of the output as HTML color */
 };
 
 #endif // CONSOLEREDIRECTOR_H

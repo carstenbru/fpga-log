@@ -237,10 +237,10 @@ public:
     /**
      * @brief gets a map of pins (their parameter) and their assigned function
      *
-     * The returned value in the map consists of 4 strings:
-     * [0]: full pin name (e.g. "PORTA:A01")
-     * [1]: assigned module (e.g. "sink_uart_0")
-     * [2]: assigned pin group in this module (e.g. "Receiver")
+     * The returned value in the map consists of 4 strings:\n
+     * [0]: full pin name (e.g. "PORTA:A01")\n
+     * [1]: assigned module (e.g. "sink_uart_0")\n
+     * [2]: assigned pin group in this module (e.g. "Receiver")\n
      * [3]: function in this group (name) (e.g. "rx")
      *
      * @return a map of pins (their parameter) and their assigned function

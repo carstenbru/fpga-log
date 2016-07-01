@@ -12,7 +12,7 @@
 #include"datalogger.h"
 
 /**
- * @brief combo box for selection of a pin on the target platform
+ * @brief two combo boxes for selection of a pin (group and pin) on the target platform
  */
 class PinBox : public QComboBox
 {
@@ -45,14 +45,24 @@ public slots:
      */
     void setPinItems();
 private slots:
+    /**
+     * @brief slot to notify about an index change
+     */
     void indexChanged();
 private:
+    /**
+     * @brief checks if a pin is already assigned
+     *
+     * @param pinAssignments map of pin assignments (key: pin parameter, value: assignment, see DataLogger::getPinAssignments())
+     * @param name name of the pin to check
+     * @return true if the pin is already assigned
+     */
     bool pinAssigned(std::map<CParameter*, std::string[4]> &pinAssignments, std::string name);
 
-    DataLogger* dataLogger;
-    std::string selectedPin;
-    std::string pinGroup;
-    bool disablePinChange;
+    DataLogger* dataLogger; /**< datalogger to work on */
+    std::string selectedPin; /**< pin selected in the widget */
+    std::string pinGroup; /**< selected pin group */
+    bool disablePinChange; /**< flag to indicate if the pin change signal should be emitted (e.g. to diable that when creating the pinbox items) */
 };
 
 #endif // PINBOX_H

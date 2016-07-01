@@ -41,14 +41,32 @@ public:
      */
     DataTypeStruct *getSelectedDataType();
 private:
+    /**
+     * @brief generates the view of selectable types
+     *
+     * @param type type of which the object should be a subclass, pass NULL for to select from all types
+     */
     void genrateTypeView(DataTypeStruct *type);
+    /**
+     * @brief generates one item for a single type in the type view
+     *
+     * @param parent parent item
+     * @param dataType data type for which the item should be created
+     * @param recursive true to also add child types of this type
+     * @return true if this class or any subclass is not abstract (i.e. it really should be added to the view)
+     */
     bool generateItem(QStandardItem *parent, DataTypeStruct *dataType, bool recursive);
 
-    Ui::NewObjectDialog *ui;
-    int items;
-    DataTypeStruct* lastInsertedType;
+    Ui::NewObjectDialog *ui; /**< UI */
+    int items; /**< number of items in the view */
+    DataTypeStruct* lastInsertedType; /**< last type that was inserted to the type view */
 private slots:
-    void itemDoubleClicke(QModelIndex index);
+    /**
+     * @brief slot to notify about a double click on an item
+     *
+     * @param index index of the clicked item
+     */
+    void itemDoubleClicked(QModelIndex index);
 };
 
 #endif // NEWOBJECTDIALOG_H

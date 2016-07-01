@@ -45,28 +45,54 @@ public:
      */
     virtual void show();
 private:
+    /**
+     * @brief generates a new output generator instance
+     *
+     * @return true on success
+     */
     bool newOutputGenerator();
+    /**
+     * @brief updates the window title (with the opened file, saved status)
+     */
     void refreshWindowTitle();
+    /**
+     * @brief checks if the datalogger is saved and if not asks to do so
+     *
+     * @return true on success, false if the user aborted the action
+     */
     bool checkAndAskSave();
+    /**
+     * @brief sets the path of the datalogger
+     *
+     * @param newPath new datalogger path
+     */
     void setDataLoggerPath(std::string newPath);
+    /**
+     * @brief reparses header files local to the currently open datalogger project
+     *
+     * @param path path of the local header files
+     */
     void reparseLocalHeaders(std::string path);
+    /**
+     * @brief clears the list of errors
+     */
     void clearErrorList();
 
-    Ui::MainWindow *ui;
+    Ui::MainWindow *ui; /**< UI */
 
-    DatastreamView* datastreamView;
+    DatastreamView* datastreamView; /**< datastream view instance */
 
-    DataLogger* dataLogger;
-    std::string dataLoggerPath;
-    bool dataLoggerSaved;
-    bool bitfileGenerated;
+    DataLogger* dataLogger; /**< current open datalogger */
+    std::string dataLoggerPath; /**< file system path of the current logger */
+    bool dataLoggerSaved; /**< flag indicating whether or not the logger state is saved */
+    bool bitfileGenerated; /**< flag indicating if the bitfile is created and up-to-date */
 
-    OutputGenerator* outputGenerator;
-    DataLoggerOtherModel otherModel;
+    OutputGenerator* outputGenerator; /**< output generator instance */
+    DataLoggerOtherModel otherModel; /**< model to represent non-datastream elements (needed to show them in the list view) */
 
-    std::string clipboardObjectDescription;
+    std::string clipboardObjectDescription; /**< clipboard */
 
-    QMenu* expertMenu;
+    QMenu* expertMenu; /**< menu with expert options, to hide/show depending on the current editing mode */
 public slots:
     /**
      * @brief window close event slot
@@ -193,11 +219,38 @@ public slots:
      */
     void addErrorToList(std::string message);
 private slots:
+    /**
+     * @brief slot to request the configuration of a non-datastream object
+     *
+     * @param index index of the object in the "otherModel"
+     */
     void otherObjectConfig(QModelIndex index);
+    /**
+     * @brief slot to request a context menu in the other object list
+     *
+     * @param pos graphical position of the menu
+     */
     void otherObjectMenu(QPoint pos);
+    /**
+     * @brief slot to request copying of a non-datastream object
+     */
     void otherObjectCopy();
+    /**
+     * @brief slot to notify about finishing from the output generator
+     *
+     * @param errorOccured true if an error occured in the output generator
+     * @param timingError true if the error was a timing error (i.e. too high clock frequency)
+     */
     void outputGeneratorFinished(bool errorOccured, bool timingError);
+    /**
+     * @brief slot to notify about changes in the datalogger
+     */
     void dataLoggerChanged();
+    /**
+     * @brief slot to trigger a mode change (expert mode <-> normal mode)
+     *
+     * @param expertMode true to enter expert mode, false to enter normal mode
+     */
     void expertModeChanged(bool expertMode);
 };
 

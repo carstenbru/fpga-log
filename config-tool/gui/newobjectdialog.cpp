@@ -16,7 +16,7 @@ NewObjectDialog::NewObjectDialog(QWidget *parent, DataTypeStruct *type) :
     items(0)
 {
     ui->setupUi(this);
-    QObject::connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(itemDoubleClicke(QModelIndex)));
+    QObject::connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(itemDoubleClicked(QModelIndex)));
 
     genrateTypeView(type);
 }
@@ -124,7 +124,7 @@ DataTypeStruct* NewObjectDialog::getSelectedDataType() {
         return NULL;
 }
 
-void NewObjectDialog::itemDoubleClicke(QModelIndex index) {
+void NewObjectDialog::itemDoubleClicked(QModelIndex index) {
     if (ui->treeView->isExpanded(index) || (ui->treeView->model()->rowCount(index) == 0)) {
         QVariant v = index.data(Qt::UserRole + 1);
         try {

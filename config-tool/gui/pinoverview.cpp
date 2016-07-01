@@ -283,7 +283,6 @@ void PinOverview::freePin() {
                     items[completePinName][j]->setText("");
                 }
 
-
                 addPendingAssignment(definition);
             } catch (exception) {
 

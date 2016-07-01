@@ -52,34 +52,96 @@ public:
     explicit ConfigObjectDialog(MainWindow *parent, CObject* object, DataLogger *dataLogger);
     ~ConfigObjectDialog();
 private:
+    /**
+     * @brief adds a configuration group to the window (e.g. object, pins, required parameters)
+     *
+     * It the group is empty it will not be added but deleted.
+     *
+     * @param parentLayout parent layout
+     * @param title title of the new group
+     * @param toolTip tool-tip text describing the group
+     * @param groupLayout layout to add containing the group
+     */
     void addGroup(QLayout* parentLayout, std::string title, std::string toolTip, QLayout* groupLayout);
+    /**
+     * @brief adds a configuration group to the window (e.g. object, pins, required parameters) without a tool-tip
+     *
+     * @param parentLayout parent layout
+     * @param title title of the new group
+     * @param groupLayout layout to add containing the group
+     */
     void addGroup(QLayout* parentLayout, std::string title, QLayout* groupLayout) { addGroup(parentLayout, title, "", groupLayout); }
+    /**
+     * @brief creates and adds the object name group
+     *
+     * @param parent parent layout
+     */
     void addNameGroup(QLayout *parent);
+    /**
+     * @brief creates and adds the configuration group for a single port
+     *
+     * @param parent parent layout
+     * @param groupName port group name
+     * @param ports ports to add
+     */
     void addPortsGroup(QLayout *parent, std::string groupName, std::list<PeripheralPort*>& ports);
+    /**
+     * @brief adds configuration input fields for a list of parameters
+     *
+     * @param parent parent layout
+     * @param parameters list of parameters to add
+     */
     void addParameters(QFormLayout *parent, std::list<CParameter *> parameters);
+    /**
+     * @brief adds configuration input fields for a list of parameters
+     *
+     * @param parentMethod parent method of the parameters
+     * @param parent parent layout
+     * @param parameters list of parameters to add
+     */
     void addParameters(CMethod *parentMethod, QFormLayout *parent, std::list<CParameter *> parameters);
+    /**
+     * @brief creates and adds a group for hardware parameters (e.g. pins, baudrate,...)
+     *
+     * @param parent parent layout
+     */
     void addHardwareParametersGroup(QLayout *parent);
+    /**
+     * @brief creates and adds a group for required parameters (i.e. for the parameters of the init function)
+     *
+     * @param parent parent layout
+     */
     void addReqParametersGroup(QLayout *parent);
+    /**
+     * @brief creates and adds a group for advanced parameters (i.e. for the parameters of added method calls)
+     *
+     * @param parent parent layout
+     */
     void addAdvancedConfigGroup(QLayout *parent);
 
     bool event(QEvent *event);
 
+    /**
+     * @brief gets a list of configured method calls (advanced object configuration)
+     *
+     * @return list of methods to add
+     */
     QStringList getAdvancedConfigMethods();
 
-    Ui::ConfigObjectDialog *ui;
+    Ui::ConfigObjectDialog *ui; /**< UI */
 
-    CObject* object;
-    DataLogger* dataLogger;
-    QLineEdit* objectName;
+    CObject* object; /**< object to configure */
+    DataLogger* dataLogger; /**< parent datalogger */
+    QLineEdit* objectName; /**< object name input field */
 
-    QSpinBox* spartanMcCoreEdit;
+    QSpinBox* spartanMcCoreEdit; /**< SpartanMC core number input field */
 
-    std::map<CParameter*, QWidget*> paramWidgets;
-    std::map<CParameter*, DataType*> paramTypes;
+    std::map<CParameter*, QWidget*> paramWidgets; /**< parameter input fields (key: parameter, value: input widget */
+    std::map<CParameter*, DataType*> paramTypes; /**< parameter types (key: parameter, value: data type */
 
-    QSignalMapper* signalMapper;
+    QSignalMapper* signalMapper; /**< signal mapper to trigger re-drawing of the dialog after all deletes are finished */
 
-    CParameter* objectRequestedForParam;
+    CParameter* objectRequestedForParam; /**< parameter to store the parameter an object creation was requested for */
 signals:
     /**
      * @brief emitted when a new object of a specific type should be created
@@ -93,17 +155,44 @@ signals:
      */
     void copyObject(std::string objectDescription);
 private slots:
+    /**
+     * @brief slot to notify about a change in the name input field
+     */
     void nameEdited();
+    /**
+     * @brief slot to trigger storing of all parameters
+     */
     void storeParams();
+    /**
+     * @brief slot to trigger creation of the UI
+     */
     void setupUi();
+    /**
+     * @brief slot to indicate a needed reload of the dialog
+     */
     void reload();
 
+    /**
+     * @brief slot to notify about an added method call (advanced config)
+     */
     void addAdvancedConfig();
 
+    /**
+     * @brief slot to trigger deletion of the edited object
+     */
     void deleteModule();
 
+    /**
+     * @brief slot to notify about an object selection change in one of the parameter fields
+     *
+     * This is neccassary as these fields have the option to request the generation of a new object,
+     * so we have to check for that.
+     */
     void objectSelectionChanged(QString);
 
+    /**
+     * @brief copy object request
+     */
     void copyObjectButton();
 public slots:
     /**

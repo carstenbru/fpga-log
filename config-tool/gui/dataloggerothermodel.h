@@ -52,8 +52,11 @@ public:
      */
     void setDataLogger(DataLogger* dataLogger);
 private:
-    DataLogger* dataLogger;
+    DataLogger* dataLogger; /**< parent datalogger */
 private slots:
+    /**
+     * @brief slot to notify about a data change in the model
+     */
     void dataChangedSlot();
 };
 

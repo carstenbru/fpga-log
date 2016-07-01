@@ -79,6 +79,9 @@ protected:
 
     DatastreamObject* dso; /**< the datastream object this port belongs to */
 private slots:
+    /**
+     * @brief slot to trigger a new connection to the port
+     */
     void newConnection();
     void mousePressEvent(QMouseEvent *e);
 };

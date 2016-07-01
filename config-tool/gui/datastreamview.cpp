@@ -193,8 +193,11 @@ void DatastreamView::deleteAllViaBtns() {
     viaBtns.clear();
 }
 
-/*
- * checks if a point is on or close to a line
+/**
+ * @brief checks if a point is on or close to a line
+ *
+ * @param line to check
+ * @param point point to check
  */
 bool checkOnLine(QLine& line, QPoint& point) {
     int a, b;
@@ -256,11 +259,6 @@ bool DatastreamView::addCustomVIAs(list<pair<QPoint, bool>>& viaList, PortOut* p
     return !customVias.empty();
 }
 
-/*
- * refines the list of VIAs so that the connections between two points are always either horizontal or vertical
- *
- * prefer x-direction and straight lines but avoid going back in the same direction we previously came from
- */
 void DatastreamView::refineVIAs(list<pair<QPoint, bool>>& viaList) {
     list<pair<QPoint, bool>>::iterator lastVia = viaList.begin();
     int lastDir = -1;

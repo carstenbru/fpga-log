@@ -60,26 +60,56 @@ public:
      */
     void mouseReleaseEvent(QGraphicsSceneMouseEvent * mouseEvent);
 private:
+    /**
+     * @brief generates the graphical representation of a datasteam object in the datastream view, i.e. a moveable button with buttons for all ports
+     *
+     * @param datastreamObject object to generate the GUI for
+     */
     void generateModuleGui(DatastreamObject* datastreamObject);
+    /**
+     * @brief deletes all raphical representations of a datasteam object (the buttons)
+     */
     void deleteAllModuleGuis();
+    /**
+     * @brief puts all modules in front, so that they are not hidden by other GUI parts (e.g. VIAs)
+     */
     void raiseModules();
+    /**
+     * @brief deletes all buttons for VIAs
+     */
     void deleteAllViaBtns();
 
+    /**
+     * @brief generates the GUI elements for VIAs and adds them to the viaList
+     *
+     * @param viaList list of all VIAs (pair: position; true if the VIA was added by the user, false for VIAs added by refinement)
+     * @param p output port to add VIAs for
+     * @param keepViaBtns true to keep the old VIA buttons and just add them to the list, false to generate new ones
+     * @param color color of the buttons
+     * @return true if the port has at least one VIA
+     */
     bool addCustomVIAs(std::list<std::pair<QPoint, bool>>& viaList, PortOut *p, bool keepViaBtns, QColor color);
+    /**
+     * @brief refines the list of VIAs so that the connections between two points are always either horizontal or vertical by adding additional VIAs between them
+     *
+     * prefer x-direction and straight lines but avoid going back in the same direction we previously came from
+     *
+     * @param viaList list of all VIAs (pair: position; true if the VIA was added by the user, false for VIAs added by refinement)
+     */
     void refineVIAs(std::list<std::pair<QPoint, bool>>& viaList);
 
-    QGraphicsView* view;
-    DataLogger* dataLogger;
+    QGraphicsView* view; /**< view do draw on */
+    DataLogger* dataLogger; /**< datalogger to visualize */
 
-    std::map<Port*, PortButton*> ports;
-    std::list<PortOutButton*> portOuts;
+    std::map<Port*, PortButton*> ports; /**< map of all known port buttons (key: port, value: button widget) */
+    std::list<PortOutButton*> portOuts; /**< list of all output port buttons fot the logger */
 
-    std::map<QWidget*, DatastreamObject*> moduleGuiElements;
-    std::map<QWidget*, PortOut*> viaBtns;
+    std::map<QWidget*, DatastreamObject*> moduleGuiElements; /**< mapping of datastream objects to the GUI elements (key: GUI widget, value: datastream object) */
+    std::map<QWidget*, PortOut*> viaBtns; /**< map of all VIA button widgets to the corresponding output ports (key: GUI widget, value: output port) */
 
-    bool pastePossible;
-    QPoint lastMenuPos;
-    DatastreamObject* rightClickedObject;
+    bool pastePossible; /**< flag indicating if pasting is currently possible (i.e. an object is in the clipboard) */
+    QPoint lastMenuPos; /**< position of the last shown context menu */
+    DatastreamObject* rightClickedObject; /**< last object that was right clicked */
 public slots:
     /**
      * @brief slot to set the positions of all modules again
@@ -106,12 +136,37 @@ public slots:
      */
     void moveDatastreamModules();
 private slots:
+    /**
+     * @brief requests a configuration dialog for a clicked object
+     */
     void configClickedModule();
+    /**
+     * @brief slot for a right click on a module
+     *
+     * @param pos position of the click
+     */
     void moduleRightClick(QPoint pos);
+    /**
+     * @brief slot for moving a VIA
+     *
+     * @param oldPos old position
+     * @param newPos new position
+     */
     void viaMoved(QPoint oldPos, QPoint newPos);
+    /**
+     * @brief slot to delete a VIA
+     *
+     * The VIA to delete is determined by checking the Sender to this slot
+     */
     void viaDelete();
 
+    /**
+     * @brief slot for pasting the module in the clipboard
+     */
     void pasteModule();
+    /**
+     * @brief slot to copy the last right-clicked object
+     */
     void copyModule();
 signals:
     /**

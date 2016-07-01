@@ -31,11 +31,11 @@ public:
     ~DeveloperTools();
 
 private:
-    Ui::DeveloperTools *ui;
+    Ui::DeveloperTools *ui; /**< UI */
 
 public slots:
     /**
-     * @brief slot for triggering
+     * @brief slot for triggering calculation of module weights
      */
     void calculateModuleWeights();
 };
