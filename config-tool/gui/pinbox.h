@@ -57,7 +57,7 @@ private:
      * @param name name of the pin to check
      * @return true if the pin is already assigned
      */
-    bool pinAssigned(std::map<CParameter*, std::string[4]> &pinAssignments, std::string name);
+    bool pinAssigned(std::map<CParameter*, std::string[5]> &pinAssignments, std::string name);
 
     DataLogger* dataLogger; /**< datalogger to work on */
     std::string selectedPin; /**< pin selected in the widget */

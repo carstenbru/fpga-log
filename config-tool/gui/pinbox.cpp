@@ -22,9 +22,9 @@ PinBox::PinBox(DataLogger *dataLogger, string selectedPin, QWidget *parent) :
     connect(this, SIGNAL(currentIndexChanged(QString)), this, SLOT(indexChanged()));
 }
 
-bool PinBox::pinAssigned(map<CParameter*, string[4]>& pinAssignments, string name) {
-    for (map<CParameter*, string[4]>::iterator pin = pinAssignments.begin(); pin != pinAssignments.end(); pin++) {
-         string pinArray[4] = pin->second;
+bool PinBox::pinAssigned(map<CParameter*, string[5]>& pinAssignments, string name) {
+    for (map<CParameter*, string[5]>::iterator pin = pinAssignments.begin(); pin != pinAssignments.end(); pin++) {
+         string pinArray[5] = pin->second;
          if (pinArray[0].compare(name) == 0) {
              return true;
          }
@@ -41,7 +41,7 @@ void PinBox::setPinItems(const QString& pinGroup) {
     this->pinGroup = pinGroup.toStdString();
     clear();
     try {
-        map<CParameter*, string[4]> pinAssignments = dataLogger->getPinAssignments();
+        map<CParameter*, string[5]> pinAssignments = dataLogger->getPinAssignments();
 
         list<Pin> pinGroupList = DataTypePin::getPinType()->getPinsInGroup(pinGroup.toStdString());
         for (list<Pin>::iterator i = pinGroupList.begin(); i != pinGroupList.end(); i++) {

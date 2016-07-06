@@ -25,7 +25,7 @@ DataLogger::DataLogger() :
     clockMultiply("clock multiply", DataType::getType("sysclk_regs_t_CLKFX_MULTIPLY"), false, "2"),
     expertMode("expert mode", DataType::getType("bool"), false, "FALSE"),
     definitionsUpdated(false)
-{
+{    
     loadTargetPins();
     connect(&expertMode, SIGNAL(valueChanged(std::string)), this, SLOT(expertModeParamChanged(std::string)));
 }
@@ -268,8 +268,8 @@ int DataLogger::getPeriClk() {
     return getSystemClk();
 }
 
-map<CParameter*, string[4]> DataLogger::getPinAssignments() {
-    map<CParameter*, string[4]> result;
+map<CParameter*, string[5]> DataLogger::getPinAssignments() {
+    map<CParameter*, string[5]> result;
 
     map<string, CObject*> objects = getObjectsMap();
     for (map<string, CObject*>::iterator oi = objects.begin(); oi != objects.end(); oi++) {
@@ -287,6 +287,7 @@ map<CParameter*, string[4]> DataLogger::getPinAssignments() {
                             item[1] = oi->second->getName();
                             item[2] = poi->first;
                             item[3] = (*li)->getName();
+                            item[4] = (*i)->getDirection();
                         }
                     }
                 }
@@ -300,6 +301,7 @@ map<CParameter*, string[4]> DataLogger::getPinAssignments() {
             item[1] = oi->second->getName();
             item[2] = "timestamp pin";
             item[3] = (*tpi)->getName();
+            item[4] = "INPUT";
         }
     }
 
@@ -309,6 +311,7 @@ map<CParameter*, string[4]> DataLogger::getPinAssignments() {
     clk_pin[1] = "SYSTEM";
     clk_pin[2] = "clock";
     clk_pin[3] = "in";
+    clk_pin[4] = "INPUT";
     return result;
 }
 

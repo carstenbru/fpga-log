@@ -33,6 +33,7 @@ PinOverview::PinOverview(QWidget *parent, DataLogger* dataLogger, string dataLog
     model->setHorizontalHeaderItem( 1, new QStandardItem(tr("Module")));
     model->setHorizontalHeaderItem( 2, new QStandardItem(tr("Group")));
     model->setHorizontalHeaderItem( 3, new QStandardItem(tr("Function")));
+    model->setHorizontalHeaderItem( 4, new QStandardItem(tr("Direction")));
 
     int pos = 0;
     list<string> pinGroups = DataTypePin::getPinType()->getGroups();
@@ -40,7 +41,7 @@ PinOverview::PinOverview(QWidget *parent, DataLogger* dataLogger, string dataLog
         QStandardItem* pinGroup = new QStandardItem(i->c_str());
         pinGroup->setEditable(false);
         pinGroup->setSelectable(false);
-        for (int j = 1; j <= 3; j++) {
+        for (int j = 1; j <= 4; j++) {
             QStandardItem* dummy = new QStandardItem();
             dummy->setEditable(false);
             dummy->setSelectable(false);
@@ -58,7 +59,7 @@ PinOverview::PinOverview(QWidget *parent, DataLogger* dataLogger, string dataLog
 
             items[*i + ":" + p->getName()][0] = pin;
 
-            for (int j = 1; j <= 3; j++) {
+            for (int j = 1; j <= 4; j++) {
                 QStandardItem* it = new QStandardItem();
                 it->setEditable(false);
                 it->setSelectable(true);
@@ -80,6 +81,7 @@ PinOverview::PinOverview(QWidget *parent, DataLogger* dataLogger, string dataLog
     ui->pinOverview->resizeColumnToContents(1);
     ui->pinOverview->resizeColumnToContents(2);
     ui->pinOverview->resizeColumnToContents(3);
+    ui->pinOverview->resizeColumnToContents(4);
     ui->pinOverview->collapseAll();
 }
 
@@ -87,12 +89,13 @@ void PinOverview::readPinAssignments() {
     pendingAssignmentsModel = new QStandardItemModel();
     pendingAssignmentsModel->setHorizontalHeaderItem( 0, new QStandardItem(tr("Module/Group")));
     pendingAssignmentsModel->setHorizontalHeaderItem( 1, new QStandardItem(tr("Function")));
+    pendingAssignmentsModel->setHorizontalHeaderItem( 2, new QStandardItem(tr("Direction")));
     int pos = 0;
     QStandardItem* module;
 
-    map<CParameter*, string[4]> pinAssignments = dataLogger->getPinAssignments();
-    for (map<CParameter*, string[4]>::iterator pin = pinAssignments.begin(); pin != pinAssignments.end(); pin++) {
-        string pinArray[4] = pin->second;
+    map<CParameter*, string[5]> pinAssignments = dataLogger->getPinAssignments();
+    for (map<CParameter*, string[5]>::iterator pin = pinAssignments.begin(); pin != pinAssignments.end(); pin++) {
+        string pinArray[5] = pin->second;
 
         pinParameters[pinArray[1] + pinArray[2] + pinArray[3]] = pin->first;
 
@@ -104,6 +107,7 @@ void PinOverview::readPinAssignments() {
                 itemPointers[1]->setText(pinArray[1].c_str());
                 itemPointers[2]->setText(pinArray[2].c_str());
                 itemPointers[3]->setText(pinArray[3].c_str());
+                itemPointers[4]->setText(pinArray[4].c_str());
                 exists = true;
             } catch (exception) {
 
@@ -135,9 +139,14 @@ void PinOverview::readPinAssignments() {
             func->setEditable(false);
             func->setSelectable(true);
 
+            QStandardItem* descr = new QStandardItem(pinArray[4].c_str());
+            descr->setEditable(false);
+            descr->setSelectable(true);
+
             QList<QStandardItem*> row;
             row.append(group);
             row.append(func);
+            row.append(descr);
 
             module->appendRow(row);
         }
@@ -147,6 +156,7 @@ void PinOverview::readPinAssignments() {
     ui->pendingAssignments->expandAll();
     ui->pendingAssignments->resizeColumnToContents(0);
     ui->pendingAssignments->resizeColumnToContents(1);
+    ui->pendingAssignments->resizeColumnToContents(2);
 }
 
 void PinOverview::writeHTMLtable(ofstream& file) {
@@ -157,6 +167,7 @@ void PinOverview::writeHTMLtable(ofstream& file) {
     file << "<th>Modul</th>" << endl;
     file << "<th>Gruppe</th>" << endl;
     file << "<th>Funktion</th>" << endl;
+    file << "<th>Richtung</th>" << endl;
     file << "</tr>" << endl;
 
     string lastGroup;
@@ -164,14 +175,14 @@ void PinOverview::writeHTMLtable(ofstream& file) {
         string group = Pin::getGroupFromFullName(i->first);
         if (group.compare(lastGroup) != 0) {
             file << "<tr>" << endl;
-            file << "<td colspan=\"4\"><b>" << group << "</b></td>" << endl;
+            file << "<td colspan=\"5\"><b>" << group << "</b></td>" << endl;
             file << "</tr>" << endl;
             lastGroup = group;
         }
 
         QStandardItem** items = i->second;
         file << "<tr>" << endl;
-        for (int j = 0; j < 4; j++) {
+        for (int j = 0; j <= 4; j++) {
           file << "<td>" << items[j]->text().toStdString() << "</td>" << endl;
         }
         file << "</tr>" << endl;
@@ -222,7 +233,7 @@ PinOverview::~PinOverview()
     delete ui;
 }
 
-void PinOverview::addPendingAssignment(string definition[3]) {
+void PinOverview::addPendingAssignment(string definition[4]) {
     QStandardItem* parent;
     try {
         parent = pendingAssignmentGroups.at(definition[0]);
@@ -251,14 +262,20 @@ void PinOverview::addPendingAssignment(string definition[3]) {
     func->setEditable(false);
     func->setSelectable(true);
 
+    QStandardItem* descr = new QStandardItem(definition[3].c_str());
+    descr->setEditable(false);
+    descr->setSelectable(true);
+
     QList<QStandardItem*> row;
     row.append(group);
     row.append(func);
+    row.append(descr);
 
     parent->appendRow(row);
     ui->pendingAssignments->expandAll();
     ui->pendingAssignments->resizeColumnToContents(0);
     ui->pendingAssignments->resizeColumnToContents(1);
+    ui->pendingAssignments->resizeColumnToContents(2);
 }
 
 void PinOverview::freePin() {
@@ -268,10 +285,12 @@ void PinOverview::freePin() {
         string pin = v.toString().toStdString();
         if (!pin.empty()) {
             string assignment;
-            string definition[3];
+            string definition[4];
             int c = 0;
             for (QModelIndexList::iterator p = ++i.begin(); p != i.end(); p++) {
-                assignment = assignment + p->data(Qt::DisplayRole).toString().toStdString();
+                if (c <= 2) {
+                    assignment = assignment + p->data(Qt::DisplayRole).toString().toStdString();
+                }
                 definition[c++] = p->data(Qt::DisplayRole).toString().toStdString();
             }
             try {
@@ -279,7 +298,7 @@ void PinOverview::freePin() {
                 param->setValue("");
 
                 string completePinName = i.first().parent().data(Qt::DisplayRole).toString().toStdString() + ":" + pin;
-                for (int j = 1; j <= 3; j++) {
+                for (int j = 1; j <= 4; j++) {
                     items[completePinName][j]->setText("");
                 }
 
@@ -308,6 +327,7 @@ void PinOverview::assignPin() {
                         string completePinName = pi.first().parent().data(Qt::DisplayRole).toString().toStdString() + ":" + pin;
                         string module = ai.first().parent().data(Qt::DisplayRole).toString().toStdString();
                         string pinFunc = (++ai.begin())->data(Qt::DisplayRole).toString().toStdString();
+                        string pinDir = (ai.begin()+2)->data(Qt::DisplayRole).toString().toStdString();
                         string assignment = module + assignFunc + pinFunc;
                         try {
                             CParameter* param = pinParameters.at(assignment);
@@ -318,6 +338,7 @@ void PinOverview::assignPin() {
                         items[completePinName][1]->setText(module.c_str());
                         items[completePinName][2]->setText(assignFunc.c_str());
                         items[completePinName][3]->setText(pinFunc.c_str());
+                        items[completePinName][4]->setText(pinDir.c_str());
 
                         pendingAssignmentsModel->removeRow(ai.first().row(), ai.first().parent());
 

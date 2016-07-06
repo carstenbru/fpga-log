@@ -242,10 +242,11 @@ public:
      * [1]: assigned module (e.g. "sink_uart_0")\n
      * [2]: assigned pin group in this module (e.g. "Receiver")\n
      * [3]: function in this group (name) (e.g. "rx")
+     * [4]: direction of the pin
      *
      * @return a map of pins (their parameter) and their assigned function
      */
-    std::map<CParameter *, std::string[4]> getPinAssignments();
+    std::map<CParameter *, std::string[5]> getPinAssignments();
 
     /**
      * @brief finds a name for a object of a given datatype

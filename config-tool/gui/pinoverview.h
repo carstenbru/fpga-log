@@ -60,9 +60,9 @@ private:
     /**
      * @brief adds a pending assignment to the model and view
      *
-     * @param definition defintion of the assignement (module, group, function)
+     * @param definition defintion of the assignement (module, group, function, direction)
      */
-    void addPendingAssignment(std::string definition[3]);
+    void addPendingAssignment(std::string definition[4]);
 
     Ui::PinOverview *ui; /**< UI */
     DataLogger* dataLogger; /**< datalogger to visualize */
