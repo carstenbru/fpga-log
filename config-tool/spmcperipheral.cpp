@@ -260,10 +260,13 @@ void SpmcPeripheral::readPortsElement(QXmlStreamReader& reader, std::string dire
                     port = new PeripheralPort(portName, portWidth);
             }
             string pinDiretion = reader.attributes().value("direction").toString().toStdString();
-            if (pinDiretion.empty())
+            if (pinDiretion.empty()) {
                 port->setDirection(direction);
-            else
+            } else {
                 port->setDirection(pinDiretion);
+            }
+            string descr = reader.attributes().value("descr").toString().toStdString();
+            port->setDescription(descr);
             ports[groupName].push_back(port);
         }
         reader.skipCurrentElement();
@@ -502,9 +505,17 @@ void PeripheralPort::newWidth(std::string widthVal) {
     if (newWidth > width) {
         for (int i = width; i < newWidth; i++) {
             lines.push_back(new CParameter(name + "_" + to_string(i), DataTypePin::getPinType(), false));
+            lines.back()->setDescription(description);
         }
     }
     width = newWidth;
+}
+
+void PeripheralPort::setDescription(std::string description) {
+    this->description = description;
+    for (CParameter* param : lines) {
+        param->setDescription(description);
+    }
 }
 
 QXmlStreamWriter& operator<<(QXmlStreamWriter& out, PeripheralPort& port) {

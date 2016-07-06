@@ -24,15 +24,15 @@
     
     <xi:include href="../defaults/peripheral.xml" />
     <ports group="control" direction="output">
-        <port name="active" descr="%Insert port description here%"/>
-        <port name="direction" descr="%Insert port description here%"/>
+        <port name="active" descr="move motor signal"/>
+        <port name="direction" descr="motor direction"/>
     </ports>
     <ports group="sensors" direction="input">
-        <port name="end_sw_down" descr="%Insert port description here%"/>
-        <port name="end_sw_up" descr="%Insert port description here%"/>
+        <port name="end_sw_down" descr="end switch and down position"/>
+        <port name="end_sw_up" descr="end switch at up position"/>
     </ports>
     <ports group="timestamp" direction="output">
-        <port name="dest_reached" descr="%Insert port description here%"/>
+        <port name="dest_reached" descr="destination reached trigger"/>
     </ports>
     
     <registers>

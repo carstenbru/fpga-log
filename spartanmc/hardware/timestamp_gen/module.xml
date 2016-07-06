@@ -29,12 +29,12 @@
   
   <xi:include href="../defaults/peripheral.xml"/>
   <ports group="Timestamp capture sources" direction="input">
-    <port name="internal_source" descr="%Insert port description here%" width="${SOURCES}"/>
-    <port name="pin_source" descr="%Insert port description here%" width="${PIN_SOURCES}"/>
+    <port name="internal_source" descr="internal timestamp source" width="${SOURCES}"/>
+    <port name="pin_source" descr="external (pin) timestamp source" width="${PIN_SOURCES}"/>
   </ports>
   <ports group="counter input" direction="input">
-    <port name="lpt_counter" descr="%Insert port description here%" width="36" />
-    <port name="hpt_counter" descr="%Insert port description here%" width="36" />
+    <port name="lpt_counter" descr="low-precision timestamp counter value" width="36" />
+    <port name="hpt_counter" descr="high-precision timestamp counter value" width="36" />
   </ports>
   
   <registers>

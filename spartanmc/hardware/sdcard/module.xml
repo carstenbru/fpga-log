@@ -19,10 +19,10 @@
   <xi:include href="../defaults/peripheral.xml" />
   <xi:include href="../defaults/dma.xml"/>
   <ports group="SD card">
-    <port name="sd_miso" descr="%Insert port description here%" direction="input" />
-    <port name="sd_mosi" descr="%Insert port description here%" direction="output" />
-    <port name="sd_clk" descr="%Insert port description here%" direction="output" />
-    <port name="sd_cs" descr="%Insert port description here%" direction="output" />
+    <port name="sd_miso" descr="MISO signal of the SD card" direction="input" />
+    <port name="sd_mosi" descr="MOSI signal of the SD card" direction="output" />
+    <port name="sd_clk" descr="clock signal of the SD card" direction="output" />
+    <port name="sd_cs" descr="CS (SS) signal of the SD card" direction="output" />
   </ports>
   <ports group="timestamp_dummy">
     <port name="ts_dummy" descr="%Insert port description here%" direction="output" />

@@ -20,7 +20,7 @@
   
   <xi:include href="../defaults/peripheral.xml" />
   <ports group="PWM channels" direction="output">
-    <port name="pwm" descr="%Insert port description here%" width="${CHANNELS}" />
+    <port name="pwm" descr="generated PWM signal" width="${CHANNELS}" />
   </ports>
   
   <registers>

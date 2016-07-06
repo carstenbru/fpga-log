@@ -22,14 +22,14 @@ uart_light/util/uart_functions.v</includes>
     <ports direction="input" group="Processor peripheral interface"/>
     <xi:include href="../defaults/peripheral.xml"/>
     <ports direction="output" group="Transmitter">
-        <port descr="%Insert port description here%" direction="output" name="tx"/>
+        <port descr="Tx signal of the UART interface" direction="output" name="tx"/>
         <port descr="%Insert port description here%" direction="input" name="tx_chain_i"/>
     </ports>
     <ports direction="input" group="Receiver">
-        <port descr="%Insert port description here%" name="rx"/>
+        <port descr="Rx signal of the UART interface" name="rx"/>
     </ports>
     <ports group="Controller">
-        <port descr="%Insert port description here%" direction="output" name="intr"/>
+        <port descr="Interupt signal" direction="output" name="intr"/>
     </ports>
     <parameters>
         <parameter name="CLOCK_FREQUENCY" type="int" value="25000000">

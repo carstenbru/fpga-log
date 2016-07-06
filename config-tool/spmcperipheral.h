@@ -124,6 +124,11 @@ public:
     std::string getWidthRef() { return widthRef; }
 
     /**
+     * @brief sets the description for all parameters of all lines of this port
+     */
+    void setDescription(std::string description);
+
+    /**
      * @brief serialization operator, writes the port to a XML stream
      * @param out XML stream destination
      * @param port port to write
@@ -133,6 +138,7 @@ public:
 private:
     std::string name; /**< port name */
     std::string direction; /**< port direction */
+    std::string description; /**< description (e.g. to show in GUI) of all lines */
 
     std::string widthRef; /**< port width reference to a parameter */
 

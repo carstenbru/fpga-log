@@ -20,9 +20,9 @@
   </parameters>
   
   <ports direction="input" group="Inputs">
-    <port descr="%Insert port description here%" name="clk_i"/>
+    <port descr="input clock" name="clk_i"/>
   </ports>
   <ports direction="output" group="Inputs">
-    <port descr="%Insert port description here%" name="clk_o"/>
+    <port descr="output (divided) clock signal" name="clk_o"/>
   </ports>
 </module>

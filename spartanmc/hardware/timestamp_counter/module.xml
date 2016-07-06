@@ -22,8 +22,8 @@
  
   <xi:include href="../defaults/peripheral.xml"/>
   <ports group="counter output" direction="output">
-    <port name="lpt_counter" descr="%Insert port description here%" width="36" />
-    <port name="hpt_counter" descr="%Insert port description here%" width="36" />
+    <port name="lpt_counter" descr="low-precision timestamp counter value" width="36" />
+    <port name="hpt_counter" descr="high-precision timestamp counter value" width="36" />
   </ports>
   
   <registers>
