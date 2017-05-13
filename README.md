@@ -18,7 +18,7 @@ So all in all we have a uC with exactly the peripherals we need and everything w
 
 The project is developped on a Papilio Pro FPGA-board (http://papilio.cc) but should work on any board which is supported by SpartanMC or is added to this kit by you (most boards with a Xilinx Spartan FPGA should work).
 
-##Installation
+## Installation
 fpga-log need the SpartanMC SoC-Kit. As consequence it only works on linux based systems. So before installing fpga-log you have to download SpartanMC (http://www.mr.inf.tu-dresden.de/forschung/spartanmc/) and follow their installation instructions.
 
 After this you can install fpga-log by running the install scipt located in the root folder of the project. This will link the new hardware peripherals and the fpga-log software library to the SpartanMC directories.
